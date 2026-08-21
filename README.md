@@ -37,6 +37,7 @@ make setup
 - **교사 모델은 `claude` / `codex` CLI 로 호출한다.** API 키를 따로 관리하지 않는다.
 - **샘플 포맷은 하나로 통일한다.** 합성·정제·학습·평가가 같은 스키마를 쓴다. 스키마는 `src/rca_lab/data` 에 두고, 바꿀 때는 PR 로.
 - **새 실험은 코드 복사 대신 `configs/` 에 yaml 추가.**
+- **학습 모니터링은 W&B.** 모든 run 은 팀 프로젝트 `rca-model-lab` 하나에 모은다 (SFT·GRPO 를 같은 곳에서 비교하기 위해). run 이름은 config 파일 이름과 같게. 키·엔티티는 `.env` 에서 읽고 코드에 박지 않는다.
 - **train/eval split 은 시나리오 단위.** 같은 장애의 변형이 양쪽에 섞이면 평가가 무의미하다.
 - **브랜치**: `main` 직접 푸시 금지. `feature/<topic>` 또는 개인 브랜치 → PR.
 - **결정은 `docs/decisions.md` 에 한 줄씩.**

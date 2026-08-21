@@ -13,6 +13,7 @@
 - 교사 모델 호출은 `claude` / `codex` CLI 서브프로세스. API SDK 직접 호출을 추가하지 않는다.
 - 샘플은 `src/rca_lab/data` 의 공용 스키마로만 주고받는다. ad-hoc dict 금지.
 - 새 실험 = `configs/` 에 yaml 추가. 스크립트에 값을 하드코딩하지 않는다.
+- 학습 로깅은 W&B (`report_to=wandb`). 프로젝트·엔티티·키는 `.env` 의 `WANDB_*` 에서. run 이름 = config 파일 이름.
 - 외부 CLI·GPU 가 필요한 테스트는 만들지 않는다 (fixture 로 대체).
 - **아직 정해지지 않은 구현을 추측으로 채우지 않는다.** 비어 있는 모듈은 담당자가 채운다. 필요하면 사용자에게 묻는다.
 
