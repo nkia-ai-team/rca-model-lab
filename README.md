@@ -40,7 +40,9 @@ W&B 팀 `nkia-ai` 초대 수락 후 `.env` 에 자기 `WANDB_API_KEY` — [docs/
 - **새 실험은 코드 복사 대신 `configs/` 에 yaml 추가.**
 - **학습 모니터링은 W&B.** 모든 run 은 팀 프로젝트 `rca-model-lab` 하나에 모은다 (SFT·GRPO 를 같은 곳에서 비교하기 위해). run 이름은 config 파일 이름과 같게. 키·엔티티는 `.env` 에서 읽고 코드에 박지 않는다.
 - **train/eval split 은 시나리오 단위.** 같은 장애의 변형이 양쪽에 섞이면 평가가 무의미하다.
-- **브랜치**: `main` 직접 푸시 금지. `feature/<topic>` 또는 개인 브랜치 → PR → CI(lint·test) 통과 후 머지.
-  (무료 플랜 private 레포라 GitHub branch protection 을 못 건다 — 약속으로 지킨다.)
+- **브랜치**: `main` 하나, 수명 짧은 작업 브랜치(trunk-based). `develop`/`release` 없음.
+  `feature/<이슈번호>-<topic>` → PR → CI 통과 → squash 머지 → 브랜치 삭제. 며칠 넘게 살아 있으면 쪼갠다.
+  `main` 직접 푸시 금지 (무료 플랜 private 레포라 branch protection 을 못 건다 — 약속으로 지킨다).
+- **실험은 브랜치가 아니다.** 모델·하이퍼파라미터를 바꾸는 건 `configs/` yaml 추가 + W&B run. 브랜치는 코드를 바꿀 때만.
 - **커밋 메시지**: 팀 컨벤션(Linear 이슈 번호 + type) 을 따른다.
 - **결정은 `docs/decisions.md` 에 한 줄씩.**
