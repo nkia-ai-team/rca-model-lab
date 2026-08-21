@@ -4,11 +4,9 @@ version = "0.1.0"
 description = "Fine-tuning and evaluating models specialized in root cause analysis"
 requires-python = ">=3.12,<3.13"
 dependencies = [
-    # 데이터 합성/정제에 필요한 최소 의존성. 학습 스택은 [train] extra (클라우드 GPU 에서만 설치).
+    # 데이터 작업용 최소 의존성. 학습 스택은 [train] extra (클라우드 GPU 에서만 설치).
     "pyyaml>=6.0",
     "pydantic>=2.0",
-    "typer>=0.12",
-    "rich>=13.0",
     "python-dotenv>=1.0",
 ]
 
@@ -21,11 +19,7 @@ train = [
     "datasets>=3.0",
     "accelerate>=1.0",
 ]
-serve = ["vllm>=0.8"]
 dev = ["pytest>=8.0", "ruff>=0.6", "ipykernel"]
-
-[project.scripts]
-rca-lab = "rca_lab.cli:app"
 
 [build-system]
 requires = ["hatchling"]

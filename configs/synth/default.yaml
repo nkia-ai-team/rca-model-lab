@@ -1,7 +1,0 @@
-prompt: synth_v0.md
-student_system_prompt: student_system.md
-variants_per_scenario: 3
-domains: []            # 비우면 전체. 예: [plopvape-shop, food-delivery]
-teacher_model:
-  claude: null         # null → CLI 기본 모델
-  codex: null
