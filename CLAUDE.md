@@ -5,7 +5,7 @@
 ## 환경
 - Python 3.12, `uv` 관리. 실행은 항상 `uv run ...`. 전역 pip 설치 금지.
 - 학습은 클라우드 GPU 에서 (`make sync-train`). 로컬은 데이터 작업만 — 학습 의존성을 기본 설치하지 않는다.
-- `data/ models/ outputs/` 아래는 절대 git add 하지 않는다 (`.gitkeep` 제외).
+- `data/ models/ outputs/` 아래는 절대 git add 하지 않는다 (`.gitkeep` 제외). 공유는 HF Hub `nkia-ai-lab` org 로 (README 규칙).
 - 시나리오 ground truth 는 `../rca-scenario-runner` 에서 읽기만 한다. 그 레포를 수정하지 않는다.
 
 ## 코드 규칙

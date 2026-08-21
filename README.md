@@ -32,7 +32,9 @@ W&B 팀 `nkia-ai` 초대 수락 후 `.env` 에 자기 `WANDB_API_KEY` — [docs/
 
 ## 규칙
 
-- **큰 파일은 git 에 넣지 않는다.** `data/ models/ outputs/` 는 gitignore. 팀 간 공유가 필요해지면 그때 방법(HF Hub 등)을 정한다.
+- **큰 파일은 git 에 넣지 않는다.** `data/ models/ outputs/` 는 gitignore.
+- **데이터셋·가중치 공유는 HF Hub private, org `nkia-ai-lab`.** 데이터셋은 `nkia-ai-lab/rca-sft`, `rca-eval`, 모델은 `rca-sft-<base>-<ver>`.
+  버전은 태그로 찍고 학습 코드는 `revision=` 으로 읽는다. git LFS 는 쓰지 않는다. 토큰은 `.env` 의 `HF_TOKEN`.
 - **시크릿은 `.env`** 에만. 키 이름을 추가하면 `.env.example` 도 갱신.
 - **학습 스택은 TRL + PEFT.** SFT → GRPO 를 한 스택으로 잇기 위해서다.
 - **교사 모델은 `claude` / `codex` CLI 로 호출한다.** API 키를 따로 관리하지 않는다.
