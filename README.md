@@ -13,6 +13,7 @@ make setup
 
 필요한 것: `uv`, 로그인된 `claude` / `codex` CLI, 옆 디렉토리에 `rca-scenario-runner` 체크아웃,
 W&B 팀 `nkia-ai` 초대 수락 후 `.env` 에 자기 `WANDB_API_KEY` — [docs/wandb-setup.md](docs/wandb-setup.md).
+HF org `nkia-ai-lab` 초대 수락 후 `.env` 에 자기 `HF_TOKEN` (write, https://huggingface.co/settings/tokens).
 학습은 클라우드 GPU 에서 `make sync-train`. 나머지 타겟은 `make help`.
 
 ## 디렉토리
