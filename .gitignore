@@ -1,0 +1,31 @@
+# python
+__pycache__/
+*.py[cod]
+.venv/
+*.egg-info/
+dist/
+build/
+.ruff_cache/
+.pytest_cache/
+.ipynb_checkpoints/
+
+# secrets / local
+.env
+*.local.yaml
+
+# large artifacts — 디렉토리 구조만 .gitkeep 으로 남긴다
+data/**
+!data/*/
+!data/*/.gitkeep
+models/**
+!models/.gitkeep
+outputs/**
+!outputs/.gitkeep
+wandb/
+*.safetensors
+*.bin
+*.gguf
+
+# misc
+.DS_Store
+.omc/

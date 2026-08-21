@@ -1,0 +1,51 @@
+[project]
+name = "rca-lab"
+version = "0.1.0"
+description = "Fine-tuning and evaluating models specialized in root cause analysis"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    # 데이터 합성/정제에 필요한 최소 의존성. 학습 스택은 [train] extra (클라우드 GPU 에서만 설치).
+    "pyyaml>=6.0",
+    "pydantic>=2.0",
+    "typer>=0.12",
+    "rich>=13.0",
+    "python-dotenv>=1.0",
+]
+
+[project.optional-dependencies]
+train = [
+    "torch>=2.6",
+    "transformers>=4.51",
+    "trl>=0.19",
+    "peft>=0.15",
+    "datasets>=3.0",
+    "accelerate>=1.0",
+]
+serve = ["vllm>=0.8"]
+dev = ["pytest>=8.0", "ruff>=0.6", "ipykernel"]
+
+[project.scripts]
+rca-lab = "rca_lab.cli:app"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/rca_lab"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+# torch CUDA 빌드. 클라우드 GPU 이미지의 드라이버에 맞춘다 — 드라이버 ≥580 이면 이 블록을 지워 PyPI 기본(cu130)을 써도 된다.
+[tool.uv.sources]
+torch = { index = "pytorch-cu128" }
+
+[[tool.uv.index]]
+name = "pytorch-cu128"
+url = "https://download.pytorch.org/whl/cu128"
+explicit = true

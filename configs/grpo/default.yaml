@@ -1,0 +1,5 @@
+# 2단계(RL) 자리. SFT 어댑터를 머지한 모델을 시작점으로 GRPO 를 돌린다.
+# reward 는 rca_lab.eval.reward 에서 ground_truth 대비 채점 (미구현).
+model_name: outputs/sft/qwen3-8b-v0/merged
+dataset: data/processed/rl_prompts_v0.jsonl
+output_dir: outputs/grpo/qwen3-8b-v0
