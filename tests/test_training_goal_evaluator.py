@@ -1,0 +1,47 @@
+import importlib.util
+from pathlib import Path
+
+SPEC = importlib.util.spec_from_file_location(
+    "evaluate_training_goal", Path("scripts/evaluate_training_goal.py")
+)
+assert SPEC and SPEC.loader
+MODULE = importlib.util.module_from_spec(SPEC)
+SPEC.loader.exec_module(MODULE)
+
+
+def report() -> dict:
+    stage = {
+        "completed_runs": 36,
+        "format_errors": 0,
+        "unsupported_confirmations": 0,
+        "majority_strict_correct": 3,
+        "mean_reward": 0.5,
+    }
+    return {
+        "contract": {"sealed_cases": 12, "runs_per_case": 3},
+        "schema": {"invalid_actions": 0},
+        "split": {"family_overlap": []},
+        "baseline": dict(stage),
+        "sft": dict(stage),
+        "rl": dict(stage),
+    }
+
+
+def test_goal_evaluator_accepts_non_regressing_clean_loop() -> None:
+    passed, failures = MODULE.evaluate(report())
+    assert passed
+    assert not failures
+
+
+def test_goal_evaluator_rejects_leakage_and_rl_regression() -> None:
+    candidate = report()
+    candidate["split"]["family_overlap"] = ["f17"]
+    candidate["rl"]["majority_strict_correct"] = 2
+    candidate["rl"]["mean_reward"] = 0.4
+
+    passed, failures = MODULE.evaluate(candidate)
+
+    assert not passed
+    assert "family leakage" in failures
+    assert "RL regressed below SFT" in failures
+    assert "RL mean reward regressed below SFT" in failures

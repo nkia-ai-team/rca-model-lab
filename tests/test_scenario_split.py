@@ -10,8 +10,8 @@ ROOT = Path(__file__).parents[1]
 def test_teacher_manifest_covers_current_36_cases_without_overlap() -> None:
     split = load_teacher_split(ROOT / "configs/teacher/codex-blind-v1.yaml")
 
-    assert len(split.train) == 26
-    assert len(split.sealed_eval) == 9
+    assert len(split.train) == 23
+    assert len(split.sealed_eval) == 12
     assert len(split.excluded) == 1
     assert len(split.all_cases) == 36
     split.validate_case_root(Path("/data/eval-cases"))

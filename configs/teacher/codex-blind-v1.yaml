@@ -11,7 +11,6 @@ train:
   - case-f01-p-v3-d691440c
   - case-f01-r-v3-34274f3e
   - case-f03-h-v3-d4192a3b
-  - case-f04-r-v3-c508c52d
   - case-f05-h-v3-36a247f1
   - case-f05-p-v3-6fe331ef
   - case-f05-r-v3-527f3692
@@ -24,9 +23,7 @@ train:
   - case-f10-h-v3-4fe69be0
   - case-f11-r-v3-85b9a489
   - case-f14-p-v3-0bdb303b
-  - case-f15-g-v3-ce2e64de
   - case-f16-h-v3-2f0555c7
-  - case-f17-r-v3-ab7228ad
   - case-f18-p-v3-d2c566ad
   - case-f19-p-v3-5a350c0a
   - case-f19-s-v3-5daa9c97
@@ -35,14 +32,17 @@ train:
   - case-f25-h-v3-dc3d4fc8
 
 sealed_eval:
+  - case-f04-r-v3-c508c52d
   - case-f04-h-v3-af25dea6
   - case-f08-g-v3-0ac275b0
   - case-f08-h-v3-6bdc9531
   - case-f08-p-v3-78f4a1ba
   - case-f12-h-v3-8c1cf9f8
+  - case-f15-g-v3-ce2e64de
   - case-f15-h-v3-2ba8a6dc
   - case-f15-p-v3-3843c3fe
   - case-f15-t1-v3-9a5c5eae
+  - case-f17-r-v3-ab7228ad
   - case-f17-p-v3-bce52242
 
 excluded:

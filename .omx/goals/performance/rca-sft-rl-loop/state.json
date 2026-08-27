@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "workflow": "performance-goal",
+  "slug": "rca-sft-rl-loop",
+  "objective": "RCA student 데이터·학습 계약을 연구 근거에 맞게 수정하고, SFT와 RL을 순차 학습해 봉인 평가에서 비퇴행 성능을 달성한다",
+  "status": "in_progress",
+  "createdAt": "2026-08-27T07:22:28.742Z",
+  "updatedAt": "2026-08-28T01:28:00Z",
+  "evaluator": {
+    "command": ".venv/bin/python scripts/evaluate_training_goal.py --report outputs/goal-eval/final-report.json",
+    "contract": "PASS iff invalid_actions=0, family_overlap=0, baseline/SFT/RL each complete 12 family-disjoint sealed cases x3 runs with format_errors=0 and unsupported_confirmations=0, and both majority_strict_correct and mean_reward are non-regressing across baseline -> SFT -> RL"
+  },
+  "artifactPaths": {
+    "state": ".omx/goals/performance/rca-sft-rl-loop/state.json",
+    "ledger": ".omx/goals/performance/rca-sft-rl-loop/ledger.jsonl",
+    "evaluator": ".omx/goals/performance/rca-sft-rl-loop/evaluator.md"
+  },
+  "startedAt": "2026-08-27T07:22:29.035Z",
+  "checkpoint": {
+    "phase": "rl_training",
+    "evidence": "RL rollout collection completed all 20 eligible scenarios with 4 whole-episode candidates each: 80 episodes, 923 actor turns, 80 nonzero within-case normalized advantages, 7 strict-correct trajectories, reward mean=0.2426064363 and range=0.0439393939..0.665. Dataset SHA256=e12c6d44baa63a650eb98b0bf0b97708374d961e08329b6148165a39306e3545 matches KT Cloud. The resumable collector atomically selects completed attempts and the evaluator restore now rebuilds its dedicated PostgreSQL database with parallel restore plus typed FK-only tolerance followed by mandatory incident count/checksum validation. Local suite: 58 passed, 1 skipped. RL step 1/20 completed in 527s with policy_loss=-0.2406918649, KL=0 and 16,334 response tokens.",
+    "remoteRun": "wandb:nkia-ai/rca-actor-rl/fqbdfirv; behavior_model=/home/work/models/muse-glimmer-30b-rca-teacher-v2-family-clean; dataset=outputs/rl/dapo-v1.jsonl; agent_sha256=b1120d3ff0f10e27fc24fcec09e08db0628905f354b01a6cbf96a80c6ce62775"
+  }
+}

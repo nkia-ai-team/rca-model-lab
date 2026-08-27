@@ -45,6 +45,10 @@ def setup_validator(ledger: tuple[Observation, ...] = ()) -> HarnessValidator:
     )
 
 
+def draft() -> AnswerState:
+    return AnswerState(status="insufficient")
+
+
 def test_pydantic_rejects_unknown_action_enum() -> None:
     with pytest.raises(ValidationError):
         ActionRequest.model_validate({"action": "run_shell"})
@@ -53,8 +57,9 @@ def test_pydantic_rejects_unknown_action_enum() -> None:
 def test_dynamic_registry_rejects_unseen_metric() -> None:
     request = ActionRequest(
         action="probe_metric",
-        target="payment",
+        arg1="payment",
         metric="invented.metric",
+        answer=draft(),
     )
 
     with pytest.raises(ContractError, match="not registered"):
@@ -79,8 +84,9 @@ def test_metric_inventory_adds_real_metrics_without_free_string_escape() -> None
     validator.validate_action(
         ActionRequest(
             action="metric_fetch_raw",
-            target="inventory",
+            arg1="inventory",
             metric="inventory.stock.level",
+            answer=draft(),
         )
     )
     assert "secret.metric" not in registry.metrics.get("not-a-candidate", ())
@@ -88,8 +94,9 @@ def test_metric_inventory_adds_real_metrics_without_free_string_escape() -> None
         validator.validate_action(
             ActionRequest(
                 action="metric_fetch_raw",
-                target="inventory",
+                arg1="inventory",
                 metric="invented.metric",
+                answer=draft(),
             )
         )
 
@@ -98,6 +105,7 @@ def test_dynamic_registry_rejects_unseen_query_source() -> None:
     request = ActionRequest(
         action="env_query",
         query=EvidenceQuery(source="invented", limit=1),
+        answer=draft(),
     )
 
     with pytest.raises(ContractError, match="source"):

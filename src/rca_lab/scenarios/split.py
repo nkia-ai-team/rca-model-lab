@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import re
 from pathlib import Path
 
 import yaml
@@ -37,6 +38,11 @@ class TeacherSplit(BaseModel):
             raise ValueError("train and excluded overlap")
         if set(self.sealed_eval) & set(self.excluded):
             raise ValueError("sealed_eval and excluded overlap")
+        train_families = {_family_id(case_id) for case_id in self.train}
+        sealed_families = {_family_id(case_id) for case_id in self.sealed_eval}
+        overlap = sorted(train_families & sealed_families)
+        if overlap:
+            raise ValueError(f"train and sealed_eval families overlap: {overlap}")
         return self
 
     @property
@@ -65,3 +71,14 @@ def load_teacher_split(path: Path) -> TeacherSplit:
 
 def _read_meta(path: Path) -> dict[str, object]:
     return json.loads(path.read_text())
+
+
+_FAMILY_RE = re.compile(r"^case-(f[0-9]+)-", re.IGNORECASE)
+
+
+def _family_id(case_id: str) -> str:
+    match = _FAMILY_RE.match(case_id)
+    if match is None:
+        # Synthetic unit-test IDs still receive deterministic family identity.
+        return case_id.lower()
+    return match.group(1).lower()

@@ -80,29 +80,29 @@ class HarnessValidator:
     def validate_action(self, request: ActionRequest) -> None:
         if not self.registry.allows_action(request.action):
             raise ContractError(f"action {request.action!s} is not in capability registry")
-        if request.action in _TARGET_ACTIONS and request.target not in self.registry.candidates:
-            raise ContractError(f"target {request.target!r} is not a candidate")
+        if request.action in _TARGET_ACTIONS and request.arg1 not in self.registry.candidates:
+            raise ContractError(f"target {request.arg1!r} is not a candidate")
         if request.action in _METRIC_ACTIONS and not self.registry.allows_metric(
-            request.target, request.metric
+            request.arg1, request.metric
         ):
             raise ContractError(
-                f"metric {request.metric!r} is not registered for target {request.target!r}"
+                f"metric {request.metric!r} is not registered for target {request.arg1!r}"
             )
         if request.action is ActionName.METRIC_COMPARE:
-            if request.other_target not in self.registry.candidates:
-                raise ContractError(f"comparison target {request.other_target!r} is not a candidate")
-            if not self.registry.allows_metric(request.other_target, request.metric):
+            if request.arg2 not in self.registry.candidates:
+                raise ContractError(f"comparison target {request.arg2!r} is not a candidate")
+            if not self.registry.allows_metric(request.arg2, request.metric):
                 raise ContractError("comparison metric is not registered for both targets")
         if request.action in {ActionName.ENV_QUERY, ActionName.ENV_AGGREGATE}:
             if request.query is None:
                 raise ContractError(f"{request.action!s} requires query")
             self._validate_query(request)
         if request.action in {ActionName.ENV_SLICE, ActionName.SUB_SUMMARIZE}:
-            if not request.refs:
+            refs = tuple(part.strip() for part in request.arg1.split(",") if part.strip())
+            if not refs:
                 raise ContractError(f"{request.action!s} requires refs")
-            self._require_known_refs(request.refs)
-        if request.answer is not None:
-            self.validate_answer(request.answer)
+            self._require_known_refs(refs)
+        self.validate_answer(request.answer)
 
     def validate_answer(self, answer: AnswerState) -> None:
         for cause in answer.causes:

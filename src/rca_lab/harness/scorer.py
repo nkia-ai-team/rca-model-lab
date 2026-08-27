@@ -13,6 +13,8 @@ class ScoreTarget(BaseModel):
     expected_status: str
     expected_target: str = ""
     expected_pseudo_kind: str = ""
+    expected_targets: tuple[str, ...] = ()
+    expected_pseudo_kinds: tuple[str, ...] = ()
 
 
 class ScoreBreakdown(BaseModel):
@@ -45,14 +47,25 @@ class TypedScorer:
         if not calibration:
             reasons.append("status mismatch")
 
-        correctness = 0.0
-        if target.expected_target and answer.causes and answer.causes[0].target == target.expected_target or (
-            target.expected_pseudo_kind
-            and answer.external_causes
-            and answer.external_causes[0].kind == target.expected_pseudo_kind
-        ):
-            correctness = 1.0
+        expected = set(target.expected_targets or ((target.expected_target,) if target.expected_target else ()))
+        expected_pseudo = set(
+            target.expected_pseudo_kinds
+            or ((target.expected_pseudo_kind,) if target.expected_pseudo_kind else ())
+        )
+        wanted = {f"target:{item}" for item in expected} | {
+            f"pseudo:{item}" for item in expected_pseudo
+        }
+        actual = {f"target:{item.target}" for item in answer.causes} | {
+            f"pseudo:{item.kind}" for item in answer.external_causes
+        }
+        if not wanted:
+            correctness = float(not actual)
         else:
+            hits = len(wanted & actual)
+            precision = hits / max(1, len(actual))
+            recall = hits / len(wanted)
+            correctness = 0.0 if precision + recall == 0 else 2 * precision * recall / (precision + recall)
+        if correctness < 1:
             reasons.append("root cause mismatch")
 
         reports = [validator.evaluate_proof(cause) for cause in answer.causes]

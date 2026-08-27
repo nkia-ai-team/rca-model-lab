@@ -97,6 +97,6 @@ class EvidenceEnvironment:
             return False
         if query.kind and row.kind != query.kind:
             return False
-        if query.start and row.window and row.window.end < query.start:
+        if query.from_ and row.window and row.window.end < query.from_:
             return False
-        return not (query.end and row.window and row.window.start > query.end)
+        return not (query.to and row.window and row.window.start > query.to)

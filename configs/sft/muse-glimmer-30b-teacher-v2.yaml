@@ -1,0 +1,27 @@
+name: muse-glimmer-30b-teacher-v2-family-clean
+model_name: /home/work/models/muse-glimmer-30b
+dataset: data/processed/sft-teacher-v2-family-clean.jsonl
+dataset_manifest: data/processed/sft-teacher-v2-family-clean.manifest.json
+expected_scenarios: 20
+expected_trajectories: 24
+output_dir: outputs/muse-glimmer-30b-teacher-v2-family-clean
+max_length: 32768
+epochs: 3
+learning_rate: 0.0001
+batch_size: 1
+gradient_accumulation_steps: 2
+save_total_limit: 1
+trajectory_mode: episode_exact_runtime
+assistant_only_loss: true
+case_balanced_loss: true
+use_liger_kernel: true
+lora:
+  rank: 8
+  alpha: 16
+  # Dropout masks duplicate very long linear-layer inputs and pushed the
+  # 22k-token full-runtime turns over H200 memory. Keep the trajectory exact.
+  dropout: 0.0
+  target_modules: all-linear
+wandb:
+  entity: nkia-ai
+  project: rca-actor-sft

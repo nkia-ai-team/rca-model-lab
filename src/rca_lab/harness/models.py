@@ -100,14 +100,14 @@ class EvidenceQuery(StrictModel):
     target: str = ""
     source: str = ""
     kind: str = ""
-    start: datetime | None = None
-    end: datetime | None = None
+    from_: datetime | None = Field(default=None, alias="from", serialization_alias="from")
+    to: datetime | None = None
     limit: int = Field(default=0, ge=0)
 
     @model_validator(mode="after")
     def ordered(self) -> EvidenceQuery:
-        if self.start and self.end and self.start > self.end:
-            raise ValueError("query.start must be <= query.end")
+        if self.from_ and self.to and self.from_ > self.to:
+            raise ValueError("query.from must be <= query.to")
         return self
 
 
@@ -157,6 +157,7 @@ class Observation(StrictModel):
 class Cause(StrictModel):
     target: str = Field(min_length=1)
     confidence: float = Field(ge=0.0, le=1.0)
+    claim: str = ""
     proof_type: ProofType = ProofType.UNKNOWN
     mechanism: str = ""
     support_refs: tuple[str, ...] = ()
@@ -168,28 +169,27 @@ class ExternalCause(StrictModel):
     kind: Literal["external_dependency", "kafka", "redis", "network", "capacity_limit"]
     name: str = Field(min_length=1)
     boundary_target: str = Field(min_length=1)
-    mechanism: str = Field(min_length=1)
     evidence_refs: tuple[str, ...] = Field(min_length=1)
 
 
 class AnswerState(StrictModel):
     status: Literal["confirmed", "provisional", "insufficient"]
-    ready: bool = False
     causes: tuple[Cause, ...] = Field(default=(), max_length=3)
     external_causes: tuple[ExternalCause, ...] = Field(default=(), max_length=3)
+    culprits: tuple[str, ...] = Field(default=(), max_length=3)
+    ready: bool = False
+    text: str = ""
 
 
 class ActionRequest(StrictModel):
     thought: str = ""
     action: ActionName
-    target: str = ""
-    other_target: str = ""
+    arg1: str = ""
+    arg2: str = ""
     metric: str = ""
-    query: EvidenceQuery | None = None
-    refs: tuple[str, ...] = ()
-    note: str = ""
+    query: EvidenceQuery = Field(default_factory=EvidenceQuery)
     refresh: bool = False
-    answer: AnswerState | None = None
+    answer: AnswerState
 
 
 class ToolCapability(StrictModel):

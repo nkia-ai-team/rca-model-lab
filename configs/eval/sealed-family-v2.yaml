@@ -1,0 +1,55 @@
+version: 1
+cases:
+  case-f04-r-v3-c508c52d:
+    expected_status: confirmed
+    roots:
+      - target_aliases: [testbed-shipping, commerce-shipping, shipping-service]
+  case-f04-h-v3-af25dea6:
+    expected_status: confirmed
+    roots:
+      - target_aliases: [testbed-order, commerce-order, order-service]
+  case-f08-g-v3-0ac275b0:
+    expected_status: confirmed
+    roots:
+      - target_aliases: [Oracle-corebanking, BANKING]
+  case-f08-h-v3-6bdc9531:
+    expected_status: provisional
+    roots:
+      - target_aliases: [testbed-payment, commerce-payment, payment-service]
+      - pseudo_kind: external_dependency
+  case-f08-p-v3-78f4a1ba:
+    expected_status: confirmed
+    roots:
+      - target_aliases: [testbed-order, commerce-order, order-service]
+  case-f12-h-v3-8c1cf9f8:
+    expected_status: confirmed
+    roots:
+      - target_aliases: [testbed-product, commerce-product, product-service]
+  case-f15-g-v3-ce2e64de:
+    expected_status: confirmed
+    roots:
+      - target_aliases: [commerce-inventory, inventory-service]
+      - target_aliases: [Oracle-corebanking, BANKING]
+  case-f15-h-v3-2ba8a6dc:
+    expected_status: provisional
+    roots:
+      - target_aliases: [commerce-inventory, inventory-service]
+      - target_aliases: [food-delivery-payment]
+      - pseudo_kind: external_dependency
+  case-f15-p-v3-3843c3fe:
+    expected_status: confirmed
+    roots:
+      - target_aliases: [tb-w2]
+  case-f15-t1-v3-9a5c5eae:
+    expected_status: confirmed
+    roots:
+      - target_aliases: [commerce-inventory, inventory-service]
+      - target_aliases: [food-delivery-payment]
+  case-f17-r-v3-ab7228ad:
+    expected_status: confirmed
+    roots:
+      - target_aliases: [testbed-transfer, banking-transfer, transfer-service]
+  case-f17-p-v3-bce52242:
+    expected_status: provisional
+    roots:
+      - target_aliases: [testbed-transfer, banking-transfer, transfer-service]

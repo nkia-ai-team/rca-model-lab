@@ -1,0 +1,89 @@
+version: 1
+cases:
+  case-f01-h-v3-48ec8e62:
+    expected_status: provisional
+    roots:
+      - target_aliases: [commerce-payment, payment-service]
+      - pseudo_kind: external_dependency
+  case-f01-p-v3-d691440c:
+    expected_status: confirmed
+    roots:
+      - target_aliases: [Oracle-corebanking, BANKING]
+  case-f01-r-v3-34274f3e:
+    expected_status: confirmed
+    roots:
+      - target_aliases: [PostgreSQL-commerce, commerce-postgresql]
+  case-f03-h-v3-d4192a3b:
+    expected_status: provisional
+    roots:
+      - target_aliases: [commerce-order, order-service]
+  case-f05-h-v3-36a247f1:
+    expected_status: provisional
+    roots:
+      - target_aliases: [commerce-payment, payment-service]
+  case-f05-p-v3-6fe331ef:
+    expected_status: provisional
+    roots:
+      - target_aliases: [tb-w1]
+  case-f05-r-v3-527f3692:
+    expected_status: confirmed
+    roots:
+      - target_aliases: [commerce-payment, payment-service]
+  case-f06-h-v3-e43298a2:
+    expected_status: confirmed
+    roots:
+      - target_aliases: [PostgreSQL-commerce, commerce-postgresql]
+  case-f06-p-v3-100785c9:
+    expected_status: provisional
+    roots:
+      - target_aliases: [food-delivery-payment]
+      - pseudo_kind: external_dependency
+  case-f06-r-v3-6ace8a7d:
+    expected_status: provisional
+    roots:
+      - target_aliases: [commerce-payment, payment-service]
+      - pseudo_kind: external_dependency
+  case-f07-h-v3-7de1a36f:
+    expected_status: provisional
+    roots:
+      - target_aliases: [commerce-order, order-service]
+  case-f09-h-v3-0c795f2b:
+    expected_status: provisional
+    roots:
+      - target_aliases: [commerce-order, order-service]
+  case-f09-p-v3-6dae1c0b:
+    expected_status: confirmed
+    roots:
+      - target_aliases: [prod-k8s-01]
+  case-f10-h-v3-4fe69be0:
+    expected_status: provisional
+    roots:
+      - target_aliases: [tb-w3]
+  case-f11-r-v3-85b9a489:
+    expected_status: provisional
+    roots:
+      - target_aliases: [commerce-cart, cart-service]
+      - pseudo_kind: redis
+  case-f14-p-v3-0bdb303b:
+    expected_status: provisional
+    roots:
+      - target_aliases: [Oracle-corebanking, BANKING]
+      - target_aliases: [core-banking-ledger]
+  case-f16-h-v3-2f0555c7:
+    expected_status: provisional
+    roots:
+      - target_aliases: [prod-k8s-01]
+  case-f18-p-v3-d2c566ad:
+    expected_status: confirmed
+    roots:
+      - target_aliases: [core-banking-transfer, banking-transfer]
+  case-f19-p-v3-5a350c0a:
+    expected_status: provisional
+    roots:
+      - target_aliases: [food-delivery-payment]
+      - pseudo_kind: external_dependency
+  case-f19-s-v3-5daa9c97:
+    expected_status: provisional
+    roots:
+      - target_aliases: [food-delivery-payment]
+      - pseudo_kind: external_dependency
