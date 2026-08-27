@@ -246,6 +246,24 @@ class CorrectionKind(StrEnum):
     CALIBRATION = "calibration"
 
 
+class EvidenceBlockerKind(StrEnum):
+    """Why a teacher cannot produce an evidence-grounded accepted branch."""
+
+    REQUIRED_SIGNAL_MISSING = "required_signal_missing"
+    GOLD_EVIDENCE_CONFLICT = "gold_evidence_conflict"
+    TARGET_MAPPING_MISSING = "target_mapping_missing"
+    CAPABILITY_NOT_EXPOSED = "capability_not_exposed"
+
+
+class EvidenceBlocker(StrictModel):
+    """Typed data defect; never treat it as a model reasoning failure."""
+
+    kind: EvidenceBlockerKind
+    required_evidence: tuple[str, ...] = Field(min_length=1)
+    observed_evidence: tuple[str, ...] = Field(min_length=1)
+    remediation: str = Field(min_length=1)
+
+
 class TrajectoryArtifact(StrictModel):
     """Content-addressed rollout produced by any teacher implementation."""
 
@@ -311,6 +329,7 @@ class RecursiveEpisode(StrictModel):
     root_branch_id: str
     selected_branch_id: str | None = None
     complete: bool = False
+    evidence_blockers: tuple[EvidenceBlocker, ...] = ()
     branches: tuple[ThoughtBranch, ...] = Field(min_length=1)
 
     @model_validator(mode="after")
@@ -348,6 +367,8 @@ class RecursiveEpisode(StrictModel):
             raise ValueError("selected branch must enter SFT")
         if not self.complete:
             raise ValueError("episode with selected branch must be complete")
+        if self.evidence_blockers:
+            raise ValueError("complete recursive episode cannot retain evidence blockers")
         return self
 
     def selected_branch(self) -> ThoughtBranch:

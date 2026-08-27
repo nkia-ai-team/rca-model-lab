@@ -1,0 +1,95 @@
+{
+  "version": 1,
+  "scenario_id": "case-f25-h-v3-dc3d4fc8",
+  "incident_id": "8788b456-da1a-44c9-b168-391e5961fd37",
+  "root_branch_id": "branch-001",
+  "selected_branch_id": null,
+  "complete": false,
+  "evidence_blockers": [
+    {
+      "kind": "required_signal_missing",
+      "required_evidence": [
+        "PostgreSQL container OOMKilled termination reason",
+        "container restart-count increase",
+        "application and node memory counterevidence"
+      ],
+      "observed_evidence": [
+        "PostgreSQL stop and restart symptoms",
+        "Kubernetes BackOff event without exposed OOMKilled state"
+      ],
+      "remediation": "Recapture or restore container termination state, restart count, and node/application memory series before rerunning the blind teacher."
+    },
+    {
+      "kind": "target_mapping_missing",
+      "required_evidence": [
+        "logical PostgreSQL target to Kubernetes pod mapping"
+      ],
+      "observed_evidence": [
+        "Kubernetes events are keyed by pod target while the harness permits only the logical database target"
+      ],
+      "remediation": "Restore topology/trait mapping and resolve logical targets to pod targets inside typed Kubernetes probes."
+    }
+  ],
+  "branches": [
+    {
+      "branch_id": "branch-001",
+      "parent_id": null,
+      "depth": 0,
+      "teacher": "codex",
+      "artifact": {
+        "path": "data/synth/teacher-v1/case-f25-h-v3-dc3d4fc8/branches/branch-001/episode.rec.jsonl",
+        "sha256": "ffe6abce457aeb55332ea1d330b8ddd1098c2cf1c8571dc566cf8f3217a10f23",
+        "format": "episode_jsonl"
+      },
+      "assessment": {
+        "scorer": "typed-scorer-v1",
+        "verdict": "rejected",
+        "reward": 0.6,
+        "reasons": [
+          "correctly localized the database restart as the outage boundary",
+          "stopped at the proximate database failure and did not prove OOMKill"
+        ],
+        "missing_evidence": [
+          "OOMKilled termination reason",
+          "restart count",
+          "memory counterevidence"
+        ]
+      },
+      "correction_from_parent": null,
+      "include_in_sft": false,
+      "include_in_recursive_training": true
+    },
+    {
+      "branch_id": "branch-002",
+      "parent_id": "branch-001",
+      "depth": 1,
+      "teacher": "codex",
+      "artifact": {
+        "path": "data/synth/teacher-v1/case-f25-h-v3-dc3d4fc8/branches/branch-002/episode.rec.jsonl",
+        "sha256": "049f3ad5d19804777e774e40405803af04edef4628f06660c4d30715111af300",
+        "format": "episode_jsonl"
+      },
+      "assessment": {
+        "scorer": "typed-scorer-v1",
+        "verdict": "rejected",
+        "reward": 0.55,
+        "reasons": [
+          "correctly refused to overclaim the unavailable upper cause",
+          "could not reach the sealed OOMKill cause through exposed actions"
+        ],
+        "missing_evidence": [
+          "typed Kubernetes termination state",
+          "logical database to pod identity mapping"
+        ]
+      },
+      "correction_from_parent": {
+        "kind": "evidence_gap",
+        "message": "Distinguish a database restart symptom from its upper cause using termination state, restart count, and memory counterevidence.",
+        "evidence_refs": [],
+        "exposes_hidden_answer": false
+      },
+      "include_in_sft": false,
+      "include_in_recursive_training": true
+    }
+  ]
+}

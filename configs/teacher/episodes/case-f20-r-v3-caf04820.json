@@ -1,0 +1,82 @@
+{
+  "version": 1,
+  "scenario_id": "case-f20-r-v3-caf04820",
+  "incident_id": "c2a2382b-2607-437a-aef2-caaa3543ff15",
+  "root_branch_id": "branch-001",
+  "selected_branch_id": null,
+  "complete": false,
+  "evidence_blockers": [
+    {
+      "kind": "gold_evidence_conflict",
+      "required_evidence": [
+        "repeated GET /api/orders/stats/daily?days=90 or unbounded order search",
+        "order-schema full-scan SQL"
+      ],
+      "observed_evidence": [
+        "product_schema case-insensitive search dominates TopSQL",
+        "order_schema evidence contains writes but no captured daily-stats or unbounded-search query"
+      ],
+      "remediation": "Reconcile the gold label with the captured TopSQL window. Recapture the order workload if the gold label is correct; otherwise correct and version the scenario label."
+    }
+  ],
+  "branches": [
+    {
+      "branch_id": "branch-001",
+      "parent_id": null,
+      "depth": 0,
+      "teacher": "codex",
+      "artifact": {
+        "path": "data/synth/teacher-v1/case-f20-r-v3-caf04820/branches/branch-001/episode.rec.jsonl",
+        "sha256": "377644d1035a69fe770bcadf2120313d08cff4047e5ee420e1cfeb9320fc55a4",
+        "format": "episode_jsonl"
+      },
+      "assessment": {
+        "scorer": "typed-scorer-v1",
+        "verdict": "rejected",
+        "reward": 0.25,
+        "reasons": [
+          "did not identify the gold order workload",
+          "available TopSQL instead points to product search"
+        ],
+        "missing_evidence": [
+          "gold order endpoint trace",
+          "gold order full-scan SQL"
+        ]
+      },
+      "correction_from_parent": null,
+      "include_in_sft": false,
+      "include_in_recursive_training": true
+    },
+    {
+      "branch_id": "branch-002",
+      "parent_id": "branch-001",
+      "depth": 1,
+      "teacher": "codex",
+      "artifact": {
+        "path": "data/synth/teacher-v1/case-f20-r-v3-caf04820/branches/branch-002/episode.rec.jsonl",
+        "sha256": "9b44958e873a8ff2bd6372819a0a1d8e4c4d63d7a0689138d9e1cbcb512e1844",
+        "format": "episode_jsonl"
+      },
+      "assessment": {
+        "scorer": "typed-scorer-v1",
+        "verdict": "rejected",
+        "reward": 0.2,
+        "reasons": [
+          "followed the strongest captured SQL and concluded product full scan",
+          "conclusion conflicts with the sealed gold cause"
+        ],
+        "missing_evidence": [
+          "captured SQL supporting the gold order workload"
+        ]
+      },
+      "correction_from_parent": {
+        "kind": "evidence_gap",
+        "message": "Validate the exact endpoint and SQL shape before attributing shared database pressure.",
+        "evidence_refs": [],
+        "exposes_hidden_answer": false
+      },
+      "include_in_sft": false,
+      "include_in_recursive_training": true
+    }
+  ]
+}

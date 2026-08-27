@@ -5,6 +5,7 @@ from pydantic import ValidationError
 
 from rca_lab.harness.models import (
     BranchAssessment,
+    EvidenceBlocker,
     RecursiveEpisode,
     TeacherCorrection,
     ThoughtBranch,
@@ -156,6 +157,39 @@ def test_in_progress_tree_preserves_failed_retries_without_fake_success() -> Non
         sft_training_view(tree)
 
 
+def test_evidence_blocker_prevents_fake_complete_episode() -> None:
+    accepted = ThoughtBranch(
+        branch_id="branch-001",
+        depth=0,
+        teacher="codex",
+        artifact=artifact("accepted.jsonl"),
+        assessment=BranchAssessment(
+            scorer="typed-scorer-v1",
+            verdict="accepted",
+            reward=1.0,
+            reasons=("claimed correct root cause",),
+        ),
+        include_in_sft=True,
+    )
+    blocker = EvidenceBlocker(
+        kind="required_signal_missing",
+        required_evidence=("container termination reason",),
+        observed_evidence=("database restart symptom only",),
+        remediation="Recapture Kubernetes termination state and restart count.",
+    )
+
+    with pytest.raises(ValidationError, match="cannot retain evidence blockers"):
+        RecursiveEpisode(
+            scenario_id="case-f25",
+            incident_id="incident-f25",
+            root_branch_id="branch-001",
+            selected_branch_id="branch-001",
+            complete=True,
+            evidence_blockers=(blocker,),
+            branches=(accepted,),
+        )
+
+
 def test_correction_cannot_expose_hidden_answer() -> None:
     with pytest.raises(ValidationError, match="hidden answer"):
         TeacherCorrection(
@@ -172,4 +206,24 @@ def test_f23_recursive_manifest_keeps_both_failed_branches() -> None:
     assert not tree.complete
     assert [branch.assessment.verdict for branch in tree.branches] == ["rejected", "rejected"]
     assert all(branch.include_in_recursive_training for branch in tree.branches)
+    assert not any(branch.include_in_sft for branch in tree.branches)
+
+
+@pytest.mark.parametrize(
+    "scenario_id",
+    [
+        "case-f20-r-v3-caf04820",
+        "case-f23-r-v3-04981a78",
+        "case-f25-h-v3-dc3d4fc8",
+    ],
+)
+def test_evidence_blocked_teacher_manifests_are_typed_and_not_sft_eligible(
+    scenario_id: str,
+) -> None:
+    manifest = Path("configs/teacher/episodes") / f"{scenario_id}.json"
+    tree = RecursiveEpisode.model_validate_json(manifest.read_text(encoding="utf-8"))
+
+    assert tree.evidence_blockers
+    assert not tree.complete
+    assert tree.selected_branch_id is None
     assert not any(branch.include_in_sft for branch in tree.branches)

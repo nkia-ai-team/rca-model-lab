@@ -5,6 +5,30 @@
   "root_branch_id": "branch-001",
   "selected_branch_id": null,
   "complete": false,
+  "evidence_blockers": [
+    {
+      "kind": "required_signal_missing",
+      "required_evidence": [
+        "inventory stock level time series",
+        "RESTOCK inflow time series"
+      ],
+      "observed_evidence": [
+        "HTTP 409 responses",
+        "generic Java, Kafka, and trace metrics only"
+      ],
+      "remediation": "Recapture and register inventory stock and RESTOCK inflow series, then rerun the blind teacher from a clean restore."
+    },
+    {
+      "kind": "capability_not_exposed",
+      "required_evidence": [
+        "typed stock and replenishment metric actions"
+      ],
+      "observed_evidence": [
+        "discover_metrics exposes no stock or RESTOCK metric"
+      ],
+      "remediation": "Add captured series to the metric registry; do not infer stopped replenishment from HTTP 409 alone."
+    }
+  ],
   "branches": [
     {
       "branch_id": "branch-001",
