@@ -27,6 +27,7 @@ HF org `nkia-ai-lab` 초대 수락 후 `.env` 에 자기 `HF_TOKEN` (write, http
 | `src/rca_lab/data` | 샘플 스키마, 합성→학습셋 정제·분할 | ✔ |
 | `src/rca_lab/train` | SFT (TRL + PEFT), 이후 GRPO | ✔ |
 | `src/rca_lab/eval` | 채점기 — SFT 평가와 RL reward 가 공유 | ✔ |
+| `src/rca_lab/harness` | student 실행 계약 — 증거 환경, capability registry, typed ledger/proof/scorer | ✔ |
 | `prompts/` | 교사용/학생용 프롬프트 | ✔ |
 | `configs/` | 실험 설정 yaml | ✔ |
 | `data/{raw,synth,processed}`, `models/`, `outputs/` | 데이터·가중치·실험 산출물 | ✘ (.gitkeep 만) |
@@ -49,3 +50,17 @@ HF org `nkia-ai-lab` 초대 수락 후 `.env` 에 자기 `HF_TOKEN` (write, http
 - **실험은 브랜치가 아니다.** 모델·하이퍼파라미터를 바꾸는 건 `configs/` yaml 추가 + W&B run. 브랜치는 코드를 바꿀 때만.
 - **커밋 메시지**: 팀 컨벤션(Linear 이슈 번호 + type) 을 따른다.
 - **결정은 `docs/decisions.md` 에 한 줄씩.**
+
+## Student harness
+
+`src/rca_lab/harness` 가 ThinkFL student의 안전 경계다. 모델의 추론 문장은 제한하지 않되,
+실행 가능한 action/metric/target, 관측, 증거 참조, 최종 답, reward는 Pydantic 계약으로 검증한다.
+
+- 원본 증거는 `EvidenceEnvironment`에 전부 보존한다. `prompt_view()`와 `query.limit`만 제한한다.
+- action은 정적 enum과 episode별 `CapabilityRegistry`를 모두 통과해야 한다.
+- probe 결과는 `Observation` typed ledger에 원문 payload와 구조화 fact로 영속화한다.
+- `confirmed`는 `ProofType`별 결정적 규칙을 만족해야 한다.
+- 평가와 RL reward는 `TypedScorer` 하나를 공유한다.
+
+현재 코드는 `lucida-next` Go 하네스의 핵심 계약을 Python 네이티브로 이식한 1단계다.
+scenario adapter, Codex teacher runner, episode 실행 루프는 이 경계 위에 순서대로 연결한다.

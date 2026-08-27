@@ -14,3 +14,5 @@
 | 2026-08-21 | 학습 모니터링은 W&B, 팀 프로젝트 `rca-model-lab` 하나에 전부 | 여러 명이 클라우드에서 따로 돌리는 run 을 한 곳에서 비교하기 위해. SFT 와 GRPO 를 같은 프로젝트에 둔다 |
 | 2026-08-21 | 브랜치 전략은 trunk-based (main + 단명 feature 브랜치, squash). 실험은 브랜치가 아니라 config+W&B | 배포 없는 2~3인 실험 레포. 실험마다 브랜치를 따면 코드가 갈라져 결과 비교가 안 된다 |
 | 2026-08-21 | 데이터셋·가중치 공유는 HF Hub private (org `nkia-ai-lab`), 버전은 태그 | 클라우드 GPU 에서 `load_dataset(revision=)` 한 줄로 재현 가능. git LFS 는 레포를 무겁게 하고 데이터 버전을 코드 버전에 묶는다. 외부 업로드가 정책상 막히면 사내 스토리지+DVC 로 전환 |
+| 2026-08-27 | ThinkFL student harness 코드는 `rca-model-lab`에서 Python/Pydantic 계약으로 관리 | 모델 학습·합성·평가 소유권을 `lucida-next` 제품 코드에서 분리하고, 공용 schema/scorer를 SFT와 RL이 함께 사용 |
+| 2026-08-27 | 원본 증거는 무제한 보존하고 actor-facing prompt/query view만 제한 | RCA는 잘린 원본으로 증명하면 안 되며, 비용 제어와 증거 손실 방지를 분리해야 함 |
