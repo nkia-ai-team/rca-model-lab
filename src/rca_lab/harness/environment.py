@@ -83,8 +83,9 @@ class EvidenceEnvironment:
 
     def validate_registry(self, registry: CapabilityRegistry) -> None:
         metrics, sources, kinds = self.dynamic_dimensions()
-        if registry.metrics != metrics:
-            raise ValueError("registry metrics must come from retained evidence")
+        for target, retained_metrics in metrics.items():
+            if not set(retained_metrics) <= set(registry.metrics.get(target, ())):
+                raise ValueError("registry must retain every evidence metric")
         if registry.sources != sources or registry.kinds != kinds:
             raise ValueError("registry source/kind enums must come from retained evidence")
 

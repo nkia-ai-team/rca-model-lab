@@ -1,5 +1,7 @@
 """Single source of truth for the safe student tool surface."""
 
+from collections.abc import Iterable, Mapping
+
 from rca_lab.harness.environment import EvidenceEnvironment
 from rca_lab.harness.models import ActionName, CapabilityRegistry, ToolCapability
 
@@ -30,6 +32,7 @@ def build_registry(
     candidates: tuple[str, ...],
     *,
     metric_discovery: bool = False,
+    metric_inventory: Mapping[str, Iterable[str]] | None = None,
     sub_summarize: bool = False,
     query_result_limit: int = 12,
 ) -> CapabilityRegistry:
@@ -44,6 +47,14 @@ def build_registry(
         if action not in disabled
     )
     metrics, sources, kinds = environment.dynamic_dimensions()
+    if metric_discovery and metric_inventory:
+        allowed_targets = set(candidates)
+        merged = {target: set(values) for target, values in metrics.items()}
+        for target, values in metric_inventory.items():
+            if target not in allowed_targets:
+                continue
+            merged.setdefault(target, set()).update(metric for metric in values if metric)
+        metrics = {target: tuple(sorted(values)) for target, values in merged.items()}
     registry = CapabilityRegistry(
         tools=tools,
         candidates=tuple(sorted(set(candidates))),
@@ -54,4 +65,3 @@ def build_registry(
     )
     environment.validate_registry(registry)
     return registry
-

@@ -1,0 +1,69 @@
+{
+  "version": 1,
+  "scenario_id": "case-f23-r-v3-04981a78",
+  "incident_id": "9d571866-d97c-4319-82d2-82567c9c25c2",
+  "root_branch_id": "branch-001",
+  "selected_branch_id": null,
+  "complete": false,
+  "branches": [
+    {
+      "branch_id": "branch-001",
+      "parent_id": null,
+      "depth": 0,
+      "teacher": "codex",
+      "artifact": {
+        "path": "data/synth/teacher-v1/case-f23-r-v3-04981a78/branches/branch-001/episode.rec.jsonl",
+        "sha256": "cb690f0c27ca9949c74352d40cefa54878a93fcde47209c1c962ab02f729535b",
+        "format": "episode_jsonl"
+      },
+      "assessment": {
+        "scorer": "typed-scorer-v1",
+        "verdict": "rejected",
+        "reward": 0.35,
+        "reasons": [
+          "stopped at the HTTP 409 propagation boundary",
+          "misclassified the downstream symptom as an external dependency"
+        ],
+        "missing_evidence": [
+          "inventory level time-series shape",
+          "RESTOCK inflow time series"
+        ]
+      },
+      "correction_from_parent": null,
+      "include_in_sft": false,
+      "include_in_recursive_training": true
+    },
+    {
+      "branch_id": "branch-002",
+      "parent_id": "branch-001",
+      "depth": 1,
+      "teacher": "codex",
+      "artifact": {
+        "path": "data/synth/teacher-v1/case-f23-r-v3-04981a78/branches/branch-002/episode.rec.jsonl",
+        "sha256": "63fb8f3d36e8de77b2644d6da221a735ff53b1defaa9e876b5e46a369c8949b9",
+        "format": "episode_jsonl"
+      },
+      "assessment": {
+        "scorer": "typed-scorer-v1",
+        "verdict": "rejected",
+        "reward": 0.2,
+        "reasons": [
+          "queried queueSize instead of stock and RESTOCK series",
+          "incorrectly concluded transient demand-driven stockout"
+        ],
+        "missing_evidence": [
+          "typed inventory stock metric",
+          "typed RESTOCK inflow metric"
+        ]
+      },
+      "correction_from_parent": {
+        "kind": "evidence_gap",
+        "message": "Distinguish normal stockout from stopped replenishment by inspecting both inventory-level recovery shape and RESTOCK inflow.",
+        "evidence_refs": [],
+        "exposes_hidden_answer": false
+      },
+      "include_in_sft": false,
+      "include_in_recursive_training": true
+    }
+  ]
+}

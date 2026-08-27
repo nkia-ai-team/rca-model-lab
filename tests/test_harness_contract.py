@@ -61,6 +61,39 @@ def test_dynamic_registry_rejects_unseen_metric() -> None:
         setup_validator().validate_action(request)
 
 
+def test_metric_inventory_adds_real_metrics_without_free_string_escape() -> None:
+    environment = EvidenceEnvironment(
+        [Evidence(id="ev-001", target="inventory", source="metric", metric="http.status.409")]
+    )
+    registry = build_registry(
+        environment,
+        ("inventory",),
+        metric_discovery=True,
+        metric_inventory={
+            "inventory": ("inventory.stock.level", "inventory.restock.inflow"),
+            "not-a-candidate": ("secret.metric",),
+        },
+    )
+    validator = HarnessValidator(environment, registry)
+
+    validator.validate_action(
+        ActionRequest(
+            action="metric_fetch_raw",
+            target="inventory",
+            metric="inventory.stock.level",
+        )
+    )
+    assert "secret.metric" not in registry.metrics.get("not-a-candidate", ())
+    with pytest.raises(ContractError, match="not registered"):
+        validator.validate_action(
+            ActionRequest(
+                action="metric_fetch_raw",
+                target="inventory",
+                metric="invented.metric",
+            )
+        )
+
+
 def test_dynamic_registry_rejects_unseen_query_source() -> None:
     request = ActionRequest(
         action="env_query",

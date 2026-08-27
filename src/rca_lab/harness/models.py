@@ -232,3 +232,125 @@ class Episode(StrictModel):
     reward: float | None = Field(default=None, ge=0.0, le=1.0)
     completed: bool = False
 
+
+class BranchVerdict(StrEnum):
+    ACCEPTED = "accepted"
+    REJECTED = "rejected"
+    RETRYABLE = "retryable"
+
+
+class CorrectionKind(StrEnum):
+    EVIDENCE_GAP = "evidence_gap"
+    NAVIGATION_HINT = "navigation_hint"
+    SCHEMA_REPAIR = "schema_repair"
+    CALIBRATION = "calibration"
+
+
+class TrajectoryArtifact(StrictModel):
+    """Content-addressed rollout produced by any teacher implementation."""
+
+    path: str = Field(min_length=1)
+    sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    format: Literal["episode_json", "episode_jsonl"]
+
+
+class BranchAssessment(StrictModel):
+    """Typed critic/scorer result. Rejected work remains useful recursive data."""
+
+    scorer: str = Field(min_length=1)
+    verdict: BranchVerdict
+    reward: float = Field(ge=0.0, le=1.0)
+    reasons: tuple[str, ...] = Field(min_length=1)
+    missing_evidence: tuple[str, ...] = ()
+
+
+class TeacherCorrection(StrictModel):
+    """Hint applied between branches; never a hidden-label answer injection."""
+
+    kind: CorrectionKind
+    message: str = Field(min_length=1)
+    evidence_refs: tuple[str, ...] = ()
+    exposes_hidden_answer: bool = False
+
+    @model_validator(mode="after")
+    def hidden_answer_must_stay_sealed(self) -> TeacherCorrection:
+        if self.exposes_hidden_answer:
+            raise ValueError("teacher correction must not expose the hidden answer")
+        return self
+
+
+class ThoughtBranch(StrictModel):
+    """One rollout in a recursive investigation tree."""
+
+    branch_id: str = Field(pattern=r"^branch-[0-9]{3,}$")
+    parent_id: str | None = None
+    depth: int = Field(ge=0)
+    teacher: str = Field(min_length=1)
+    artifact: TrajectoryArtifact | None = None
+    episode: Episode | None = None
+    assessment: BranchAssessment
+    correction_from_parent: TeacherCorrection | None = None
+    include_in_sft: bool = False
+    include_in_recursive_training: bool = True
+
+    @model_validator(mode="after")
+    def has_exactly_one_trajectory_source(self) -> ThoughtBranch:
+        if (self.artifact is None) == (self.episode is None):
+            raise ValueError("branch requires exactly one of artifact or episode")
+        if self.assessment.verdict is not BranchVerdict.ACCEPTED and self.include_in_sft:
+            raise ValueError("rejected/retryable branches cannot enter SFT")
+        return self
+
+
+class RecursiveEpisode(StrictModel):
+    """Failure → critique → correction → retry tree used by ThinkFL/RLM training."""
+
+    version: int = 1
+    scenario_id: str = Field(min_length=1)
+    incident_id: str = Field(min_length=1)
+    root_branch_id: str
+    selected_branch_id: str | None = None
+    complete: bool = False
+    branches: tuple[ThoughtBranch, ...] = Field(min_length=1)
+
+    @model_validator(mode="after")
+    def valid_tree_and_selected_branch(self) -> RecursiveEpisode:
+        by_id = {branch.branch_id: branch for branch in self.branches}
+        if len(by_id) != len(self.branches):
+            raise ValueError("branch_id must be unique")
+        if self.root_branch_id not in by_id:
+            raise ValueError("root_branch_id does not exist")
+        root = by_id[self.root_branch_id]
+        if root.parent_id is not None or root.depth != 0 or root.correction_from_parent is not None:
+            raise ValueError("root branch must have no parent/correction and depth=0")
+
+        for branch in self.branches:
+            if branch.branch_id == self.root_branch_id:
+                continue
+            if branch.parent_id not in by_id:
+                raise ValueError(f"missing parent for {branch.branch_id}")
+            parent = by_id[branch.parent_id]
+            if branch.depth != parent.depth + 1:
+                raise ValueError(f"invalid depth for {branch.branch_id}")
+            if branch.correction_from_parent is None:
+                raise ValueError(f"retry branch {branch.branch_id} requires correction")
+
+        if self.selected_branch_id is None:
+            if self.complete:
+                raise ValueError("complete recursive episode requires selected branch")
+            return self
+        if self.selected_branch_id not in by_id:
+            raise ValueError("selected_branch_id does not exist")
+        selected = by_id[self.selected_branch_id]
+        if selected.assessment.verdict is not BranchVerdict.ACCEPTED:
+            raise ValueError("selected branch must be accepted")
+        if not selected.include_in_sft:
+            raise ValueError("selected branch must enter SFT")
+        if not self.complete:
+            raise ValueError("episode with selected branch must be complete")
+        return self
+
+    def selected_branch(self) -> ThoughtBranch:
+        if self.selected_branch_id is None:
+            raise ValueError("recursive episode is not complete")
+        return next(branch for branch in self.branches if branch.branch_id == self.selected_branch_id)
