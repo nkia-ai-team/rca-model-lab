@@ -128,6 +128,17 @@ def test_rollout_seeds_are_stable_and_distinct() -> None:
     assert 0 <= first < 2**63
 
 
+def test_default_rl_population_is_the_family_clean_sft_set() -> None:
+    module = _module()
+    path = module.DEFAULT_ELIGIBLE_DATASET
+    eligible = module.load_eligible_scenarios(path)
+
+    assert len(eligible) == 20
+    assert "case-f20-r-v3-caf04820" not in eligible
+    assert "case-f23-r-v3-04981a78" not in eligible
+    assert "case-f25-h-v3-dc3d4fc8" not in eligible
+
+
 def test_case_set_identity_changes_with_case_inventory(tmp_path: Path) -> None:
     module = _module()
     case = tmp_path / "case-a"

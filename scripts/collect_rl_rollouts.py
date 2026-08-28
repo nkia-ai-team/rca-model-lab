@@ -20,6 +20,8 @@ import yaml
 
 from rca_lab.provenance import case_set_identity, file_sha256, resolve_model_identity
 
+DEFAULT_ELIGIBLE_DATASET = Path("data/processed/sft-teacher-v2-family-clean.jsonl")
+
 
 def run_agent(
     *,
@@ -123,7 +125,7 @@ def main() -> None:
     parser.add_argument(
         "--eligible-dataset",
         type=Path,
-        default=Path("data/processed/sft-teacher-v1.jsonl"),
+        default=DEFAULT_ELIGIBLE_DATASET,
     )
     parser.add_argument("--base-url", default="http://localhost:8003/v1")
     parser.add_argument("--model", default="rca-actor")
