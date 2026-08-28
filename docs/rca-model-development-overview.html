@@ -58,7 +58,7 @@
     nav a:hover, nav a:focus { color: var(--green); background: rgba(23, 98, 78, .08); outline: 0; }
     .stamp { position: absolute; bottom: 24px; left: 23px; color: var(--muted); font-size: 11px; }
     main { min-width: 0; padding: 30px clamp(22px, 5vw, 74px) 90px; overflow-wrap: anywhere; }
-    section { max-width: 1020px; margin: 0 auto 84px; scroll-margin-top: 25px; }
+    section { max-width: 960px; margin: 0 auto 84px; scroll-margin-top: 25px; }
     .hero { min-height: 620px; display: grid; align-content: center; padding: 55px 0; }
     .eyebrow, .kicker { color: var(--orange); font-size: 12px; font-weight: 850; letter-spacing: .11em; text-transform: uppercase; }
     h1 { max-width: 980px; margin: 12px 0 20px; font-size: clamp(40px, 5.2vw, 68px); line-height: 1.06; letter-spacing: -.055em; }
@@ -157,6 +157,14 @@
     .plain-summary ol { display: grid; gap: 11px; margin: 0; padding-left: 22px; }
     .plain-summary li { padding-left: 5px; font-size: 15px; }
     .plain-summary strong { color: var(--green); }
+    .project-answer { margin-top: 28px; border: 2px solid var(--green); border-radius: 18px; overflow: hidden; background: var(--paper); box-shadow: var(--shadow); }
+    .project-answer h2 { margin: 0; padding: 19px 22px; color: #fff; background: var(--green); font-size: 22px; letter-spacing: -.02em; }
+    .answer-row { display: grid; grid-template-columns: 165px minmax(0, 1fr); border-top: 1px solid var(--line); }
+    .answer-row:first-of-type { border-top: 0; }
+    .answer-row b, .answer-row div { padding: 15px 18px; }
+    .answer-row b { background: #edf6f2; color: var(--green); }
+    .answer-row div { font-size: 15px; }
+    .reading-note { margin-top: 14px; padding: 13px 16px; border-radius: 11px; color: #3f4a46; background: #ebe9e2; font-size: 13px; }
     .direct-answer { display: grid; grid-template-columns: 190px minmax(0, 1fr); gap: 0; margin-top: 12px; border: 1px solid var(--line); border-radius: 13px; overflow: hidden; background: var(--paper); }
     .direct-answer b, .direct-answer div { padding: 15px 17px; }
     .direct-answer b { background: #eeece5; }
@@ -172,6 +180,15 @@
     .score-explain .missed { border: 1px solid #e0b5b5; background: var(--red-soft); }
     .score-explain h4 { margin-bottom: 7px; }
     .score-explain ul { margin: 0; padding-left: 19px; font-size: 12px; }
+    .actual-run { display: grid; gap: 14px; margin-top: 18px; }
+    .actual-turn { display: grid; grid-template-columns: 118px minmax(0, 1fr); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; background: var(--paper); }
+    .actual-turn > b { padding: 16px; color: var(--green); background: #edf6f2; font-size: 13px; }
+    .actual-turn > div { padding: 16px 18px; }
+    .actual-turn p { margin: 0 0 9px; }
+    .actual-turn p:last-child { margin-bottom: 0; }
+    .actual-turn .raw { margin-top: 10px; }
+    .plain-code { display: block; padding: 13px 15px; border-radius: 10px; background: #202724; color: #eaf2ee; font: 12px/1.65 "SFMono-Regular", Consolas, monospace; white-space: pre-wrap; }
+    .score-number { font-size: 25px; color: var(--green); }
     details { border: 1px solid var(--line); border-radius: 13px; background: var(--paper); }
     details + details { margin-top: 9px; }
     summary { cursor: pointer; padding: 14px 16px; font-weight: 800; }
@@ -202,7 +219,7 @@
       .reward { grid-template-columns: repeat(2, 1fr); }
       table { display: block; overflow-x: auto; }
       .experiment dl { grid-template-columns: 1fr; }
-      .direct-answer, .evidence-card, .score-explain { grid-template-columns: 1fr; }
+      .direct-answer, .evidence-card, .score-explain, .answer-row, .actual-turn { grid-template-columns: 1fr; }
       .direct-answer div { border-left: 0; border-top: 1px solid var(--line); }
       .evidence-card > div { border-right: 0; border-bottom: 1px solid var(--line); }
       .evidence-card > div:last-child { border-bottom: 0; }
@@ -222,16 +239,16 @@
     <aside aria-label="문서 목차">
       <div class="brand"><div class="mark">RCA</div><div><strong>Student Model Lab</strong><small>실험과 결과</small></div></div>
       <nav>
-        <a href="#summary">프로젝트 한눈에</a>
-        <a href="#guide">용어 먼저 이해하기</a>
-        <a href="#before-after">실제 추론 변화</a>
-        <a href="#data">SFT 데이터</a>
-        <a href="#attempts">RL v1~v6</a>
-        <a href="#thinkfl">ThinkFL과 차이</a>
-        <a href="#next">다음 온라인 GRPO</a>
-        <a href="#harness">하네스 최소 설명</a>
-        <a href="#evaluation">평가와 다음 결정</a>
-        <a href="#audit">실제 실행 기록</a>
+        <a href="#summary">1. 프로젝트 설명</a>
+        <a href="#guide">2. 필수 용어</a>
+        <a href="#before-after">3. 학습 전후 차이</a>
+        <a href="#data">4. 학습 데이터</a>
+        <a href="#attempts">5. 실험과 결과</a>
+        <a href="#thinkfl">6. 현재 RL 방향</a>
+        <a href="#next">7. 다음 학습</a>
+        <a href="#harness">8. 모델의 조사 환경</a>
+        <a href="#evaluation">9. 평가 기준</a>
+        <a href="#audit">10. 실제 실행 전체 예시</a>
       </nav>
       <div class="stamp">2026-08-28 UTC<br>실제 artifact 기반</div>
     </aside>
@@ -242,23 +259,23 @@
         <h1>장애 원인을 직접 조사하고<br><em>증거와 함께 답하는 모델</em></h1>
         <p class="lead">운영 장애가 주어지면 모델이 로그, 메트릭, 트레이스, 이벤트를 직접 조회한다. 조회 결과에서 증상과 근본원인을 구분하고, 어떤 증거로 결론을 내렸는지 함께 답하게 만드는 프로젝트다.</p>
         <div class="badges">
-          <span class="badge">교사 조사 24개로 1차 학습 완료</span>
+          <span class="badge">교사 조사 24개로 1차 SFT 완료</span>
           <span class="badge">20개 장애 유형 사용</span>
           <span class="badge">강화학습 실험 4개는 기준 모델보다 좋아지지 않음</span>
-          <span class="badge">현재 새 강화학습 데이터 수집 중</span>
+          <span class="badge">현재 교사 데이터·채점 규칙 재검사 중</span>
           <span class="badge">최종 목표: Claude·Codex 이상</span>
         </div>
-        <div class="plain-summary">
-          <h2>처음 보는 사람을 위한 3분 요약</h2>
-          <ol>
-            <li><strong>입력:</strong> 장애 발생 시간과 조사 가능한 시스템 목록이 주어진다. 정답 원인은 주지 않는다.</li>
-            <li><strong>조사:</strong> 모델은 하네스가 제공한 조회 기능으로 실제 로그·메트릭·트레이스·이벤트를 확인한다.</li>
-            <li><strong>출력:</strong> 근본원인, 원인이 장애로 이어진 과정, 지지 증거 ID, 반대 증거 ID, 확신 상태를 구조화해 답한다.</li>
-            <li><strong>1차 학습 결과:</strong> 학습 전 모델보다 반복 조회가 줄고 원인 후보와 증거를 더 잘 찾았다. 다만 모든 원인을 빠짐없이 증명하는 정확도는 아직 낮다.</li>
-            <li><strong>강화학습 결과:</strong> 지금까지 시도한 v1~v3, v6는 1차 학습 모델보다 안정적으로 좋아지지 않아 사용하지 않았다.</li>
-            <li><strong>현재 작업:</strong> 1차 학습 모델이 같은 장애를 여러 번 새로 조사하게 하고, 더 정확한 조사에 높은 점수를 주는 온라인 강화학습을 진행 중이다.</li>
-          </ol>
+        <div class="project-answer">
+          <h2>이 프로젝트를 처음 보는 사람이 먼저 알아야 할 내용</h2>
+          <div class="answer-row"><b>무엇을 만드는가</b><div>장애 알림을 받으면 로그·메트릭·트레이스·이벤트를 직접 조회하고, 근본원인과 근거를 구조화된 형식으로 제출하는 RCA 전용 모델을 만든다.</div></div>
+          <div class="answer-row"><b>모델에게 주는 것</b><div>장애 발생 시간, 조사 가능한 시스템 목록, 사용할 수 있는 조회 기능이다. 정답 원인과 정답 증거는 주지 않는다.</div></div>
+          <div class="answer-row"><b>모델이 해야 하는 것</b><div>조회 기능을 여러 번 실행해 원인을 찾고, 원인마다 발생 과정, 지지 증거 ID, 반대 증거 ID, 확신 수준을 제출해야 한다.</div></div>
+          <div class="answer-row"><b>지금까지의 결과</b><div>교사 조사 24개로 SFT한 모델은 학습 전 모델보다 원인 후보와 증거를 더 잘 찾았다. 그러나 완전한 정답 조건을 만족하는 비율은 아직 낮다.</div></div>
+          <div class="answer-row"><b>실패한 시도</b><div>완료한 강화학습 v1, v2, v3, v6는 SFT 모델보다 사건 단위 정확도가 좋아지지 않았다. 따라서 실제 사용 모델로 채택하지 않았다.</div></div>
+          <div class="answer-row"><b>현재 작업</b><div>교사 데이터와 채점 규칙의 정합성을 다시 검사하고 있다. 검사를 통과한 전체 조사 기록으로 SFT를 다시 학습한 뒤, 그 모델이 직접 생성한 여러 조사 결과로 온라인 GRPO를 수행한다.</div></div>
+          <div class="answer-row"><b>최종 목표</b><div>같은 장애, 같은 조회 기능, 같은 채점 규칙에서 Student 모델이 Claude와 Codex와 비슷하거나 더 높은 RCA 정확도를 내는 것이다.</div></div>
         </div>
+        <div class="reading-note"><strong>읽는 순서:</strong> 프로젝트 이해만 필요하면 이 요약 다음에 <a href="#audit">실제 실행 전체 예시로 바로 이동</a>하면 된다. 중간 부분은 어떤 데이터와 학습 방법을 시도했고 왜 폐기했는지 설명하는 연구 기록이다.</div>
         <div class="pipeline" aria-label="고정 학습 흐름">
           <div class="pipe"><span>01</span><b>Teacher 조사</b><p>실패·비평·교정·재시도</p></div>
           <div class="pipe"><span>02</span><b>전체 episode SFT</b><p>좋은 조사 습관 형성</p></div>
@@ -271,12 +288,12 @@
           <article><strong>무엇을 학습했나</strong><p>검증된 교사 조사 24개를 턴별로 쪼개지 않고 전체 조사 순서 그대로 SFT했다.</p></article>
           <article><strong>무엇이 개선됐나</strong><p>바닐라보다 반복 조회가 줄고 실제 원인 후보를 찾는 비율과 증거 인용이 좋아졌다.</p></article>
           <article><strong>무엇이 실패했나</strong><p>RL v1~v3과 v6는 SFT보다 안정적으로 좋아지지 않아 모두 승격하지 않았다.</p></article>
-          <article><strong>지금 무엇을 하나</strong><p>SFT 모델이 사건당 8개 새 조사를 생성하는 온라인 GRPO 1차 rollout을 수집 중이다.</p></article>
+          <article><strong>지금 무엇을 하나</strong><p>교사 답의 원인 ID와 증거가 새 채점 규칙에 정확히 맞는지 검사하고, 잘못된 궤적을 교정하고 있다.</p></article>
         </div>
       </section>
 
       <section id="guide">
-        <div class="section-head"><div><span class="kicker">00 · 먼저 읽기</span><h2>이 문서에서 쓰는 말</h2></div><p>아래 용어만 알면 나머지 실험 결과를 바로 읽을 수 있다.</p></div>
+        <div class="section-head"><div><span class="kicker">02 · 필수 용어</span><h2>이 문서에서 쓰는 말</h2></div><p>아래 용어만 알면 나머지 실험 결과를 읽을 수 있다.</p></div>
         <div class="term-grid">
           <div class="term"><b>Case</b><span>정답 근본원인과 관측 데이터가 준비된 장애 사건 1건.</span></div>
           <div class="term"><b>Run / Rollout</b><span>모델이 한 case를 처음부터 끝까지 한 번 조사한 실행 기록.</span></div>
@@ -293,7 +310,7 @@
       </section>
 
       <section id="before-after">
-        <div class="section-head"><div><span class="kicker">01 · 실제 행동 변화</span><h2>바닐라는 반복했고,<br>SFT는 경계를 따라갔다</h2></div><p>과거 동일 12-case 개발 평가. 최종 봉인 순위가 아니라 행동 변화 분석용이다.</p></div>
+        <div class="section-head"><div><span class="kicker">03 · 학습 전후 차이</span><h2>학습 전 모델은 반복했고,<br>SFT 모델은 조사 대상을 확장했다</h2></div><p>같은 12개 장애를 조사한 과거 개발 평가다. 최종 모델 순위가 아니라 행동 변화 확인용이다.</p></div>
         <div class="metric-grid">
           <div class="metric"><small>평균 reward</small><strong>0.116 → 0.189</strong><span class="delta">SFT +62%</span></div>
           <div class="metric"><small>평균 root F1</small><strong>0.099 → 0.217</strong><span class="delta">SFT +119%</span></div>
@@ -342,7 +359,7 @@
       </section>
 
       <section id="data">
-        <div class="section-head"><div><span class="kicker">02 · 교사 데이터와 SFT</span><h2>정답 한 줄이 아니라<br>조사 전체를 학습</h2></div><p>각 턴을 별도 샘플로 쪼개지 않았다. 앞 관측이 다음 행동의 이유이므로 전체 episode를 유지했다.</p></div>
+        <div class="section-head"><div><span class="kicker">04 · 학습 데이터</span><h2>정답 문장만이 아니라<br>조사 전체를 학습</h2></div><p>각 턴을 별도 샘플로 나누지 않았다. 앞에서 본 데이터가 다음 조회를 선택한 이유이므로 전체 실행 순서를 유지했다.</p></div>
         <div class="grid-3">
           <div class="metric"><small>채택 시나리오</small><strong>20 / 23</strong><span class="delta">3건 보류</span></div>
           <div class="metric"><small>채택 전체 궤적</small><strong>24</strong><span class="delta">Claude + Codex</span></div>
@@ -363,7 +380,7 @@
       </section>
 
       <section id="attempts">
-        <div class="section-head"><div><span class="kicker">03 · 학습 실험 기록</span><h2>RL은 한 번에<br>좋아지지 않았다</h2></div><p>각 실패가 다음 보상·데이터·알고리즘 변경으로 연결됐다.</p></div>
+        <div class="section-head"><div><span class="kicker">05 · 강화학습 실험과 결과</span><h2>완료한 강화학습은<br>아직 SFT를 이기지 못했다</h2></div><p>각 실험에서 무엇을 바꿨고, 어떤 문제가 발생했고, 다음 실험을 어떻게 정했는지 기록한다.</p></div>
         <div class="timeline">
           <article class="experiment">
             <div class="topline"><h3>SFT · whole episode</h3><span class="status done">기준 정책</span></div>
@@ -405,7 +422,7 @@
       </section>
 
       <section id="thinkfl">
-        <div class="section-head"><div><span class="kicker">04 · ThinkFL과의 차이</span><h2>폐기한 v6와 현재 RL은 다르다</h2></div><p>ThinkFL은 단계적으로 최신 정책의 새 조사를 반복 생성한다. v6는 저장된 좋은/나쁜 쌍만 사용한 오프라인 실험이었다.</p></div>
+        <div class="section-head"><div><span class="kicker">06 · 현재 강화학습 방향</span><h2>폐기한 v6와<br>다음 GRPO는 학습 방식이 다르다</h2></div><p>v6는 저장된 좋은 답과 나쁜 답만 사용했다. 다음 GRPO는 현재 모델이 실제 환경에서 새 조사를 생성하고 그 결과로 학습한다.</p></div>
         <div class="compare">
           <div class="mode offline">
             <span class="kicker" style="color:var(--purple)">Current v6</span><h3>Offline preference refinement</h3>
@@ -428,7 +445,7 @@
       </section>
 
       <section id="next">
-        <div class="section-head"><div><span class="kicker">05 · 현재 진행 중인 학습</span><h2>실제 환경에서<br>온라인 GRPO 시작</h2></div><p>오프라인 pair 한 번으로 끝내지 않고, 매 업데이트 뒤 최신 정책으로 데이터를 다시 만든다.</p></div>
+        <div class="section-head"><div><span class="kicker">07 · 다음 학습</span><h2>교사 데이터 교정 후<br>SFT와 온라인 GRPO를 다시 실행</h2></div><p>채점 계약과 교사 데이터를 먼저 일치시킨다. 이후 새 SFT 모델이 직접 만든 조사 결과로 강화학습한다.</p></div>
         <div class="pipeline" style="grid-template-columns:repeat(7,1fr)">
           <div class="pipe"><span>1</span><b>현재 actor 배포</b><p>SFT 또는 승격 RL</p></div>
           <div class="pipe"><span>2</span><b>4~8 rollouts</b><p>case별 stochastic 조사</p></div>
@@ -446,7 +463,7 @@
           <li>중복 조회·invalid action·unsupported confirmed 감점</li>
           <li>all-zero 그룹은 억지 gradient 대신 재탐색/교정</li>
         </ul>
-        <div class="callout green"><strong>현재 상태:</strong> SFT 기준 모델로 20개 학습 case를 각각 8회 조사하는 첫 on-policy rollout을 수집 중이다. 수집 완료 후 같은 case 안의 상대 점수를 계산하고 language-model 전용 LoRA를 갱신한다.</div>
+        <div class="callout green"><strong>현재 상태:</strong> 1차 on-policy rollout은 3개 case를 수집한 뒤 중단했다. 새 채점 규칙으로 검사하자 일부 교사 답의 외부 원인 ID와 내부 대상 ID가 정확히 연결되지 않은 문제가 확인됐기 때문이다. 교사 데이터 교정 → SFT 재학습 → 20개 case × 8회 rollout 순서로 다시 실행한다.</div>
         <table><thead><tr><th>Progressive stage</th><th>우선 학습</th><th>승격 조건</th></tr></thead><tbody>
           <tr><td>A · 실행 안정화</td><td>schema, valid action, evidence refs</td><td>형식/invalid action 0</td></tr>
           <tr><td>B · 원인 식별</td><td>root F1, exact root, 증상/원인 분리</td><td>SFT root F1 비퇴행</td></tr>
@@ -456,7 +473,7 @@
       </section>
 
       <section id="harness">
-        <div class="section-head"><div><span class="kicker">06 · 모델이 사용하는 실행 환경</span><h2>모델이 조사할 때<br>실제로 작동하는 구성</h2></div><p>각 구성요소가 입력으로 무엇을 받고, 무엇을 저장하거나 검사하는지 설명한다.</p></div>
+        <div class="section-head"><div><span class="kicker">08 · 모델의 조사 환경</span><h2>모델이 조사할 때<br>작동하는 네 구성요소</h2></div><p>각 구성요소가 무엇을 제공하고, 무엇을 저장하고, 무엇을 검사하는지 설명한다.</p></div>
         <div class="grid-2">
           <div class="card"><h3>실행 가능 목록<br><small>Capability registry</small></h3><p>이번 장애에서 조회할 수 있는 서비스, 호스트, 메트릭 이름, 조회 기능을 담은 목록이다. 목록에 없는 이름으로 조회하면 실행 전에 거절한다.</p><p><strong>예:</strong> target=<code>food-delivery-payment</code>, action=<code>env_slice</code>, source=<code>log</code>.</p></div>
           <div class="card"><h3>전체 증거 저장소와 인덱스<br><small>Evidence store / map</small></h3><p>원본 로그·메트릭·트레이스·이벤트는 모두 보관한다. 각 항목에는 <code>ev221</code> 같은 ID가 붙는다. 한 번의 조회 화면만 크기를 제한하며 원본 268개 자체를 삭제하지 않는다.</p></div>
@@ -473,7 +490,7 @@
       </section>
 
       <section id="evaluation">
-        <div class="section-head"><div><span class="kicker">07 · 평가와 승격 기준</span><h2>좋아 보이는 모델이 아니라<br>비퇴행이 증명된 모델만 승격</h2></div><p>평균 reward 하나로 통과시키지 않는다.</p></div>
+        <div class="section-head"><div><span class="kicker">09 · 평가 기준</span><h2>SFT보다 나빠지지 않고<br>여러 기준을 통과해야 채택</h2></div><p>평균 점수 하나만 높아진 모델은 채택하지 않는다.</p></div>
         <div class="grid-2">
           <div class="card"><h3>내부 승격 게이트</h3><ul><li>majority strict cases</li><li>strict runs</li><li>mean reward</li><li>mean root F1</li><li>evidence complete</li><li>format error = 0</li><li>unsupported confirmed = 0</li></ul></div>
           <div class="card"><h3>최종 목표</h3><p><strong>RL ≥ SFT ≥ vanilla</strong>를 내부에서 만족한 뒤, 같은 하네스·도구·case·scorer·반복 수로 <strong>Student ≥ Claude/Codex</strong>를 검증한다.</p></div>
@@ -485,14 +502,16 @@
           <tr><td>RL v1~v3</td><td><span class="status fail">폐기</span></td><td>SFT 대비 퇴행</td></tr>
           <tr><td>RFT v4 / v5</td><td><span class="status diag">진단</span></td><td>가능성·문제점 확인, 미승격</td></tr>
           <tr><td>Offline RPO v6</td><td><span class="status fail">폐기</span></td><td>reward +0.0017, root F1·strict 유지, majority strict 1/6→0/6</td></tr>
-          <tr><td>Online progressive GRPO</td><td><span class="status run">진행 중</span></td><td>SFT 정책으로 20 cases × 8 rollouts 수집 중</td></tr>
+          <tr><td>Online progressive GRPO</td><td><span class="status diag">재개 전</span></td><td>3개 case 수집 후 데이터 계약 문제로 중단. 교사 데이터 교정과 SFT 재학습 뒤 재개</td></tr>
           <tr><td>새 봉인 Claude/Codex parity</td><td><span class="status diag">미실행</span></td><td>새 미노출 family 필요</td></tr>
         </tbody></table>
         <div class="callout green"><strong>바로 다음 결정:</strong> v6는 majority strict 퇴행으로 폐기 → language-only LoRA + on-policy progressive GRPO → 매 업데이트 뒤 최신 정책으로 rollout 재생성 → 설정 동결 → 새 봉인 family에서 최종 비교.</div>
       </section>
 
       <section id="audit" aria-labelledby="evidence-title">
-        <div class="section-head"><div><span class="kicker">08 · 한 사건의 전체 실행 예시</span><h2 id="evidence-title">모델이 무엇을 보고<br>왜 부분 점수를 받았는가</h2></div><p>아래 내용은 F15-H에서 실제로 저장된 SFT 모델 실행 1회다. 설명을 위한 파일 경로가 아니라 입력, 조회 결과, 최종 구조화 답, 채점 결과 자체를 보여준다.</p></div>
+        <div class="section-head"><div><span class="kicker">10 · 실제 실행 전체 예시</span><h2 id="evidence-title">F15-H에서 모델은<br>무엇을 했고 무엇을 놓쳤나</h2></div><p>파일 위치를 나열하지 않는다. 실제 입력, 도구 요청, 도구 응답, 모델의 최종 답, 당시 채점 결과를 순서대로 보여준다.</p></div>
+
+        <div class="callout green"><strong>결론부터:</strong> 이 사건에는 두 개의 독립된 근본원인이 있었다. SFT 모델은 외부 PG의 429 오류와 그 증거를 찾았지만 inventory DB의 EXCLUSIVE lock은 찾지 못했다. 그래서 완전 정답이 아니라 부분 정답으로 판정됐다.</div>
 
         <div class="card">
           <h3>1. 사건과 정답</h3>
@@ -511,7 +530,26 @@
         <div class="direct-answer"><b>모델이 아는 것</b><div>장애 관측 시간, 조회 가능한 20개 대상, 실행 가능한 조회 기능, 각 기능의 입력 형식.</div></div>
         <div class="direct-answer"><b>모델이 모르는 것</b><div>정답 원인이 inventory lock과 외부 PG 429라는 사실, 정답 증거 ID, 어떤 조회 순서로 조사해야 하는지.</div></div>
 
-        <h3 style="margin-top:26px">3. 실제 도구 호출과 관측</h3>
+        <h3 style="margin-top:26px">3. 실제 입력부터 채점까지</h3>
+        <div class="actual-run" aria-label="F15-H 실제 실행 핵심 기록">
+          <div class="actual-turn"><b>모델 입력</b><div><p>모델은 아래 장애 정보와 조사 가능 목록을 받았다. 근본원인 정답은 포함되지 않았다.</p><span class="plain-code">[인시던트] sms.network_interface.rx_packets critical
+main: tb-w3
+장애 창: 10:14:15 ~ 10:46:47
+조회 가능: 20개 대상, event/log/metric/trace
+사용 가능 action: env_top, env_entity, env_query, env_slice, env_grep, ...</span></div></div>
+          <div class="actual-turn"><b>도구 요청</b><div><p>세 번째 조회에서 payment 대상에 429와 PG 실패가 모여 있는 것을 본 뒤, 네 번째 턴에 관련 증거 원문을 요청했다.</p><span class="plain-code">{
+  "action": "env_slice",
+  "arg1": "ev221,ev212,ev210,ev220"
+}</span></div></div>
+          <div class="actual-turn"><b>도구 응답</b><div><p>하네스가 실제 저장소에서 네 증거를 꺼내 모델에게 반환했다.</p><span class="plain-code">ev221: PG /pay failed ... 429 Too Many Requests ... RATE_LIMITED
+ev212: 같은 PG 실패에 대한 warning event
+ev210: 같은 PG 실패에 대한 caution event
+ev220: WARN+ 로그 50건의 표본</span></div></div>
+          <div class="actual-turn"><b>모델 판단</b><div><p><strong>찾은 원인:</strong> 외부 PG가 429 RATE_LIMITED를 반환했고 payment 요청으로 전파됐다.</p><p><strong>놓친 원인:</strong> inventory의 EXCLUSIVE lock 때문에 checkout 쓰기가 대기한 별도 장애.</p><p><strong>제출 상태:</strong> <code>provisional</code>. 결정적 증명을 완료하지 못했다고 표시했다.</p></div></div>
+          <div class="actual-turn"><b>당시 채점</b><div><p><strong class="score-number">0.572 reward · Root F1 0.8</strong></p><p>외부 PG 원인과 실제 증거 ID는 맞았다. 그러나 두 원인 중 하나를 누락했고 proof 규칙도 통과하지 못해 <code>strict correct = false</code>였다.</p></div></div>
+        </div>
+
+        <h3 style="margin-top:30px">4. 전체 도구 호출 순서</h3>
         <div class="audit-flow" role="table" aria-label="F15-H SFT 실행 기록">
           <div class="audit-step audit-head" role="row"><div>Turn</div><div>실행 action</div><div>실제 관측</div><div>판단 변화</div></div>
           <div class="audit-step" role="row"><div>1</div><div><code>env_top(20)</code></div><div>product 500 142건, payment outbound/inbound 429 각각 33건, order 502 19건, inventory 5xx가 함께 노출됨.</div><div>한 서비스 문제가 아니라 여러 경계를 조사해야 함을 확인.</div></div>
@@ -523,13 +561,14 @@
           <div class="audit-step" role="row"><div>10</div><div>중복 query</div><div><code>이미 실행함 — 새 정보 없음</code></div><div>조사 비용만 늘고 새로운 증거는 없음.</div></div>
         </div>
 
-        <h3 style="margin-top:26px">4. 조회 결과에서 실제로 확인한 핵심 증거</h3>
+        <h3 style="margin-top:26px">5. 모델이 맞게 읽은 증거와 놓친 증거</h3>
         <div class="evidence-card"><div><strong>ev010</strong></div><div>trace</div><div><code>food-delivery-payment</code>의 외부 호출 응답 HTTP 429가 33건 발생했다. 기준 시간에는 0건이었다.</div></div>
         <div class="evidence-card"><div><strong>ev011</strong></div><div>trace</div><div><code>/api/payments</code> 인바운드 응답 HTTP 429가 33건 발생했다. 외부 429가 payment 요청 결과로 이어진 것을 보여준다.</div></div>
         <div class="evidence-card"><div><strong>ev221</strong></div><div>log pattern</div><div><code>PG /pay failed ... 429 Too Many Requests ... RATE_LIMITED</code>가 로그 표본 50건 모두에서 나타났다.</div></div>
         <div class="evidence-card"><div><strong>ev068~70</strong></div><div>inventory logs</div><div>inventory에도 새로운 DB·Servlet 오류가 있었지만 모델은 원문을 추가 조회하지 않아 EXCLUSIVE lock을 확인하지 못했다.</div></div>
+        <div class="callout"><strong>여기까지의 핵심:</strong> 모델은 외부 PG 장애를 실제 증거로 찾았다. 그러나 inventory DB 쪽 로그 원문과 blocking 상태를 추가 조회하지 않아 두 원인 중 하나만 맞혔다.</div>
 
-        <h3 style="margin-top:26px">5. 조사 기록에 저장된 실제 4번 관측</h3>
+        <h3 style="margin-top:26px">6. 원문 응답이 ledger에 저장된 형태</h3>
         <span class="actual-label">실제 저장값</span>
         <pre class="raw">{
   "id": "obs-004",
@@ -542,7 +581,7 @@
   "summary": "PG /pay failed ... 429 Too Many Requests ... RATE_LIMITED"
 }</pre>
 
-        <h3 style="margin-top:26px">6. 모델이 제출한 실제 최종 답</h3>
+        <h3 style="margin-top:26px">7. 모델의 실제 최종 답</h3>
         <span class="actual-label">실제 출력에서 핵심 필드만 발췌</span>
         <p class="muted">긴 문장은 읽을 수 있는 길이로 줄였고, 내부 target UUID는 바로 아래에 실제 값과 서비스 이름을 함께 표시했다.</p>
         <pre class="raw">{
@@ -568,7 +607,7 @@
           <div class="missed"><h4>틀리거나 빠진 내용</h4><ul><li>독립된 inventory EXCLUSIVE lock 원인을 누락</li><li>commerce 오류 일부를 PG 장애 영향으로 잘못 연결</li><li>결정적 증명 유형을 제시하지 못함</li><li>두 원인이 서로 독립적이라는 반증을 완성하지 못함</li></ul></div>
         </div>
 
-        <h3 style="margin-top:26px">7. 자동 채점 결과</h3>
+        <h3 style="margin-top:26px">8. 왜 부분 점수만 받았나</h3>
         <table><thead><tr><th>항목</th><th>결과</th><th>왜 이렇게 판정됐나</th></tr></thead><tbody>
           <tr><td>Root F1</td><td><strong>0.8</strong></td><td>외부 PG root는 찾았지만 독립된 inventory lock root를 놓쳤다.</td></tr>
           <tr><td>Reward</td><td><strong>0.572</strong></td><td>부분적으로 맞은 root, 유효 evidence refs, provisional status가 반영됐다.</td></tr>
