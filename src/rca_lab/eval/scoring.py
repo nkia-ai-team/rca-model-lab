@@ -47,15 +47,19 @@ _NAMED_TARGET = re.compile(r"([0-9a-f]{8}-[0-9a-f-]{27}) \(([^)]*)\)", re.IGNORE
 _MAIN_TARGET = re.compile(r"main:\s*([^\n(]+)\(([0-9a-f-]{36})\)", re.IGNORECASE)
 
 
-def load_episode(path: Path) -> dict[str, Any]:
+def load_episode_text(text: str, *, source: str = "episode payload") -> dict[str, Any]:
     completed = [
         value
-        for line in path.read_text(encoding="utf-8").splitlines()
+        for line in text.splitlines()
         if (value := json.loads(line)).get("event") == "episode_completed"
     ]
     if len(completed) != 1:
-        raise ValueError(f"expected one episode_completed event: {path}")
+        raise ValueError(f"expected one episode_completed event: {source}")
     return completed[0]
+
+
+def load_episode(path: Path) -> dict[str, Any]:
+    return load_episode_text(path.read_text(encoding="utf-8"), source=str(path))
 
 
 def target_names(episode: dict[str, Any]) -> dict[str, str]:

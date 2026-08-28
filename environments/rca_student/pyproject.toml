@@ -1,0 +1,22 @@
+[project]
+name = "rca-student"
+version = "0.1.0"
+description = "Prime-RL verifiers environment for the RCA student harness"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "rca-lab",
+    "verifiers @ git+https://github.com/PrimeIntellect-ai/verifiers.git@b2e4e8157783b2c0dffc7821044c87f29f1c3ccf",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["rca_student"]
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[tool.uv.sources]
+rca-lab = { path = "../..", editable = true }
