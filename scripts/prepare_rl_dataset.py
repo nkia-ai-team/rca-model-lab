@@ -16,6 +16,7 @@ from pydantic import ValidationError
 from rca_lab.data.sft import SFTRecord
 from rca_lab.eval.scoring import (
     EvalContract,
+    diagnosis_optimization_reward,
     load_episode,
     score_episode,
 )
@@ -141,34 +142,15 @@ def _premature_penalty(events: list[dict[str, Any]], strict_correct: bool) -> fl
 
 
 def _optimization_reward(score: dict[str, Any], expected: dict[str, Any]) -> float:
-    """Return a diagnosis-only learning signal.
+    """Compatibility wrapper around the scorer-owned RL reward contract."""
 
-    The sealed evaluator intentionally reports efficiency and tool-success
-    diagnostics, but those weak signals must not rank equally incorrect RCA
-    episodes. Otherwise group normalization turns harmless turn-count noise
-    into a full-strength policy gradient toward premature termination.
-    """
-    root_f1 = float(score["root_f1"])
-    root_exact = float(root_f1 == 1.0)
-    proof_rate = float(score["proof_rate"])
-    status_correct = float(score["status"] == expected["expected_status"])
-    strict_correct = float(score["strict_correct"])
-    unsupported = float(score["unsupported_confirmation"])
-    format_errors = float(min(1, int(score["format_errors"])))
-    return max(
-        0.0,
-        min(
-            1.0,
-            0.55 * root_f1
-            + 0.15 * root_exact
-            # Proof quality is useful only for a matching root. A perfectly
-            # cited but unrelated culprit must not become a positive signal.
-            + 0.15 * proof_rate * root_f1
-            + 0.10 * status_correct * root_f1
-            + 0.05 * strict_correct
-            - 0.60 * unsupported
-            - 0.10 * format_errors,
-        ),
+    return diagnosis_optimization_reward(
+        root_f1=float(score["root_f1"]),
+        proof_rate=float(score["proof_rate"]),
+        status_correct=score["status"] == expected["expected_status"],
+        strict_correct=bool(score["strict_correct"]),
+        unsupported_confirmation=int(score["unsupported_confirmation"]),
+        format_errors=int(score["format_errors"]),
     )
 
 
@@ -203,7 +185,7 @@ def build_records(rollouts: Path, contract: dict[str, Any]) -> list[dict[str, An
             progressive_penalty = _premature_penalty(events, score["strict_correct"])
             score["premature_confidence_penalty"] = progressive_penalty
             score["reward"] = max(0.0, score["reward"] - 0.10 * progressive_penalty)
-            optimization_reward = _optimization_reward(score, expected)
+            optimization_reward = float(score["optimization_reward"])
             turns = _actor_turns(episode)
             if turns:
                 step_rewards, path_signature = _progressive_step_rewards(

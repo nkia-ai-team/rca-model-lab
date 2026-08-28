@@ -133,6 +133,38 @@ def count_format_errors(ledger: list[dict[str, Any]]) -> int:
     return total
 
 
+def diagnosis_optimization_reward(
+    *,
+    root_f1: float,
+    proof_rate: float,
+    status_correct: bool,
+    strict_correct: bool,
+    unsupported_confirmation: int,
+    format_errors: int,
+) -> float:
+    """Return the diagnosis-only reward used for policy optimization.
+
+    Efficiency and tool-call success remain evaluation diagnostics. They cannot
+    rank incorrect episodes during RL because that would reward premature or
+    mechanically valid investigation paths without a grounded diagnosis.
+    """
+
+    root_exact = float(root_f1 == 1.0)
+    return max(
+        0.0,
+        min(
+            1.0,
+            0.55 * root_f1
+            + 0.15 * root_exact
+            + 0.15 * proof_rate * root_f1
+            + 0.10 * float(status_correct) * root_f1
+            + 0.05 * float(strict_correct)
+            - 0.60 * float(unsupported_confirmation)
+            - 0.10 * float(min(1, format_errors)),
+        ),
+    )
+
+
 def score_episode(case_id: str, expected: dict[str, Any], episode: dict[str, Any]) -> dict[str, Any]:
     result = episode.get("result", {})
     names = target_names(episode)
@@ -200,6 +232,14 @@ def score_episode(case_id: str, expected: dict[str, Any], episode: dict[str, Any
             - 0.05 * min(1, transient_format_errors),
         ),
     )
+    optimization_reward = diagnosis_optimization_reward(
+        root_f1=roots_score,
+        proof_rate=proof_rate,
+        status_correct=status_correct,
+        strict_correct=strict,
+        unsupported_confirmation=unsupported,
+        format_errors=transient_format_errors,
+    )
     return {
         "case_id": case_id,
         "status": result.get("status", "missing"),
@@ -211,6 +251,7 @@ def score_episode(case_id: str, expected: dict[str, Any], episode: dict[str, Any
         "proof_rate": proof_rate,
         "evidence_complete": evidence_complete,
         "reward": reward,
+        "optimization_reward": optimization_reward,
         "turns": turns,
         "actions": actions,
         "distinct_actions": len(set(actions)),

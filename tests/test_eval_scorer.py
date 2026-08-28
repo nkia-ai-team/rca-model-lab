@@ -8,11 +8,25 @@ from pydantic import ValidationError
 from rca_lab.eval.scoring import (
     EvalContract,
     count_format_errors,
+    diagnosis_optimization_reward,
     root_f1,
     score_directory,
     score_episode,
     target_names,
 )
+
+
+def test_rl_reward_excludes_efficiency_and_tool_success_noise() -> None:
+    wrong = diagnosis_optimization_reward(
+        root_f1=0.0,
+        proof_rate=1.0,
+        status_correct=True,
+        strict_correct=False,
+        unsupported_confirmation=0,
+        format_errors=0,
+    )
+
+    assert wrong == 0.0
 
 
 def test_train_and_sealed_contracts_are_typed_and_disjoint() -> None:

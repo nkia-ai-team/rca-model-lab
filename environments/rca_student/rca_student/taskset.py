@@ -83,12 +83,17 @@ class RCAStudentTask(vf.Task[RCAStudentData, vf.State, RCAStudentTaskConfig]):
 
     @vf.reward(weight=1.0)
     async def rca_reward(self, runtime: vf.Runtime) -> float:
-        return float((await self._score(runtime))["reward"])
+        # Train only on grounded diagnosis quality. The broader evaluation
+        # reward includes efficiency/tool-success diagnostics that can rank
+        # equally incorrect episodes and recreate the RL-v1 failure mode.
+        return float((await self._score(runtime))["optimization_reward"])
 
     @vf.metric
     async def rca_metrics(self, runtime: vf.Runtime) -> dict[str, float]:
         score = await self._score(runtime)
         return {
+            "evaluation_reward": float(score["reward"]),
+            "optimization_reward": float(score["optimization_reward"]),
             "root_f1": float(score["root_f1"]),
             "strict_correct": float(score["strict_correct"]),
             "proof_rate": float(score["proof_rate"]),
