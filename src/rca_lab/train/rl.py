@@ -176,6 +176,18 @@ def _selected_logps(logits: Any, targets: Any) -> Any:
     return selected - torch.logsumexp(logits.float(), dim=-1)
 
 
+def _k3_reference_kl(current_logps: Any, reference_logps: Any) -> Any:
+    """Return the non-negative K3 estimator against the fixed SFT reference."""
+    import torch
+
+    if reference_logps.shape != current_logps.shape:
+        raise ValueError("reference log-probabilities do not match response tokens")
+    reference_minus_current = reference_logps - current_logps
+    return (
+        torch.exp(reference_minus_current) - reference_minus_current - 1.0
+    ).mean()
+
+
 def _response_shape(labels: list[int]) -> tuple[int, int]:
     indices = [index for index, token in enumerate(labels) if token != -100]
     if not indices:
@@ -218,6 +230,7 @@ def _turn_loss(
     model: Any,
     turn: dict[str, Any],
     old_logps: Any,
+    reference_logps: Any,
     advantage: float,
     config: EpisodeRLConfig,
 ) -> Any:
@@ -228,14 +241,17 @@ def _turn_loss(
     old_logps = old_logps.to(device=current_logps.device, dtype=current_logps.dtype)
     if old_logps.shape != current_logps.shape:
         raise ValueError("frozen behavior log-probabilities do not match response tokens")
+    reference_logps = reference_logps.to(
+        device=current_logps.device, dtype=current_logps.dtype
+    )
     log_ratio = current_logps - old_logps
     scalar_advantage = torch.as_tensor(advantage, device=log_ratio.device, dtype=log_ratio.dtype)
     policy = -clipped_surrogate(
         log_ratio, scalar_advantage, clip_low=config.clip_low, clip_high=config.clip_high
     ).mean()
-    # K3 is non-negative and zero at the exact frozen pre-update behavior policy.
-    reverse_log_ratio = -log_ratio
-    kl = (torch.exp(reverse_log_ratio) - reverse_log_ratio - 1.0).mean()
+    # PPO clipping compares with the exact rollout behavior policy, while KL
+    # remains anchored to the immutable SFT base across online iterations.
+    kl = _k3_reference_kl(current_logps, reference_logps)
     return policy + config.kl_beta * kl, policy.detach(), kl.detach(), response_tokens
 
 
@@ -340,6 +356,10 @@ def train_rl(config_path: Path) -> None:  # pragma: no cover - GPU entrypoint
             gpu_turn = {key: value.to(device) for key, value in turn.items()}
             with torch.no_grad():
                 turn["old_logps"] = _policy_logps(model, gpu_turn).detach().cpu()
+                with model.disable_adapter():
+                    turn["reference_logps"] = (
+                        _policy_logps(model, gpu_turn).detach().cpu()
+                    )
     optimizer = torch.optim.AdamW(
         (parameter for parameter in model.parameters() if parameter.requires_grad),
         lr=config.learning_rate,
@@ -356,6 +376,7 @@ def train_rl(config_path: Path) -> None:  # pragma: no cover - GPU entrypoint
                 "episodes": len(encoded),
                 "contract": (
                     "whole episode; behavior policy=frozen pre-update snapshot; "
+                    "KL reference=immutable SFT base; "
                     f"algorithm={config.algorithm}; asymmetric clipped DAPO; "
                     "typed terminal reward"
                 ),
@@ -383,6 +404,7 @@ def train_rl(config_path: Path) -> None:  # pragma: no cover - GPU entrypoint
                         model,
                         gpu_turn,
                         turn["old_logps"],
+                        turn["reference_logps"],
                         float(turn_advantage),
                         config,
                     )

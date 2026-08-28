@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import math
 from pathlib import Path
 
 import pytest
@@ -8,6 +9,7 @@ from rca_lab.provenance import file_sha256
 from rca_lab.train.rl import (
     EpisodeRLConfig,
     RLEpisodeRecord,
+    _k3_reference_kl,
     _response_shape,
     clipped_surrogate,
     load_rl_config,
@@ -148,3 +150,15 @@ def test_asymmetric_clipping_handles_positive_and_negative_advantage() -> None:
     negative = clipped_surrogate(ratios, torch.tensor(-1.0), clip_low=0.2, clip_high=0.28)
     assert positive.tolist() == pytest.approx([1.28, 0.2])
     assert negative.tolist() == pytest.approx([-2.0, -0.8])
+
+
+def test_kl_anchor_is_independent_from_the_behavior_ratio() -> None:
+    torch = pytest.importorskip("torch")
+    current = torch.tensor([[math.log(0.5), math.log(0.25)]])
+    reference = torch.tensor([[math.log(0.25), math.log(0.25)]])
+
+    kl = _k3_reference_kl(current, reference)
+
+    expected_first = 0.5 - math.log(0.5) - 1.0
+    assert float(kl) == pytest.approx(expected_first / 2)
+    assert float(_k3_reference_kl(current, current)) == pytest.approx(0.0)
