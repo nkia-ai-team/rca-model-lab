@@ -4,6 +4,9 @@ RCA(근본원인분석) 특화 모델을 만드는 실험실.
 `rca-scenario-runner` 의 장애 시나리오(ground truth 포함)를 재료로 프런티어 모델(Claude / Codex CLI)에게
 SFT 데이터를 합성시키고, 그걸로 오픈 모델을 파인튜닝한 뒤, 이후 강화학습으로 확장한다.
 
+현재 모델의 개념, 학습 파이프라인, 예시, 진행 상황은
+[RCA 모델 개발 현황과 학습 파이프라인](docs/rca-model-development-overview.md)에 정리되어 있다.
+
 ## 시작하기
 
 ```bash
