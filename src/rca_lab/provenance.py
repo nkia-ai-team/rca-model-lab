@@ -10,6 +10,7 @@ _MODEL_IDENTITY_FILES = (
     "config.json",
     "model.safetensors.index.json",
     "adapter_config.json",
+    "training_manifest.json",
     "merge_manifest.json",
 )
 _SHA256 = re.compile(r"^[0-9a-f]{64}$")
