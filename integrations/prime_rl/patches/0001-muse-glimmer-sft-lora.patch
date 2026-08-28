@@ -402,4 +402,231 @@ index 0000000..6007619
 +
 +    torch.testing.assert_close(module.lora_A[0], expected_a)
 +    torch.testing.assert_close(module.lora_B[0], expected_b)
-
+diff --git a/src/prime_rl/monitors/wandb/overview.py b/src/prime_rl/monitors/wandb/overview.py
+--- a/src/prime_rl/monitors/wandb/overview.py
++++ b/src/prime_rl/monitors/wandb/overview.py
+@@ -19,7 +19,7 @@
+ import wandb
+ import wandb_workspaces.reports.v2 as wr
+ import wandb_workspaces.workspaces as ws
+-from wandb_gql import gql
++from wandb_workspaces._graphql import execute_graphql
+ 
+ from prime_rl.utils.logger import get_logger
+ 
+@@ -186,16 +186,16 @@
+ 
+ def list_views(entity: str, project: str) -> list[tuple[str, str]]:
+     """``(display_name, internal_name)`` for every saved view in the project."""
+-    query = gql(
+-        """
++    query = """
+         query Views($entity: String!, $project: String!) {
+           project(name: $project, entityName: $entity) {
+             allViews(viewType: "project-view") { edges { node { name displayName } } }
+           }
+         }
+         """
++    res = execute_graphql(
++        wandb.Api(), query, {"entity": entity, "project": project}
+     )
+-    res = wandb.Api().client.execute(query, variable_values={"entity": entity, "project": project})
+     edges = ((res.get("project") or {}).get("allViews") or {}).get("edges") or []
+     return [(e["node"]["displayName"], e["node"]["name"]) for e in edges if e.get("node")]
+ 
+diff --git a/src/prime_rl/orchestrator/orchestrator.py b/src/prime_rl/orchestrator/orchestrator.py
+--- a/src/prime_rl/orchestrator/orchestrator.py
++++ b/src/prime_rl/orchestrator/orchestrator.py
+@@ -71,13 +71,13 @@
+     trim_process_memory,
+ )
+ from prime_rl.orchestrator.watcher import WeightWatcher
+-from prime_rl.trainer.model import setup_tokenizer
+ from prime_rl.transports.batch import setup_batch_sender
+ from prime_rl.transports.weights import WeightReceiver, setup_weight_receiver
+ from prime_rl.utils.async_utils import EventLoopLagMonitor, EventLoopLagStats, safe_cancel
+ from prime_rl.utils.heartbeat import Heartbeat
+ from prime_rl.utils.logger import format_time, get_logger, setup_logger
+ from prime_rl.utils.pathing import get_broadcast_dir
++from prime_rl.utils.tokenizer import setup_tokenizer
+ from prime_rl.utils.utils import clean_exit, resolve_latest_ckpt_step
+ 
+ monkey_patch_oai_iterable_types()
+diff --git a/src/prime_rl/trainer/model.py b/src/prime_rl/trainer/model.py
+--- a/src/prime_rl/trainer/model.py
++++ b/src/prime_rl/trainer/model.py
+@@ -22,8 +22,7 @@
+ from torch.distributed.fsdp import CPUOffloadPolicy, FSDPModule, MixedPrecisionPolicy, OffloadPolicy, fully_shard
+ from torch.distributed.tensor.parallel import parallelize_module
+ from torchtitan.distributed.expert_parallel import ExpertParallel
+-from transformers import AutoConfig, AutoModelForCausalLM, AutoTokenizer, GenerationConfig, PretrainedConfig
+-from transformers.tokenization_utils import PreTrainedTokenizer
++from transformers import AutoConfig, AutoModelForCausalLM, GenerationConfig, PretrainedConfig
+ from transformers.utils.import_utils import is_flash_attn_3_available
+ 
+ from prime_rl.configs.trainer import (
+@@ -33,7 +32,6 @@
+     ModelConfig,
+     MXFP8Config,
+     QuantizationConfig,
+-    TokenizerConfig,
+ )
+ from prime_rl.trainer.distributed import DeepEPExpertParallel, MXFP8AllToAllExpertParallel
+ from prime_rl.trainer.lora import (
+@@ -65,6 +63,7 @@
+ from prime_rl.trainer.world import get_world
+ from prime_rl.utils.logger import get_logger
+ from prime_rl.utils.sequence import get_cu_seqlens_from_position_ids
++from prime_rl.utils.tokenizer import setup_tokenizer
+ from prime_rl.utils.utils import format_time
+ from prime_rl.utils.vlm import get_language_model, get_vision_encoder, is_vlm_architecture
+ from prime_rl.utils.weights import (
+@@ -791,23 +790,6 @@
+     return model
+ 
+ 
+-def setup_tokenizer(config: TokenizerConfig) -> PreTrainedTokenizer:
+-    logger = get_logger()
+-    tokenizer = AutoTokenizer.from_pretrained(config.name, trust_remote_code=config.trust_remote_code)
+-    if config.chat_template is not None:
+-        path = Path(config.chat_template)
+-        if path.is_file():
+-            logger.info(f"Loading custom chat template from file: {path}")
+-            tokenizer.chat_template = path.read_text()
+-            logger.debug(f"Chat template content:\n{tokenizer.chat_template}")
+-        else:
+-            logger.info("Using inline custom chat template")
+-            tokenizer.chat_template = config.chat_template
+-    tokenizer.pad_token_id = tokenizer.eos_token_id
+-
+-    return tokenizer
+-
+-
+ def setup_processor(config: ModelConfig):
+     """Load an ``AutoProcessor`` for VLM models. Returns ``None`` for text-only models."""
+     from transformers import AutoProcessor
+diff --git a/src/prime_rl/transports/weights/__init__.py b/src/prime_rl/transports/weights/__init__.py
+--- a/src/prime_rl/transports/weights/__init__.py
++++ b/src/prime_rl/transports/weights/__init__.py
+@@ -6,9 +6,6 @@
+ from prime_rl.configs.trainer import LoRAConfig, WeightBroadcastConfig
+ from prime_rl.trainer.parallel_dims import ParallelDims
+ from prime_rl.transports.weights.base import WeightReceiver, WeightSender, prune_broadcasts_beyond
+-from prime_rl.transports.weights.filesystem import FileSystemWeightReceiver, FileSystemWeightSender
+-from prime_rl.transports.weights.nccl import NCCLWeightReceiver, NCCLWeightSender
+-from prime_rl.transports.weights.nixl import NIXLWeightReceiver, NIXLWeightSender
+ 
+ __all__ = [
+     "WeightReceiver",
+@@ -26,10 +23,16 @@
+     lora_config: LoRAConfig | None = None,
+ ) -> WeightSender:
+     if config.type == "nccl":
++        from prime_rl.transports.weights.nccl import NCCLWeightSender
++
+         return NCCLWeightSender(output_dir, config, torch.cuda.current_device())
+     elif config.type == "filesystem":
++        from prime_rl.transports.weights.filesystem import FileSystemWeightSender
++
+         return FileSystemWeightSender(output_dir, config, lora_config)
+     elif config.type == "nixl":
++        from prime_rl.transports.weights.nixl import NIXLWeightSender
++
+         return NIXLWeightSender(output_dir, config, parallel_dims)
+     else:
+         raise ValueError(f"Invalid weight broadcast type: {config.type}")
+@@ -42,10 +45,16 @@
+     model_name: str,
+ ) -> WeightReceiver:
+     if config.type == "nccl":
++        from prime_rl.transports.weights.nccl import NCCLWeightReceiver
++
+         return NCCLWeightReceiver(broadcast_dir, config, admin_clients, model_name)
+     elif config.type == "filesystem":
++        from prime_rl.transports.weights.filesystem import FileSystemWeightReceiver
++
+         return FileSystemWeightReceiver(broadcast_dir, config, admin_clients, model_name)
+     elif config.type == "nixl":
++        from prime_rl.transports.weights.nixl import NIXLWeightReceiver
++
+         return NIXLWeightReceiver(broadcast_dir, config, admin_clients, model_name)
+     else:
+         raise ValueError(f"Invalid weight broadcast type: {config.type}")
+diff --git a/src/prime_rl/transports/weights/filesystem.py b/src/prime_rl/transports/weights/filesystem.py
+--- a/src/prime_rl/transports/weights/filesystem.py
++++ b/src/prime_rl/transports/weights/filesystem.py
+@@ -1,20 +1,15 @@
++from __future__ import annotations
++
+ from pathlib import Path
++from typing import TYPE_CHECKING
+ 
+-import torch.distributed as dist
+-import torch.nn as nn
+-from torch.distributed.tensor import DTensor
++if TYPE_CHECKING:
++    import torch.nn as nn
+ 
+ from prime_rl.configs.trainer import FileSystemWeightBroadcastConfig, LoRAConfig
+ from prime_rl.orchestrator.clients import load_lora_adapter, update_weights
+-from prime_rl.trainer.lora import get_lora_state, save_lora_config
+ from prime_rl.transports.weights.base import FINISHED_MARKER, WeightReceiver, WeightSender
+ from prime_rl.utils.pathing import wait_for_path
+-from prime_rl.utils.weights import (
+-    convert_state_dict_to_hf,
+-    gather_weights_parallel,
+-    save_state_dict,
+-    save_state_dict_parallel,
+-)
+ 
+ 
+ class FileSystemWeightSender(WeightSender):
+@@ -32,6 +27,17 @@
+         self.logger.debug("Initialized filesystem weight broadcast")
+ 
+     def _broadcast(self, model: nn.Module, step: int, step_dir: Path) -> None:
++        import torch.distributed as dist
++        from torch.distributed.tensor import DTensor
++
++        from prime_rl.trainer.lora import get_lora_state, save_lora_config
++        from prime_rl.utils.weights import (
++            convert_state_dict_to_hf,
++            gather_weights_parallel,
++            save_state_dict,
++            save_state_dict_parallel,
++        )
++
+         if self.lora_config is not None:
+             # All ranks must participate in DTensor gathering, but only master saves
+             state_dict = get_lora_state().adapter_state_dict()
+diff --git a/src/prime_rl/utils/tokenizer.py b/src/prime_rl/utils/tokenizer.py
+new file mode 100644
+--- /dev/null
++++ b/src/prime_rl/utils/tokenizer.py
+@@ -0,0 +1,26 @@
++from pathlib import Path
++
++from transformers import AutoTokenizer
++from transformers.tokenization_utils import PreTrainedTokenizer
++
++from prime_rl.configs.trainer import TokenizerConfig
++from prime_rl.utils.logger import get_logger
++
++
++def setup_tokenizer(config: TokenizerConfig) -> PreTrainedTokenizer:
++    """Load tokenizer state without importing the GPU trainer stack."""
++    logger = get_logger()
++    tokenizer = AutoTokenizer.from_pretrained(
++        config.name, trust_remote_code=config.trust_remote_code
++    )
++    if config.chat_template is not None:
++        path = Path(config.chat_template)
++        if path.is_file():
++            logger.info(f"Loading custom chat template from file: {path}")
++            tokenizer.chat_template = path.read_text()
++            logger.debug(f"Chat template content:\n{tokenizer.chat_template}")
++        else:
++            logger.info("Using inline custom chat template")
++            tokenizer.chat_template = config.chat_template
++    tokenizer.pad_token_id = tokenizer.eos_token_id
++    return tokenizer

@@ -35,6 +35,7 @@ name = "rca-student"
 env.taskset.id = "rca-student"
 env.agent.harness.id = "rca-student"
 env.agent.runtime.type = "subprocess"
+env.max_concurrent_agents = 8
 
 [concurrency]
 min_inflight = 1

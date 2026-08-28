@@ -48,6 +48,7 @@ def test_orchestrator_uses_online_group_rollouts_and_production_harness() -> Non
     }
     assert source["env"]["taskset"]["id"] == "rca-student"
     assert source["env"]["agent"]["harness"]["id"] == "rca-student"
+    assert source["env"]["max_concurrent_agents"] == config["group_size"]
     assert config["concurrency"]["max_inflight"] == 16
 
 
