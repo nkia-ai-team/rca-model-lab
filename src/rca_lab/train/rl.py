@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import hashlib
 import json
 import math
 import os
@@ -17,6 +16,7 @@ from pydantic import Field, model_validator
 
 from rca_lab.data.sft import SFTMessage
 from rca_lab.harness.models import StrictModel
+from rca_lab.provenance import file_sha256
 from rca_lab.train.sft import LoRAConfig, WandbConfig, mask_assistant_spans
 
 
@@ -103,14 +103,6 @@ def validate_behavior_policy(rows: list[dict[str, Any]], config: EpisodeRLConfig
             f"rollout behavior policy does not match training base: "
             f"dataset={provenance} config={expected}"
         )
-
-
-def file_sha256(path: Path) -> str:
-    digest = hashlib.sha256()
-    with path.open("rb") as stream:
-        for chunk in iter(lambda: stream.read(1024 * 1024), b""):
-            digest.update(chunk)
-    return digest.hexdigest()
 
 
 def validate_dataset_artifact(path: Path, config: EpisodeRLConfig) -> None:

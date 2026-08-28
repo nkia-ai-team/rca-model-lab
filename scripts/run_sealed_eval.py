@@ -4,7 +4,6 @@
 from __future__ import annotations
 
 import argparse
-import hashlib
 import json
 import os
 import re
@@ -16,6 +15,8 @@ from pathlib import Path
 from urllib.request import urlopen
 
 import yaml
+
+from rca_lab.provenance import case_set_identity, file_sha256, model_artifact_identity
 
 
 def wait_for_model(url: str, timeout: int = 300) -> None:
@@ -30,11 +31,29 @@ def wait_for_model(url: str, timeout: int = 300) -> None:
     raise TimeoutError(f"model endpoint did not become ready: {url}")
 
 
+def eval_manifest_contract(args: argparse.Namespace, cases: list[str]) -> dict[str, object]:
+    return {
+        "model": args.model,
+        "model_artifact": args.model_artifact,
+        "model_artifact_sha256": model_artifact_identity(args.model_artifact),
+        "base_url": args.base_url,
+        "structured_output_backend": args.structured_backend,
+        "runs": args.runs,
+        "cases": cases,
+        "partition": args.partition,
+        "agent_sha256": file_sha256(args.agent),
+        "restore_sha256": file_sha256(args.restore),
+        "split_sha256": file_sha256(args.split),
+        "case_set_sha256": case_set_identity(args.case_root, cases),
+    }
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--split", type=Path, default=Path("configs/teacher/codex-blind-v1.yaml"))
     parser.add_argument("--agent", type=Path, required=True)
     parser.add_argument("--restore", type=Path, required=True)
+    parser.add_argument("--case-root", type=Path, default=Path("/data/eval-cases"))
     parser.add_argument("--output", type=Path, default=Path("outputs/eval/sft-teacher-v1"))
     parser.add_argument("--base-url", default="http://localhost:8002/v1")
     parser.add_argument("--model", default="rca-actor")
@@ -65,6 +84,10 @@ def main() -> None:
     args = parser.parse_args()
     if args.runs < 1:
         parser.error("--runs must be at least 1")
+    if not args.model_artifact or not model_artifact_identity(args.model_artifact):
+        parser.error("--model-artifact must identify a readable immutable model artifact")
+    if not args.restore.is_file():
+        parser.error("--restore must identify a readable reset executable")
 
     cases = yaml.safe_load(args.split.read_text(encoding="utf-8"))[args.partition]
     if args.selected_cases:
@@ -73,6 +96,8 @@ def main() -> None:
             parser.error(f"--case is not in the {args.partition} split: {', '.join(unknown)}")
         selected = set(args.selected_cases)
         cases = [case for case in cases if case in selected]
+    if not case_set_identity(args.case_root, cases):
+        parser.error("--case-root is missing one or more selected case artifacts")
     if args.output.exists() and any(args.output.iterdir()):
         raise SystemExit(f"refusing to mix evaluation artifacts in non-empty output: {args.output}")
     args.output.mkdir(parents=True, exist_ok=True)
@@ -80,15 +105,7 @@ def main() -> None:
         json.dumps(
             {
                 "created_at": datetime.now(UTC).isoformat(),
-                "model": args.model,
-                "model_artifact": args.model_artifact,
-                "base_url": args.base_url,
-                "structured_output_backend": args.structured_backend,
-                "runs": args.runs,
-                "cases": cases,
-                "partition": args.partition,
-                "agent_sha256": hashlib.sha256(args.agent.read_bytes()).hexdigest(),
-                "split_sha256": hashlib.sha256(args.split.read_bytes()).hexdigest(),
+                **eval_manifest_contract(args, cases),
             },
             indent=2,
         )

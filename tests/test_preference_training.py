@@ -4,13 +4,13 @@ from pathlib import Path
 
 import pytest
 
+from rca_lab.provenance import file_sha256
 from rca_lab.train.preference import (
     TrajectoryPreferenceRecord,
     load_preference_config,
     preference_loss_and_slope,
     validate_preference_dataset,
 )
-from rca_lab.train.rl import file_sha256
 
 
 def test_rank_refinement_config_is_typed() -> None:

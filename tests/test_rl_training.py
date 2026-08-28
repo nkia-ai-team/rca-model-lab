@@ -4,11 +4,11 @@ from pathlib import Path
 
 import pytest
 
+from rca_lab.provenance import file_sha256
 from rca_lab.train.rl import (
     RLEpisodeRecord,
     _response_shape,
     clipped_surrogate,
-    file_sha256,
     load_rl_config,
     validate_behavior_policy,
     validate_dataset_artifact,

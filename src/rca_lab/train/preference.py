@@ -15,7 +15,8 @@ from pydantic import Field
 
 from rca_lab.data.sft import SFTMessage
 from rca_lab.harness.models import StrictModel
-from rca_lab.train.rl import _response_shape, _selected_logps, file_sha256
+from rca_lab.provenance import file_sha256
+from rca_lab.train.rl import _response_shape, _selected_logps
 from rca_lab.train.sft import LoRAConfig, WandbConfig, mask_assistant_spans
 
 
