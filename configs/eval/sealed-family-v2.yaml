@@ -22,6 +22,7 @@ cases:
         target_aliases: [testbed-payment, commerce-payment, payment-service]
       - pseudo_kind: external_dependency
         pseudo_ids: [external:external-pg]
+        boundary_target_ids: [c3a3587e-215e-4da8-a76c-729732394e40]
         boundary_target_aliases: [testbed-payment, commerce-payment, payment-service]
   case-f08-p-v3-78f4a1ba:
     expected_status: confirmed
@@ -49,6 +50,7 @@ cases:
         target_aliases: [food-delivery-payment]
       - pseudo_kind: external_dependency
         pseudo_ids: [external:external-pg]
+        boundary_target_ids: [2e6120e3-37fa-4c44-a224-6ab13afdd9ee]
         boundary_target_aliases: [food-delivery-payment]
   case-f15-p-v3-3843c3fe:
     expected_status: confirmed

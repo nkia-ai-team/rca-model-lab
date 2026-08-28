@@ -22,6 +22,7 @@ cases:
         target_aliases: [commerce-payment, payment-service]
       - pseudo_kind: external_dependency
         pseudo_ids: [external:external-pg]
+        boundary_target_ids: [c3a3587e-215e-4da8-a76c-729732394e40]
         boundary_target_aliases: [commerce-payment, payment-service]
   case-f10-h-v3-4fe69be0:
     expected_status: provisional

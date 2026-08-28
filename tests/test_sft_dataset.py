@@ -6,6 +6,7 @@ import yaml
 from pydantic import ValidationError
 
 from rca_lab.data.sft import build_sft_dataset
+from rca_lab.eval.scoring import EvalContract
 from rca_lab.harness.models import ActionRequest
 from rca_lab.scenarios.split import TeacherSplit
 
@@ -133,6 +134,52 @@ def test_build_sft_dataset_migrates_legacy_cause_and_external_fields(tmp_path: P
         "boundary_target": "target-1",
         "evidence_refs": ["obs-001"],
     }
+
+
+def test_build_sft_dataset_enforces_typed_terminal_contract(tmp_path: Path) -> None:
+    path = tmp_path / "case-train" / "accepted.episode.jsonl"
+    path.parent.mkdir(parents=True)
+    path.write_text(
+        json.dumps(
+            {
+                "turn": 1,
+                "system": "system",
+                "user": "visible obs-001",
+                "action": {
+                    "action": "answer",
+                    "answer": {
+                        "status": "confirmed",
+                        "ready": True,
+                        "causes": [
+                            {
+                                "target": "wrong-target",
+                                "mechanism": "wrong",
+                                "support_refs": ["obs-001"],
+                            }
+                        ],
+                    },
+                },
+                "ok": True,
+                "obs": "done",
+            }
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    contract = EvalContract.model_validate(
+        {
+            "version": 1,
+            "cases": {
+                "case-train": {
+                    "expected_status": "confirmed",
+                    "roots": [{"target_ids": ["canonical-target"]}],
+                }
+            },
+        }
+    )
+
+    with pytest.raises(ValueError, match="terminal root_f1=0.000"):
+        build_sft_dataset(synth_root=tmp_path, split=split(), contract=contract)
 
 
 def test_split_rejects_family_leakage() -> None:

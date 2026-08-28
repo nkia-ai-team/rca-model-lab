@@ -1,0 +1,29 @@
+name: muse-glimmer-30b-teacher-v3-contract-clean
+model_name: /home/work/models/muse-glimmer-30b
+dataset: data/processed/sft-teacher-v3-contract-clean.jsonl
+dataset_manifest: data/processed/sft-teacher-v3-contract-clean.manifest.json
+terminal_contract: configs/eval/train-family-v2.yaml
+curation_manifest: data/synth/teacher-v3-contract-clean/curation-manifest.json
+expected_scenarios: 20
+expected_trajectories: 23
+output_dir: outputs/muse-glimmer-30b-teacher-v3-contract-clean
+max_length: 32768
+epochs: 3
+learning_rate: 0.0001
+batch_size: 1
+# 23 complete episodes cannot form equal groups of two without dropping or
+# repeating one case. Keep every curated episode exactly once per epoch.
+gradient_accumulation_steps: 1
+save_total_limit: 1
+trajectory_mode: episode_exact_runtime
+assistant_only_loss: true
+case_balanced_loss: true
+use_liger_kernel: true
+lora:
+  rank: 8
+  alpha: 16
+  dropout: 0.0
+  target_modules: all-linear
+wandb:
+  entity: nkia-ai
+  project: rca-actor-sft

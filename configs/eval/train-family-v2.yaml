@@ -7,6 +7,7 @@ cases:
         target_aliases: [commerce-payment, payment-service]
       - pseudo_kind: external_dependency
         pseudo_ids: [external:external-pg]
+        boundary_target_ids: [c3a3587e-215e-4da8-a76c-729732394e40]
         boundary_target_aliases: [commerce-payment, payment-service]
   case-f01-p-v3-d691440c:
     expected_status: confirmed
@@ -50,6 +51,7 @@ cases:
         target_aliases: [food-delivery-payment]
       - pseudo_kind: external_dependency
         pseudo_ids: [external:external-pg]
+        boundary_target_ids: [2e6120e3-37fa-4c44-a224-6ab13afdd9ee]
         boundary_target_aliases: [food-delivery-payment]
   case-f06-r-v3-6ace8a7d:
     expected_status: provisional
@@ -58,6 +60,7 @@ cases:
         target_aliases: [commerce-payment, payment-service]
       - pseudo_kind: external_dependency
         pseudo_ids: [external:external-pg]
+        boundary_target_ids: [c3a3587e-215e-4da8-a76c-729732394e40]
         boundary_target_aliases: [commerce-payment, payment-service]
   case-f07-h-v3-7de1a36f:
     expected_status: provisional
@@ -86,6 +89,7 @@ cases:
         target_aliases: [commerce-cart, cart-service]
       - pseudo_kind: redis
         pseudo_ids: [external:testbed-redis]
+        boundary_target_ids: [fc54857c-9bbb-4b47-abb4-7fa35971d994]
         boundary_target_aliases: [commerce-cart, cart-service]
   case-f14-p-v3-0bdb303b:
     expected_status: provisional
@@ -111,6 +115,7 @@ cases:
         target_aliases: [food-delivery-payment]
       - pseudo_kind: external_dependency
         pseudo_ids: [external:external-pg]
+        boundary_target_ids: [2e6120e3-37fa-4c44-a224-6ab13afdd9ee]
         boundary_target_aliases: [food-delivery-payment]
   case-f19-s-v3-5daa9c97:
     expected_status: provisional
@@ -119,4 +124,5 @@ cases:
         target_aliases: [food-delivery-payment]
       - pseudo_kind: external_dependency
         pseudo_ids: [external:external-pg]
+        boundary_target_ids: [2e6120e3-37fa-4c44-a224-6ab13afdd9ee]
         boundary_target_aliases: [food-delivery-payment]

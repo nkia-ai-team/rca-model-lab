@@ -32,6 +32,8 @@ class FullTrajectorySFTConfig(StrictModel):
     model_name: str
     dataset: str
     dataset_manifest: str
+    terminal_contract: str | None = None
+    curation_manifest: str | None = None
     expected_scenarios: int = Field(ge=1)
     expected_trajectories: int = Field(ge=1)
     output_dir: str
@@ -70,6 +72,18 @@ def load_verified_training_rows(config: FullTrajectorySFTConfig) -> list[dict[st
     digest = hashlib.sha256(payload).hexdigest()
     if digest != manifest.dataset_sha256:
         raise ValueError("SFT dataset SHA-256 does not match its manifest")
+    provenance_paths = (
+        (config.terminal_contract, manifest.terminal_contract_sha256, "terminal contract"),
+        (config.curation_manifest, manifest.curation_manifest_sha256, "curation manifest"),
+    )
+    for configured_path, expected_digest, label in provenance_paths:
+        if configured_path is None and expected_digest is None:
+            continue
+        if configured_path is None or expected_digest is None:
+            raise ValueError(f"SFT {label} provenance is incomplete")
+        actual_digest = hashlib.sha256(Path(configured_path).read_bytes()).hexdigest()
+        if actual_digest != expected_digest:
+            raise ValueError(f"SFT {label} SHA-256 does not match its dataset manifest")
     rows = [json.loads(line) for line in payload.decode().splitlines() if line]
     scenarios = {str(row["scenario_id"]) for row in rows}
     if len(rows) != manifest.trajectory_count or len(rows) != config.expected_trajectories:

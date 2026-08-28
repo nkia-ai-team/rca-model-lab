@@ -11,7 +11,7 @@ from rca_lab.train.sft import (
 
 
 def test_production_config_preserves_episodes_with_exact_runtime_turns() -> None:
-    config = load_sft_config(Path("configs/sft/muse-glimmer-30b-teacher-v2.yaml"))
+    config = load_sft_config(Path("configs/sft/muse-glimmer-30b-teacher-v3.yaml"))
 
     assert config.trajectory_mode == "episode_exact_runtime"
     assert config.assistant_only_loss is True
@@ -19,7 +19,12 @@ def test_production_config_preserves_episodes_with_exact_runtime_turns() -> None
     assert config.use_liger_kernel is True
     assert config.save_total_limit == 1
     rows = load_verified_training_rows(config)
-    assert len(rows) == 24
+    assert config.terminal_contract == "configs/eval/train-family-v2.yaml"
+    assert config.curation_manifest == (
+        "data/synth/teacher-v3-contract-clean/curation-manifest.json"
+    )
+    assert config.gradient_accumulation_steps == 1
+    assert len(rows) == 23
     assert len({row["scenario_id"] for row in rows}) == 20
 
 

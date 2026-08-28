@@ -87,10 +87,7 @@ def root_tokens(result: dict[str, Any], names: dict[str, str]) -> list[RootCandi
             variant="pseudo",
             pseudo_id=str(cause.get("id", "")),
             pseudo_kind=str(cause.get("kind", "")),
-            boundary_target=names.get(
-                str(cause.get("boundary_target", "")),
-                str(cause.get("boundary_target", "")),
-            ),
+            boundary_target=str(cause.get("boundary_target", "")),
         )
         for cause in result.get("external_causes", [])
     )

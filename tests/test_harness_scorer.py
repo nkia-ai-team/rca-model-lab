@@ -153,6 +153,7 @@ def test_external_root_is_registered_and_scored_by_identity_and_boundary() -> No
                 RootExpectation(
                     pseudo_kind="external_dependency",
                     pseudo_ids=("external:external-pg",),
+                    boundary_target_ids=("payment",),
                     boundary_target_aliases=("payment",),
                 ),
             ),

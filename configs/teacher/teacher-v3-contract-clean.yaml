@@ -1,0 +1,50 @@
+version: 1
+trajectories:
+  - episode: case-f01-h-v3-48ec8e62/claude-f01h-g3.episode.jsonl
+    actions: case-f01-h-v3-48ec8e62/claude-f01h-g3.actions.json
+  - episode: case-f01-p-v3-d691440c/codex-f01p-x1.episode.jsonl
+  - episode: case-f01-p-v3-d691440c/codex-f01p-x2.episode.jsonl
+  - episode: case-f01-r-v3-34274f3e/claude-f01r-g4.episode.jsonl
+  - episode: case-f03-h-v3-d4192a3b/codex-f03h-x1.episode.jsonl
+  - episode: case-f03-h-v3-d4192a3b/codex-f03h-x2.episode.jsonl
+  - episode: case-f05-h-v3-36a247f1/claude-f05h-g4.episode.jsonl
+  - episode: case-f05-p-v3-6fe331ef/codex-f05p-x1.episode.jsonl
+  - episode: case-f05-r-v3-527f3692/codex-f05r-r5.episode.jsonl
+  - episode: case-f06-h-v3-e43298a2/claude-f06h-n1.episode.jsonl
+  # n2 named payment as an additional root. n1/n3 solve the same case exactly.
+  - episode: case-f06-h-v3-e43298a2/claude-f06h-n3.episode.jsonl
+  - episode: case-f06-p-v3-100785c9/codex-f06p-a2.episode.jsonl
+  - episode: case-f06-r-v3-6ace8a7d/claude-f06r-g1.episode.jsonl
+    actions: case-f06-r-v3-6ace8a7d/claude-f06r-g1.actions.json
+  - episode: case-f07-h-v3-7de1a36f/claude-f07h-g4.episode.jsonl
+  - episode: case-f09-h-v3-0c795f2b/claude-f09h-g5.episode.jsonl
+  - episode: case-f09-p-v3-6dae1c0b/claude-f09p-g3.episode.jsonl
+  - episode: case-f10-h-v3-4fe69be0/claude-f10h-g1.episode.jsonl
+  - episode: case-f11-r-v3-85b9a489/codex-f11r-a1.episode.jsonl
+  - episode: case-f14-p-v3-0bdb303b/claude-f14p-g1.episode.jsonl
+  - episode: case-f16-h-v3-2f0555c7/claude-f16h-g2.episode.jsonl
+    terminal_correction:
+      replace_cause_targets:
+        252a3a37-77fd-495a-8e12-d79303753fda: a072cd3d-4a33-4542-832d-b4beec88609f
+      drop_cause_targets:
+        - e9f5f307-9ebd-4403-8461-164b989e5d62
+      cause_updates:
+        a072cd3d-4a33-4542-832d-b4beec88609f:
+          claim: "prod-k8s-01의 deployment unavailable_replicas가 19:31:00Z 0에서 1/28로 증가하고 19:35:00Z 0으로 회복했다(obs-005, obs-006). 장애 시작과 18초 차이이며, 같은 구간 gateway에는 users 경로 CB open 원문 50/50(ev210, ev211), /api/users 502 324건(ev006), POST 오류 49/50(ev213)이 발생했다."
+          mechanism: "prod-k8s-01에서 deployment replica 1개가 불가용해 users 경로가 중단됨 → gateway의 users circuit breaker open → /api/users 요청 502 확산"
+          proof_type: metric_causal
+          confidence: 0.7
+      text: "근본원인(잠정): prod-k8s-01의 deployment replica 불가용이 users 경로 중단을 만들었다. unavailable_replicas는 장애 직전 0에서 1/28로 증가했고 장애 종료 때 0으로 복귀했다(obs-005, obs-006). 그 결과 gateway users circuit breaker가 열리고(ev210, ev211), /api/users 502 324건과 POST 오류 49/50이 발생했다(ev006, ev213). deployment 이름까지는 직접 식별하지 못해 provisional이다."
+  - episode: case-f18-p-v3-d2c566ad/claude-f18p-g4.episode.jsonl
+  - episode: case-f19-p-v3-5a350c0a/claude-f19p-g3.episode.jsonl
+    actions: case-f19-p-v3-5a350c0a/claude-f19p-g3.actions.json
+    terminal_correction:
+      drop_cause_targets:
+        - fa8b5cc4-6c43-45bf-b388-a4b245fade2d
+      text: "근본원인은 food-delivery-payment의 외부 결제 의존성에서 발생한 약 8초 지연이다. payment outbound 8007ms, payment server 8139ms, order outbound 8141ms가 같은 지연을 공유한다(ev103, ev102, ev281). order 풀 포화와 503은 이 지연이 전파된 결과이며 독립적인 근본원인으로 제출하지 않는다. 외부 의존성 내부는 관측 밖이므로 provisional이다."
+  - episode: case-f19-s-v3-5daa9c97/claude-f19s-g2.episode.jsonl
+    actions: case-f19-s-v3-5daa9c97/claude-f19s-g2.actions.json
+    terminal_correction:
+      drop_cause_targets:
+        - 1f1eb9b2-a368-4a70-a003-5fe70b1a983b
+      text: "근본원인은 food-delivery-payment에서 호출한 외부 PG의 실패다. PG /pay 실패가 표본 50/50으로 나타나고(ev103), payment 요청이 약 10.5초 후 실패했으며(ev104, ev105), order 결제 fan-out 502와 주문 503 214건으로 전파됐다(ev275, ev012). dispatch 열화는 동반 현상이므로 근본원인 목록에서 제외한다. PG 내부는 관측 밖이므로 provisional이다."

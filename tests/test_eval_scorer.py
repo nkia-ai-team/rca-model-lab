@@ -84,6 +84,7 @@ def test_multi_root_f1_penalizes_missing_and_extra_roots() -> None:
         {
             "pseudo_kind": "external_dependency",
             "pseudo_ids": ["external:external-pg"],
+            "boundary_target_ids": ["payment-id"],
             "boundary_target_aliases": ["payment-service"],
         },
     ]
@@ -99,7 +100,7 @@ def test_multi_root_f1_penalizes_missing_and_extra_roots() -> None:
                 "variant": "pseudo",
                 "pseudo_id": "external:external-pg",
                 "pseudo_kind": "external_dependency",
-                "boundary_target": "commerce-payment-service",
+                "boundary_target": "payment-id",
             },
         ],
     ) == 1
@@ -125,7 +126,7 @@ def test_multi_root_f1_penalizes_missing_and_extra_roots() -> None:
                 "variant": "pseudo",
                 "pseudo_id": "external:external-pg",
                 "pseudo_kind": "external_dependency",
-                "boundary_target": "commerce-payment-service",
+                "boundary_target": "payment-id",
             },
             {
                 "variant": "target",
@@ -173,6 +174,7 @@ def test_pseudo_root_requires_identity_and_boundary_not_just_kind() -> None:
         {
             "pseudo_kind": "external_dependency",
             "pseudo_ids": ["external:external-pg"],
+            "boundary_target_ids": ["payment-id"],
             "boundary_target_aliases": ["commerce-payment"],
         }
     ]
@@ -184,7 +186,7 @@ def test_pseudo_root_requires_identity_and_boundary_not_just_kind() -> None:
                 "variant": "pseudo",
                 "pseudo_id": "external:external-pg",
                 "pseudo_kind": "external_dependency",
-                "boundary_target": "commerce-payment",
+                "boundary_target": "payment-id",
             }
         ],
     ) == 1.0
@@ -195,7 +197,7 @@ def test_pseudo_root_requires_identity_and_boundary_not_just_kind() -> None:
                 "variant": "pseudo",
                 "pseudo_id": "external:payment",
                 "pseudo_kind": "external_dependency",
-                "boundary_target": "commerce-payment",
+                "boundary_target": "payment-id",
             }
         ],
     ) == 0.0
@@ -377,6 +379,7 @@ def test_external_episode_requires_canonical_identity_linked_boundary_and_known_
             {
                 "pseudo_kind": "external_dependency",
                 "pseudo_ids": ["external:external-pg"],
+                "boundary_target_ids": [target],
                 "boundary_target_aliases": ["payment-service"],
             },
         ],

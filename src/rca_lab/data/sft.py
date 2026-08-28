@@ -11,6 +11,7 @@ from typing import Any
 
 from pydantic import Field, model_validator
 
+from rca_lab.eval.scoring import EvalContract, ExpectedCase, root_f1
 from rca_lab.harness.models import ActionRequest, StrictModel
 from rca_lab.scenarios.split import TeacherSplit
 
@@ -42,6 +43,8 @@ class SFTDatasetManifest(StrictModel):
     trajectories_per_scenario: dict[str, int]
     trajectory_sha256: dict[str, str]
     dataset_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    terminal_contract_sha256: str | None = Field(default=None, pattern=r"^[0-9a-f]{64}$")
+    curation_manifest_sha256: str | None = Field(default=None, pattern=r"^[0-9a-f]{64}$")
     selection_contract: str = "curated_top_level_runtime_valid_v1"
 
     @model_validator(mode="after")
@@ -74,6 +77,7 @@ def _external_kind(original: dict[str, Any]) -> str:
     """Map the pre-registry teacher wire format onto the current enum."""
     value = str(original.get("kind") or original.get("type") or "external_dependency")
     return {
+        "http_upstream_dependency": "external_dependency",
         "external_http_dependency": "external_dependency",
         "external_service": "external_dependency",
     }.get(value, value)
@@ -87,8 +91,41 @@ def _external_id(original: dict[str, Any]) -> str:
     return "external:" + name.strip("-")
 
 
+def _references(value: Any) -> tuple[str, ...]:
+    if isinstance(value, str):
+        return tuple(_REFERENCE_RE.findall(value))
+    if isinstance(value, (list, tuple)):
+        return tuple(
+            ref
+            for item in value
+            for ref in _references(item)
+        )
+    return ()
+
+
+def _expected_pseudo_root(
+    *,
+    original: dict[str, Any],
+    boundary_target: str,
+    expected_case: ExpectedCase | None,
+) -> Any | None:
+    if expected_case is None:
+        return None
+    kind = _external_kind(original)
+    candidates = [
+        root
+        for root in expected_case.roots
+        if root.pseudo_kind == kind
+        and (not boundary_target or boundary_target in root.boundary_target_ids)
+    ]
+    return candidates[0] if len(candidates) == 1 else None
+
+
 def _canonical_action(
-    raw: dict[str, Any], user_prompt: str, prior_actions: tuple[str, ...]
+    raw: dict[str, Any],
+    user_prompt: str,
+    prior_actions: tuple[str, ...],
+    expected_case: ExpectedCase | None = None,
 ) -> dict[str, Any]:
     """Lift accepted legacy teacher actions onto the current runtime schema."""
     query = {
@@ -149,24 +186,51 @@ def _canonical_action(
             }
         )
     for original in source_answer.get("external_causes") or []:
-        refs = [
-            ref
-            for ref in original.get("evidence_refs") or original.get("support_refs") or []
-            if ref in visible_refs
-        ]
+        refs = list(
+            dict.fromkeys(
+                ref
+                for field in (
+                    "evidence_refs",
+                    "support_refs",
+                    "evidence",
+                    "claim",
+                    "detail",
+                    "behavior",
+                    "status_code_raw",
+                    "note",
+                )
+                for ref in _references(original.get(field))
+                if ref in visible_refs
+            )
+        )
         if not refs:
             continue
         boundary_target = str(
-            original.get("boundary_target") or original.get("boundary_target_id") or ""
+            original.get("boundary_target")
+            or original.get("boundary_target_id")
+            or original.get("via")
+            or ""
         )
         if not boundary_target and answer["causes"]:
             # The earliest teacher format attached the boundary only to the
             # adjacent internal cause.  Preserve that unambiguous relationship.
             boundary_target = str(answer["causes"][0]["target"])
+        expected_root = _expected_pseudo_root(
+            original=original,
+            boundary_target=boundary_target,
+            expected_case=expected_case,
+        )
+        external_id = _external_id(original)
+        external_kind = _external_kind(original)
+        if expected_root is not None:
+            external_id = expected_root.pseudo_ids[0]
+            external_kind = str(expected_root.pseudo_kind)
+            if not boundary_target:
+                boundary_target = expected_root.boundary_target_ids[0]
         answer["external_causes"].append(
             {
-                "id": _external_id(original),
-                "kind": _external_kind(original),
+                "id": external_id,
+                "kind": external_kind,
                 "name": str(original.get("name") or ""),
                 "boundary_target": boundary_target,
                 "evidence_refs": refs,
@@ -197,11 +261,55 @@ def _canonical_action(
     return wire
 
 
+def _terminal_contract_errors(
+    *,
+    scenario_id: str,
+    trajectory_id: str,
+    action: dict[str, Any],
+    expected_case: ExpectedCase,
+) -> tuple[str, ...]:
+    answer = dict(action.get("answer") or {})
+    errors: list[str] = []
+    if action.get("action") != "answer" or not answer.get("ready"):
+        errors.append("terminal action must submit a ready answer")
+    if answer.get("status") != expected_case.expected_status:
+        errors.append(
+            f"status={answer.get('status')} expected={expected_case.expected_status}"
+        )
+    actual = [
+        {
+            "variant": "target",
+            "target_id": str(cause.get("target", "")),
+            "target_name": "",
+        }
+        for cause in answer.get("causes") or []
+    ] + [
+        {
+            "variant": "pseudo",
+            "pseudo_id": str(cause.get("id", "")),
+            "pseudo_kind": str(cause.get("kind", "")),
+            "boundary_target": str(cause.get("boundary_target", "")),
+        }
+        for cause in answer.get("external_causes") or []
+    ]
+    score = root_f1(expected_case.roots, actual)
+    if score != 1.0:
+        errors.append(f"terminal root_f1={score:.3f}")
+    if errors:
+        return tuple(
+            f"{scenario_id}/{trajectory_id}: {message}" for message in errors
+        )
+    return ()
+
+
 def build_sft_dataset(
     *,
     synth_root: Path,
     split: TeacherSplit,
     expected_scenarios: int | None = None,
+    contract: EvalContract | None = None,
+    terminal_contract_sha256: str | None = None,
+    curation_manifest_sha256: str | None = None,
 ) -> tuple[tuple[SFTRecord, ...], SFTDatasetManifest]:
     train = set(split.train)
     sealed = set(split.sealed_eval)
@@ -212,6 +320,7 @@ def build_sft_dataset(
     counts: Counter[str] = Counter()
     failed_observations = 0
     total_turns = 0
+    contract_errors: list[str] = []
 
     for path in _trajectory_files(synth_root):
         scenario_id = path.parent.name
@@ -251,7 +360,13 @@ def build_sft_dataset(
             turn = step["turn"]
             if turn != index + 1:
                 raise ValueError(f"teacher turns must be contiguous from 1: {path}:{turn}")
-            canonical = _canonical_action(step["action"], str(step["user"]), tuple(prior_actions))
+            expected_case = contract.cases.get(scenario_id) if contract else None
+            canonical = _canonical_action(
+                step["action"],
+                str(step["user"]),
+                tuple(prior_actions),
+                expected_case,
+            )
             turns.append(
                 SFTTurn(
                     turn=turn,
@@ -269,6 +384,22 @@ def build_sft_dataset(
             )
             prior_actions.append(str(canonical["action"]))
 
+        if contract is not None:
+            expected_case = contract.cases.get(scenario_id)
+            if expected_case is None:
+                contract_errors.append(
+                    f"{scenario_id}/{trajectory_id}: scenario missing from evaluation contract"
+                )
+            else:
+                contract_errors.extend(
+                    _terminal_contract_errors(
+                        scenario_id=scenario_id,
+                        trajectory_id=trajectory_id,
+                        action=json.loads(turns[-1].messages[2].content),
+                        expected_case=expected_case,
+                    )
+                )
+
         records.append(
             SFTRecord(
                 turns=tuple(turns),
@@ -281,6 +412,11 @@ def build_sft_dataset(
         total_turns += len(steps)
 
     scenarios = tuple(sorted(counts))
+    if contract_errors:
+        raise ValueError(
+            "teacher trajectories violate the typed terminal contract:\n"
+            + "\n".join(contract_errors)
+        )
     if expected_scenarios is not None and len(scenarios) != expected_scenarios:
         raise ValueError(
             f"expected {expected_scenarios} accepted scenarios, found {len(scenarios)}"
@@ -295,6 +431,8 @@ def build_sft_dataset(
         trajectories_per_scenario=dict(sorted(counts.items())),
         trajectory_sha256=dict(sorted(trajectory_sha256.items())),
         dataset_sha256=hashlib.sha256(sft_records_payload(record_tuple).encode()).hexdigest(),
+        terminal_contract_sha256=terminal_contract_sha256,
+        curation_manifest_sha256=curation_manifest_sha256,
     )
     return record_tuple, manifest
 

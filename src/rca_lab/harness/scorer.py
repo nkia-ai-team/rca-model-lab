@@ -18,21 +18,25 @@ class RootExpectation(BaseModel):
         "external_dependency", "kafka", "redis", "network", "capacity_limit"
     ] | None = None
     pseudo_ids: tuple[str, ...] = ()
+    boundary_target_ids: tuple[str, ...] = ()
     boundary_target_aliases: tuple[str, ...] = ()
 
     @model_validator(mode="after")
     def complete_identity(self) -> RootExpectation:
         internal = bool(self.target_ids or self.target_aliases)
-        pseudo = bool(self.pseudo_kind or self.pseudo_ids or self.boundary_target_aliases)
+        pseudo = bool(
+            self.pseudo_kind
+            or self.pseudo_ids
+            or self.boundary_target_ids
+            or self.boundary_target_aliases
+        )
         if internal == pseudo:
             raise ValueError("root must define exactly one internal or pseudo identity")
         if internal and not self.target_ids:
             raise ValueError("internal root requires canonical target_ids")
-        if pseudo and not (
-            self.pseudo_kind and self.pseudo_ids and self.boundary_target_aliases
-        ):
+        if pseudo and not (self.pseudo_kind and self.pseudo_ids and self.boundary_target_ids):
             raise ValueError(
-                "pseudo root requires kind, canonical id, and boundary target"
+                "pseudo root requires kind, canonical id, and canonical boundary target id"
             )
         if any(not value.startswith("external:") for value in self.pseudo_ids):
             raise ValueError("pseudo root ids must start with external:")
@@ -49,14 +53,6 @@ class RootCandidate(BaseModel):
     boundary_target: str = ""
 
 
-def _alias_matches(aliases: tuple[str, ...], value: str) -> bool:
-    folded = value.casefold()
-    return any(
-        (alias_folded := alias.casefold()) in folded or folded in alias_folded
-        for alias in aliases
-    )
-
-
 def root_matches(expected: RootExpectation, actual: RootCandidate) -> bool:
     if expected.target_ids:
         return actual.variant == "target" and actual.target_id in expected.target_ids
@@ -64,9 +60,7 @@ def root_matches(expected: RootExpectation, actual: RootCandidate) -> bool:
         actual.variant == "pseudo"
         and actual.pseudo_kind == expected.pseudo_kind
         and actual.pseudo_id in expected.pseudo_ids
-        and _alias_matches(
-            expected.boundary_target_aliases, actual.boundary_target
-        )
+        and actual.boundary_target in expected.boundary_target_ids
     )
 
 
