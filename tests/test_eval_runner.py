@@ -32,6 +32,7 @@ def test_eval_manifest_seals_model_restore_and_case_artifacts(tmp_path: Path) ->
     args = argparse.Namespace(
         model="actor",
         model_artifact=str(model),
+        model_artifact_sha256="",
         base_url="http://localhost:8002/v1",
         structured_backend="guidance",
         runs=3,

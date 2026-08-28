@@ -44,6 +44,16 @@ def evaluate(report: dict[str, Any]) -> tuple[bool, tuple[str, ...]]:
             f"{name}: unsupported confirmations",
             failures,
         )
+        _require(
+            isinstance(stage.get("strict_correct_runs"), int),
+            f"{name}: missing strict run count",
+            failures,
+        )
+        _require(
+            isinstance(stage.get("evidence_complete_runs"), int),
+            f"{name}: missing evidence coverage",
+            failures,
+        )
 
     _require(
         int(sft.get("majority_strict_correct", -1))
@@ -65,6 +75,39 @@ def evaluate(report: dict[str, Any]) -> tuple[bool, tuple[str, ...]]:
     _require(
         float(rl.get("mean_reward", -1)) >= float(sft.get("mean_reward", 0)),
         "RL mean reward regressed below SFT",
+        failures,
+    )
+    _require(
+        float(sft.get("mean_root_f1", -1)) >= float(baseline.get("mean_root_f1", 0)),
+        "SFT root F1 regressed below baseline",
+        failures,
+    )
+    _require(
+        float(rl.get("mean_root_f1", -1)) >= float(sft.get("mean_root_f1", 0)),
+        "RL root F1 regressed below SFT",
+        failures,
+    )
+    _require(
+        int(sft.get("strict_correct_runs", -1))
+        >= int(baseline.get("strict_correct_runs", 0)),
+        "SFT strict runs regressed below baseline",
+        failures,
+    )
+    _require(
+        int(rl.get("strict_correct_runs", -1)) >= int(sft.get("strict_correct_runs", 0)),
+        "RL strict runs regressed below SFT",
+        failures,
+    )
+    _require(
+        int(sft.get("evidence_complete_runs", -1))
+        >= int(baseline.get("evidence_complete_runs", 0)),
+        "SFT evidence coverage regressed below baseline",
+        failures,
+    )
+    _require(
+        int(rl.get("evidence_complete_runs", -1))
+        >= int(sft.get("evidence_complete_runs", 0)),
+        "RL evidence coverage regressed below SFT",
         failures,
     )
     return not failures, tuple(failures)

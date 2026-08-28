@@ -18,7 +18,7 @@ from typing import Any
 
 import yaml
 
-from rca_lab.provenance import case_set_identity, file_sha256, model_artifact_identity
+from rca_lab.provenance import case_set_identity, file_sha256, resolve_model_identity
 
 
 def run_agent(
@@ -95,7 +95,9 @@ def manifest_contract(args: argparse.Namespace, cases: list[str]) -> dict[str, A
     return {
         "model": args.model,
         "model_artifact": args.model_artifact,
-        "model_artifact_sha256": model_artifact_identity(args.model_artifact),
+        "model_artifact_sha256": resolve_model_identity(
+            args.model_artifact, args.model_artifact_sha256
+        ),
         "base_url": args.base_url,
         "structured_output_backend": args.structured_backend,
         "group_size": args.group_size,
@@ -131,6 +133,11 @@ def main() -> None:
         help="immutable behavior-policy path recorded for provenance",
     )
     parser.add_argument(
+        "--model-artifact-sha256",
+        default="",
+        help="required when the immutable model artifact lives on a remote inference host",
+    )
+    parser.add_argument(
         "--structured-backend",
         choices=("guidance", "xgrammar", "outlines", "lm-format-enforcer", "unspecified"),
         default="unspecified",
@@ -152,8 +159,10 @@ def main() -> None:
         parser.error("--temperature must be in (0, 2]")
     if args.seed < 0:
         parser.error("--seed must be non-negative")
-    if not args.model_artifact or not model_artifact_identity(args.model_artifact):
-        parser.error("--model-artifact must identify a readable immutable model artifact")
+    try:
+        resolve_model_identity(args.model_artifact, args.model_artifact_sha256)
+    except ValueError as error:
+        parser.error(str(error))
     if not args.restore.is_file():
         parser.error("--restore must identify a readable reset executable")
 

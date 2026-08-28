@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import hashlib
+import re
 from pathlib import Path
 
 _MODEL_IDENTITY_FILES = (
@@ -11,6 +12,7 @@ _MODEL_IDENTITY_FILES = (
     "adapter_config.json",
     "merge_manifest.json",
 )
+_SHA256 = re.compile(r"^[0-9a-f]{64}$")
 
 
 def file_sha256(path: Path) -> str:
@@ -39,6 +41,20 @@ def model_artifact_identity(value: str) -> str:
     return digest.hexdigest()
 
 
+def resolve_model_identity(value: str, provided_sha256: str = "") -> str:
+    """Resolve local artifacts directly or verify an explicit remote digest."""
+    provided = provided_sha256.casefold()
+    if provided and not _SHA256.fullmatch(provided):
+        raise ValueError("model artifact sha256 must be 64 lowercase hexadecimal characters")
+    local = model_artifact_identity(value)
+    if local and provided and local != provided:
+        raise ValueError(f"model artifact sha256 mismatch: local={local} provided={provided}")
+    resolved = local or provided
+    if not value or not resolved:
+        raise ValueError("model artifact requires a readable path or explicit remote sha256")
+    return resolved
+
+
 def case_set_identity(case_root: Path, cases: list[str]) -> str:
     """Fingerprint case metadata plus the complete relative-path/size inventory."""
     digest = hashlib.sha256()
@@ -54,4 +70,3 @@ def case_set_identity(case_root: Path, cases: list[str]) -> str:
             digest.update(str(relative).encode())
             digest.update(str(path.stat().st_size).encode())
     return digest.hexdigest()
-

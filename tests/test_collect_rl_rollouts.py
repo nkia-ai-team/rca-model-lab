@@ -5,6 +5,8 @@ import importlib.util
 import json
 from pathlib import Path
 
+from rca_lab.provenance import model_artifact_identity
+
 
 def _module():
     spec = importlib.util.spec_from_file_location(
@@ -81,6 +83,7 @@ def test_rollout_manifest_pins_sampling_temperature(tmp_path: Path) -> None:
     args = argparse.Namespace(
         model="actor",
         model_artifact=str(model_artifact),
+        model_artifact_sha256="",
         base_url="http://localhost:8003/v1",
         structured_backend="guidance",
         group_size=8,
@@ -104,15 +107,14 @@ def test_rollout_manifest_pins_sampling_temperature(tmp_path: Path) -> None:
 
 
 def test_model_identity_changes_with_model_metadata(tmp_path: Path) -> None:
-    module = _module()
     artifact = tmp_path / "model"
     artifact.mkdir()
     config = artifact / "config.json"
     config.write_text('{"revision":1}\n')
-    first = module.model_artifact_identity(str(artifact))
+    first = model_artifact_identity(str(artifact))
     config.write_text('{"revision":2}\n')
 
-    assert first != module.model_artifact_identity(str(artifact))
+    assert first != model_artifact_identity(str(artifact))
 
 
 def test_rollout_seeds_are_stable_and_distinct() -> None:
