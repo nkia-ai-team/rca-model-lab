@@ -2,19 +2,107 @@
 
 from __future__ import annotations
 
-from pydantic import BaseModel, ConfigDict, Field
+from typing import Literal
+
+from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 from rca_lab.harness.models import AnswerState, Observation, ProofType
 from rca_lab.harness.validation import HarnessValidator
 
 
+class RootExpectation(BaseModel):
+    model_config = ConfigDict(extra="forbid", frozen=True)
+    target_ids: tuple[str, ...] = ()
+    target_aliases: tuple[str, ...] = ()
+    pseudo_kind: Literal[
+        "external_dependency", "kafka", "redis", "network", "capacity_limit"
+    ] | None = None
+    pseudo_ids: tuple[str, ...] = ()
+    boundary_target_aliases: tuple[str, ...] = ()
+
+    @model_validator(mode="after")
+    def complete_identity(self) -> RootExpectation:
+        internal = bool(self.target_ids or self.target_aliases)
+        pseudo = bool(self.pseudo_kind or self.pseudo_ids or self.boundary_target_aliases)
+        if internal == pseudo:
+            raise ValueError("root must define exactly one internal or pseudo identity")
+        if internal and not self.target_ids:
+            raise ValueError("internal root requires canonical target_ids")
+        if pseudo and not (
+            self.pseudo_kind and self.pseudo_ids and self.boundary_target_aliases
+        ):
+            raise ValueError(
+                "pseudo root requires kind, canonical id, and boundary target"
+            )
+        if any(not value.startswith("external:") for value in self.pseudo_ids):
+            raise ValueError("pseudo root ids must start with external:")
+        return self
+
+
+class RootCandidate(BaseModel):
+    model_config = ConfigDict(extra="forbid", frozen=True)
+    variant: Literal["target", "pseudo"]
+    target_id: str = ""
+    target_name: str = ""
+    pseudo_id: str = ""
+    pseudo_kind: str = ""
+    boundary_target: str = ""
+
+
+def _alias_matches(aliases: tuple[str, ...], value: str) -> bool:
+    folded = value.casefold()
+    return any(
+        (alias_folded := alias.casefold()) in folded or folded in alias_folded
+        for alias in aliases
+    )
+
+
+def root_matches(expected: RootExpectation, actual: RootCandidate) -> bool:
+    if expected.target_ids:
+        return actual.variant == "target" and actual.target_id in expected.target_ids
+    return bool(
+        actual.variant == "pseudo"
+        and actual.pseudo_kind == expected.pseudo_kind
+        and actual.pseudo_id in expected.pseudo_ids
+        and _alias_matches(
+            expected.boundary_target_aliases, actual.boundary_target
+        )
+    )
+
+
+def root_f1(
+    expected: tuple[RootExpectation, ...] | list[RootExpectation],
+    actual: tuple[RootCandidate, ...] | list[RootCandidate],
+) -> float:
+    remaining = list(actual)
+    hits = 0
+    for root in expected:
+        match = next(
+            (
+                index
+                for index, candidate in enumerate(remaining)
+                if root_matches(root, candidate)
+            ),
+            None,
+        )
+        if match is not None:
+            hits += 1
+            remaining.pop(match)
+    if not expected:
+        return float(not actual)
+    precision = hits / max(1, len(actual))
+    recall = hits / len(expected)
+    return (
+        0.0
+        if precision + recall == 0
+        else 2 * precision * recall / (precision + recall)
+    )
+
+
 class ScoreTarget(BaseModel):
     model_config = ConfigDict(extra="forbid", frozen=True)
-    expected_status: str
-    expected_target: str = ""
-    expected_pseudo_kind: str = ""
-    expected_targets: tuple[str, ...] = ()
-    expected_pseudo_kinds: tuple[str, ...] = ()
+    expected_status: Literal["confirmed", "provisional", "insufficient"]
+    roots: tuple[RootExpectation, ...] = Field(min_length=1)
 
 
 class ScoreBreakdown(BaseModel):
@@ -47,24 +135,19 @@ class TypedScorer:
         if not calibration:
             reasons.append("status mismatch")
 
-        expected = set(target.expected_targets or ((target.expected_target,) if target.expected_target else ()))
-        expected_pseudo = set(
-            target.expected_pseudo_kinds
-            or ((target.expected_pseudo_kind,) if target.expected_pseudo_kind else ())
-        )
-        wanted = {f"target:{item}" for item in expected} | {
-            f"pseudo:{item}" for item in expected_pseudo
-        }
-        actual = {f"target:{item.target}" for item in answer.causes} | {
-            f"pseudo:{item.kind}" for item in answer.external_causes
-        }
-        if not wanted:
-            correctness = float(not actual)
-        else:
-            hits = len(wanted & actual)
-            precision = hits / max(1, len(actual))
-            recall = hits / len(wanted)
-            correctness = 0.0 if precision + recall == 0 else 2 * precision * recall / (precision + recall)
+        actual = [
+            RootCandidate(variant="target", target_id=item.target)
+            for item in answer.causes
+        ] + [
+            RootCandidate(
+                variant="pseudo",
+                pseudo_id=item.id,
+                pseudo_kind=item.kind,
+                boundary_target=item.boundary_target,
+            )
+            for item in answer.external_causes
+        ]
+        correctness = root_f1(target.roots, actual)
         if correctness < 1:
             reasons.append("root cause mismatch")
 

@@ -3,25 +3,33 @@ cases:
   case-f01-p-v3-d691440c:
     expected_status: confirmed
     roots:
-      - target_aliases: [Oracle-corebanking, BANKING]
+      - target_ids: [00149c2f-8a97-43bf-8907-c25029973e51]
+        target_aliases: [Oracle-corebanking, BANKING]
   case-f01-r-v3-34274f3e:
     expected_status: confirmed
     roots:
-      - target_aliases: [PostgreSQL-commerce, commerce-postgresql]
+      - target_ids: [cf97076f-e72d-4c9e-b731-649592cfc5bf]
+        target_aliases: [PostgreSQL-commerce, commerce-postgresql]
   case-f03-h-v3-d4192a3b:
     expected_status: provisional
     roots:
-      - target_aliases: [commerce-order, order-service]
+      - target_ids: [93df2d34-b054-4ecd-8f8e-bafa098dc6cd]
+        target_aliases: [commerce-order, order-service]
   case-f06-r-v3-6ace8a7d:
     expected_status: provisional
     roots:
-      - target_aliases: [commerce-payment, payment-service]
+      - target_ids: [c3a3587e-215e-4da8-a76c-729732394e40]
+        target_aliases: [commerce-payment, payment-service]
       - pseudo_kind: external_dependency
+        pseudo_ids: [external:external-pg]
+        boundary_target_aliases: [commerce-payment, payment-service]
   case-f10-h-v3-4fe69be0:
     expected_status: provisional
     roots:
-      - target_aliases: [tb-w3]
+      - target_ids: [828413c9-5210-42b5-a6a1-68ad42d3ca78]
+        target_aliases: [tb-w3]
   case-f18-p-v3-d2c566ad:
     expected_status: confirmed
     roots:
-      - target_aliases: [core-banking-transfer, banking-transfer]
+      - target_ids: [f0ce5940-a7e2-44a2-843f-196de379d898]
+        target_aliases: [core-banking-transfer, banking-transfer]

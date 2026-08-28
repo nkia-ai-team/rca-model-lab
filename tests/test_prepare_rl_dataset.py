@@ -147,7 +147,12 @@ def test_equal_terminal_outcomes_suppress_route_only_policy_gradient(tmp_path: P
         "cases": {
             case: {
                 "expected_status": "provisional",
-                "roots": [{"target_aliases": ["service-a"]}],
+                "roots": [
+                    {
+                        "target_ids": ["service-a-id"],
+                        "target_aliases": ["service-a"],
+                    }
+                ],
             }
         }
     }
@@ -227,7 +232,13 @@ def test_group_advantages_are_normalized_within_case(tmp_path: Path) -> None:
         episode = {
             "event": "episode_completed",
             "result": result,
-            "ledger": [{"ok": True}],
+            "ledger": [
+                {
+                    "id": "obs-001",
+                    "ok": True,
+                    "evidence_refs": ["obs-001"],
+                }
+            ],
             "prompts": [
                 {
                     "Messages": [
@@ -243,7 +254,9 @@ def test_group_advantages_are_normalized_within_case(tmp_path: Path) -> None:
         "cases": {
             case: {
                 "expected_status": "confirmed",
-                "roots": [{"target_aliases": ["service-a"]}],
+                "roots": [
+                    {"target_ids": [target], "target_aliases": ["service-a"]}
+                ],
             }
         }
     }
@@ -304,7 +317,12 @@ def test_equally_incorrect_episodes_do_not_learn_efficiency_noise(tmp_path: Path
         "cases": {
             case: {
                 "expected_status": "provisional",
-                "roots": [{"target_aliases": ["service-a"]}],
+                "roots": [
+                    {
+                        "target_ids": ["service-a-id"],
+                        "target_aliases": ["service-a"],
+                    }
+                ],
             }
         }
     }
@@ -368,7 +386,9 @@ def test_completed_attempt_marker_excludes_abandoned_attempts(tmp_path: Path) ->
         "cases": {
             case: {
                 "expected_status": "confirmed",
-                "roots": [{"target_aliases": ["service-a"]}],
+                "roots": [
+                    {"target_ids": [target], "target_aliases": ["service-a"]}
+                ],
             }
         }
     }

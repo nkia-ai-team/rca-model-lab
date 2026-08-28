@@ -52,6 +52,7 @@ def test_root_identity_must_be_exactly_one_typed_variant() -> None:
                         "expected_status": "confirmed",
                         "roots": [
                             {
+                                "target_ids": ["service-id"],
                                 "target_aliases": ["service"],
                                 "pseudo_kind": "external_dependency",
                             }
@@ -61,26 +62,154 @@ def test_root_identity_must_be_exactly_one_typed_variant() -> None:
             }
         )
 
+    with pytest.raises(ValidationError):
+        EvalContract.model_validate(
+            {
+                "cases": {
+                    "bad": {
+                        "expected_status": "provisional",
+                        "roots": [{"pseudo_kind": "external_dependency"}],
+                    }
+                }
+            }
+        )
+
 
 def test_multi_root_f1_penalizes_missing_and_extra_roots() -> None:
     expected = [
-        {"target_aliases": ["inventory-service"]},
-        {"pseudo_kind": "external_dependency"},
+        {
+            "target_ids": ["inventory-id"],
+            "target_aliases": ["inventory-service"],
+        },
+        {
+            "pseudo_kind": "external_dependency",
+            "pseudo_ids": ["external:external-pg"],
+            "boundary_target_aliases": ["payment-service"],
+        },
     ]
     assert root_f1(
-        expected, [("target", "commerce-inventory-service"), ("pseudo", "external_dependency")]
+        expected,
+        [
+            {
+                "variant": "target",
+                "target_id": "inventory-id",
+                "target_name": "commerce-inventory-service",
+            },
+            {
+                "variant": "pseudo",
+                "pseudo_id": "external:external-pg",
+                "pseudo_kind": "external_dependency",
+                "boundary_target": "commerce-payment-service",
+            },
+        ],
     ) == 1
-    partial = root_f1(expected, [("target", "commerce-inventory-service")])
+    partial = root_f1(
+        expected,
+        [
+            {
+                "variant": "target",
+                "target_id": "inventory-id",
+                "target_name": "commerce-inventory-service",
+            }
+        ],
+    )
     extra = root_f1(
         expected,
         [
-            ("target", "commerce-inventory-service"),
-            ("pseudo", "external_dependency"),
-            ("target", "unrelated"),
+            {
+                "variant": "target",
+                "target_id": "inventory-id",
+                "target_name": "commerce-inventory-service",
+            },
+            {
+                "variant": "pseudo",
+                "pseudo_id": "external:external-pg",
+                "pseudo_kind": "external_dependency",
+                "boundary_target": "commerce-payment-service",
+            },
+            {
+                "variant": "target",
+                "target_id": "unrelated-id",
+                "target_name": "unrelated",
+            },
         ],
     )
     assert 0 < partial < 1
     assert 0 < extra < 1
+
+
+def test_internal_root_requires_exact_canonical_id_not_matching_name() -> None:
+    expected = [
+        {
+            "target_ids": ["canonical-payment-id"],
+            "target_aliases": ["payment-service"],
+        }
+    ]
+
+    assert root_f1(
+        expected,
+        [
+            {
+                "variant": "target",
+                "target_id": "canonical-payment-id",
+                "target_name": "name-does-not-matter",
+            }
+        ],
+    ) == 1.0
+    assert root_f1(
+        expected,
+        [
+            {
+                "variant": "target",
+                "target_id": "wrong-id",
+                "target_name": "payment-service",
+            }
+        ],
+    ) == 0.0
+
+
+def test_pseudo_root_requires_identity_and_boundary_not_just_kind() -> None:
+    expected = [
+        {
+            "pseudo_kind": "external_dependency",
+            "pseudo_ids": ["external:external-pg"],
+            "boundary_target_aliases": ["commerce-payment"],
+        }
+    ]
+
+    assert root_f1(
+        expected,
+        [
+            {
+                "variant": "pseudo",
+                "pseudo_id": "external:external-pg",
+                "pseudo_kind": "external_dependency",
+                "boundary_target": "commerce-payment",
+            }
+        ],
+    ) == 1.0
+    assert root_f1(
+        expected,
+        [
+            {
+                "variant": "pseudo",
+                "pseudo_id": "external:payment",
+                "pseudo_kind": "external_dependency",
+                "boundary_target": "commerce-payment",
+            }
+        ],
+    ) == 0.0
+    assert root_f1(
+        expected,
+        [
+            {
+                "variant": "pseudo",
+                "pseudo_id": "external:external-pg",
+                "pseudo_kind": "external_dependency",
+                "boundary_target": "unrelated-service",
+            }
+        ],
+    ) == 0.0
 
 
 def test_target_name_extraction_uses_runtime_prompt_registry() -> None:
@@ -124,7 +253,7 @@ def test_exact_provisional_root_requires_grounded_evidence_for_strict_success() 
     target = "11111111-1111-1111-1111-111111111111"
     expected = {
         "expected_status": "provisional",
-        "roots": [{"target_aliases": ["service-a"]}],
+        "roots": [{"target_ids": [target], "target_aliases": ["service-a"]}],
     }
     prompt = {"Messages": [{"content": f"- {target} (service-a): n=1"}]}
     result = {
@@ -160,7 +289,12 @@ def test_directory_report_exposes_evidence_and_strict_coverage(tmp_path: Path) -
             {"Messages": [{"content": f"- {target} (service-a): n=1"}]}
         ],
         "ledger": [
-            {"action": "env_entity", "ok": True},
+            {
+                "id": "obs-1",
+                "action": "env_entity",
+                "ok": True,
+                "evidence_refs": ["ev-1"],
+            },
             {"action": "discover_metrics", "ok": True},
             {"action": "metric_fetch_raw", "ok": True},
             {"action": "probe_traces", "ok": True},
@@ -172,7 +306,9 @@ def test_directory_report_exposes_evidence_and_strict_coverage(tmp_path: Path) -
         "cases": {
             "case-a": {
                 "expected_status": "provisional",
-                "roots": [{"target_aliases": ["service-a"]}],
+                "roots": [
+                    {"target_ids": [target], "target_aliases": ["service-a"]}
+                ],
             }
         }
     }
@@ -201,7 +337,7 @@ def test_behavior_diagnostics_do_not_require_metric_actions_for_success() -> Non
     target = "11111111-1111-1111-1111-111111111111"
     expected = {
         "expected_status": "provisional",
-        "roots": [{"target_aliases": ["service-a"]}],
+        "roots": [{"target_ids": [target], "target_aliases": ["service-a"]}],
     }
     episode = {
         "result": {
@@ -215,7 +351,14 @@ def test_behavior_diagnostics_do_not_require_metric_actions_for_success() -> Non
             ],
         },
         "prompts": [{"Messages": [{"content": f"- {target} (service-a): n=1"}]}],
-        "ledger": [{"action": "probe_traces", "ok": True}],
+        "ledger": [
+            {
+                "id": "obs-1",
+                "action": "probe_traces",
+                "ok": True,
+                "evidence_refs": ["ev-1"],
+            }
+        ],
     }
 
     score = score_episode("case-a", expected, episode)
@@ -223,3 +366,68 @@ def test_behavior_diagnostics_do_not_require_metric_actions_for_success() -> Non
     assert score["strict_correct"] is True
     assert score["used_metric_action"] is False
     assert score["used_specialized_probe"] is True
+
+
+def test_external_episode_requires_canonical_identity_linked_boundary_and_known_refs() -> None:
+    target = "11111111-1111-1111-1111-111111111111"
+    expected = {
+        "expected_status": "provisional",
+        "roots": [
+            {"target_ids": [target], "target_aliases": ["payment-service"]},
+            {
+                "pseudo_kind": "external_dependency",
+                "pseudo_ids": ["external:external-pg"],
+                "boundary_target_aliases": ["payment-service"],
+            },
+        ],
+    }
+    prompt = {"Messages": [{"content": f"- {target} (payment-service): n=2"}]}
+    base_result = {
+        "status": "provisional",
+        "causes": [
+            {
+                "target": target,
+                "mechanism": "external 429 crossed the payment boundary",
+                "support_refs": ["ev-1"],
+                "proof_valid": False,
+            }
+        ],
+        "external_causes": [
+            {
+                "id": "external:external-pg",
+                "kind": "external_dependency",
+                "name": "external-pg",
+                "boundary_target": target,
+                "evidence_refs": ["ev-1"],
+            }
+        ],
+    }
+    episode = {
+        "result": base_result,
+        "prompts": [prompt],
+        "ledger": [
+            {
+                "id": "obs-1",
+                "action": "probe_traces",
+                "ok": True,
+                "evidence_refs": ["ev-1"],
+            }
+        ],
+    }
+
+    exact = score_episode("case-external", expected, episode)
+    assert exact["root_f1"] == 1.0
+    assert exact["evidence_complete"] is True
+    assert exact["strict_correct"] is True
+
+    wrong_identity = json.loads(json.dumps(episode))
+    wrong_identity["result"]["external_causes"][0]["id"] = "external:payment"
+    wrong = score_episode("case-external", expected, wrong_identity)
+    assert wrong["root_f1"] == pytest.approx(0.5)
+    assert wrong["strict_correct"] is False
+
+    unknown_ref = json.loads(json.dumps(episode))
+    unknown_ref["result"]["external_causes"][0]["evidence_refs"] = ["ev-missing"]
+    incomplete = score_episode("case-external", expected, unknown_ref)
+    assert incomplete["evidence_complete"] is False
+    assert incomplete["strict_correct"] is False

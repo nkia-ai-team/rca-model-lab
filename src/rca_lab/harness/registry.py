@@ -3,7 +3,12 @@
 from collections.abc import Iterable, Mapping
 
 from rca_lab.harness.environment import EvidenceEnvironment
-from rca_lab.harness.models import ActionName, CapabilityRegistry, ToolCapability
+from rca_lab.harness.models import (
+    ActionName,
+    CapabilityRegistry,
+    PseudoEntity,
+    ToolCapability,
+)
 
 _REFRESHABLE = {
     ActionName.PROBE_METRIC,
@@ -33,6 +38,7 @@ def build_registry(
     *,
     metric_discovery: bool = False,
     metric_inventory: Mapping[str, Iterable[str]] | None = None,
+    pseudo_entities: tuple[PseudoEntity, ...] = (),
     sub_summarize: bool = False,
     query_result_limit: int = 12,
 ) -> CapabilityRegistry:
@@ -61,7 +67,19 @@ def build_registry(
         metrics=metrics,
         sources=sources,
         kinds=kinds,
+        pseudo_entities=pseudo_entities,
         query_result_limit=query_result_limit,
     )
+    unknown_boundaries = {
+        target
+        for entity in pseudo_entities
+        for target in entity.boundary_targets
+        if target not in registry.candidates
+    }
+    if unknown_boundaries:
+        raise ValueError(
+            "pseudo entity boundary targets are not candidates: "
+            + ", ".join(sorted(unknown_boundaries))
+        )
     environment.validate_registry(registry)
     return registry

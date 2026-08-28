@@ -8,22 +8,18 @@ from collections import Counter
 from pathlib import Path
 from typing import Any, Literal
 
-from pydantic import Field, model_validator
+from pydantic import Field
 
 from rca_lab.harness.models import StrictModel
+from rca_lab.harness.scorer import (
+    RootCandidate,
+    RootExpectation,
+)
+from rca_lab.harness.scorer import (
+    root_f1 as typed_root_f1,
+)
 
-
-class ExpectedRoot(StrictModel):
-    target_aliases: tuple[str, ...] = ()
-    pseudo_kind: Literal[
-        "external_dependency", "kafka", "redis", "network", "capacity_limit"
-    ] | None = None
-
-    @model_validator(mode="after")
-    def one_identity(self) -> ExpectedRoot:
-        if bool(self.target_aliases) == bool(self.pseudo_kind):
-            raise ValueError("root must define exactly one of target_aliases or pseudo_kind")
-        return self
+ExpectedRoot = RootExpectation
 
 
 class ExpectedCase(StrictModel):
@@ -75,41 +71,47 @@ def target_names(episode: dict[str, Any]) -> dict[str, str]:
     return names
 
 
-def root_tokens(result: dict[str, Any], names: dict[str, str]) -> list[tuple[str, str]]:
+def root_tokens(result: dict[str, Any], names: dict[str, str]) -> list[RootCandidate]:
     roots = [
-        ("target", names.get(str(cause.get("target", "")), str(cause.get("target", ""))))
+        RootCandidate(
+            variant="target",
+            target_id=str(cause.get("target", "")),
+            target_name=names.get(
+                str(cause.get("target", "")), str(cause.get("target", ""))
+            ),
+        )
         for cause in result.get("causes", [])
     ]
     roots.extend(
-        ("pseudo", str(cause.get("kind", ""))) for cause in result.get("external_causes", [])
+        RootCandidate(
+            variant="pseudo",
+            pseudo_id=str(cause.get("id", "")),
+            pseudo_kind=str(cause.get("kind", "")),
+            boundary_target=names.get(
+                str(cause.get("boundary_target", "")),
+                str(cause.get("boundary_target", "")),
+            ),
+        )
+        for cause in result.get("external_causes", [])
     )
     return roots
 
 
-def root_matches(expected: dict[str, Any], actual: tuple[str, str]) -> bool:
-    kind, value = actual
-    if "pseudo_kind" in expected:
-        return kind == "pseudo" and value == expected["pseudo_kind"]
-    aliases = [str(item).casefold() for item in expected.get("target_aliases", [])]
-    folded = value.casefold()
-    return kind == "target" and any(alias in folded or folded in alias for alias in aliases)
-
-
-def root_f1(expected: list[dict[str, Any]], actual: list[tuple[str, str]]) -> float:
-    remaining = list(actual)
-    hits = 0
-    for root in expected:
-        match = next(
-            (index for index, value in enumerate(remaining) if root_matches(root, value)), None
-        )
-        if match is not None:
-            hits += 1
-            remaining.pop(match)
-    if not expected:
-        return float(not actual)
-    precision = hits / max(1, len(actual))
-    recall = hits / len(expected)
-    return 0.0 if precision + recall == 0 else 2 * precision * recall / (precision + recall)
+def root_f1(
+    expected: list[dict[str, Any]] | tuple[RootExpectation, ...],
+    actual: list[dict[str, Any]] | list[RootCandidate],
+) -> float:
+    expected_roots = [
+        item
+        if isinstance(item, RootExpectation)
+        else RootExpectation.model_validate(item)
+        for item in expected
+    ]
+    actual_roots = [
+        item if isinstance(item, RootCandidate) else RootCandidate.model_validate(item)
+        for item in actual
+    ]
+    return typed_root_f1(expected_roots, actual_roots)
 
 
 def count_format_errors(ledger: list[dict[str, Any]]) -> int:
@@ -138,15 +140,37 @@ def score_episode(case_id: str, expected: dict[str, Any], episode: dict[str, Any
     causes = result.get("causes", [])
     external_causes = result.get("external_causes", [])
     diagnoses = [*causes, *external_causes]
-    proofs_valid = bool(diagnoses) and all(cause.get("proof_valid") for cause in diagnoses)
+    proofs_valid = bool(causes) and all(cause.get("proof_valid") for cause in causes)
     proof_rate = (
-        sum(bool(cause.get("proof_valid")) for cause in diagnoses) / len(diagnoses)
-        if diagnoses
+        sum(bool(cause.get("proof_valid")) for cause in causes) / len(causes)
+        if causes
         else 0
     )
-    evidence_complete = bool(diagnoses) and all(
-        bool(str(cause.get("mechanism", "")).strip()) and bool(cause.get("support_refs"))
-        for cause in diagnoses
+    ledger = episode.get("ledger", [])
+    known_refs = {
+        str(ref)
+        for item in ledger
+        for ref in [item.get("id"), *item.get("evidence_refs", [])]
+        if ref
+    }
+    cause_targets = {str(cause.get("target", "")) for cause in causes}
+    internal_evidence_complete = all(
+        bool(str(cause.get("mechanism", "")).strip())
+        and bool(cause.get("support_refs"))
+        and set(map(str, cause.get("support_refs", []))).issubset(known_refs)
+        and set(map(str, cause.get("counter_refs", []))).issubset(known_refs)
+        for cause in causes
+    )
+    external_evidence_complete = all(
+        bool(str(cause.get("id", "")).strip())
+        and bool(str(cause.get("name", "")).strip())
+        and str(cause.get("boundary_target", "")) in cause_targets
+        and bool(cause.get("evidence_refs"))
+        and set(map(str, cause.get("evidence_refs", []))).issubset(known_refs)
+        for cause in external_causes
+    )
+    evidence_complete = bool(diagnoses) and bool(causes) and (
+        internal_evidence_complete and external_evidence_complete
     )
     unsupported = int(result.get("status") == "confirmed" and (roots_score < 1 or not proofs_valid))
     status_correct = result.get("status") == expected["expected_status"]
@@ -157,7 +181,6 @@ def score_episode(case_id: str, expected: dict[str, Any], episode: dict[str, Any
         and transient_format_errors == 0
         and unsupported == 0
     )
-    ledger = episode.get("ledger", [])
     turns = int(result.get("turns", len(ledger)))
     actions = [str(item["action"]) for item in ledger if item.get("action")]
     rejected_actions = sum(not bool(item.get("ok")) for item in ledger)

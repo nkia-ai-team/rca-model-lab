@@ -12,6 +12,10 @@ from typing import Any, Literal
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
+type ExternalKind = Literal[
+    "external_dependency", "kafka", "redis", "network", "capacity_limit"
+]
+
 
 class StrictModel(BaseModel):
     model_config = ConfigDict(extra="forbid", frozen=True)
@@ -166,10 +170,20 @@ class Cause(StrictModel):
 
 class ExternalCause(StrictModel):
     id: str = Field(pattern=r"^external:")
-    kind: Literal["external_dependency", "kafka", "redis", "network", "capacity_limit"]
+    kind: ExternalKind
     name: str = Field(min_length=1)
     boundary_target: str = Field(min_length=1)
     evidence_refs: tuple[str, ...] = Field(min_length=1)
+
+
+class PseudoEntity(StrictModel):
+    """Canonical non-inventory entity that may be named as an RCA root."""
+
+    id: str = Field(pattern=r"^external:")
+    kind: ExternalKind
+    name: str = Field(min_length=1)
+    aliases: tuple[str, ...] = ()
+    boundary_targets: tuple[str, ...] = Field(min_length=1)
 
 
 class AnswerState(StrictModel):
@@ -204,6 +218,7 @@ class CapabilityRegistry(StrictModel):
     metrics: dict[str, tuple[str, ...]]
     sources: tuple[str, ...]
     kinds: tuple[str, ...]
+    pseudo_entities: tuple[PseudoEntity, ...] = ()
     query_result_limit: int = Field(default=12, ge=1)
 
     def allows_action(self, action: ActionName) -> bool:
@@ -211,6 +226,14 @@ class CapabilityRegistry(StrictModel):
 
     def allows_metric(self, target: str, metric: str) -> bool:
         return metric in self.metrics.get(target, ())
+
+    def allows_external_cause(self, cause: ExternalCause) -> bool:
+        return any(
+            entity.id == cause.id
+            and entity.kind == cause.kind
+            and cause.boundary_target in entity.boundary_targets
+            for entity in self.pseudo_entities
+        )
 
 
 class PromptCall(StrictModel):

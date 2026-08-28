@@ -16,12 +16,19 @@ from rca_lab.harness.models import (
     FactKind,
     Observation,
     ProofType,
+    PseudoEntity,
     RecursiveEpisode,
     TeacherCorrection,
     ThoughtBranch,
     TrajectoryArtifact,
 )
-from rca_lab.harness.scorer import ScoreBreakdown, ScoreTarget, TypedScorer
+from rca_lab.harness.scorer import (
+    RootCandidate,
+    RootExpectation,
+    ScoreBreakdown,
+    ScoreTarget,
+    TypedScorer,
+)
 from rca_lab.harness.validation import ContractError, HarnessValidator, ProofReport
 
 __all__ = [
@@ -43,7 +50,10 @@ __all__ = [
     "Observation",
     "ProofReport",
     "ProofType",
+    "PseudoEntity",
     "RecursiveEpisode",
+    "RootCandidate",
+    "RootExpectation",
     "ScoreBreakdown",
     "ScoreTarget",
     "TeacherCorrection",

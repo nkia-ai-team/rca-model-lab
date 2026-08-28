@@ -115,6 +115,19 @@ class HarnessValidator:
             if not cause.support_refs:
                 raise ContractError("ready cause requires support_refs")
             self._require_known_refs(cause.support_refs + cause.counter_refs)
+        for cause in answer.external_causes:
+            if not self.registry.allows_external_cause(cause):
+                raise ContractError(
+                    f"external cause {cause.id!r} is not registered for "
+                    f"{cause.boundary_target!r}"
+                )
+            self._require_known_refs(cause.evidence_refs)
+            if answer.ready and not any(
+                internal.target == cause.boundary_target for internal in answer.causes
+            ):
+                raise ContractError(
+                    "ready external cause requires a linked boundary cause"
+                )
         if answer.status == "confirmed":
             if not answer.causes or answer.external_causes:
                 raise ContractError("confirmed requires internal causes only")
