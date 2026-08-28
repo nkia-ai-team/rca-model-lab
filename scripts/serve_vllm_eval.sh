@@ -6,7 +6,8 @@ port=${2:-8002}
 served_model=${3:-rca-actor}
 lora_adapter=${4:-}
 vllm_bin=${VLLM_BIN:-/home/work/venv-vllm/bin/vllm}
-max_num_seqs=${VLLM_MAX_NUM_SEQS:-3}
+max_num_seqs=${VLLM_MAX_NUM_SEQS:-8}
+gpu_memory_utilization=${VLLM_GPU_MEMORY_UTILIZATION:-0.95}
 
 test -d "$model_path"
 test -x "$vllm_bin"
@@ -29,12 +30,16 @@ fi
 # Muse-Glimmer's valid end-of-turn token (200008) after otherwise-valid JSON.
 # All baseline/SFT/RL stages must use this same launch contract.
 export FLASHINFER_DISABLE_VERSION_CHECK=${FLASHINFER_DISABLE_VERSION_CHECK:-1}
+# KT containers expose a mutable user site that can shadow the isolated vLLM
+# environment with an incompatible Transformers/tokenizers pair.
+export PYTHONNOUSERSITE=1
+unset PYTHONPATH
 exec "$vllm_bin" serve "$model_path" \
   --served-model-name "$base_served_model" \
   --host 127.0.0.1 \
   --port "$port" \
   --max-model-len 32768 \
-  --gpu-memory-utilization 0.95 \
+  --gpu-memory-utilization "$gpu_memory_utilization" \
   --max-num-seqs "$max_num_seqs" \
   --enable-prefix-caching \
   "${lora_args[@]}" \
