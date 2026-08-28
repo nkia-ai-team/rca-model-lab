@@ -17,7 +17,12 @@ if [[ -n "$lora_adapter" ]]; then
   test -d "$lora_adapter"
   test -f "$lora_adapter/adapter_config.json"
   base_served_model="${served_model}-base"
-  lora_args=(--enable-lora --lora-modules "${served_model}=${lora_adapter}")
+  lora_args=(
+    --enable-lora
+    --max-lora-rank "${VLLM_MAX_LORA_RANK:-8}"
+    --lora-target-modules q_proj k_proj v_proj o_proj up_proj down_proj gate_proj
+    --lora-modules "${served_model}=${lora_adapter}"
+  )
 fi
 
 # guidance is pinned because the xgrammar version on the KT evaluator rejects

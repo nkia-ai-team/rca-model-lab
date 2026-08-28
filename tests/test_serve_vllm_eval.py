@@ -36,6 +36,17 @@ def test_serves_adapter_without_merging(tmp_path: Path) -> None:
     args = output.read_text(encoding="utf-8").splitlines()
     assert args[args.index("--served-model-name") + 1] == "rca-actor-base"
     assert "--enable-lora" in args
+    assert args[args.index("--max-lora-rank") + 1] == "8"
+    target_index = args.index("--lora-target-modules")
+    assert args[target_index + 1 : target_index + 8] == [
+        "q_proj",
+        "k_proj",
+        "v_proj",
+        "o_proj",
+        "up_proj",
+        "down_proj",
+        "gate_proj",
+    ]
     assert args[args.index("--lora-modules") + 1] == f"rca-actor={adapter}"
 
 
