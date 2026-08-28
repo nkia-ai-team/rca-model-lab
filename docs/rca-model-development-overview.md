@@ -23,10 +23,10 @@ RCA Student는 장애를 설명만 하는 모델이 아니다. 로그·메트릭
 - 계약 검사를 통과한 `20개 시나리오 / 23개 전체 궤적`으로 SFT v3 학습 완료
 - `69/69 step`, `3 epoch`, 최종 train loss `0.72`
 - 최종 LoRA와 데이터·설정·manifest 체크섬 검증 완료
-- SFT 봉인 평가 진행 중
+- SFT 개발 holdout 평가 진행 중
 - 다음 단계: SFT LoRA를 초기 정책으로 사용하는 Prime-RL 온라인 GRPO
 
-아직 최종 성능이 확정된 것은 아니다. SFT v3와 RL 모델은 동일한 봉인 평가를 통과해야 한다.
+아직 최종 성능이 확정된 것은 아니다. SFT v3와 RL 모델은 동일한 개발 holdout 평가를 통과해야 한다.
 
 ### 이 문서에서 사용하는 표준 용어
 
@@ -44,6 +44,8 @@ RCA Student는 장애를 설명만 하는 모델이 아니다. 로그·메트릭
 | 완전 정답 | 원인, 증거, 검증 조건, 답변 형식을 모두 통과한 결과 | strict correct |
 | 사건 단위 통과 | 같은 시나리오를 3회 실행해 2회 이상 완전 정답인 경우 | majority strict |
 | 잠정 결론 | 유력한 원인은 찾았지만 결정적 검증을 끝내지 못한 상태 | provisional |
+| 개발 holdout 평가 | 학습에는 쓰지 않지만 개발 중 반복 비교에 사용하는 고정 평가 세트 | sealed eval이라는 내부 경로명 사용 |
+| 최종 미공개 평가 | 모델·하네스·학습 설정을 확정한 뒤 처음 공개하는 새 장애 유형 평가 | final test |
 
 `typed`, `registry`, `ledger`는 구현 방식에 가까운 표현이다. 이후 본문에서는 각각 `스키마 검증`, `행동 공간`, `실행 이력`으로 설명한다.
 
@@ -299,7 +301,7 @@ SFT loss
 | LoRA 적용 범위 | 언어 모델의 attention·MLP projection | 텍스트 RCA에 필요 없는 vision encoder 제외 |
 | loss 구현 | assistant-only fused cross-entropy | 전체 vocabulary logits 메모리 사용 감소, 수학적으로 같은 CE |
 
-최종 train loss `0.72`는 교사 assistant 토큰의 평균 cross-entropy다. RCA 정확도 점수가 아니다. 정확도는 별도 봉인 평가로 판단한다.
+최종 train loss `0.72`는 교사 assistant 토큰의 평균 cross-entropy다. RCA 정확도 점수가 아니다. 정확도는 별도 개발 holdout 평가로 판단한다.
 
 ### SFT 버전별 변경
 
@@ -307,11 +309,11 @@ SFT loss
 |---|---|---|---|
 | v1 | assistant-only cross-entropy | rank 16, 모든 linear layer, dropout 0.05 | 최초 행동 모방 가능성 확인 |
 | v2 | 같은 cross-entropy + 시나리오 균형 가중치 | rank 8, dropout 0, 24개 궤적 | 메모리 개선. 이후 계약 위반 궤적 1개 발견 |
-| v3 | 같은 cross-entropy + 시나리오 균형 가중치 | 위반 궤적 제거, 23개, 언어 모델 LoRA만 적용, fused CE | 학습 산출물 검증 완료. 봉인 평가 진행 중 |
+| v3 | 같은 cross-entropy + 시나리오 균형 가중치 | 위반 궤적 제거, 23개, 언어 모델 LoRA만 적용, fused CE | 학습 산출물 검증 완료. 개발 holdout 평가 진행 중 |
 
 ## 9. RL 실험: 각 버전에서 무엇을 loss로 사용했는가
 
-아래 결과는 이전 개발 평가다. 현재 SFT v3의 봉인 결과와 혼동하면 안 된다.
+아래 결과는 이전 개발 평가다. 현재 SFT v3의 개발 holdout 결과와 혼동하면 안 된다.
 
 ### RL v1~v5의 공통 policy loss
 
@@ -460,18 +462,18 @@ RL ≥ SFT v3 ≥ vanilla
 
 평균 보상 하나만 높아진 모델은 승격하지 않는다. 사건 단위 통과, 결정적 검증, 필수 증거 충족률이 함께 유지되거나 개선돼야 한다.
 
-최종 Claude·Codex 비교에는 개발 중 반복 확인하지 않은 새 failure family를 사용한다. 과거 12개 holdout은 결과를 본 뒤 설계를 변경했으므로 최종 test가 아니라 development holdout이다.
+최종 Claude·Codex 비교에는 개발 중 반복 확인하지 않은 새 장애 유형을 사용한다. 과거 12개 시나리오는 결과를 본 뒤 설계를 변경했으므로 최종 미공개 평가가 아니라 개발 holdout 평가다.
 
 ## 13. 바로 다음 작업
 
-1. SFT v3 봉인 평가 완료
+1. SFT v3 개발 holdout 평가 완료
 2. vanilla·historical SFT·SFT v3 결과를 같은 기준으로 비교
 3. Prime-RL 3-step 온라인 GRPO 연결 시험 실행
 4. LoRA 갱신과 vLLM hot-load 검증
 5. smoke가 SFT v3 대비 비퇴행이면 본 RL 실행
-6. RL 봉인 재평가
+6. RL 개발 holdout 재평가
 7. 비퇴행 후보만 승격
-8. 새 미노출 failure family에서 Claude·Codex와 최종 비교
+8. 새 미공개 장애 유형에서 Claude·Codex와 최종 비교
 
 ## 14. 현재 결론
 
@@ -484,6 +486,6 @@ RL ≥ SFT v3 ≥ vanilla
 → SFT 모델을 실제 RCA 하네스에 투입
 → 사건당 여러 현재 정책 실행 생성
 → 규칙 기반 평가 함수의 보상으로 온라인 GRPO
-→ 봉인 평가에서 비퇴행 확인
+→ 개발 holdout 평가에서 비퇴행 확인
 → Claude·Codex와 동일 조건 비교
 ```
