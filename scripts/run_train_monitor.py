@@ -42,6 +42,8 @@ def monitor_command(args: argparse.Namespace, cases: list[str]) -> list[str]:
     ]
     for case in cases:
         command.extend(("--case", case))
+    if args.resume:
+        command.append("--resume")
     return command
 
 
@@ -73,6 +75,11 @@ def main() -> None:
     parser.add_argument("--model", default="rca-actor")
     parser.add_argument("--runs", type=int, default=3)
     parser.add_argument(
+        "--resume",
+        action="store_true",
+        help="resume only after the immutable evaluation manifest matches exactly",
+    )
+    parser.add_argument(
         "--split", type=Path, default=Path("configs/teacher/codex-blind-v1.yaml")
     )
     parser.add_argument(
@@ -89,4 +96,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-

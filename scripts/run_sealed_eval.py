@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import fcntl
 import json
 import os
 import re
@@ -12,6 +13,7 @@ import time
 from concurrent.futures import ThreadPoolExecutor
 from datetime import UTC, datetime
 from pathlib import Path
+from typing import TextIO
 from urllib.request import urlopen
 
 import yaml
@@ -63,6 +65,61 @@ def eval_manifest_contract(args: argparse.Namespace, cases: list[str]) -> dict[s
     }
 
 
+def completed_episode(path: Path) -> bool:
+    """A run is reusable only when it contains exactly one terminal episode event."""
+
+    try:
+        events = [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines()]
+    except (OSError, json.JSONDecodeError):
+        return False
+    return sum(event.get("event") == "episode_completed" for event in events) == 1
+
+
+def case_is_complete(case_dir: Path, runs: int) -> bool:
+    for run in range(1, runs + 1):
+        trajectories = list((case_dir / f"traj-run{run}").glob("agent-*.jsonl"))
+        if len(trajectories) != 1 or not completed_episode(trajectories[0]):
+            return False
+        if not (case_dir / f"agent-run{run}.log").is_file():
+            return False
+    return True
+
+
+def validate_resume_manifest(path: Path, expected: dict[str, object]) -> dict[str, object]:
+    try:
+        manifest = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as error:
+        raise SystemExit(f"cannot resume without a valid evaluation manifest: {error}") from error
+    mismatches = {
+        key: (manifest.get(key), value)
+        for key, value in expected.items()
+        if manifest.get(key) != value
+    }
+    if mismatches:
+        raise SystemExit(f"resume manifest mismatch: {mismatches}")
+    return manifest
+
+
+def archive_incomplete_case(case_dir: Path, archive_root: Path) -> None:
+    if not case_dir.exists() or not any(case_dir.iterdir()):
+        return
+    archive_root.mkdir(parents=True, exist_ok=True)
+    stamp = datetime.now(UTC).strftime("%Y%m%dT%H%M%S%fZ")
+    case_dir.rename(archive_root / f"{case_dir.name}-{stamp}")
+
+
+def acquire_output_lock(output: Path) -> TextIO:
+    """Prevent two evaluators from mutating shared stores for one run."""
+
+    lock = (output / ".run.lock").open("a+", encoding="utf-8")
+    try:
+        fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+    except BlockingIOError as error:
+        lock.close()
+        raise SystemExit(f"evaluation output is already active: {output}") from error
+    return lock
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--split", type=Path, default=Path("configs/teacher/codex-blind-v1.yaml"))
@@ -101,6 +158,11 @@ def main() -> None:
         dest="selected_cases",
         help="run only this sealed case; repeat to select multiple cases",
     )
+    parser.add_argument(
+        "--resume",
+        action="store_true",
+        help="reuse only complete cases after the immutable manifest matches exactly",
+    )
     args = parser.parse_args()
     if args.runs < 1:
         parser.error("--runs must be at least 1")
@@ -120,20 +182,27 @@ def main() -> None:
         cases = [case for case in cases if case in selected]
     if not case_set_identity(args.case_root, cases):
         parser.error("--case-root is missing one or more selected case artifacts")
-    if args.output.exists() and any(args.output.iterdir()):
+    non_empty_output = args.output.exists() and any(args.output.iterdir())
+    if non_empty_output and not args.resume:
         raise SystemExit(f"refusing to mix evaluation artifacts in non-empty output: {args.output}")
     args.output.mkdir(parents=True, exist_ok=True)
-    (args.output / "run-manifest.json").write_text(
-        json.dumps(
-            {
-                "created_at": datetime.now(UTC).isoformat(),
-                **eval_manifest_contract(args, cases),
-            },
-            indent=2,
+    _output_lock = acquire_output_lock(args.output)
+    manifest_contract = eval_manifest_contract(args, cases)
+    manifest_path = args.output / "run-manifest.json"
+    if args.resume:
+        validate_resume_manifest(manifest_path, manifest_contract)
+    else:
+        manifest_path.write_text(
+            json.dumps(
+                {
+                    "created_at": datetime.now(UTC).isoformat(),
+                    **manifest_contract,
+                },
+                indent=2,
+            )
+            + "\n",
+            encoding="utf-8",
         )
-        + "\n",
-        encoding="utf-8",
-    )
     wait_for_model(args.base_url, args.model)
     shared_env = {
         **os.environ,
@@ -153,7 +222,10 @@ def main() -> None:
     }
 
     summary = args.output / "summary.txt"
-    summary.write_text("", encoding="utf-8")
+    if not args.resume:
+        summary.write_text("", encoding="utf-8")
+    elif not summary.exists():
+        summary.touch()
     total_cases = len(cases)
     print(
         f"[eval] model={args.model} cases={total_cases} runs={args.runs} output={args.output}",
@@ -161,8 +233,13 @@ def main() -> None:
     )
     for case_index, case in enumerate(cases, start=1):
         case_started = time.monotonic()
-        print(f"[eval] [{case_index}/{total_cases}] restoring {case}", flush=True)
         case_dir = args.output / case
+        if args.resume and case_is_complete(case_dir, args.runs):
+            print(f"[eval] [{case_index}/{total_cases}] reusing complete {case}", flush=True)
+            continue
+        if args.resume:
+            archive_incomplete_case(case_dir, args.output / ".interrupted")
+        print(f"[eval] [{case_index}/{total_cases}] restoring {case}", flush=True)
         case_dir.mkdir(parents=True, exist_ok=True)
         restored = subprocess.run(
             [str(args.restore), case], capture_output=True, text=True, check=False

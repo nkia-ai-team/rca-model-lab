@@ -2,7 +2,10 @@ from __future__ import annotations
 
 import argparse
 import importlib.util
+import json
 from pathlib import Path
+
+import pytest
 
 
 def _module():
@@ -59,3 +62,57 @@ def test_served_model_ids_rejects_stale_or_malformed_endpoint() -> None:
     assert module.served_model_ids({"data": [{"id": "rca-actor"}]}) == {"rca-actor"}
     assert module.served_model_ids({"data": [{"id": "other"}]}) == {"other"}
     assert module.served_model_ids({"unexpected": []}) == set()
+
+
+def test_case_is_complete_requires_every_log_and_terminal_episode(tmp_path: Path) -> None:
+    module = _module()
+    case_dir = tmp_path / "case-a"
+    for run in (1, 2, 3):
+        trajectory = case_dir / f"traj-run{run}" / f"agent-{run}.jsonl"
+        trajectory.parent.mkdir(parents=True)
+        trajectory.write_text(
+            json.dumps({"event": "episode_completed", "run": run}) + "\n",
+            encoding="utf-8",
+        )
+        (case_dir / f"agent-run{run}.log").write_text("OUTPUT | ok\n", encoding="utf-8")
+
+    assert module.case_is_complete(case_dir, 3)
+    (case_dir / "agent-run3.log").unlink()
+    assert not module.case_is_complete(case_dir, 3)
+
+
+def test_resume_manifest_must_match_every_immutable_field(tmp_path: Path) -> None:
+    module = _module()
+    path = tmp_path / "run-manifest.json"
+    path.write_text(json.dumps({"created_at": "old", "model": "sft", "runs": 3}) + "\n")
+
+    assert module.validate_resume_manifest(path, {"model": "sft", "runs": 3})["model"] == "sft"
+    with pytest.raises(SystemExit, match="resume manifest mismatch"):
+        module.validate_resume_manifest(path, {"model": "rl", "runs": 3})
+
+
+def test_archive_incomplete_case_preserves_partial_artifacts(tmp_path: Path) -> None:
+    module = _module()
+    case_dir = tmp_path / "case-a"
+    case_dir.mkdir()
+    (case_dir / "restore.log").write_text("partial\n")
+
+    module.archive_incomplete_case(case_dir, tmp_path / ".interrupted")
+
+    assert not case_dir.exists()
+    archived = list((tmp_path / ".interrupted").glob("case-a-*"))
+    assert len(archived) == 1
+    assert (archived[0] / "restore.log").read_text() == "partial\n"
+
+
+def test_output_lock_rejects_concurrent_evaluator(tmp_path: Path) -> None:
+    module = _module()
+    output = tmp_path / "eval"
+    output.mkdir()
+
+    lock = module.acquire_output_lock(output)
+    try:
+        with pytest.raises(SystemExit, match="already active"):
+            module.acquire_output_lock(output)
+    finally:
+        lock.close()
