@@ -53,6 +53,7 @@ def test_inference_budget_targets_throughput_without_reducing_kv_capacity() -> N
     assert config["max_num_batched_tokens"] == 16384
     assert config["enable_chunked_prefill"] is True
     assert config["enable_prefix_caching"] is True
+    assert config["language_model_only"] is True
     assert config["enable_lora"] is True
 
 

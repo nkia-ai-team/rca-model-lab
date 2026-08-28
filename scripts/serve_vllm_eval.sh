@@ -45,5 +45,6 @@ exec "$vllm_bin" serve "$model_path" \
   --max-num-batched-tokens "$max_num_batched_tokens" \
   --enable-chunked-prefill \
   --enable-prefix-caching \
+  --language-model-only \
   "${lora_args[@]}" \
   --structured-outputs-config '{"backend":"guidance"}'

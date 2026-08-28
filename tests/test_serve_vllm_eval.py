@@ -52,6 +52,7 @@ def test_serves_adapter_without_merging(tmp_path: Path) -> None:
     assert args[args.index("--max-num-seqs") + 1] == "8"
     assert args[args.index("--max-num-batched-tokens") + 1] == "16384"
     assert "--enable-chunked-prefill" in args
+    assert "--language-model-only" in args
     assert "--enable-lora" in args
     assert args[args.index("--max-lora-rank") + 1] == "8"
     target_index = args.index("--lora-target-modules")
