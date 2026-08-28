@@ -6,7 +6,7 @@ trainer:
   remote_broadcast_dir: /home/work/prime-rl-rca/outputs/rca-online-smoke/broadcasts
 inference:
   host: proxy1.ainexus.ktcloud.com
-  port: 10684
+  port: 10658
   user: work
   identity_file: /absolute/path/to/inference_session_id_container
   remote_broadcast_dir: /tmp/rca-prime-rl/rca-online-smoke/broadcasts

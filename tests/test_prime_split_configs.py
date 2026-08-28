@@ -67,6 +67,8 @@ def test_relay_path_is_the_path_prime_sends_to_remote_vllm() -> None:
     relay = WeightRelayConfig.model_validate(
         yaml.safe_load((CONFIG_DIR / "relay.example.yaml").read_text(encoding="utf-8"))
     )
+    assert relay.trainer.port == 10515
+    assert relay.inference.port == 10658
     orchestrator_broadcasts = Path(_toml("orchestrator.toml")["output_dir"]) / "broadcasts"
     assert relay.local_broadcast_dir == orchestrator_broadcasts
     assert str(orchestrator_broadcasts) == relay.inference.remote_broadcast_dir
