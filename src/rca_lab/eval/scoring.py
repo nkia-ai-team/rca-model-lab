@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import re
+from collections import Counter
 from pathlib import Path
 from typing import Any, Literal
 
@@ -34,6 +35,18 @@ class EvalContract(StrictModel):
     version: int = 1
     cases: dict[str, ExpectedCase] = Field(min_length=1)
 
+
+_METRIC_ACTIONS = frozenset(
+    {
+        "discover_metrics",
+        "probe_metric",
+        "metric_describe",
+        "metric_overview",
+        "metric_fetch_raw",
+        "metric_fetch_window",
+        "metric_compare",
+    }
+)
 _NAMED_TARGET = re.compile(r"([0-9a-f]{8}-[0-9a-f-]{27}) \(([^)]*)\)", re.IGNORECASE)
 _MAIN_TARGET = re.compile(r"main:\s*([^\n(]+)\(([0-9a-f-]{36})\)", re.IGNORECASE)
 
@@ -146,6 +159,8 @@ def score_episode(case_id: str, expected: dict[str, Any], episode: dict[str, Any
     )
     ledger = episode.get("ledger", [])
     turns = int(result.get("turns", len(ledger)))
+    actions = [str(item["action"]) for item in ledger if item.get("action")]
+    rejected_actions = sum(not bool(item.get("ok")) for item in ledger)
     efficiency = max(0.0, 1 - max(0, turns - 1) / 12)
     tool_success = sum(bool(item.get("ok")) for item in ledger) / len(ledger) if ledger else 0
     reward = max(
@@ -172,6 +187,12 @@ def score_episode(case_id: str, expected: dict[str, Any], episode: dict[str, Any
         "proof_rate": proof_rate,
         "evidence_complete": evidence_complete,
         "reward": reward,
+        "turns": turns,
+        "actions": actions,
+        "distinct_actions": len(set(actions)),
+        "used_metric_action": any(action in _METRIC_ACTIONS for action in actions),
+        "used_specialized_probe": any(action.startswith("probe_") for action in actions),
+        "rejected_actions": rejected_actions,
     }
 
 
@@ -191,6 +212,7 @@ def score_directory(output: Path, contract: dict[str, Any], runs_per_case: int) 
         >= runs_per_case // 2 + 1
         for case_id in contract["cases"]
     )
+    action_counts = Counter(action for row in rows for action in row["actions"])
     return {
         "completed_runs": len(rows),
         "format_errors": sum(row["format_errors"] for row in rows),
@@ -203,5 +225,19 @@ def score_directory(output: Path, contract: dict[str, Any], runs_per_case: int) 
         ),
         "mean_reward": sum(row["reward"] for row in rows) / len(rows) if rows else 0.0,
         "mean_root_f1": sum(row["root_f1"] for row in rows) / len(rows) if rows else 0.0,
+        "behavior": {
+            "action_counts": dict(sorted(action_counts.items())),
+            "runs_using_metric_actions": sum(row["used_metric_action"] for row in rows),
+            "runs_using_specialized_probes": sum(
+                row["used_specialized_probe"] for row in rows
+            ),
+            "mean_distinct_actions": (
+                sum(row["distinct_actions"] for row in rows) / len(rows) if rows else 0.0
+            ),
+            "mean_rejected_actions": (
+                sum(row["rejected_actions"] for row in rows) / len(rows) if rows else 0.0
+            ),
+            "mean_turns": sum(row["turns"] for row in rows) / len(rows) if rows else 0.0,
+        },
         "runs": rows,
     }

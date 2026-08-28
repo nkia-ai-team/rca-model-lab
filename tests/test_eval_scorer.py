@@ -159,6 +159,13 @@ def test_directory_report_exposes_evidence_and_strict_coverage(tmp_path: Path) -
         "prompts": [
             {"Messages": [{"content": f"- {target} (service-a): n=1"}]}
         ],
+        "ledger": [
+            {"action": "env_entity", "ok": True},
+            {"action": "discover_metrics", "ok": True},
+            {"action": "metric_fetch_raw", "ok": True},
+            {"action": "probe_traces", "ok": True},
+            {"ok": False, "summary": "repeated action rejected"},
+        ],
     }
     path.write_text(json.dumps(episode) + "\n")
     contract = {
@@ -175,3 +182,44 @@ def test_directory_report_exposes_evidence_and_strict_coverage(tmp_path: Path) -
     assert report["strict_correct_runs"] == 1
     assert report["evidence_complete_runs"] == 1
     assert report["mean_proof_rate"] == 0.0
+    assert report["behavior"] == {
+        "action_counts": {
+            "discover_metrics": 1,
+            "env_entity": 1,
+            "metric_fetch_raw": 1,
+            "probe_traces": 1,
+        },
+        "runs_using_metric_actions": 1,
+        "runs_using_specialized_probes": 1,
+        "mean_distinct_actions": 4.0,
+        "mean_rejected_actions": 1.0,
+        "mean_turns": 5.0,
+    }
+
+
+def test_behavior_diagnostics_do_not_require_metric_actions_for_success() -> None:
+    target = "11111111-1111-1111-1111-111111111111"
+    expected = {
+        "expected_status": "provisional",
+        "roots": [{"target_aliases": ["service-a"]}],
+    }
+    episode = {
+        "result": {
+            "status": "provisional",
+            "causes": [
+                {
+                    "target": target,
+                    "mechanism": "trace boundary failure",
+                    "support_refs": ["obs-1"],
+                }
+            ],
+        },
+        "prompts": [{"Messages": [{"content": f"- {target} (service-a): n=1"}]}],
+        "ledger": [{"action": "probe_traces", "ok": True}],
+    }
+
+    score = score_episode("case-a", expected, episode)
+
+    assert score["strict_correct"] is True
+    assert score["used_metric_action"] is False
+    assert score["used_specialized_probe"] is True
