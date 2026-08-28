@@ -6,6 +6,7 @@ import pytest
 
 from rca_lab.provenance import file_sha256
 from rca_lab.train.rl import (
+    EpisodeRLConfig,
     RLEpisodeRecord,
     _response_shape,
     clipped_surrogate,
@@ -68,6 +69,59 @@ def test_progressive_training_rejects_off_policy_rollouts() -> None:
 
     with pytest.raises(ValueError, match="does not match"):
         validate_behavior_policy([row], config)
+
+
+def test_online_grpo_rejects_all_linear_multimodal_adapter_scope() -> None:
+    payload = load_rl_config(Path("configs/rl/muse-glimmer-30b-dapo-v1.yaml")).model_dump()
+    payload["algorithm"] = "episode_online_progressive_grpo_lora"
+
+    with pytest.raises(ValueError, match="language-only"):
+        EpisodeRLConfig.model_validate(payload)
+
+
+def test_online_grpo_continues_the_exact_rollout_adapter() -> None:
+    payload = load_rl_config(Path("configs/rl/muse-glimmer-30b-dapo-v1.yaml")).model_dump()
+    payload.update(
+        {
+            "algorithm": "episode_online_progressive_grpo_lora",
+            "initial_adapter": "/models/adapter-v1",
+            "initial_adapter_sha256": "a" * 64,
+            "behavior_model_sha256": "a" * 64,
+            "base_model_sha256": "b" * 64,
+        }
+    )
+    payload["lora"]["target_modules"] = (
+        r"^model\.language_model\..*\.(q_proj|k_proj|v_proj|o_proj|up_proj|down_proj)$"
+    )
+    config = EpisodeRLConfig.model_validate(payload)
+    row = {
+        "turn_advantages": [1.0],
+        "behavior_model_artifact": "/models/adapter-v1",
+        "behavior_model_sha256": "a" * 64,
+        "base_model_artifact": config.model_name,
+        "base_model_sha256": "b" * 64,
+        "behavior_temperature": 1.0,
+    }
+
+    validate_behavior_policy([row], config)
+    with pytest.raises(ValueError, match="does not match"):
+        validate_behavior_policy(
+            [{**row, "behavior_model_artifact": config.model_name}], config
+        )
+
+
+def test_adapter_continuation_requires_one_shared_policy_identity() -> None:
+    payload = load_rl_config(Path("configs/rl/muse-glimmer-30b-dapo-v1.yaml")).model_dump()
+    payload.update(
+        {
+            "initial_adapter": "/models/adapter-v1",
+            "initial_adapter_sha256": "a" * 64,
+            "behavior_model_sha256": "b" * 64,
+        }
+    )
+
+    with pytest.raises(ValueError, match="rollout behavior policy"):
+        EpisodeRLConfig.model_validate(payload)
 
 
 def test_progressive_training_rejects_changed_dataset(tmp_path: Path) -> None:

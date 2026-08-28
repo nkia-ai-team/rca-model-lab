@@ -7,7 +7,6 @@ import math
 import os
 import platform
 import random
-from contextlib import nullcontext
 from pathlib import Path
 from typing import Any, Literal
 
@@ -16,7 +15,7 @@ from pydantic import Field, model_validator
 
 from rca_lab.data.sft import SFTMessage
 from rca_lab.harness.models import StrictModel
-from rca_lab.provenance import file_sha256
+from rca_lab.provenance import file_sha256, resolve_model_identity
 from rca_lab.train.sft import LoRAConfig, WandbConfig, mask_assistant_spans
 
 
@@ -34,17 +33,21 @@ class EpisodeRLConfig(StrictModel):
     kl_beta: float = Field(ge=0)
     max_grad_norm: float = Field(gt=0)
     seed: int = 42
-    # The current offline trainer recomputes behavior log-probabilities from
-    # the frozen model. Temperature 1 is therefore required for ratio=1 at
-    # initialization until rollout-time token logprobs are persisted.
+    # Online GRPO snapshots the exact pre-update behavior policy and recomputes
+    # its token log-probabilities. Temperature 1 therefore preserves ratio=1 at
+    # initialization until rollout-time token logprobs are persisted directly.
     behavior_temperature: Literal[1.0] = 1.0
     behavior_model_sha256: str = ""
+    base_model_sha256: str = ""
+    initial_adapter: str = ""
+    initial_adapter_sha256: str = ""
     dataset_sha256: str = ""
     algorithm: Literal[
         "episode_dapo_lora",
         "episode_anchor_dapo_lora",
         "episode_rft_replay_lora",
         "episode_progressive_dapo_lora",
+        "episode_online_progressive_grpo_lora",
     ] = "episode_dapo_lora"
     lora: LoRAConfig
     wandb: WandbConfig
@@ -53,6 +56,19 @@ class EpisodeRLConfig(StrictModel):
     def asymmetric_clip_contract(self) -> EpisodeRLConfig:
         if self.clip_high < self.clip_low:
             raise ValueError("clip_high must be at least clip_low")
+        if self.initial_adapter and not self.initial_adapter_sha256:
+            raise ValueError("initial_adapter_sha256 is required for adapter continuation")
+        if self.initial_adapter_sha256 and not self.initial_adapter:
+            raise ValueError("initial_adapter is required with initial_adapter_sha256")
+        if self.initial_adapter and self.initial_adapter_sha256 != self.behavior_model_sha256:
+            raise ValueError("continued adapter must be the rollout behavior policy")
+        if (
+            self.algorithm == "episode_online_progressive_grpo_lora"
+            and self.lora.target_modules == "all-linear"
+        ):
+            raise ValueError("online GRPO requires language-only LoRA target modules")
+        if self.algorithm == "episode_online_progressive_grpo_lora" and not self.base_model_sha256:
+            raise ValueError("online GRPO requires base_model_sha256")
         return self
 
 
@@ -69,6 +85,8 @@ class RLEpisodeRecord(StrictModel):
     turn_advantages: tuple[float, ...] = ()
     behavior_model_artifact: str = ""
     behavior_model_sha256: str = ""
+    base_model_artifact: str = ""
+    base_model_sha256: str = ""
     behavior_temperature: float = Field(default=0.0, ge=0, le=2)
     score: dict[str, Any]
     turns: tuple[RLTurn, ...] = Field(min_length=1)
@@ -84,8 +102,15 @@ def load_rl_config(path: Path) -> EpisodeRLConfig:
     return EpisodeRLConfig.model_validate(yaml.safe_load(path.read_text(encoding="utf-8")))
 
 
+def behavior_policy_artifact(config: EpisodeRLConfig) -> str:
+    return config.initial_adapter or config.model_name
+
+
 def validate_behavior_policy(rows: list[dict[str, Any]], config: EpisodeRLConfig) -> None:
-    if config.algorithm != "episode_progressive_dapo_lora":
+    if config.algorithm not in {
+        "episode_progressive_dapo_lora",
+        "episode_online_progressive_grpo_lora",
+    }:
         return
     if any(not row["turn_advantages"] for row in rows):
         raise ValueError("progressive DAPO requires turn_advantages for every episode")
@@ -97,16 +122,35 @@ def validate_behavior_policy(rows: list[dict[str, Any]], config: EpisodeRLConfig
         )
         for row in rows
     }
-    expected = {(config.model_name, config.behavior_model_sha256, config.behavior_temperature)}
+    expected = {
+        (
+            behavior_policy_artifact(config),
+            config.behavior_model_sha256,
+            config.behavior_temperature,
+        )
+    }
     if provenance != expected or not config.behavior_model_sha256:
         raise ValueError(
             f"rollout behavior policy does not match training base: "
             f"dataset={provenance} config={expected}"
         )
+    if config.algorithm == "episode_online_progressive_grpo_lora":
+        base_provenance = {
+            (row["base_model_artifact"], row["base_model_sha256"]) for row in rows
+        }
+        expected_base = {(config.model_name, config.base_model_sha256)}
+        if base_provenance != expected_base:
+            raise ValueError(
+                f"rollout base model does not match training base: "
+                f"dataset={base_provenance} config={expected_base}"
+            )
 
 
 def validate_dataset_artifact(path: Path, config: EpisodeRLConfig) -> None:
-    if config.algorithm != "episode_progressive_dapo_lora":
+    if config.algorithm not in {
+        "episode_progressive_dapo_lora",
+        "episode_online_progressive_grpo_lora",
+    }:
         return
     if not config.dataset_sha256:
         raise ValueError("progressive DAPO requires dataset_sha256")
@@ -146,50 +190,50 @@ def _response_shape(labels: list[int]) -> tuple[int, int]:
     return first, len(indices)
 
 
-def _turn_loss(model: Any, turn: dict[str, Any], advantage: float, config: EpisodeRLConfig) -> Any:
+def _policy_logps(model: Any, turn: dict[str, Any]) -> Any:
+    """Return selected response-token log-probabilities for the current policy."""
     import torch
 
     input_ids = turn["input_ids"]
     attention_mask = turn["attention_mask"]
     first, response_tokens = _response_shape(turn["labels"][0].tolist())
-    # One extra suffix logit is requested because the first response token is
-    # predicted by the prefix position immediately before it.
     logits_to_keep = response_tokens + 1
     targets = input_ids[:, first:]
-
-    disable = getattr(model, "disable_adapter", None)
-    reference_context = disable() if disable is not None else nullcontext()
-    # Keep gradient checkpointing active while making both old/current policy
-    # likelihoods deterministic and comparable.
     model.train()
     for module in model.modules():
         if isinstance(module, torch.nn.Dropout):
             module.eval()
-    with torch.no_grad(), reference_context:
-        reference = model(
-            input_ids=input_ids,
-            attention_mask=attention_mask,
-            logits_to_keep=logits_to_keep,
-            use_cache=False,
-        ).logits[:, :-1]
-        old_logps = _selected_logps(reference, targets).detach()
-    del reference
-
-    current = model(
+    logits = model(
         input_ids=input_ids,
         attention_mask=attention_mask,
         logits_to_keep=logits_to_keep,
         use_cache=False,
     ).logits[:, :-1]
-    current_logps = _selected_logps(current, targets)
-    del current
+    selected = _selected_logps(logits, targets)
+    del logits
+    return selected
+
+
+def _turn_loss(
+    model: Any,
+    turn: dict[str, Any],
+    old_logps: Any,
+    advantage: float,
+    config: EpisodeRLConfig,
+) -> Any:
+    import torch
+
+    current_logps = _policy_logps(model, turn)
+    response_tokens = int(current_logps.shape[-1])
+    old_logps = old_logps.to(device=current_logps.device, dtype=current_logps.dtype)
+    if old_logps.shape != current_logps.shape:
+        raise ValueError("frozen behavior log-probabilities do not match response tokens")
     log_ratio = current_logps - old_logps
     scalar_advantage = torch.as_tensor(advantage, device=log_ratio.device, dtype=log_ratio.dtype)
     policy = -clipped_surrogate(
         log_ratio, scalar_advantage, clip_low=config.clip_low, clip_high=config.clip_high
     ).mean()
-    # K3 is non-negative and zero at the behavior policy. Here old policy is
-    # the frozen merged SFT model obtained by temporarily disabling the RL adapter.
+    # K3 is non-negative and zero at the exact frozen pre-update behavior policy.
     reverse_log_ratio = -log_ratio
     kl = (torch.exp(reverse_log_ratio) - reverse_log_ratio - 1.0).mean()
     return policy + config.kl_beta * kl, policy.detach(), kl.detach(), response_tokens
@@ -198,7 +242,7 @@ def _turn_loss(model: Any, turn: dict[str, Any], advantage: float, config: Episo
 def train_rl(config_path: Path) -> None:  # pragma: no cover - GPU entrypoint
     import torch
     import wandb
-    from peft import LoraConfig, get_peft_model
+    from peft import LoraConfig, PeftModel, get_peft_model
     from transformers import AutoModelForCausalLM, AutoModelForImageTextToText, AutoTokenizer
 
     config = load_rl_config(config_path)
@@ -261,19 +305,41 @@ def train_rl(config_path: Path) -> None:  # pragma: no cover - GPU entrypoint
     except ValueError:
         model = AutoModelForImageTextToText.from_pretrained(config.model_name, **load_kwargs)
     model.config.use_cache = False
-    model = get_peft_model(
-        model,
-        LoraConfig(
-            r=config.lora.rank,
-            lora_alpha=config.lora.alpha,
-            lora_dropout=config.lora.dropout,
-            target_modules=config.lora.target_modules,
-            task_type="CAUSAL_LM",
-        ),
-    )
+    if config.algorithm == "episode_online_progressive_grpo_lora":
+        resolved_base_sha = resolve_model_identity(config.model_name, config.base_model_sha256)
+        if resolved_base_sha != config.base_model_sha256:
+            raise ValueError("base model identity mismatch")
+    if config.initial_adapter:
+        resolved_adapter_sha = resolve_model_identity(
+            config.initial_adapter, config.initial_adapter_sha256
+        )
+        if resolved_adapter_sha != config.initial_adapter_sha256:
+            raise ValueError("initial adapter identity mismatch")
+        if Path(config.initial_adapter).resolve() == Path(config.output_dir).resolve():
+            raise ValueError("output_dir must not overwrite the behavior adapter")
+        model = PeftModel.from_pretrained(model, config.initial_adapter, is_trainable=True)
+    else:
+        model = get_peft_model(
+            model,
+            LoraConfig(
+                r=config.lora.rank,
+                lora_alpha=config.lora.alpha,
+                lora_dropout=config.lora.dropout,
+                target_modules=config.lora.target_modules,
+                task_type="CAUSAL_LM",
+            ),
+        )
     model.enable_input_require_grads()
     model.gradient_checkpointing_enable()
     device = next(model.parameters()).device
+    # Snapshot the exact rollout policy before any optimizer update. This is
+    # equivalent to rollout-time log-probabilities at temperature 1 while the
+    # immutable behavior-policy artifact is required to match the dataset.
+    for episode in encoded:
+        for turn in episode["turns"]:
+            gpu_turn = {key: value.to(device) for key, value in turn.items()}
+            with torch.no_grad():
+                turn["old_logps"] = _policy_logps(model, gpu_turn).detach().cpu()
     optimizer = torch.optim.AdamW(
         (parameter for parameter in model.parameters() if parameter.requires_grad),
         lr=config.learning_rate,
@@ -289,7 +355,7 @@ def train_rl(config_path: Path) -> None:  # pragma: no cover - GPU entrypoint
                 **config.model_dump(),
                 "episodes": len(encoded),
                 "contract": (
-                    "whole episode; behavior policy=frozen merged SFT; "
+                    "whole episode; behavior policy=frozen pre-update snapshot; "
                     f"algorithm={config.algorithm}; asymmetric clipped DAPO; "
                     "typed terminal reward"
                 ),
@@ -314,7 +380,11 @@ def train_rl(config_path: Path) -> None:  # pragma: no cover - GPU entrypoint
                 ):
                     gpu_turn = {key: value.to(device) for key, value in turn.items()}
                     loss, policy, kl, response_tokens = _turn_loss(
-                        model, gpu_turn, float(turn_advantage), config
+                        model,
+                        gpu_turn,
+                        turn["old_logps"],
+                        float(turn_advantage),
+                        config,
                     )
                     weight = token_count / total_tokens / len(group)
                     (loss * weight).backward()
@@ -349,6 +419,9 @@ def train_rl(config_path: Path) -> None:  # pragma: no cover - GPU entrypoint
             {
                 "config": config.model_dump(mode="json"),
                 "dataset_sha256": file_sha256(dataset_path),
+                "parent_adapter": config.initial_adapter,
+                "parent_adapter_sha256": config.initial_adapter_sha256,
+                "base_model_sha256": config.base_model_sha256,
                 "adapter_files_sha256": {
                     path.name: file_sha256(path) for path in adapter_files
                 },

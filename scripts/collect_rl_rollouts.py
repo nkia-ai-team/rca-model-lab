@@ -94,12 +94,19 @@ def completed_trajectory_dirs(case_dir: Path, group_size: int) -> list[Path]:
 
 
 def manifest_contract(args: argparse.Namespace, cases: list[str]) -> dict[str, Any]:
+    base_model_artifact = args.base_model_artifact or args.model_artifact
+    base_model_sha256 = resolve_model_identity(
+        base_model_artifact,
+        args.base_model_artifact_sha256 or args.model_artifact_sha256,
+    )
     return {
         "model": args.model,
         "model_artifact": args.model_artifact,
         "model_artifact_sha256": resolve_model_identity(
             args.model_artifact, args.model_artifact_sha256
         ),
+        "base_model_artifact": base_model_artifact,
+        "base_model_artifact_sha256": base_model_sha256,
         "base_url": args.base_url,
         "structured_output_backend": args.structured_backend,
         "group_size": args.group_size,
@@ -140,6 +147,16 @@ def main() -> None:
         help="required when the immutable model artifact lives on a remote inference host",
     )
     parser.add_argument(
+        "--base-model-artifact",
+        default="",
+        help="immutable SFT/base model under the served behavior adapter",
+    )
+    parser.add_argument(
+        "--base-model-artifact-sha256",
+        default="",
+        help="required when the base model artifact is remote",
+    )
+    parser.add_argument(
         "--structured-backend",
         choices=("guidance", "xgrammar", "outlines", "lm-format-enforcer", "unspecified"),
         default="unspecified",
@@ -163,6 +180,10 @@ def main() -> None:
         parser.error("--seed must be non-negative")
     try:
         resolve_model_identity(args.model_artifact, args.model_artifact_sha256)
+        resolve_model_identity(
+            args.base_model_artifact or args.model_artifact,
+            args.base_model_artifact_sha256 or args.model_artifact_sha256,
+        )
     except ValueError as error:
         parser.error(str(error))
     if not args.restore.is_file():

@@ -25,7 +25,7 @@
 - RL v1~v3은 SFT보다 퇴행했다. reward가 잘못된 행동까지 강화하거나, 성공 rollout이 부족한 상태에서 전체 실패 궤적을 억제한 것이 주요 원인이다.
 - v4의 성공 궤적 replay는 가능성을 보였지만 평가 provenance가 현재 기준을 충족하지 않아 승격 근거로 쓸 수 없다.
 - v5에서 ThinkFL에 가까운 progressive DAPO를 구성했지만, 20개 사건 중 11개는 그룹 내 최종 reward가 모두 같고 4개는 모두 0점이었다. 상대정책 학습 신호가 부족했다.
-- v6는 이 문제를 우회하기 위한 보수적 offline RPO 실험이다. ThinkFL식 온라인 GRPO 자체는 아니다.
+- v6는 이 문제를 우회한 보수적 offline RPO였지만 majority strict가 `1/6 → 0/6`으로 퇴행해 승격에 실패했다. ThinkFL식 온라인 GRPO로 전환해야 한다.
 
 최종 목표는 내부 모델끼리의 개선이 아니다.
 
@@ -307,7 +307,7 @@ root-cause F1 / exact root
 | RL v3 | teacher-anchor DAPO | 교사 양성 + hard negative | 역사적 holdout에서 더 큰 퇴행 | 실패 episode 전체 억제 중단 |
 | RFT v4 | 성공 episode + 교사 replay | 실패 rollout 제거, 강한 KL | train monitor는 개선 조짐, provenance 불충분 | 공정 승격 근거로 사용하지 않음 |
 | v5 | progressive per-turn DAPO | terminal reward + route step reward | 구현/데이터 완성, 상대 성공 신호는 4/20 groups뿐 | on-policy 반복·reward 설계 재검토 |
-| v6 | whole-trajectory RPO | 좋은/나쁜 전체 궤적 20쌍 | 학습 완료, 동일 monitor 평가 중 | SFT 비퇴행 여부로 유지/폐기 |
+| v6 | whole-trajectory RPO | 좋은/나쁜 전체 궤적 20쌍 | reward·root F1·strict run은 비퇴행, majority strict `1/6 → 0/6` | 승격 실패·폐기 |
 
 ### 4.4 RL v1 — 종합 reward를 그대로 사용
 
@@ -443,13 +443,24 @@ imitation anchor = 0.005 × beta
 - 평가를 위해서만 임시 merge를 만들었고, 정식 artifact는 adapter로 유지했다.
 - 다음 실험부터는 `model.language_model.*`의 attention/MLP projection만 대상으로 제한해야 한다.
 
-현재 v6는 SFT와 동일한 6-case × 3회 monitor 평가 중이다. 비퇴행 게이트를 하나라도 실패하면 승격하지 않는다.
+동일한 6-case × 3회 공정 monitor 결과는 다음과 같다.
+
+| 지표 | SFT | RPO v6 | 판정 |
+|---|---:|---:|---|
+| 평균 reward | 0.2285 | 0.2303 | 유지 |
+| 평균 root F1 | 0.2222 | 0.2222 | 유지 |
+| strict runs | 2/18 | 2/18 | 유지 |
+| majority strict cases | 1/6 | 0/6 | **퇴행** |
+| evidence complete | 18/18 | 18/18 | 유지 |
+| format / unsupported confirmed | 0 / 0 | 0 / 0 | 유지 |
+
+v6는 F03-H의 strict 성공이 `2/3 → 1/3`으로 줄고 F10-H에서 새 strict 성공이 `0/3 → 1/3` 생겼다. 전체 strict 횟수는 같지만 사건 단위의 안정성이 떨어졌다. 평균 reward의 `+0.0017`만으로 이 퇴행을 덮지 않으며, 자동 comparator도 `candidate regressed: majority strict cases`로 실패했다. 따라서 v6는 승격하지 않는다.
 
 ---
 
 ## 5. 앞으로의 RL: 진짜 on-policy progressive GRPO
 
-v6가 통과하더라도 최종 구조는 offline pair 학습에 머물지 않는다. 다음 목표는 ThinkFL 방향의 실제 환경 RL이다.
+v6가 비퇴행 게이트에서 탈락했으므로 offline pair 학습을 더 조정해 승격시키지 않는다. 다음 목표는 ThinkFL 방향의 실제 환경 RL이다.
 
 ```text
 1. 현재 SFT/RL actor를 하네스에 배포

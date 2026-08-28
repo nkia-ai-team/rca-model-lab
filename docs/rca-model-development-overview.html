@@ -196,12 +196,12 @@
       <section class="hero" id="summary">
         <div class="eyebrow">RCA Student experiment report</div>
         <h1>무엇을 시도했고,<br><em>어디서 좋아졌고,<br>왜 다시 실패했나</em></h1>
-        <p class="lead">바닐라 모델의 반복·정체 행동은 whole-episode SFT로 줄었다. 하지만 strict RCA는 아직 약하다. RL v1~v3은 오히려 SFT를 손상시켰고, v6는 이를 피하기 위한 보수적 offline RPO다. 다음 핵심은 최신 Student가 실제 하네스에서 새 rollout을 만들며 배우는 on-policy progressive GRPO다.</p>
+        <p class="lead">바닐라 모델의 반복·정체 행동은 whole-episode SFT로 줄었다. 하지만 strict RCA는 아직 약하다. RL v1~v3은 SFT를 손상시켰고, 보수적 offline RPO v6도 majority strict가 1/6에서 0/6으로 퇴행해 승격에 실패했다. 다음 핵심은 최신 Student가 실제 하네스에서 새 rollout을 만들며 배우는 on-policy progressive GRPO다.</p>
         <div class="badges">
           <span class="badge">SFT 완료</span>
           <span class="badge">20 cases · 24 teacher trajectories</span>
           <span class="badge">RL v1~v3 퇴행</span>
-          <span class="badge">RL v6 평가 중</span>
+          <span class="badge">RL v6 승격 실패</span>
           <span class="badge">목표: Student ≥ Claude/Codex</span>
         </div>
         <div class="pipeline" aria-label="고정 학습 흐름">
@@ -317,10 +317,10 @@
             <p>terminal reward와 route step reward를 결합. 새 증거, 결정적 조회, 반복·실패 action에 turn credit을 부여했다.</p>
             <dl><dt>데이터</dt><dd>80 rollouts</dd><dt>신호</dt><dd>terminal reward가 달랐던 그룹 9/20, 성공·실패가 함께 있던 그룹 4/20</dd><dt>위험</dt><dd>gold target 조회 자체를 보상하면 인과 추론 대신 접근 패턴을 외울 수 있음.</dd></dl>
           </article>
-          <article class="experiment run">
-            <div class="topline"><h3>v6 · offline whole-trajectory RPO</h3><span class="status run">평가 중</span></div>
+          <article class="experiment fail">
+            <div class="topline"><h3>v6 · offline whole-trajectory RPO</h3><span class="status fail">승격 실패</span></div>
             <p>좋은 전체 궤적의 확률을 hard negative보다 높이고, 작은 imitation anchor로 SFT 정책 붕괴를 억제한다.</p>
-            <dl><dt>데이터</dt><dd>20 pairs · teacher chosen 16 · Student chosen 4</dd><dt>학습</dt><dd>20 steps · LR 5e-7 · beta 0.10</dd><dt>로그</dt><dd>preference margin 약 -0.0029~+0.0029, loss 약 0.693</dd><dt>현재</dt><dd>SFT와 동일 6×3 monitor 실행 중. 비퇴행 실패 시 폐기.</dd></dl>
+            <dl><dt>데이터</dt><dd>20 pairs · teacher chosen 16 · Student chosen 4</dd><dt>학습</dt><dd>20 steps · LR 5e-7 · beta 0.10</dd><dt>결과</dt><dd>reward 0.2285→0.2303, root F1 0.2222 유지, strict 2/18 유지</dd><dt>실패</dt><dd>majority strict cases 1/6→0/6. 평균 상승으로 사건 단위 안정성 퇴행을 덮지 않음.</dd></dl>
           </article>
         </div>
         <div class="callout red"><strong>v6에서 발견한 별도 기술 결함:</strong> <code>target_modules: all-linear</code>가 vision tower까지 포함했다. vision LoRA B tensor 304개는 0이었지만 multimodal vLLM direct-LoRA profiling이 shape assertion으로 실패했다. 다음부터 <code>model.language_model.*</code> projection만 학습한다.</div>
@@ -405,11 +405,11 @@
           <tr><td>SFT 공정 monitor</td><td><span class="status done">완료</span></td><td>strict 2/18, root F1 0.222</td></tr>
           <tr><td>RL v1~v3</td><td><span class="status fail">폐기</span></td><td>SFT 대비 퇴행</td></tr>
           <tr><td>RFT v4 / v5</td><td><span class="status diag">진단</span></td><td>가능성·문제점 확인, 미승격</td></tr>
-          <tr><td>Offline RPO v6</td><td><span class="status run">평가 중</span></td><td>동일 6×3 monitor</td></tr>
+          <tr><td>Offline RPO v6</td><td><span class="status fail">폐기</span></td><td>reward +0.0017, root F1·strict 유지, majority strict 1/6→0/6</td></tr>
           <tr><td>Online progressive GRPO</td><td><span class="status diag">다음 단계</span></td><td>최신 정책 rollout 반복 필요</td></tr>
           <tr><td>새 봉인 Claude/Codex parity</td><td><span class="status diag">미실행</span></td><td>새 미노출 family 필요</td></tr>
         </tbody></table>
-        <div class="callout green"><strong>바로 다음 결정:</strong> v6 monitor 완료 → 모든 지표에서 SFT 비퇴행 판정 → 실패 시 v6 폐기 → language-only LoRA + on-policy progressive GRPO → 설정 동결 → 새 봉인 family에서 최종 비교.</div>
+        <div class="callout green"><strong>바로 다음 결정:</strong> v6는 majority strict 퇴행으로 폐기 → language-only LoRA + on-policy progressive GRPO → 매 업데이트 뒤 최신 정책으로 rollout 재생성 → 설정 동결 → 새 봉인 family에서 최종 비교.</div>
       </section>
 
       <section aria-labelledby="evidence-title">

@@ -17,9 +17,7 @@ from rca_lab.data.sft import SFTRecord
 from rca_lab.eval.scoring import (
     EvalContract,
     load_episode,
-    root_matches,
     score_episode,
-    target_names,
 )
 from rca_lab.harness.models import ActionRequest, AnswerState
 
@@ -52,38 +50,20 @@ def _actor_turns(episode: dict[str, Any]) -> list[dict[str, Any]]:
     return turns
 
 
-_DECISIVE_ACTIONS = {
-    "metric_fetch_raw",
-    "metric_fetch_window",
-    "metric_compare",
-    "probe_changes",
-    "probe_db_blocking",
-    "probe_db_query_events",
-    "probe_events",
-    "probe_host_peers",
-    "probe_logs",
-    "probe_replica_lag",
-    "probe_snmp_traps",
-    "probe_topsql",
-    "probe_traces",
-}
-
-
-def _expected_target_ids(expected: dict[str, Any], episode: dict[str, Any]) -> set[str]:
-    names = target_names(episode)
-    return {
-        target_id
-        for target_id, name in names.items()
-        if any(root_matches(root, ("target", name)) for root in expected["roots"])
-    }
-
-
 def _progressive_step_rewards(
     actor_turns: list[dict[str, Any]],
     ledger: list[dict[str, Any]],
-    expected_targets: set[str],
+    *,
+    outcome_weight: float,
 ) -> tuple[list[float], tuple[str, ...]]:
-    """Credit grounded route progress without rewarding verbosity or turn count."""
+    """Credit new evidence only in proportion to a grounded final outcome.
+
+    Gold root identities are deliberately absent from this function. Rewarding
+    a query merely because it touched the expected target teaches answer-key
+    navigation rather than causal investigation. Invalid and duplicate actions
+    remain local penalties; positive route credit is gated by the terminal
+    diagnosis score.
+    """
     rewards: list[float] = []
     signatures: list[str] = []
     ledger_index = 0
@@ -109,15 +89,12 @@ def _progressive_step_rewards(
         if not bool(observation.get("ok")):
             reward -= 0.04
         elif bool(observation.get("progress")):
-            if action == "env_top" and "env_top" not in seen_signatures:
-                reward += 0.03
-            if target in expected_targets:
-                reward += 0.12
-                if action in _DECISIVE_ACTIONS:
-                    reward += 0.13
+            if action == "env_top" and not any(
+                value.startswith("env_top:") for value in seen_signatures
+            ):
+                reward += 0.01 * outcome_weight
             new_refs = set(map(str, observation.get("evidence_refs", []))) - seen_refs
-            if target in expected_targets:
-                reward += min(0.05, 0.01 * len(new_refs))
+            reward += outcome_weight * min(0.05, 0.02 * len(new_refs))
             seen_refs.update(new_refs)
         if signature in seen_signatures:
             reward -= 0.04
@@ -188,7 +165,7 @@ def _optimization_reward(score: dict[str, Any], expected: dict[str, Any]) -> flo
             # Proof quality is useful only for a matching root. A perfectly
             # cited but unrelated culprit must not become a positive signal.
             + 0.15 * proof_rate * root_f1
-            + 0.10 * status_correct
+            + 0.10 * status_correct * root_f1
             + 0.05 * strict_correct
             - 0.60 * unsupported
             - 0.10 * format_errors,
@@ -204,6 +181,8 @@ def build_records(rollouts: Path, contract: dict[str, Any]) -> list[dict[str, An
     behavior_policy = {
         "behavior_model_artifact": str(rollout_manifest.get("model_artifact", "")),
         "behavior_model_sha256": str(rollout_manifest.get("model_artifact_sha256", "")),
+        "base_model_artifact": str(rollout_manifest.get("base_model_artifact", "")),
+        "base_model_sha256": str(rollout_manifest.get("base_model_artifact_sha256", "")),
         "behavior_temperature": float(rollout_manifest.get("temperature", 0.0)),
     }
     grouped: dict[str, list[dict[str, Any]]] = defaultdict(list)
@@ -231,7 +210,7 @@ def build_records(rollouts: Path, contract: dict[str, Any]) -> list[dict[str, An
                 step_rewards, path_signature = _progressive_step_rewards(
                     turns,
                     episode.get("ledger", []),
-                    _expected_target_ids(expected, episode),
+                    outcome_weight=optimization_reward,
                 )
                 grouped[case_id].append(
                     {
@@ -274,7 +253,7 @@ def build_records(rollouts: Path, contract: dict[str, Any]) -> list[dict[str, An
             )
             row["turn_advantages"] = (
                 [0.0] * len(returns)
-                if return_stddev < 1e-8
+                if stddev < 1e-8 or return_stddev < 1e-8
                 else [(value - return_mean) / return_stddev for value in returns]
             )
             row.pop("step_rewards")

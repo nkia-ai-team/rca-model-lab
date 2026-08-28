@@ -84,6 +84,8 @@ def test_rollout_manifest_pins_sampling_temperature(tmp_path: Path) -> None:
         model="actor",
         model_artifact=str(model_artifact),
         model_artifact_sha256="",
+        base_model_artifact="",
+        base_model_artifact_sha256="",
         base_url="http://localhost:8003/v1",
         structured_backend="guidance",
         group_size=8,
@@ -104,6 +106,8 @@ def test_rollout_manifest_pins_sampling_temperature(tmp_path: Path) -> None:
     assert len(contract["restore_sha256"]) == 64
     assert len(contract["case_set_sha256"]) == 64
     assert len(contract["model_artifact_sha256"]) == 64
+    assert contract["base_model_artifact"] == str(model_artifact)
+    assert contract["base_model_artifact_sha256"] == contract["model_artifact_sha256"]
 
 
 def test_model_identity_changes_with_model_metadata(tmp_path: Path) -> None:

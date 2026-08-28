@@ -38,7 +38,7 @@ def test_proof_signal_is_gated_by_root_match() -> None:
     assert module._optimization_reward(wrong_root, expected) == 0.0
 
 
-def test_progressive_credit_prefers_grounded_decisive_probe() -> None:
+def test_progressive_credit_uses_outcome_grounded_new_evidence_not_gold_target() -> None:
     module = _module()
     root = "11111111-1111-1111-1111-111111111111"
     other = "22222222-2222-2222-2222-222222222222"
@@ -64,10 +64,99 @@ def test_progressive_credit_prefers_grounded_decisive_probe() -> None:
         },
     ]
 
-    rewards, signatures = module._progressive_step_rewards(turns, ledger, {root})
+    rewards, signatures = module._progressive_step_rewards(turns, ledger, outcome_weight=0.8)
 
     assert rewards[1] > rewards[0] > rewards[2]
     assert signatures == ("env_top:10", f"probe_logs:{root}", f"probe_logs:{other}")
+
+    swapped, _ = module._progressive_step_rewards(turns, ledger, outcome_weight=0.0)
+    assert swapped[1] == 0.0
+
+
+def test_equal_terminal_outcomes_suppress_route_only_policy_gradient(tmp_path: Path) -> None:
+    module = _module()
+    case = "case-a"
+    actions = [
+        {
+            "thought": "inspect",
+            "action": "env_top",
+            "arg1": "3",
+            "arg2": "",
+            "query": {},
+            "refresh": False,
+            "answer": {
+                "status": "insufficient",
+                "causes": [],
+                "external_causes": [],
+                "culprits": [],
+                "ready": False,
+                "text": "continue",
+            },
+        },
+        {
+            "thought": "repeat",
+            "action": "env_top",
+            "arg1": "3",
+            "arg2": "",
+            "query": {},
+            "refresh": False,
+            "answer": {
+                "status": "insufficient",
+                "causes": [],
+                "external_causes": [],
+                "culprits": [],
+                "ready": False,
+                "text": "continue",
+            },
+        },
+    ]
+    for index, action_count in enumerate((1, 2), 1):
+        path = tmp_path / case / f"rollout-{index:02d}" / "agent-a.jsonl"
+        path.parent.mkdir(parents=True)
+        episode = {
+            "event": "episode_completed",
+            "result": {
+                "status": "provisional",
+                "causes": [],
+                "external_causes": [],
+                "turns": action_count,
+            },
+            "ledger": [
+                {
+                    "action": "env_top",
+                    "target": "3",
+                    "ok": True,
+                    "progress": True,
+                    "evidence_refs": [f"ev-{index}"],
+                }
+                for _ in range(action_count)
+            ],
+            "prompts": [
+                {
+                    "Messages": [
+                        {"role": "system", "content": "RCA"},
+                        {"role": "user", "content": "targets unavailable"},
+                    ],
+                    "Output": json.dumps(action),
+                }
+                for action in actions[:action_count]
+            ],
+        }
+        path.write_text(json.dumps(episode) + "\n")
+    contract = {
+        "cases": {
+            case: {
+                "expected_status": "provisional",
+                "roots": [{"target_aliases": ["service-a"]}],
+            }
+        }
+    }
+
+    records = module.build_records(tmp_path, contract)
+
+    assert {record["optimization_reward"] for record in records} == {0.0}
+    assert {record["advantage"] for record in records} == {0.0}
+    assert all(set(record["turn_advantages"]) == {0.0} for record in records)
 
 
 def test_discounted_credit_keeps_episode_whole_but_distinguishes_turns() -> None:
@@ -203,7 +292,7 @@ def test_equally_incorrect_episodes_do_not_learn_efficiency_noise(tmp_path: Path
     records = module.build_records(tmp_path, contract)
 
     assert len({record["reward"] for record in records}) == 2
-    assert {record["optimization_reward"] for record in records} == {0.1}
+    assert {record["optimization_reward"] for record in records} == {0.0}
     assert {record["advantage"] for record in records} == {0.0}
 
 
