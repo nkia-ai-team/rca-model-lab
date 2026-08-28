@@ -3,6 +3,7 @@ from pathlib import Path
 import pytest
 
 from rca_lab.train.sft import (
+    build_sft_training_manifest,
     case_balanced_weights,
     load_sft_config,
     load_verified_training_rows,
@@ -17,6 +18,8 @@ def test_production_config_preserves_episodes_with_exact_runtime_turns() -> None
     assert config.assistant_only_loss is True
     assert config.case_balanced_loss is True
     assert config.use_liger_kernel is True
+    assert config.adapter_scope == "language_model"
+    assert config.lora.target_modules.startswith(r"^model\.language_model")
     assert config.save_total_limit == 1
     rows = load_verified_training_rows(config)
     assert config.terminal_contract == "configs/eval/train-family-v2.yaml"
@@ -98,3 +101,31 @@ def test_mask_assistant_spans_rejects_missing_eot() -> None:
             message_id=12,
             eot_id=99,
         )
+
+
+def test_sft_manifest_binds_adapter_to_config_and_dataset(tmp_path: Path) -> None:
+    dataset = tmp_path / "dataset.jsonl"
+    dataset.write_text("episode\n", encoding="utf-8")
+    config_path = tmp_path / "config.yaml"
+    config_path.write_text("config\n", encoding="utf-8")
+    adapter = tmp_path / "adapter"
+    adapter.mkdir()
+    (adapter / "adapter_config.json").write_text("{}", encoding="utf-8")
+    (adapter / "adapter_model.safetensors").write_bytes(b"weights")
+    config = load_sft_config(Path("configs/sft/muse-glimmer-30b-teacher-v3.yaml")).model_copy(
+        update={"dataset": str(dataset)}
+    )
+
+    manifest = build_sft_training_manifest(
+        config_path=config_path,
+        config=config,
+        adapter_dir=adapter,
+        runtime={"python": "test"},
+    )
+
+    assert manifest["config_sha256"]
+    assert manifest["dataset_sha256"]
+    assert set(manifest["adapter_files_sha256"]) == {
+        "adapter_config.json",
+        "adapter_model.safetensors",
+    }

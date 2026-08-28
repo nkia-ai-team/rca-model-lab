@@ -4,15 +4,17 @@ from __future__ import annotations
 
 import hashlib
 import json
+import platform
 from collections import Counter
 from pathlib import Path
 from typing import Any, Literal
 
 import yaml
-from pydantic import Field
+from pydantic import Field, model_validator
 
 from rca_lab.data.sft import SFTDatasetManifest
 from rca_lab.harness.models import StrictModel
+from rca_lab.provenance import file_sha256
 
 
 class LoRAConfig(StrictModel):
@@ -47,8 +49,15 @@ class FullTrajectorySFTConfig(StrictModel):
     assistant_only_loss: Literal[True] = True
     case_balanced_loss: Literal[True] = True
     use_liger_kernel: bool = True
+    adapter_scope: Literal["language_model", "all_linear"] = "all_linear"
     lora: LoRAConfig
     wandb: WandbConfig
+
+    @model_validator(mode="after")
+    def lora_scope_matches_declared_contract(self) -> FullTrajectorySFTConfig:
+        if self.adapter_scope == "language_model" and self.lora.target_modules == "all-linear":
+            raise ValueError("language_model adapter scope requires an explicit module pattern")
+        return self
 
 
 def load_sft_config(path: Path) -> FullTrajectorySFTConfig:
@@ -124,6 +133,33 @@ def mask_assistant_spans(
     if spans == 0:
         raise ValueError("trajectory has no assistant span")
     return labels
+
+
+def build_sft_training_manifest(
+    *,
+    config_path: Path,
+    config: FullTrajectorySFTConfig,
+    adapter_dir: Path,
+    runtime: dict[str, Any],
+) -> dict[str, Any]:
+    adapter_files = sorted(
+        path
+        for path in adapter_dir.iterdir()
+        if path.is_file() and path.name != "training_manifest.json"
+    )
+    required = {"adapter_config.json", "adapter_model.safetensors"}
+    missing = sorted(required - {path.name for path in adapter_files})
+    if missing:
+        raise ValueError(f"SFT adapter is incomplete: missing={missing}")
+    return {
+        "config": config.model_dump(mode="json"),
+        "config_sha256": file_sha256(config_path),
+        "dataset_sha256": file_sha256(Path(config.dataset)),
+        "adapter_files_sha256": {
+            path.name: file_sha256(path) for path in adapter_files
+        },
+        "runtime": runtime,
+    }
 
 
 def train_sft(config_path: Path) -> None:  # pragma: no cover - GPU entrypoint
@@ -304,4 +340,21 @@ def train_sft(config_path: Path) -> None:  # pragma: no cover - GPU entrypoint
         data_collator=EpisodeCollator(),
     )
     trainer.train()
-    trainer.save_model(str(Path(config.output_dir) / "adapter"))
+    adapter_dir = Path(config.output_dir) / "adapter"
+    trainer.save_model(str(adapter_dir))
+    tokenizer.save_pretrained(adapter_dir)
+    manifest = build_sft_training_manifest(
+        config_path=config_path,
+        config=config,
+        adapter_dir=adapter_dir,
+        runtime={
+            "python": platform.python_version(),
+            "torch": torch.__version__,
+            "cuda": torch.version.cuda,
+            "transformers": __import__("transformers").__version__,
+            "peft": __import__("peft").__version__,
+        },
+    )
+    (adapter_dir / "training_manifest.json").write_text(
+        json.dumps(manifest, indent=2) + "\n", encoding="utf-8"
+    )
