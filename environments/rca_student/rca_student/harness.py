@@ -6,10 +6,13 @@ import hashlib
 from pathlib import Path
 
 import verifiers.v1 as vf
+from pydantic import Field
+
+from rca_lab.prime_rl.paths import project_path
 
 
 class RCAStudentHarnessConfig(vf.HarnessConfig):
-    agent_path: Path = Path("/home/work/rca-model-lab/bin/rca-agent-v6")
+    agent_path: Path = Field(default_factory=lambda: project_path("bin/rca-agent-v6"))
     actor_temperature: float = 1.0
     postgres_dsn: str = "postgres://lucida:lucida123@localhost:55432/lucida"
     clickhouse_addr: str = "localhost:57001"

@@ -1,0 +1,56 @@
+# Standalone CPU orchestrator in the local RCA workspace.
+# The broadcasts path must be identical on this machine and the vLLM host.
+output_dir = "/tmp/rca-prime-rl/rca-online-smoke"
+max_steps = 3
+batch_size = 8
+group_size = 8
+seq_len = 32768
+num_train_workers = 1
+max_off_policy_steps = 2
+
+[model]
+name = "rca-actor"
+
+[model.lora]
+rank = 8
+alpha = 16.0
+
+[model.client]
+base_url = "http://127.0.0.1:8000/v1"
+admin_base_url = ["http://127.0.0.1:8100/v1"]
+wait_for_ready_timeout = 1800
+
+[tokenizer]
+name = "/home/swlee/projects/rca-model-lab/models/muse-glimmer-30b-tokenizer"
+
+[renderer]
+name = "default"
+
+[train.sampling]
+temperature = 1.0
+max_completion_tokens = 2048
+
+[[train.source]]
+name = "rca-student"
+env.taskset.id = "rca-student"
+env.agent.harness.id = "rca-student"
+env.agent.runtime.type = "subprocess"
+
+[concurrency]
+min_inflight = 1
+max_inflight = 16
+
+[ckpt]
+interval = 1
+wait_for_weights_timeout = 1800
+keep_last = 2
+
+[weight_broadcast]
+type = "filesystem"
+timeout = 1800
+
+[rollout_transport]
+type = "zmq"
+host = "127.0.0.1"
+port = 5555
+hwm = 10

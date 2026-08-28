@@ -9,6 +9,7 @@ from typing import Any
 
 import verifiers.v1 as vf
 import yaml
+from pydantic import Field
 
 from rca_lab.eval.scoring import (
     EvalContract,
@@ -17,6 +18,7 @@ from rca_lab.eval.scoring import (
     score_episode,
 )
 from rca_lab.prime_rl import ScenarioLease, parse_incident_id
+from rca_lab.prime_rl.paths import project_path
 
 
 class RCAStudentData(vf.TaskData):
@@ -25,7 +27,9 @@ class RCAStudentData(vf.TaskData):
 
 
 class RCAStudentTaskConfig(vf.TaskConfig):
-    restore_path: Path = Path("/home/work/rca-model-lab/scripts/restore_eval_case.sh")
+    restore_path: Path = Field(
+        default_factory=lambda: project_path("scripts/restore_eval_case.sh")
+    )
     lease_dir: Path = Path("/tmp/rca-prime-rl-scenario")
     max_episode_bytes: int = 64 * 1024 * 1024
 
@@ -96,8 +100,14 @@ class RCAStudentTask(vf.Task[RCAStudentData, vf.State, RCAStudentTaskConfig]):
 
 
 class RCAStudentConfig(vf.TasksetConfig):
-    contract: Path = Path("configs/eval/train-family-v2.yaml")
-    eligible_dataset: Path = Path("data/processed/sft-teacher-v3-contract-clean.jsonl")
+    contract: Path = Field(
+        default_factory=lambda: project_path("configs/eval/train-family-v2.yaml")
+    )
+    eligible_dataset: Path = Field(
+        default_factory=lambda: project_path(
+            "data/processed/sft-teacher-v3-contract-clean.jsonl"
+        )
+    )
     task: RCAStudentTaskConfig = RCAStudentTaskConfig()
 
 

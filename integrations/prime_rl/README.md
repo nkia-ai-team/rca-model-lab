@@ -21,3 +21,26 @@ scripts/prepare_prime_rl.sh /absolute/path/to/prime-rl
 
 The script refuses a dirty or differently pinned checkout. It is idempotent when
 the patch is already applied.
+
+## Split KT sessions
+
+`configs/prime_rl/rca-online-smoke/` contains standalone configs for the
+three-process deployment:
+
+- `trainer.toml` runs only the FSDP2 LoRA trainer on the training H200;
+- `inference.toml` runs only vLLM on the inference H200;
+- `orchestrator.toml` runs the RCA environment and scorer locally.
+
+The orchestrator binds the ZMQ batch transport on local ports 5555 and 5556.
+Expose those ports to the trainer with SSH reverse forwards. Expose the vLLM
+router and admin engine to the orchestrator with local forwards for ports 8000
+and 8100.
+
+Prime's LoRA filesystem broadcast normally requires a shared mount. These KT
+containers have isolated filesystems, so run `scripts/relay_prime_lora.py` with
+a local copy of `relay.example.yaml`. The relay preserves Prime's
+`.sender_ready -> .receiver_ready -> .started -> .finished` protocol and only
+publishes `.finished` locally after the complete adapter exists on the vLLM
+host. `local_broadcast_dir` and the inference host's
+`remote_broadcast_dir` must be the identical absolute path because Prime sends
+that path to vLLM's adapter-load endpoint.
