@@ -356,10 +356,15 @@ def train_rl(config_path: Path) -> None:  # pragma: no cover - GPU entrypoint
             gpu_turn = {key: value.to(device) for key, value in turn.items()}
             with torch.no_grad():
                 turn["old_logps"] = _policy_logps(model, gpu_turn).detach().cpu()
-                with model.disable_adapter():
-                    turn["reference_logps"] = (
-                        _policy_logps(model, gpu_turn).detach().cpu()
-                    )
+                if config.initial_adapter:
+                    with model.disable_adapter():
+                        turn["reference_logps"] = (
+                            _policy_logps(model, gpu_turn).detach().cpu()
+                        )
+                else:
+                    # Iteration 0 starts from a zero-initialized LoRA, so the
+                    # rollout policy and immutable SFT reference are identical.
+                    turn["reference_logps"] = turn["old_logps"].clone()
     optimizer = torch.optim.AdamW(
         (parameter for parameter in model.parameters() if parameter.requires_grad),
         lr=config.learning_rate,
