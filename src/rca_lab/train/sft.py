@@ -130,7 +130,6 @@ def train_sft(config_path: Path) -> None:  # pragma: no cover - GPU entrypoint
     import os
 
     import torch
-    import wandb
     from peft import LoraConfig, get_peft_model
     from transformers import (
         AutoModelForCausalLM,
@@ -258,6 +257,8 @@ def train_sft(config_path: Path) -> None:  # pragma: no cover - GPU entrypoint
 
     wandb_enabled = bool(os.environ.get("WANDB_API_KEY")) or Path("~/.netrc").expanduser().exists()
     if wandb_enabled:
+        import wandb
+
         wandb.init(
             entity=config.wandb.entity,
             project=config.wandb.project,
