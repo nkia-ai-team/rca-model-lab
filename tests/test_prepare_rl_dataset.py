@@ -159,13 +159,29 @@ def test_equal_terminal_outcomes_suppress_route_only_policy_gradient(tmp_path: P
     assert all(set(record["turn_advantages"]) == {0.0} for record in records)
 
 
-def test_discounted_credit_keeps_episode_whole_but_distinguishes_turns() -> None:
+def test_turn_credit_keeps_episode_signal_and_penalizes_bad_actions() -> None:
     module = _module()
 
-    returns = module._discounted_returns([0.0, 0.25, -0.04], terminal_reward=0.8)
+    credits = module._turn_credit(
+        1.0,
+        [0.0, 0.08, -0.08],
+        optimization_reward=0.8,
+    )
 
-    assert len(returns) == 3
-    assert returns[1] > returns[0] > returns[2]
+    assert credits == pytest.approx([1.0, 1.25, 0.75])
+
+
+def test_terminal_zero_episode_never_receives_positive_turn_credit() -> None:
+    module = _module()
+
+    credits = module._turn_credit(
+        -0.01,
+        [0.0, 0.08, -0.08],
+        optimization_reward=0.0,
+    )
+
+    assert credits == pytest.approx([-0.01, 0.0, -0.26])
+    assert max(credits) == 0.0
 
 
 def test_group_advantages_are_normalized_within_case(tmp_path: Path) -> None:
@@ -236,6 +252,10 @@ def test_group_advantages_are_normalized_within_case(tmp_path: Path) -> None:
     assert sorted(record["advantage"] for record in records) == pytest.approx([-1.0, 1.0])
     assert sorted(record["optimization_reward"] for record in records) == pytest.approx([0.0, 1.0])
     assert all(len(record["turns"]) == 1 for record in records)
+    losing = next(record for record in records if record["optimization_reward"] == 0.0)
+    winning = next(record for record in records if record["optimization_reward"] == 1.0)
+    assert max(losing["turn_advantages"]) <= 0.0
+    assert min(winning["turn_advantages"]) > 0.0
 
 
 def test_equally_incorrect_episodes_do_not_learn_efficiency_noise(tmp_path: Path) -> None:

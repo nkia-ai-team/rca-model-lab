@@ -103,29 +103,28 @@ def _progressive_step_rewards(
     return rewards, tuple(signatures)
 
 
-def _path_novelty(signatures: list[tuple[str, ...]]) -> list[float]:
-    if len(signatures) < 2:
-        return [0.0] * len(signatures)
-    sets = [set(path) for path in signatures]
-    novelty: list[float] = []
-    for index, current in enumerate(sets):
-        distances = []
-        for other_index, other in enumerate(sets):
-            if index == other_index:
-                continue
-            union = current | other
-            distances.append(0.0 if not union else 1.0 - len(current & other) / len(union))
-        novelty.append(sum(distances) / len(distances))
-    return novelty
+def _turn_credit(
+    episode_advantage: float,
+    step_rewards: list[float],
+    *,
+    optimization_reward: float,
+) -> list[float]:
+    """Redistribute bounded local credit without reversing terminal outcomes.
 
-
-def _discounted_returns(step_rewards: list[float], terminal_reward: float) -> list[float]:
-    value = terminal_reward
-    returns = [0.0] * len(step_rewards)
-    for index in range(len(step_rewards) - 1, -1, -1):
-        value = step_rewards[index] + 0.95 * value
-        returns[index] = value
-    return returns
+    Every turn first inherits the case-relative episode advantage. A small local
+    adjustment then rewards new evidence or penalizes invalid/duplicate actions.
+    A terminal-zero episode can never receive positive turn credit: avoiding a
+    duplicate call is not evidence that an incorrect diagnosis should become
+    more likely.
+    """
+    credits: list[float] = []
+    for step_reward in step_rewards:
+        local_adjustment = max(-0.25, min(0.25, 0.25 * step_reward / 0.08))
+        credit = episode_advantage + local_adjustment
+        if optimization_reward <= 0.0:
+            credit = min(0.0, credit)
+        credits.append(max(-3.0, min(3.0, credit)))
+    return credits
 
 
 def _premature_penalty(events: list[dict[str, Any]], strict_correct: bool) -> float:
@@ -228,33 +227,22 @@ def build_records(rollouts: Path, contract: dict[str, Any]) -> list[dict[str, An
 
     records: list[dict[str, Any]] = []
     for rows in grouped.values():
-        novelty = _path_novelty([tuple(row["path_signature"]) for row in rows])
-        raw_turn_returns: list[list[float]] = []
-        for row, path_novelty in zip(rows, novelty, strict=True):
-            route_signal = sum(max(0.0, value) for value in row["step_rewards"])
-            diversity_bonus = 0.05 * path_novelty if route_signal > 0 else 0.0
-            raw_turn_returns.append(
-                _discounted_returns(
-                    row["step_rewards"], row["optimization_reward"] + diversity_bonus
-                )
-            )
-        flat_returns = [value for returns in raw_turn_returns for value in returns]
-        return_mean = sum(flat_returns) / len(flat_returns)
-        return_variance = sum((value - return_mean) ** 2 for value in flat_returns) / len(
-            flat_returns
-        )
-        return_stddev = math.sqrt(return_variance)
         mean = sum(row["optimization_reward"] for row in rows) / len(rows)
         variance = sum((row["optimization_reward"] - mean) ** 2 for row in rows) / len(rows)
         stddev = math.sqrt(variance)
-        for row, returns in zip(rows, raw_turn_returns, strict=True):
-            row["advantage"] = (
+        for row in rows:
+            episode_advantage = (
                 0.0 if stddev < 1e-8 else (row["optimization_reward"] - mean) / stddev
             )
+            row["advantage"] = episode_advantage
             row["turn_advantages"] = (
-                [0.0] * len(returns)
-                if stddev < 1e-8 or return_stddev < 1e-8
-                else [(value - return_mean) / return_stddev for value in returns]
+                [0.0] * len(row["step_rewards"])
+                if stddev < 1e-8
+                else _turn_credit(
+                    episode_advantage,
+                    row["step_rewards"],
+                    optimization_reward=row["optimization_reward"],
+                )
             )
             row.pop("step_rewards")
             row.pop("path_signature")
