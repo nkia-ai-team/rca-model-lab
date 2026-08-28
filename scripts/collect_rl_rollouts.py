@@ -20,7 +20,7 @@ import yaml
 
 from rca_lab.provenance import case_set_identity, file_sha256, resolve_model_identity
 
-DEFAULT_ELIGIBLE_DATASET = Path("data/processed/sft-teacher-v2-family-clean.jsonl")
+DEFAULT_ELIGIBLE_DATASET = Path("data/processed/sft-teacher-v3-contract-clean.jsonl")
 
 
 def run_agent(
