@@ -1,104 +1,73 @@
-# RCA Student 모델 개발 실험 보고서
+# RCA Student 모델 개발 개요
 
 > 기준 시점: 2026-08-28 UTC  
-> 목적: 시스템 구성 설명보다 **무엇을 학습했고, 실제 추론이 어떻게 달라졌으며, 어떤 RL 실험이 왜 실패했는지**를 기록한다.
+> 이 문서는 프로젝트에 처음 참여한 사람이 현재 목표, 데이터, 학습 방식, 실패한 실험, 다음 작업을 빠르게 이해하도록 작성했다.
 
-## 1. 지금까지의 결론
+## 1. 한 문장 요약
 
-우리가 만드는 것은 장애 설명문 생성기가 아니라, 관측 도구를 직접 선택하고 근본원인을 증거로 입증하는 RCA Student다.
+RCA Student는 장애를 설명만 하는 모델이 아니다. 로그·메트릭·트레이스·이벤트를 직접 조회하고, 근본원인과 증거를 구조화해서 제출하는 모델이다.
 
-고정된 학습 순서는 다음과 같다.
+## 2. 지금 알아야 할 내용
 
-```text
-검증된 전체 조사 궤적 생성
-→ whole-episode SFT
-→ SFT 정책을 시작점으로 RL
-→ train monitor / development holdout
-→ 설정 동결
-→ 새 봉인 평가와 Claude·Codex 비교
-```
-
-현재까지 확인된 결과는 다음과 같다.
-
-- SFT는 바닐라보다 **같은 조회를 반복하는 행동을 줄이고**, 여러 증거 표면을 연결해 실제 원인 후보에 도달하는 능력을 높였다.
-- 그러나 SFT도 결정적 proof를 완성하지 못하는 경우가 많다. 현재 공정 train monitor에서 strict 정답은 `2/18`, 평균 root F1은 `0.222`다.
-- RL v1~v3은 SFT보다 퇴행했다. reward가 잘못된 행동까지 강화하거나, 성공 rollout이 부족한 상태에서 전체 실패 궤적을 억제한 것이 주요 원인이다.
-- v4의 성공 궤적 replay는 가능성을 보였지만 평가 provenance가 현재 기준을 충족하지 않아 승격 근거로 쓸 수 없다.
-- v5에서 ThinkFL에 가까운 progressive DAPO를 구성했지만, 20개 사건 중 11개는 그룹 내 최종 reward가 모두 같고 4개는 모두 0점이었다. 상대정책 학습 신호가 부족했다.
-- v6는 이 문제를 우회한 보수적 offline RPO였지만 majority strict가 `1/6 → 0/6`으로 퇴행해 승격에 실패했다. ThinkFL식 온라인 GRPO로 전환해야 한다.
-
-최종 목표는 내부 모델끼리의 개선이 아니다.
-
-```text
-내부 승격 조건: RL ≥ SFT ≥ vanilla
-최종 목표: 동일 하네스·도구·평가에서 Student ≥ Claude/Codex
-```
-
-### 처음 읽는 사람을 위한 용어
-
-| 용어 | 의미 |
+| 질문 | 답 |
 |---|---|
-| Case | 정답 근본원인과 관측 데이터가 준비된 장애 사건 1건 |
-| Run / rollout | 모델이 한 case를 처음부터 끝까지 한 번 조사한 실행 기록 |
-| Episode | 질문, 모든 도구 호출, 모든 관측, 최종 답을 합친 전체 조사 기록 |
-| SFT | 검증된 교사 episode와 같은 조사 행동을 하도록 LoRA로 학습하는 단계 |
-| RL | 같은 case의 여러 rollout 점수를 비교해 더 나은 행동의 확률을 높이는 단계 |
-| Root F1 | 모델이 찾은 근본원인 집합과 정답 집합의 일치도. 1.0이면 모두 일치 |
-| Strict correct | root, proof, evidence refs, 확신 수준을 모두 통과한 실행 |
-| Majority strict | 같은 case를 3회 실행했을 때 2회 이상 strict인 사건 |
-| Provisional | 유력한 원인은 찾았지만 결정적 증명은 끝내지 못한 답 |
+| 무엇을 만드는가? | 운영 장애를 직접 조사하는 RCA 전용 모델 |
+| 모델에게 무엇을 주는가? | 장애 시간, 조회 가능한 대상, 실행 가능한 도구 |
+| 무엇을 주지 않는가? | 정답 원인, 정답 증거 ID, 올바른 조사 순서 |
+| 모델은 무엇을 제출하는가? | 원인, 발생 과정, 지지·반대 증거 ID, 증명 방식, 확신 상태 |
+| 기본 학습 순서는? | 전체 조사 궤적 SFT → SFT 모델 위에서 온라인 RL |
+| 최종 목표는? | 같은 조건에서 Student가 Claude·Codex와 비슷하거나 더 높은 RCA 성능 달성 |
 
----
+### 현재 상태
 
-## 2. 실제 추론 변화: 바닐라와 SFT 비교
+- 계약 검사를 통과한 `20개 시나리오 / 23개 전체 궤적`으로 SFT v3 학습 완료
+- `69/69 step`, `3 epoch`, 최종 train loss `0.72`
+- 최종 LoRA와 데이터·설정·manifest 체크섬 검증 완료
+- SFT 봉인 평가 진행 중
+- 다음 단계: SFT LoRA를 초기 정책으로 사용하는 Prime-RL 온라인 GRPO
 
-아래 비교는 같은 하네스, 같은 12개 과거 holdout case, case당 3회, temperature 0, guidance structured output 조건에서 얻은 역사적 진단 결과다.
+아직 최종 성능이 확정된 것은 아니다. SFT v3와 RL 모델은 동일한 봉인 평가를 통과해야 한다.
 
-중요한 제한이 있다. 당시 manifest에는 현재 요구하는 모델 artifact fingerprint와 restore checksum 일부가 없고, 이 결과를 본 뒤 하네스와 RL을 수정했다. 따라서 **최종 봉인 성능 주장이 아니라, 모델 행동이 어떻게 달라졌는지 보여주는 개발 기록**으로만 사용한다.
+## 3. 산출물 관리 위치
 
-### 2.1 전체 경향
+| 관리 대상 | 위치 | 관리 내용 |
+|---|---|---|
+| 모델·데이터 | [Hugging Face · nkia-ai-lab](https://huggingface.co/nkia-ai-lab) | 기본 모델 정보, LoRA adapter, 학습·평가 데이터셋, dataset card |
+| 코드 | [GitHub · rca-model-lab](https://github.com/nkia-ai-team/rca-model-lab) | 하네스, scorer, 데이터 생성, SFT/RL, 평가 코드와 설정 |
+| 학습 파라미터·실험 결과 | [Weights & Biases · nkia-ai](https://wandb.ai/nkia-ai/projects) | learning rate, batch, loss, reward, GPU 지표, 실험별 비교 |
 
-| 모델 | 실행 | 평균 reward | 평균 root F1 | evidence complete | strict |
-|---|---:|---:|---:|---:|---:|
-| 바닐라 Muse-Glimmer 30B | 36 | 0.116 | 0.099 | 21/36 | 0/36 |
-| whole-episode SFT | 36 | 0.189 | 0.217 | 30/36 | 0/36 |
+모델을 재현하려면 세 위치의 식별자를 함께 남긴다.
 
-SFT 이후:
+```text
+Git commit
++ Hugging Face model/dataset revision
++ W&B run ID
++ training config checksum
++ evaluation manifest
+```
 
-- 평균 reward: `0.116 → 0.189` (`+62%`)
-- 평균 root F1: `0.099 → 0.217` (`+119%`)
-- evidence complete: `21/36 → 30/36`
-- strict 정답: 여전히 `0/36`
+## 4. 실제 사례로 보는 학습 전후 차이
 
-즉 SFT는 조사와 원인 후보 식별을 분명히 개선했지만, 결정적 proof까지 완성하는 수준에는 도달하지 못했다.
+### 사건 F15-H
 
-### 2.2 실제 사례 A — F15-H, 외부 PG rate limit
+같은 시간에 commerce checkout과 food 주문이 함께 실패했다.
 
-사건의 핵심 증거는 다음과 같았다.
+실제 근본원인은 두 개였다.
 
-- `food-delivery-payment`의 외부 `/pay` 호출에서 HTTP 429 발생
-- 로그에 `429 Too Many Requests`, `RATE_LIMITED`
-- payment 인바운드·아웃바운드 실패가 각각 33건
-- 주문·상품 서비스의 5xx로 전파
+1. commerce inventory DB의 `EXCLUSIVE lock`
+2. 외부 PG `/pay`의 HTTP 429 `RATE_LIMITED`
 
-#### 바닐라 모델
+두 장애는 동시에 보였지만 하나의 공통 원인이 아니었다. 모델은 두 원인을 모두 찾고 분리해야 했다.
 
-실제 행동:
+### 바닐라 모델
 
 ```text
 env_entity(tb-w3)
-→ 같은 env_entity 반복
-→ 같은 env_entity 반복
+→ 같은 대상 반복 조회
 → env_top
-→ 다시 같은 env_entity 여러 번
-→ env_aggregate
-→ env_top
+→ 다시 host 조회
 → insufficient
 ```
-
-관측 기록상 같은 대상 조회를 여러 번 반복했다. 최종 답은 다음과 같았다.
-
-> sms.network_interface.rx_packets 이상은 보이지만 연관 서비스와 오류 경계를 특정할 근거가 부족하다. 원인 후보를 검증할 수 없다.
 
 결과:
 
@@ -108,561 +77,284 @@ root F1 = 0.0
 status = insufficient
 ```
 
-문제는 “모른다”고 답한 것 자체가 아니다. 상위 증거에 payment 429가 있었는데도 호스트 metric 조회에서 벗어나지 못했다.
+상위 증거에 payment 429가 있었지만 호스트 메트릭에서 다른 증거 표면으로 이동하지 못했다.
 
-#### SFT 모델
-
-실제 행동:
+### Whole-episode SFT 모델
 
 ```text
 env_top
-→ commerce-product 확인
-→ food-delivery-payment 확인
-→ 핵심 evidence 원문 slice
-→ "PG" grep
-→ payment trace/log 구조 조회
-→ 경쟁 서비스 비교
-→ provisional 답변
+→ payment 대상 확인
+→ 관련 evidence 원문 조회
+→ PG 오류 검색
+→ trace와 log 비교
+→ 외부 PG 원인 제출
 ```
 
-최종 원인 주장은 다음과 같았다.
+실제 확인한 증거:
 
-> food-delivery-payment가 외부 PG `/pay` 호출에서 `429 Too Many Requests: RATE_LIMITED`를 받았고, 이 실패가 payment API와 주문·상품 서비스 오류로 전파됐다.
-
-지지 증거로 payment 인바운드·아웃바운드 429, PG 실패 로그를 인용했다.
+```text
+ev010: payment 외부 호출 HTTP 429 33건
+ev011: payment 인바운드 HTTP 429 33건
+ev221: PG /pay failed ... 429 Too Many Requests ... RATE_LIMITED
+```
 
 결과:
 
 ```text
-root F1 = 0.8
 reward = 0.572
+root F1 = 0.8
 status = provisional
+strict correct = false
 ```
 
 개선된 점:
 
-- 최초 host metric을 원인으로 고정하지 않았다.
-- trace → 서비스 → 외부 PG 로그로 경계를 이동했다.
-- HTTP 429를 증상으로만 보지 않고 외부 rate-limit 메커니즘과 연결했다.
-- 외부 원인을 typed pseudo-entity로 표현했다.
+- 동일 대상 반복에서 벗어났다.
+- 외부 PG 경계와 실제 증거 ID를 찾았다.
+- 증거가 부족하므로 `confirmed` 대신 `provisional`을 제출했다.
 
 남은 문제:
 
-- proof type이 `unknown`으로 남아 strict 정답은 아니었다.
-- counter evidence와 메커니즘 문장이 충분히 정제되지 않았다.
-- evidence complete 판정도 해당 실행에서는 통과하지 못했다.
+- inventory DB lock이라는 독립된 두 번째 원인을 놓쳤다.
+- 결정적 proof type을 충족하지 못했다.
+- 따라서 완전한 RCA 정답은 아니었다.
 
-### 2.3 실제 사례 B — F08-P, 반복 조회에서 원인 후보 식별로
+이 사례의 결론은 단순하다. SFT는 조사 경로를 개선했다. 그러나 모든 독립 원인을 찾고 증명하는 능력은 아직 부족하다.
 
-바닐라 모델은 같은 `env_entity`를 4회, `env_top`을 6회 반복한 뒤 `insufficient`로 끝났다.
+## 5. 학습 데이터
 
-```text
-바닐라: root F1 = 0.0, reward = 0.058
-```
+### 데이터 단위
 
-SFT 모델은 다음처럼 조사 경로를 바꿨다.
+각 턴을 별도 샘플로 쪼개지 않는다. 질문부터 최종 답까지의 전체 episode를 하나의 학습 샘플로 사용한다.
 
 ```text
-env_top
-→ commerce-order 상세
-→ trace evidence 원문
-→ 구조 query
-→ payment grep
-→ payment 대상 상세
-→ 관련 evidence 비교
-```
-
-한 실행에서 정확한 root 집합에 도달했다.
-
-```text
-SFT: root F1 = 1.0, reward = 0.512
-```
-
-그러나 답변의 proof type이 `unknown`이었고 마지막 자연어 출력도 정리되지 않았다. 이 사례 역시 “완전 성공”이 아니라, **SFT가 탐색은 개선했지만 증명과 출력 완성도는 아직 부족하다**는 증거다.
-
----
-
-## 3. SFT 데이터는 어떻게 만들었나
-
-### 3.1 데이터 단위
-
-한 턴씩 분리하지 않았다. 한 장애의 전체 multi-turn episode를 하나의 학습 단위로 보존했다.
-
-```text
-증상 확인
+장애 입력
 → 후보 탐색
-→ metric/log/trace 조회
-→ 경쟁 가설 비교
-→ 결정적 증거 확인
-→ support_refs/counter_refs가 포함된 답변
+→ 도구 호출
+→ 관측
+→ 가설 수정
+→ 추가 검증
+→ 최종 RCA 답변
 ```
 
-현재 채택 데이터:
+앞선 관측이 다음 도구 선택의 이유이므로 전체 순서를 보존해야 한다.
+
+### 현재 SFT v3 데이터
 
 | 항목 | 수량 |
 |---|---:|
-| 학습 후보 시나리오 | 23 |
-| 채택된 시나리오 | 20 |
-| 채택된 전체 궤적 | 24 |
-| 전체 assistant turn | 264 |
-| 문맥에 남긴 실패 관측 | 27 |
-| 보류 시나리오 | 3 |
+| 시나리오 | 20 |
+| 전체 episode | 23 |
+| 전체 turn | 254 |
+| 문맥에 보존한 실패 관측 | 27 |
 
-### 3.2 교사 생성 방식
+### 교사 데이터 생성
 
-Claude와 Codex 교사가 먼저 독립적으로 하네스를 조사했다. 실패하면 정답을 바로 노출하지 않고 부족한 조사만 교정했다.
+Claude와 Codex 교사가 하네스를 직접 조사한다. 첫 시도가 틀리면 정답을 바로 제공하지 않고 부족한 검증을 지적한 뒤 다시 조사하게 한다.
 
-실제 교정 예:
+실제 예:
 
 ```text
-1차 결론:
-HTTP 409가 급증했으므로 품절이 원인이다.
+1차 판단:
+HTTP 409가 증가했으므로 정상 품절이다.
 
 비평:
 409만으로 정상 품절과 재입고 중단을 구분할 수 없다.
 
 교정:
-재고 전체 시계열, RESTOCK 유입, 배치 실패 이벤트를 비교하라.
+재고 전체 시계열, RESTOCK 유입, 배치 실패 이벤트를 비교한다.
 
 재시도:
-RESTOCK가 사라진 시점과 배치 실패가 선행했고,
-재고 고갈이 지속된 뒤 409가 증가했음을 확인한다.
+RESTOCK 중단과 배치 실패가 먼저 발생했고,
+재고 고갈 이후 409가 증가했음을 확인한다.
 ```
 
-저장되는 것은 한 줄짜리 정답이 아니다.
+SFT에는 검증을 통과한 전체 episode를 사용한다. 실패·비평·교정 기록은 향후 critic 및 preference 데이터로 보존한다.
 
-- 실패한 조사 branch
-- 실패 이유
-- 정답을 노출하지 않는 correction
-- correction 이후 retry
-- scorer가 채택한 최종 전체 궤적
+## 6. 모델이 사용하는 조사 도구
 
-SFT에는 채택된 최종 궤적만 넣었다. 실패 branch는 향후 recursive training과 preference/critic 데이터에 남겼다.
+모델은 자유롭게 추론할 수 있다. 실제 실행되는 action과 최종 답만 Pydantic 기반 enum·schema로 제한한다.
 
-### 3.3 SFT가 실제로 배운 것
-
-- 한 대상만 반복하지 않고 증거 표면을 이동하는 법
-- `env_top → entity/query → 원문 slice → 전용 probe` 조사 패턴
-- 존재하는 target·metric·action만 선택하는 법
-- 증상과 근본원인을 분리하는 법
-- 근거가 약하면 `confirmed` 대신 `provisional/insufficient`를 쓰는 법
-- 최종 원인에 `mechanism`, `support_refs`, `counter_refs`를 붙이는 법
-
-현재 공정 train monitor 결과:
-
-```text
-6 cases × 3 runs = 18/18 완료
-strict = 2/18
-majority strict cases = 1/6
-mean reward = 0.229
-mean root F1 = 0.222
-evidence complete = 18/18
-format errors = 0
-unsupported confirmed = 0
-```
-
-좋은 기본 조사 형식은 생겼지만, 원인을 실제로 맞히는 능력은 아직 낮다. RL의 목적은 이 기반을 보존하면서 원인 식별과 proof 완성도를 높이는 것이다.
-
----
-
-## 4. RL에서 실제로 시도한 것
-
-### 4.1 우리가 원래 원한 RL
-
-사용자가 처음 기대한 방식은 다음과 같다.
-
-```text
-SFT 모델에게 실제 하네스 제공
-→ 같은 사건을 여러 번 독립 조사
-→ scorer가 각 전체 궤적에 점수 부여
-→ 그룹 평균보다 좋은 궤적 강화
-→ 나쁜 궤적 약화
-→ 업데이트된 모델이 다시 새 rollout 생성
-→ 반복
-```
-
-이 방식이 ThinkFL의 Progressive Multi-Stage GRPO와 더 가깝다. ThinkFL은 Recursion-of-Thought actor가 도구를 사용해 여러 진단 경로를 만들고, multi-factor grader로 상대 reward를 계산한다.
-
-참고:
-
-- [ThinkFL paper](https://arxiv.org/abs/2504.18776)
-- [ThinkFL official repository](https://github.com/LLM4AIOps/ThinkFL)
-
-### 4.2 왜 정답 1점 / 오답 0점만으로 부족했나
-
-같은 사건에서 4개 rollout을 만들었다고 하자.
-
-```text
-[0, 0, 0, 0]
-```
-
-모두 오답이면 그룹 안에서 무엇이 상대적으로 나았는지 알 수 없다. advantage가 모두 0이 되어 업데이트가 사라진다.
-
-그래서 scorer는 다음을 함께 본다.
-
-```text
-root-cause F1 / exact root
-+ 원인 유형별 proof
-+ 올바른 confidence status
-+ evidence refs와 mechanism
-- unsupported confirmed
-- format/schema violation
-```
-
-특정 도구를 실행했다는 이유만으로 보상하지 않는다. 예를 들어 `metric_fetch` 자체에 점수를 주면 모델은 원인과 상관없이 해당 도구를 반복해 reward를 해킹할 수 있다.
-
-### 4.3 실험 타임라인
-
-| 실험 | 방법 | 데이터/신호 | 관측 결과 | 다음 결정 |
-|---|---|---|---|---|
-| SFT | 검증된 전체 episode 모방 | 20 cases, 24 trajectories | 바닐라보다 reward/root F1 개선 | RL 시작 정책으로 고정 |
-| RL v1 | whole-episode DAPO | 20 cases × 4 rollouts, 기존 종합 reward | SFT 대비 소폭 퇴행 | 효율·도구 성공 같은 약한 보상 제거 |
-| RL v2 | diagnosis-only DAPO | root/proof/status 중심 reward, LR↓, KL↑ | 20개 중 11개 그룹 reward 동일, 4개 전부 0 | 성공 신호 보강 필요 |
-| RL v3 | teacher-anchor DAPO | 교사 양성 + hard negative | 역사적 holdout에서 더 큰 퇴행 | 실패 episode 전체 억제 중단 |
-| RFT v4 | 성공 episode + 교사 replay | 실패 rollout 제거, 강한 KL | train monitor는 개선 조짐, provenance 불충분 | 공정 승격 근거로 사용하지 않음 |
-| v5 | progressive per-turn DAPO | terminal reward + route step reward | 구현/데이터 완성, 상대 성공 신호는 4/20 groups뿐 | on-policy 반복·reward 설계 재검토 |
-| v6 | whole-trajectory RPO | 좋은/나쁜 전체 궤적 20쌍 | reward·root F1·strict run은 비퇴행, majority strict `1/6 → 0/6` | 승격 실패·폐기 |
-
-### 4.4 RL v1 — 종합 reward를 그대로 사용
-
-80개 Student rollout을 case별로 정규화해 whole-episode DAPO를 수행했다.
-
-문제:
-
-- 원인 정확도 외에 턴 수와 도구 성공률 같은 약한 신호도 reward 차이를 만들었다.
-- 모두 틀린 그룹에서도 “조금 빨리 끝난 오답”이 상대적으로 좋은 episode가 될 수 있었다.
-- 전체 episode에 하나의 음수 advantage를 주면, 실패 경로 안에 있던 유용한 탐색 행동까지 함께 억제됐다.
-
-역사적 12-case 결과:
-
-```text
-SFT     reward 0.189 / root F1 0.217
-RL v1   reward 0.184 / root F1 0.204
-```
-
-### 4.5 RL v2 — 진단 중심 reward로 변경
-
-reward를 root F1, exact root, proof, status 중심으로 축소했다. learning rate는 `5e-6 → 2e-6`, KL은 `0.02 → 0.05`로 보수화했다.
-
-결과:
-
-```text
-80 rollouts
-20 scenario groups
-11 groups: optimization reward가 그룹 내 전부 동일
-4 groups: reward가 전부 0
-strict success: 7/80
-```
-
-역사적 holdout:
-
-```text
-RL v2   reward 0.177 / root F1 0.190
-```
-
-reward 방향은 더 정확해졌지만 학습 가능한 상대 차이가 크게 줄었다.
-
-### 4.6 RL v3 — 교사 anchor 추가
-
-모든 rollout이 틀린 사건에 검증된 교사 궤적을 양성 anchor로 넣고, Student의 hard negative와 비교했다. learning rate `1e-6`, KL `0.10`을 사용했다.
-
-역사적 holdout:
-
-```text
-RL v3   reward 0.154 / root F1 0.138
-```
-
-가장 크게 퇴행했다.
-
-가능성이 높은 원인:
-
-- 교사와 Student 분포 차이가 큰 상태에서 anchor가 정책을 안정적으로 연결하지 못했다.
-- 실패 episode의 모든 token을 음수로 밀면서, 그 안의 정상적인 `env_top`, `env_query`, evidence 읽기까지 억제했다.
-- 성공보다 실패가 많은 작은 데이터에서 negative gradient가 조사 정책 전체를 손상시켰다.
-
-### 4.7 RFT v4 — 실패를 밀지 않고 성공만 replay
-
-실패 episode에 음수 gradient를 주지 않았다. 검증된 교사 궤적과 exact-root Student 성공만 재학습했다.
-
-```text
-33 positive episodes
-learning rate = 1e-7
-KL = 0.50
-```
-
-6-case train monitor에서:
-
-```text
-SFT     reward 0.229 / root F1 0.222
-RFT v4  reward 0.281 / root F1 0.333
-```
-
-다만 당시 RFT manifest에는 현재 필수인 model SHA, restore SHA, 동일 actor SHA가 완전하지 않았다. 따라서 “개선 가능성”으로만 남기고 정식 승격하지 않았다.
-
-### 4.8 v5 — ThinkFL에 가까운 progressive DAPO
-
-최종 정답 reward만 쓰지 않고 각 조사 turn에도 제한적인 route credit을 계산했다.
-
-예:
-
-```text
-새로운 증거를 얻음                     +
-정답 root와 연결된 결정적 조회          +
-실패한 도구 호출                        -
-같은 action/target 반복                  -
-최종 root/proof/status                   terminal reward
-```
-
-그러나 실제 데이터에서는:
-
-```text
-20 groups 중 terminal reward가 다른 그룹 = 9
-성공과 실패가 함께 존재한 그룹 = 4
-all-zero terminal groups = 4
-```
-
-또한 gold root를 직접 이용해 특정 target 조회에 step reward를 주는 방식은 모델이 인과 추론 대신 gold-target 접근 패턴을 외울 위험이 있다. v5는 구현과 데이터 진단에는 의미가 있었지만 최종 후보로 승격하지 않았다.
-
-### 4.9 v6 — offline whole-trajectory RPO
-
-v6는 온라인 RL이 아니다. 저장된 rollout으로 좋은/나쁜 전체 궤적 쌍을 만든 보수적 선호학습이다.
-
-```text
-chosen:
-검증된 Student 성공, 없으면 accepted Claude/Codex teacher
-
-rejected:
-틀린 Student 중 reward가 가장 높은 hard negative
-```
-
-데이터:
-
-```text
-20 pairs
-teacher chosen = 16
-student chosen = 4
-20 optimization steps
-learning rate = 5e-7
-beta = 0.10
-imitation anchor = 0.005 × beta
-```
-
-학습 로그의 preference margin은 약 `-0.0029 ~ +0.0029`로 매우 작았고 loss도 대체로 `0.693` 부근이었다. 강한 변화보다 SFT 비퇴행을 우선한 실험이다.
-
-추가로 발견한 기술 문제:
-
-- `target_modules: all-linear`가 언어 모델뿐 아니라 vision tower에도 LoRA를 삽입했다.
-- vision LoRA B tensor 304개는 모두 0이었지만 adapter 구조에는 남았다.
-- multimodal vLLM의 LoRA profiling 중 shape assertion이 발생해 adapter 직접 serving이 실패했다.
-- 평가를 위해서만 임시 merge를 만들었고, 정식 artifact는 adapter로 유지했다.
-- 다음 실험부터는 `model.language_model.*`의 attention/MLP projection만 대상으로 제한해야 한다.
-
-동일한 6-case × 3회 공정 monitor 결과는 다음과 같다.
-
-| 지표 | SFT | RPO v6 | 판정 |
-|---|---:|---:|---|
-| 평균 reward | 0.2285 | 0.2303 | 유지 |
-| 평균 root F1 | 0.2222 | 0.2222 | 유지 |
-| strict runs | 2/18 | 2/18 | 유지 |
-| majority strict cases | 1/6 | 0/6 | **퇴행** |
-| evidence complete | 18/18 | 18/18 | 유지 |
-| format / unsupported confirmed | 0 / 0 | 0 / 0 | 유지 |
-
-v6는 F03-H의 strict 성공이 `2/3 → 1/3`으로 줄고 F10-H에서 새 strict 성공이 `0/3 → 1/3` 생겼다. 전체 strict 횟수는 같지만 사건 단위의 안정성이 떨어졌다. 평균 reward의 `+0.0017`만으로 이 퇴행을 덮지 않으며, 자동 comparator도 `candidate regressed: majority strict cases`로 실패했다. 따라서 v6는 승격하지 않는다.
-
----
-
-## 5. 앞으로의 RL: 진짜 on-policy progressive GRPO
-
-v6가 비퇴행 게이트에서 탈락했으므로 offline pair 학습을 더 조정해 승격시키지 않는다. 다음 목표는 ThinkFL 방향의 실제 환경 RL이다.
-
-```text
-1. 현재 SFT/RL actor를 하네스에 배포
-2. train case마다 4~8개 stochastic rollout 생성
-3. typed scorer로 전체 궤적 채점
-4. 같은 case 그룹 안에서 advantage 계산
-5. 언어 모델 전용 LoRA 업데이트
-6. 업데이트된 최신 adapter로 새 rollout 생성
-7. train monitor 비퇴행 확인
-8. 반복
-```
-
-필수 계약:
-
-- rollout은 항상 현재 학습 정책에서 생성한다.
-- prompt/action/observation/final answer를 포함한 전체 episode를 보존한다.
-- rollout-time policy identity, sampling seed, temperature, token logprob를 기록한다.
-- root를 못 맞힌 episode에 긴 조사라는 이유만으로 양의 terminal reward를 주지 않는다.
-- 특정 도구 사용 자체를 보상하지 않는다.
-- 같은 조회 반복, invalid action, 근거 없는 confirmed는 명시적으로 감점한다.
-- 모든 rollout이 0점인 그룹은 억지 gradient를 만들지 않는다. teacher correction 또는 새 exploration으로 다시 수집한다.
-
-Progressive stage 제안:
-
-| 단계 | 우선 학습 신호 | 승격 조건 |
+| 도구 | 역할 | 실제 사용 예 |
 |---|---|---|
-| A. 실행 안정화 | schema, valid action, evidence refs | 형식 오류 0, invalid action 0 |
-| B. 원인 식별 | root F1, exact root, 증상/원인 분리 | SFT root F1 비퇴행 |
-| C. 증명 | proof rule, mechanism, support/counter refs | strict와 proof rate 개선 |
-| D. 효율 | 중복 조회·불필요 턴 감소 | 정확도 비퇴행 상태에서만 비용 감소 |
+| `env_top` | 장애 창에서 큰 변화와 후보 대상을 조회 | 오류가 급증한 서비스·호스트·DB 후보 확인 |
+| `env_entity` | 한 대상의 관련 evidence 조회 | `food-delivery-payment`의 trace·log·event 확인 |
+| `env_query` | target/source/kind/time 조건으로 구조 조회 | payment의 trace error만 시간 범위로 필터링 |
+| `env_slice` | 선택한 evidence ID의 원문 조회 | `ev221` 로그 원문 확인 |
+| `env_grep` | 원문 키워드 검색 보조 | `PG /pay failed` 반복 패턴 확인 |
+| `metric_describe` | 사용 가능한 메트릭 정의 확인 | 자유 문자열 대신 registry의 metric 확인 |
+| `metric_fetch_raw` | 요약하지 않은 원본 시계열 조회 | 재고·RESTOCK 변화 전체 확인 |
+| `metric_compare` | 기준 시간과 장애 시간 비교 | 평상시 0건과 장애 시 33건 비교 |
+| `probe_db_blocking` | DB blocking 관계 확인 | blocker, waiter, lock mode 확인 |
+| `probe_traces` | 호출 경계와 오류 전파 확인 | 외부 429가 payment 응답으로 이어졌는지 확인 |
+| `probe_changes` | 장애 직전 변경 확인 | 배포·설정 변경이 증상보다 먼저 발생했는지 확인 |
+| `answer` | 구조화된 최종 RCA 제출 | 원인별 mechanism, refs, proof, status 제출 |
 
----
+`env_grep`은 보조 수단이다. 주 조회 방식은 target/source/kind/time 기반 구조 조회다.
 
-## 6. 하네스가 학습에 제공하는 것
-
-문서의 중심은 실험이지만, 결과를 해석하려면 다음 네 요소는 필요하다.
+## 7. 하네스 내부 구성
 
 ### Capability registry
 
-현재 사건에서 실제로 존재하는 `target`, `metric`, `action`, `source`, `kind` 목록이다. 모델의 생각을 제한하지 않고 실행 가능한 행동만 검증한다.
+이번 사건에서 실제 실행할 수 있는 action, target, source, metric을 보관한다. 목록에 없는 이름은 실행 전에 거절한다.
 
 ### Evidence store와 evidence map
 
-원본 metric/log/trace/event를 전부 보존하는 저장소와 ID 인덱스다. 프롬프트 응답만 cap하며 원본을 300개로 절단하지 않는다.
+로그·메트릭·트레이스·이벤트 원본을 모두 보존한다. 각 evidence에는 `ev221` 같은 ID가 붙는다. 프롬프트와 한 번의 조회 결과만 크기를 제한하며 원본 저장소는 자르지 않는다.
 
 ### Typed ledger
 
-Student가 실제로 수행한 모든 성공·실패 도구 호출과 관측을 episode 안에 append하는 기록이다.
+모델이 실행한 모든 action과 observation을 순서대로 저장하는 episode 내부 기록이다. 별도 장기 DB가 아니라, 실행 중 구조화된 상태로 누적되고 완료 후 episode artifact에 저장된다.
 
 ```json
 {
   "turn": 4,
-  "action": "env_query",
-  "target": "food-delivery-payment",
+  "action": "env_slice",
+  "target": "ev221,ev212,ev210",
   "ok": true,
-  "evidence_refs": ["ev010", "ev011", "ev210", "ev221"]
+  "evidence_refs": ["ev210", "ev212", "ev221"],
+  "progress": true
 }
 ```
 
-현재는 episode 메모리와 `agent-*.jsonl`에 남는다. 중앙 DB와 중간 resume 저장소는 아직 없다.
+실패·중복 action도 삭제하지 않는다. scorer와 RL이 전체 조사 과정을 평가하는 데 필요하다.
 
 ### Typed scorer
 
-최종 답과 ledger를 함께 읽는다. root 정확도뿐 아니라 실제로 조회한 evidence를 인용했는지, proof rule이 맞는지, unsupported confirmed인지 검사한다. SFT 데이터 채택, RL reward, 평가가 같은 계약을 사용한다.
+최종 문장만 보지 않는다. ledger와 답을 함께 읽고 다음 항목을 채점한다.
 
----
+- 정답 근본원인 집합 일치도
+- 원인별 결정적 proof 규칙
+- `support_refs`와 `counter_refs`의 유효성
+- 증상에서 근본원인으로 이어지는 mechanism
+- `confirmed`, `provisional`, `insufficient` 상태의 타당성
+- 중복·invalid action·근거 없는 과확신
 
-## 7. 평가 원칙과 현재 한계
+특정 도구를 실행했다는 사실 자체에는 보상하지 않는다. 그렇지 않으면 모델이 도구 호출만 반복해 reward를 얻을 수 있다.
 
-### 모델 승격 조건
+## 8. SFT와 RL에서 시도한 것
 
-후보는 같은 case, 같은 반복 수, 같은 actor, 같은 generation 설정, 같은 restore, 같은 scorer에서 다음을 모두 비퇴행해야 한다.
+아래 결과는 이전 개발 평가다. 현재 SFT v3의 봉인 결과와 혼동하면 안 된다.
+
+| 단계 | 방법 | 관측 결과 | 판단 |
+|---|---|---|---|
+| Historical SFT | 검증된 전체 episode 모방 | vanilla보다 reward·root F1 개선 | 이후 RL의 기준 정책 |
+| RL v1 | 종합 reward DAPO | SFT 대비 퇴행 | 약한 행동 지표가 오답도 강화 |
+| RL v2 | diagnosis-only DAPO | 동일 reward·all-zero 그룹 다수 | 상대 advantage 신호 부족 |
+| RL v3 | teacher positive + Student negative | 더 큰 퇴행 | 실패 episode의 정상 조사 token까지 억제 |
+| RFT v4 | 성공·교사 episode만 positive replay | monitor 개선 가능성 | provenance 부족으로 미승격 |
+| v5 | terminal reward + turn credit | 조사 단계 credit 실험 | gold target 접근 자체 보상 위험 |
+| RL v6 | offline whole-trajectory RPO | 평균은 거의 유지, majority strict 퇴행 | 폐기 |
+
+### v6가 실패한 이유
+
+v6는 저장된 좋은 episode와 나쁜 episode를 비교했다.
+
+```text
+chosen episode의 확률 상승
+rejected episode의 확률 하락
+```
+
+그러나 실제 하네스에서 새 rollout을 만들지 않았다. 평균 reward는 `0.2285 → 0.2303`으로 거의 유지됐지만 majority strict case가 `1/6 → 0/6`으로 떨어졌다. 평균값이 사건 단위 안정성 퇴행을 가렸으므로 승격하지 않았다.
+
+## 9. 다음 RL: Prime-RL 온라인 GRPO
+
+다음 RL은 현재 모델이 실제 하네스에서 새 조사 결과를 생성하고, 그 점수로 바로 정책을 갱신한다.
+
+```text
+SFT v3 LoRA
+→ 같은 RCA 사건을 8회 조사
+→ typed scorer가 각 전체 episode 채점
+→ 같은 사건 안에서 상대 advantage 계산
+→ language model LoRA 갱신
+→ 갱신된 LoRA로 새 rollout 생성
+→ 반복
+```
+
+점수 예:
+
+| Rollout | 결과 | 예시 점수 |
+|---|---|---:|
+| A | 모든 root와 proof, evidence 충족 | 1.00 |
+| B | root는 맞지만 proof 부족 | 0.65 |
+| C | 증상만 식별 | 0.25 |
+| D | 원인 오류와 근거 없는 과확신 | 0.00 |
+
+0/1 점수만 사용하면 한 그룹이 `[0, 0, 0, 0]`일 때 advantage가 모두 0이 된다. 따라서 root·proof·evidence 기반 중간 점수를 사용하되, 도구 실행 자체는 보상하지 않는다.
+
+참고: [ThinkFL 논문](https://arxiv.org/abs/2504.18776), [ThinkFL 공식 저장소](https://github.com/LLM4AIOps/ThinkFL), [Prime-RL](https://github.com/PrimeIntellect-ai/prime-rl)
+
+## 10. 학습·추론 실행 구조
+
+| 위치 | 책임 |
+|---|---|
+| Train H200 세션 | SFT와 Prime-RL LoRA trainer만 실행 |
+| vLLM H200 세션 | SFT/RL 정책 추론과 rollout 생성만 실행 |
+| 로컬 | Prime orchestrator, RCA 하네스, typed scorer, LoRA relay |
+
+기본 모델을 병합하지 않는다. 두 세션은 같은 기본 모델을 읽고 작은 LoRA만 교환한다.
+
+vLLM 초기 처리량 설정:
+
+```text
+gpu_memory_utilization = 0.95
+max_num_seqs = 8
+max_num_batched_tokens = 16384
+chunked prefill = on
+prefix caching = on
+```
+
+`gpu_memory_utilization=0.95`는 메모리 누수가 아니라 모델 가중치와 KV 캐시의 예약 상한이다. 실제 부하에서 처리 토큰, KV 사용률, preemption, 대기열, OOM을 함께 보고 `0.90 / 0.93 / 0.95` 중 가장 높은 안전값을 선택한다.
+
+두 KT 컨테이너는 공유 파일시스템이 없다. LoRA relay는 전송이 모두 끝난 뒤에만 새 adapter를 공개한다. 반쯤 복사된 adapter가 vLLM에 로드되는 것을 막는다.
+
+## 11. 평가와 승격 기준
+
+모든 모델은 같은 case, 하네스, 도구, scorer, 반복 수, 생성 제한으로 비교한다.
+
+평가 항목:
 
 - majority strict cases
 - strict runs
-- mean reward
 - mean root F1
+- mean reward
 - evidence complete
-- format error = 0
-- unsupported confirmed = 0
+- format error
+- unsupported confirmed
+- 평균 조사 turn과 중복 action
 
-평균 reward 하나만 올라도 다른 핵심 지표가 내려가면 탈락이다.
-
-### 기존 12개 “봉인셋”의 상태
-
-12개 case는 원래 평가 전용으로 분리했지만, 바닐라·SFT·RL v1~v3 결과를 반복 확인하고 그 결과로 학습 방식을 수정했다. 따라서 연구적으로는 더 이상 완전히 봉인된 최종 test가 아니다.
-
-앞으로의 올바른 사용:
+승격 조건:
 
 ```text
-현재 20 train cases       → rollout·학습
-현재 6-case monitor       → 빠른 비퇴행 확인
-기존 12 cases             → development holdout
-새로운 미노출 failure families → 최종 sealed parity test
+RL ≥ SFT v3 ≥ vanilla
 ```
 
-Claude·Codex와의 최종 비교는 새 봉인 case를 누구도 튜닝에 사용하지 않은 상태에서 한 번 수행해야 한다.
+평균 reward 하나만 높아진 모델은 승격하지 않는다. 사건 단위 strict, proof, evidence completeness가 함께 비퇴행해야 한다.
 
----
+최종 Claude·Codex 비교에는 개발 중 반복 확인하지 않은 새 failure family를 사용한다. 과거 12개 holdout은 결과를 본 뒤 설계를 변경했으므로 최종 test가 아니라 development holdout이다.
 
-## 8. 현재 위치와 다음 결정
+## 12. 바로 다음 작업
 
-| 작업 | 현재 상태 |
-|---|---|
-| Student 하네스 핵심 계약 | 구현 완료 |
-| 교사 데이터 | 20 cases / 24 accepted trajectories |
-| whole-episode SFT LoRA | 완료 |
-| SFT 공정 monitor | 완료, strict 2/18, root F1 0.222 |
-| RL v1~v3 | 퇴행, 폐기 |
-| RFT v4 | 가능성만 확인, provenance 불충분 |
-| progressive v5 | 데이터/알고리즘 진단 완료, 미승격 |
-| offline RPO v6 | majority strict 퇴행으로 폐기 |
-| online progressive GRPO | SFT 정책으로 20 cases × 8 rollouts 수집 중 |
-| 최종 새 봉인 평가 | 미실행 |
-| Claude·Codex parity | 미검증 |
+1. SFT v3 봉인 평가 완료
+2. vanilla·historical SFT·SFT v3 결과를 같은 기준으로 비교
+3. Prime-RL 3-step 온라인 GRPO smoke 실행
+4. LoRA 갱신과 vLLM hot-load 검증
+5. smoke가 SFT v3 대비 비퇴행이면 본 RL 실행
+6. RL 봉인 재평가
+7. 비퇴행 후보만 승격
+8. 새 미노출 failure family에서 Claude·Codex와 최종 비교
 
-바로 다음 작업:
+## 13. 현재 결론
 
-1. SFT 정책으로 시작한 `20 cases × 8 rollouts` 수집을 완료한다.
-2. 같은 case 안에서 root·proof·evidence 점수의 상대 advantage를 계산한다.
-3. language-model projection만 대상으로 LoRA를 갱신한다.
-4. 갱신된 최신 adapter로 새 rollout을 다시 만든다.
-5. train monitor 비퇴행을 통과한 후보만 development holdout으로 보낸다.
-6. 최종 설정을 동결한 뒤 새 봉인 failure family에서 바닐라·SFT·RL·Claude·Codex를 동일 조건으로 비교한다.
+현재까지 확실한 개선은 whole-episode SFT에서 확인됐다. 모델은 같은 조회 반복을 줄이고 실제 원인 후보와 증거를 더 잘 찾기 시작했다. 그러나 독립된 원인을 모두 찾고 결정적 proof를 완성하는 능력은 아직 부족하다.
 
-현재 결론은 명확하다.
-
-> **SFT는 바닐라의 반복·정체 행동을 줄이고 실제 원인 후보 식별을 개선했다. 하지만 strict RCA는 아직 약하다. 초기 RL과 v6는 이 기반을 안정적으로 개선하지 못해 폐기했다. 현재는 SFT Student가 실제 하네스에서 새 조사를 생성하고 scorer reward로 갱신되는 on-policy progressive GRPO를 진행 중이다.**
-
----
-
-## 9. 실제 실행 기록: F15-H SFT run 2
-
-### 9.1 사건과 정답
-
-같은 시각에 commerce checkout과 food 주문이 함께 실패했다. 실제 근본원인은 두 개다.
-
-1. commerce inventory 테이블의 `EXCLUSIVE lock` 때문에 예약 쓰기가 대기했고 checkout이 timeout 됐다.
-2. 외부 PG `/pay`가 HTTP 429 `RATE_LIMITED`를 반환했고 payment가 이를 상위 요청에 전달했다.
-
-두 장애는 동시에 시작했지만 공통 원인이 아니다. 모델은 두 원인을 모두 찾고 분리해야 한다.
-
-### 9.2 Student가 받은 조사 범위
+따라서 현재 방향은 다음과 같다.
 
 ```text
-관측 시간: 10:14:15~10:46:47 UTC
-전체 원본 evidence: 268
-조사 대상: 20
-정답 root: 모델에 제공하지 않음
+계약을 통과한 전체 episode로 SFT
+→ SFT 모델을 실제 RCA 하네스에 투입
+→ 사건당 여러 on-policy rollout 생성
+→ typed scorer 기반 온라인 GRPO
+→ 봉인 평가에서 비퇴행 확인
+→ Claude·Codex와 동일 조건 비교
 ```
-
-### 9.3 실제 action과 observation
-
-| Turn | 실행 action | 실제 관측 | 판단 변화 |
-|---:|---|---|---|
-| 1 | `env_top(20)` | product 500 142건, payment outbound/inbound 429 각각 33건, order 502 19건, inventory 5xx | 여러 경계를 조사해야 함을 확인 |
-| 2 | `env_entity(commerce-product)` | product 500, Servlet 예외, JVM thread 이상 | 상위 증상 확인. root는 미확정 |
-| 3 | `env_entity(food-delivery-payment)` | outbound 429, inbound 429, PG 실패 로그 | 외부 PG를 원인 후보로 선택 |
-| 4 | `env_slice(ev221,ev212,ev210,ev220)` | `PG /pay failed ... 429 ... RATE_LIMITED` | 외부 PG rate limit 직접 증거 확보 |
-| 5 | `env_grep("PG /pay failed")` | 같은 실패 event·log 6건 | 반복 패턴 확인 |
-| 6~9 | `env_query(...)` | payment 429와 product/order 오류 재비교 | PG 원인은 강화. inventory DB lock은 미조사 |
-| 10 | 중복 query | `이미 실행함 — 새 정보 없음` | 새 증거 없음 |
-
-### 9.4 Ledger 실제 관측
-
-```json
-{
-  "id": "obs-004",
-  "turn": 4,
-  "action": "env_slice",
-  "target": "ev221,ev212,ev210,ev220",
-  "evidence_refs": ["ev210", "ev212", "ev220", "ev221"],
-  "ok": true,
-  "progress": true,
-  "summary": "PG /pay failed ... 429 Too Many Requests ... RATE_LIMITED"
-}
-```
-
-### 9.5 최종 답과 scorer 판정
-
-Student는 외부 PG 429가 payment outbound/inbound에 전파됐다고 `provisional`로 답하고 `ev010`, `ev011`, `ev221` 등을 인용했다. 그러나 inventory lock root를 찾지 못했고 commerce 오류를 PG 장애의 하류 영향으로 잘못 합쳤다. `proof_type`도 `unknown`이었다.
-
-| 항목 | 결과 | 판정 이유 |
-|---|---:|---|
-| Root F1 | 0.8 | 외부 PG root는 찾았지만 inventory lock root를 놓침 |
-| Reward | 0.572 | 부분 root, 유효 evidence refs, provisional status 반영 |
-| Proof rate | 0 | 결정적 proof type 미충족 |
-| Evidence complete | false | 두 root 전체의 지지·반증 증거 미완성 |
-| Strict correct | false | 전체 root, 인과 분리, proof 계약을 모두 만족하지 못함 |
-
-이 실행은 SFT의 개선과 한계를 동시에 보여준다. 바닐라처럼 호스트 metric에 멈추지 않고 외부 PG 원인을 찾았지만, 두 원인을 분리하고 결정적으로 증명하는 단계에는 도달하지 못했다.
