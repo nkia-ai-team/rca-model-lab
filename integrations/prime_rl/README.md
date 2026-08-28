@@ -30,6 +30,16 @@ must include a CPU PyTorch wheel and `prometheus-client` in addition to the
 patched Prime package. It does not need TorchTitan, vLLM, or the CUDA trainer
 stack.
 
+The trainer environment must apply `trainer-overrides.txt` after installing
+Prime. Prime pins Transformers 5.6.2, which cannot load the `muse_glimmer`
+architecture; the override uses the same Muse-capable Transformers 5.15.0 as
+the SFT environment and also declares Prime's missing metrics dependency:
+
+```bash
+uv pip install --python /absolute/path/to/trainer/python \
+  -r integrations/prime_rl/trainer-overrides.txt
+```
+
 ## Split KT sessions
 
 `configs/prime_rl/rca-online-smoke/` contains standalone configs for the

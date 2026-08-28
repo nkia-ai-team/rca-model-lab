@@ -9,6 +9,7 @@ from rca_lab.prime_rl.weight_relay import WeightRelayConfig
 
 ROOT = Path(__file__).parents[1]
 CONFIG_DIR = ROOT / "configs" / "prime_rl" / "rca-online-smoke"
+INTEGRATION_DIR = ROOT / "integrations" / "prime_rl"
 
 
 def _toml(name: str) -> dict:
@@ -34,6 +35,20 @@ def test_trainer_starts_rl_from_exact_sft_adapter_without_merging() -> None:
         "eps": 0.1,
         "adv_tau": 1.0,
         "kl_tau": 0.001,
+    }
+
+
+def test_trainer_runtime_uses_muse_capable_transformers_and_metrics_dependency() -> None:
+    requirements = {
+        line
+        for raw in (INTEGRATION_DIR / "trainer-overrides.txt")
+        .read_text(encoding="utf-8")
+        .splitlines()
+        if (line := raw.strip()) and not line.startswith("#")
+    }
+    assert requirements == {
+        "transformers==5.15.0",
+        "prometheus-client==0.22.1",
     }
 
 

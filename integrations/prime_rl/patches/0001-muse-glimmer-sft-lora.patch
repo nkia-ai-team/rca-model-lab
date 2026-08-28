@@ -630,3 +630,323 @@ new file mode 100644
 +            tokenizer.chat_template = config.chat_template
 +    tokenizer.pad_token_id = tokenizer.eos_token_id
 +    return tokenizer
+diff --git a/src/prime_rl/trainer/models/__init__.py b/src/prime_rl/trainer/models/__init__.py
+--- a/src/prime_rl/trainer/models/__init__.py
++++ b/src/prime_rl/trainer/models/__init__.py
+@@ -2,65 +2,79 @@
+ 
+ from collections import OrderedDict
+ 
+-from transformers import AutoConfig
+ from transformers.configuration_utils import PretrainedConfig
+ from transformers.models.auto.auto_factory import _BaseAutoModelClass, _LazyAutoMapping, auto_class_update
+ from transformers.models.auto.configuration_auto import CONFIG_MAPPING_NAMES
+-from transformers.models.llama.configuration_llama import LlamaConfig
+-from transformers.models.qwen3.configuration_qwen3 import Qwen3Config
+-from transformers.models.qwen3_5.configuration_qwen3_5 import Qwen3_5TextConfig
+ 
+-from prime_rl.trainer.models.afmoe import AfmoeConfig, AfmoeForCausalLM
+ from prime_rl.trainer.models.base import PreTrainedModelPrimeRL
+-from prime_rl.trainer.models.glm4_moe import Glm4MoeConfig, Glm4MoeForCausalLM
+-from prime_rl.trainer.models.glm_moe_dsa import GlmMoeDsaConfig, GlmMoeDsaForCausalLM
+-from prime_rl.trainer.models.gpt_oss import GptOssConfig, GptOssForCausalLM
+-from prime_rl.trainer.models.laguna import LagunaConfig, LagunaForCausalLM
+ from prime_rl.trainer.models.layers.lm_head import PrimeLmOutput, cast_float_and_contiguous
+-from prime_rl.trainer.models.llama import LlamaForCausalLM
+-from prime_rl.trainer.models.minimax_m2 import MiniMaxM2Config, MiniMaxM2ForCausalLM
+-from prime_rl.trainer.models.nemotron_h import NemotronHConfig, NemotronHForCausalLM
+-from prime_rl.trainer.models.qwen3 import Qwen3ForCausalLM
+-from prime_rl.trainer.models.qwen3_5 import Qwen3_5ForCausalLM
+-from prime_rl.trainer.models.qwen3_5_moe import Qwen3_5MoeConfig, Qwen3_5MoeForCausalLM
+-from prime_rl.trainer.models.qwen3_moe import Qwen3MoeConfig, Qwen3MoeForCausalLM
+-
+-# Make custom config discoverable by AutoConfig
+-AutoConfig.register("afmoe", AfmoeConfig, exist_ok=True)
+-AutoConfig.register("glm4_moe", Glm4MoeConfig, exist_ok=True)
+-AutoConfig.register("glm_moe_dsa", GlmMoeDsaConfig, exist_ok=True)
+-AutoConfig.register("laguna", LagunaConfig, exist_ok=True)
+-AutoConfig.register("minimax_m2", MiniMaxM2Config, exist_ok=True)
+-AutoConfig.register("nemotron_h", NemotronHConfig, exist_ok=True)
+-AutoConfig.register("qwen3_moe", Qwen3MoeConfig, exist_ok=True)
+-AutoConfig.register("qwen3_5_text", Qwen3_5TextConfig, exist_ok=True)
+-AutoConfig.register("qwen3_5_moe_text", Qwen3_5MoeConfig, exist_ok=True)
+-# GptOssConfig is just HF's class - already registered by transformers, no override needed.
+ 
+ _CUSTOM_CAUSAL_LM_MAPPING = _LazyAutoMapping(CONFIG_MAPPING_NAMES, OrderedDict())
+-_CUSTOM_CAUSAL_LM_MODELS: tuple[
+-    tuple[type[PretrainedConfig], type[PreTrainedModelPrimeRL]],
+-    ...,
+-] = (
+-    (LlamaConfig, LlamaForCausalLM),
+-    (Qwen3Config, Qwen3ForCausalLM),
+-    (AfmoeConfig, AfmoeForCausalLM),
+-    (Glm4MoeConfig, Glm4MoeForCausalLM),
+-    (GlmMoeDsaConfig, GlmMoeDsaForCausalLM),
+-    (LagunaConfig, LagunaForCausalLM),
+-    (MiniMaxM2Config, MiniMaxM2ForCausalLM),
+-    (NemotronHConfig, NemotronHForCausalLM),
+-    (Qwen3MoeConfig, Qwen3MoeForCausalLM),
+-    (Qwen3_5TextConfig, Qwen3_5ForCausalLM),
+-    (Qwen3_5MoeConfig, Qwen3_5MoeForCausalLM),
+-    (GptOssConfig, GptOssForCausalLM),
+-)
+-for config_cls, model_cls in _CUSTOM_CAUSAL_LM_MODELS:
+-    _CUSTOM_CAUSAL_LM_MAPPING.register(config_cls, model_cls, exist_ok=True)
+-
+-_CUSTOM_CAUSAL_LM_BY_MODEL_TYPE = {
+-    config_cls.model_type: model_cls for config_cls, model_cls in _CUSTOM_CAUSAL_LM_MODELS
+-}
++_CUSTOM_CAUSAL_LM_BY_MODEL_TYPE: dict[str, type[PreTrainedModelPrimeRL]] = {}
++_CUSTOM_VLM_MAPPING: dict[str, type] = {}
++_CUSTOM_MODELS_REGISTERED = False
++
++
++def _register_custom_models() -> None:
++    """Import optional custom implementations only when a custom path is requested."""
++    global _CUSTOM_MODELS_REGISTERED
++    if _CUSTOM_MODELS_REGISTERED:
++        return
++
++    from transformers import AutoConfig
++    from transformers.models.llama.configuration_llama import LlamaConfig
++    from transformers.models.qwen3.configuration_qwen3 import Qwen3Config
++    from transformers.models.qwen3_5.configuration_qwen3_5 import Qwen3_5TextConfig
++
++    from prime_rl.trainer.models.afmoe import AfmoeConfig, AfmoeForCausalLM
++    from prime_rl.trainer.models.glm4_moe import Glm4MoeConfig, Glm4MoeForCausalLM
++    from prime_rl.trainer.models.glm_moe_dsa import GlmMoeDsaConfig, GlmMoeDsaForCausalLM
++    from prime_rl.trainer.models.gpt_oss import GptOssConfig, GptOssForCausalLM
++    from prime_rl.trainer.models.laguna import LagunaConfig, LagunaForCausalLM
++    from prime_rl.trainer.models.llama import LlamaForCausalLM
++    from prime_rl.trainer.models.minimax_m2 import MiniMaxM2Config, MiniMaxM2ForCausalLM
++    from prime_rl.trainer.models.nemotron_h import NemotronHConfig, NemotronHForCausalLM
++    from prime_rl.trainer.models.qwen3 import Qwen3ForCausalLM
++    from prime_rl.trainer.models.qwen3_5 import Qwen3_5ForCausalLM
++    from prime_rl.trainer.models.qwen3_5_moe import Qwen3_5MoeConfig, Qwen3_5MoeForCausalLM
++    from prime_rl.trainer.models.qwen3_moe import Qwen3MoeConfig, Qwen3MoeForCausalLM
++
++    custom_models: tuple[
++        tuple[type[PretrainedConfig], type[PreTrainedModelPrimeRL]],
++        ...,
++    ] = (
++        (LlamaConfig, LlamaForCausalLM),
++        (Qwen3Config, Qwen3ForCausalLM),
++        (AfmoeConfig, AfmoeForCausalLM),
++        (Glm4MoeConfig, Glm4MoeForCausalLM),
++        (GlmMoeDsaConfig, GlmMoeDsaForCausalLM),
++        (LagunaConfig, LagunaForCausalLM),
++        (MiniMaxM2Config, MiniMaxM2ForCausalLM),
++        (NemotronHConfig, NemotronHForCausalLM),
++        (Qwen3MoeConfig, Qwen3MoeForCausalLM),
++        (Qwen3_5TextConfig, Qwen3_5ForCausalLM),
++        (Qwen3_5MoeConfig, Qwen3_5MoeForCausalLM),
++        (GptOssConfig, GptOssForCausalLM),
++    )
++    for config_cls, model_cls in custom_models:
++        _CUSTOM_CAUSAL_LM_MAPPING.register(config_cls, model_cls, exist_ok=True)
++        _CUSTOM_CAUSAL_LM_BY_MODEL_TYPE[config_cls.model_type] = model_cls
++
++    for model_type, config_cls in (
++        ("afmoe", AfmoeConfig),
++        ("glm4_moe", Glm4MoeConfig),
++        ("glm_moe_dsa", GlmMoeDsaConfig),
++        ("laguna", LagunaConfig),
++        ("minimax_m2", MiniMaxM2Config),
++        ("nemotron_h", NemotronHConfig),
++        ("qwen3_moe", Qwen3MoeConfig),
++        ("qwen3_5_text", Qwen3_5TextConfig),
++        ("qwen3_5_moe_text", Qwen3_5MoeConfig),
++    ):
++        AutoConfig.register(model_type, config_cls, exist_ok=True)
++
++    _CUSTOM_VLM_MAPPING.update({"qwen3_5": Qwen3_5ForCausalLM, "qwen3_5_moe": Qwen3_5MoeForCausalLM})
++    _CUSTOM_MODELS_REGISTERED = True
+ 
+ 
+ class AutoModelForCausalLMPrimeRL(_BaseAutoModelClass):
+@@ -72,6 +86,7 @@
+ 
+ def get_custom_causal_lm_cls(model_config: PretrainedConfig) -> type[PreTrainedModelPrimeRL]:
+     """Resolve the PrimeRL model class from a possibly non-PrimeRL config instance."""
++    _register_custom_models()
+     return _CUSTOM_CAUSAL_LM_BY_MODEL_TYPE[model_config.model_type]
+ 
+ 
+@@ -84,20 +99,16 @@
+     Returns:
+         True if the model supports custom implementation, False otherwise.
+     """
++    _register_custom_models()
+     return type(model_config) in _CUSTOM_CAUSAL_LM_MAPPING
+ 
+ 
+ # Mapping from HF composite VLM model_type to custom PrimeRL class.
+ # Used by get_model() to dispatch VLMs that have a custom text model implementation.
+ # Points to the same unified class — the config drives text-only vs VLM behavior.
+-_CUSTOM_VLM_MAPPING: dict[str, type] = {
+-    "qwen3_5": Qwen3_5ForCausalLM,
+-    "qwen3_5_moe": Qwen3_5MoeForCausalLM,
+-}
+-
+-
+ def get_custom_vlm_cls(model_config: PretrainedConfig) -> type | None:
+     """Return the custom PrimeRL VLM class for this config, or None if unsupported."""
++    _register_custom_models()
+     return _CUSTOM_VLM_MAPPING.get(getattr(model_config, "model_type", None))
+ 
+ 
+diff --git a/src/prime_rl/trainer/model.py b/src/prime_rl/trainer/model.py
+--- a/src/prime_rl/trainer/model.py
++++ b/src/prime_rl/trainer/model.py
+@@ -33,7 +33,6 @@
+     MXFP8Config,
+     QuantizationConfig,
+ )
+-from prime_rl.trainer.distributed import DeepEPExpertParallel, MXFP8AllToAllExpertParallel
+ from prime_rl.trainer.lora import (
+     apply_lora_to_model,
+     freeze_all_except_lora_and_specified,
+@@ -54,16 +53,12 @@
+     set_selective_activation_checkpointing,
+     supports_selective_activation_checkpointing,
+ )
+-from prime_rl.trainer.models.layers.fp8_linear import replace_linear_with_fp8_blockwise_linear
+ from prime_rl.trainer.models.layers.lm_head import inject_prime_lm_head
+ from prime_rl.trainer.models.layers.moe import LatentMoE, MoE, TokenChoiceTopKRouter, _load_fused_moe_kernel
+-from prime_rl.trainer.models.layers.mxfp8_grouped_gemm import apply_mxfp8_moe_grouped_gemm
+-from prime_rl.trainer.models.layers.mxfp8_linear import replace_linear_with_mxfp8_linear
+ from prime_rl.trainer.parallel_dims import ParallelDims
+ from prime_rl.trainer.world import get_world
+ from prime_rl.utils.logger import get_logger
+ from prime_rl.utils.sequence import get_cu_seqlens_from_position_ids
+-from prime_rl.utils.tokenizer import setup_tokenizer
+ from prime_rl.utils.utils import format_time
+ from prime_rl.utils.vlm import get_language_model, get_vision_encoder, is_vlm_architecture
+ from prime_rl.utils.weights import (
+@@ -95,6 +90,15 @@
+     )
+ 
+ 
++def _ties_word_embeddings(model: nn.Module) -> bool:
++    """Read weight tying from either a text config or a composite VLM config."""
++    config = getattr(model, "config", None)
++    if config is None:
++        return False
++    text_config = config.get_text_config() if hasattr(config, "get_text_config") else config
++    return bool(getattr(config, "tie_word_embeddings", getattr(text_config, "tie_word_embeddings", False)))
++
++
+ def _patch_qwen3_5_moe_conversion_mapping():
+     """Fix Qwen3.5 MoE conversion mapping incorrectly applying qwen2_moe expert weight splitting.
+ 
+@@ -725,7 +729,8 @@
+         target_config.num_hidden_layers = num_hidden_layers
+ 
+     # Determine the implementation to use
+-    custom_vlm_cls = get_custom_vlm_cls(model_config) if is_vlm_arch else None
++    needs_custom_registry = config.impl in ("auto", "custom") or config.vlm is not None
++    custom_vlm_cls = get_custom_vlm_cls(model_config) if is_vlm_arch and needs_custom_registry else None
+     if config.impl == "auto":
+         if is_vlm_arch:
+             impl_to_use = "custom" if custom_vlm_cls is not None else "hf"
+@@ -864,7 +869,7 @@
+             **fsdp_config,
+         )
+ 
+-    shard_norm_and_lm_head = hasattr(model, "config") and not model.config.tie_word_embeddings
++    shard_norm_and_lm_head = hasattr(model, "config") and not _ties_word_embeddings(model)
+ 
+     if shard_norm_and_lm_head:
+         # This optimization breaks weight tying
+@@ -1019,14 +1024,14 @@
+     load_dcp_start_time = time.perf_counter()
+     state_dict = model.state_dict()
+     state_dict = strip_lora_from_state_dict(state_dict)
+-    if model.config.tie_word_embeddings:
++    if _ties_word_embeddings(model):
+         state_dict.pop("lm_head.weight")
+     dcp_load(
+         state_dict,
+         storage_reader=HuggingFaceStorageReader(path=snapshot_path.as_posix()),
+     )
+     # Restore weight tying broken by to_empty() for HF models
+-    if not isinstance(model, PreTrainedModelPrimeRL) and model.config.tie_word_embeddings:
++    if not isinstance(model, PreTrainedModelPrimeRL) and _ties_word_embeddings(model):
+         model.tie_weights()
+ 
+     _move_buffers_to_cuda(model, config)
+@@ -1198,8 +1203,13 @@
+         return
+ 
+     if isinstance(quant, FP8Config):
++        from prime_rl.trainer.models.layers.fp8_linear import replace_linear_with_fp8_blockwise_linear
++
+         replace_linear_with_fp8_blockwise_linear(model, ignore_modules=quant.ignore_patterns)
+     elif isinstance(quant, MXFP8Config):
++        from prime_rl.trainer.models.layers.mxfp8_grouped_gemm import apply_mxfp8_moe_grouped_gemm
++        from prime_rl.trainer.models.layers.mxfp8_linear import replace_linear_with_mxfp8_linear
++
+         capability = torch.cuda.get_device_capability()
+         if capability < (10, 0):
+             raise ValueError(
+@@ -1218,10 +1228,14 @@
+             if config.ep_comm_backend == "torch":
+                 quant = config.quantization
+                 if isinstance(quant, MXFP8Config) and quant.enable_a2a:
++                    from prime_rl.trainer.distributed import MXFP8AllToAllExpertParallel
++
+                     parallelize_plan = MXFP8AllToAllExpertParallel()
+                 else:
+                     parallelize_plan = ExpertParallel()
+             else:
++                from prime_rl.trainer.distributed import DeepEPExpertParallel
++
+                 parallelize_plan = DeepEPExpertParallel()
+             parallelize_module(
+                 block_mlp.experts,
+@@ -1406,7 +1420,7 @@
+             else:
+                 fix_model_post_empty(model)
+                 # Restore weight tying broken by to_empty() for HF models
+-                if model.config.tie_word_embeddings:
++                if _ties_word_embeddings(model):
+                     model.tie_weights()
+ 
+             _move_buffers_to_cuda(model, config)
+diff --git a/src/prime_rl/trainer/sft/train.py b/src/prime_rl/trainer/sft/train.py
+--- a/src/prime_rl/trainer/sft/train.py
++++ b/src/prime_rl/trainer/sft/train.py
+@@ -34,7 +34,6 @@
+     get_load_balance_stats,
+     is_tt_moe_model,
+     setup_processor,
+-    setup_tokenizer,
+     resolve_auto_attn,
+     setup_model,
+ )
+@@ -54,6 +53,7 @@
+     setup_full_cpu_optimizer_offload,
+     setup_torch_distributed,
+ )
++from prime_rl.utils.tokenizer import setup_tokenizer
+ from prime_rl.trainer.world import get_world
+ from prime_rl.utils.heartbeat import Heartbeat
+ from prime_rl import monitors
+diff --git a/src/prime_rl/trainer/optim/__init__.py b/src/prime_rl/trainer/optim/__init__.py
+--- a/src/prime_rl/trainer/optim/__init__.py
++++ b/src/prime_rl/trainer/optim/__init__.py
+@@ -1,5 +1,4 @@
+ import torch
+-from dion import Muon
+ from torch import nn
+ from torch.optim import SGD, AdamW, Optimizer
+ 
+@@ -122,6 +121,8 @@
+     parallel_dims: ParallelDims,
+     lr: float | None = None,
+ ) -> Optimizer:
++    from dion import Muon
++
+     def muon_enabled(n, p):
+         if p.ndim < 2:
+             return False
