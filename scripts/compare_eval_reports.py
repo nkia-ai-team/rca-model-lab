@@ -21,6 +21,7 @@ def compare(reference: dict[str, Any], candidate: dict[str, Any]) -> tuple[bool,
     if int(candidate.get("unsupported_confirmations", -1)) != 0:
         failures.append("candidate unsupported confirmations")
     monotonic = (
+        ("majority_strict_correct", int, "majority strict cases"),
         ("mean_reward", float, "mean reward"),
         ("mean_root_f1", float, "root F1"),
         ("strict_correct_runs", int, "strict runs"),
