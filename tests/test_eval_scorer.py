@@ -1,3 +1,4 @@
+import json
 from pathlib import Path
 
 import pytest
@@ -8,6 +9,7 @@ from rca_lab.eval.scoring import (
     EvalContract,
     count_format_errors,
     root_f1,
+    score_directory,
     score_episode,
     target_names,
 )
@@ -135,3 +137,41 @@ def test_exact_provisional_root_requires_grounded_evidence_for_strict_success() 
     assert score["root_f1"] == 1.0
     assert score["evidence_complete"] is False
     assert score["strict_correct"] is False
+
+
+def test_directory_report_exposes_evidence_and_strict_coverage(tmp_path: Path) -> None:
+    target = "11111111-1111-1111-1111-111111111111"
+    path = tmp_path / "case-a" / "traj-run1" / "agent-a.jsonl"
+    path.parent.mkdir(parents=True)
+    episode = {
+        "event": "episode_completed",
+        "result": {
+            "status": "provisional",
+            "causes": [
+                {
+                    "target": target,
+                    "mechanism": "observed causal path",
+                    "support_refs": ["obs-1"],
+                    "proof_valid": False,
+                }
+            ],
+        },
+        "prompts": [
+            {"Messages": [{"content": f"- {target} (service-a): n=1"}]}
+        ],
+    }
+    path.write_text(json.dumps(episode) + "\n")
+    contract = {
+        "cases": {
+            "case-a": {
+                "expected_status": "provisional",
+                "roots": [{"target_aliases": ["service-a"]}],
+            }
+        }
+    }
+
+    report = score_directory(tmp_path, contract, runs_per_case=1)
+
+    assert report["strict_correct_runs"] == 1
+    assert report["evidence_complete_runs"] == 1
+    assert report["mean_proof_rate"] == 0.0

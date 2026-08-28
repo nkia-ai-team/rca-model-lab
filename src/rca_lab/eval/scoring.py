@@ -195,7 +195,12 @@ def score_directory(output: Path, contract: dict[str, Any], runs_per_case: int) 
         "completed_runs": len(rows),
         "format_errors": sum(row["format_errors"] for row in rows),
         "unsupported_confirmations": sum(row["unsupported_confirmation"] for row in rows),
+        "strict_correct_runs": sum(row["strict_correct"] for row in rows),
         "majority_strict_correct": majority,
+        "evidence_complete_runs": sum(row["evidence_complete"] for row in rows),
+        "mean_proof_rate": (
+            sum(row["proof_rate"] for row in rows) / len(rows) if rows else 0.0
+        ),
         "mean_reward": sum(row["reward"] for row in rows) / len(rows) if rows else 0.0,
         "mean_root_f1": sum(row["root_f1"] for row in rows) / len(rows) if rows else 0.0,
         "runs": rows,
