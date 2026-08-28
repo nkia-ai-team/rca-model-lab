@@ -1,0 +1,23 @@
+name: muse-glimmer-30b-rca-rft-v4-replay
+model_name: /home/work/models/muse-glimmer-30b-rca-teacher-v2-family-clean
+dataset: outputs/rl/rft-v4-replay.jsonl
+output_dir: outputs/muse-glimmer-30b-rca-rft-v4
+max_length: 32768
+epochs: 1
+learning_rate: 0.0000001
+gradient_accumulation_steps: 4
+clip_low: 0.20
+clip_high: 0.28
+kl_beta: 0.50
+max_grad_norm: 1.0
+seed: 42
+behavior_temperature: 1.0
+algorithm: episode_rft_replay_lora
+lora:
+  rank: 8
+  alpha: 8
+  dropout: 0.0
+  target_modules: all-linear
+wandb:
+  entity: nkia-ai
+  project: rca-actor-rl

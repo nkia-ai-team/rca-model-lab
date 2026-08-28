@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import argparse
 import importlib.util
 import json
 from pathlib import Path
@@ -57,3 +58,84 @@ def test_truncated_episode_is_not_complete(tmp_path: Path) -> None:
     _write_episode(tmp_path / "rollout-01", event="turn_completed")
 
     assert not module.trajectory_completed(tmp_path / "rollout-01")
+
+
+def test_rollout_manifest_pins_sampling_temperature(tmp_path: Path) -> None:
+    module = _module()
+    agent = tmp_path / "agent"
+    split = tmp_path / "split.yaml"
+    eligible = tmp_path / "eligible.jsonl"
+    restore = tmp_path / "restore"
+    agent.write_bytes(b"agent")
+    split.write_text("train: []\n", encoding="utf-8")
+    eligible.write_text("", encoding="utf-8")
+    restore.write_bytes(b"restore")
+    case_root = tmp_path / "cases"
+    case_root.mkdir()
+    case_dir = case_root / "F01-P"
+    case_dir.mkdir()
+    (case_dir / "meta.json").write_text('{"case":"F01-P"}\n')
+    model_artifact = tmp_path / "model"
+    model_artifact.mkdir()
+    (model_artifact / "config.json").write_text('{"model_type":"test"}\n')
+    args = argparse.Namespace(
+        model="actor",
+        model_artifact=str(model_artifact),
+        base_url="http://localhost:8003/v1",
+        structured_backend="guidance",
+        group_size=8,
+        temperature=0.7,
+        seed=42,
+        agent=agent,
+        split=split,
+        eligible_dataset=eligible,
+        restore=restore,
+        case_root=case_root,
+    )
+
+    contract = module.manifest_contract(args, ["F01-P"])
+
+    assert contract["temperature"] == 0.7
+    assert contract["base_seed"] == 42
+    assert contract["seed_strategy"].startswith("sha256")
+    assert len(contract["restore_sha256"]) == 64
+    assert len(contract["case_set_sha256"]) == 64
+    assert len(contract["model_artifact_sha256"]) == 64
+
+
+def test_model_identity_changes_with_model_metadata(tmp_path: Path) -> None:
+    module = _module()
+    artifact = tmp_path / "model"
+    artifact.mkdir()
+    config = artifact / "config.json"
+    config.write_text('{"revision":1}\n')
+    first = module.model_artifact_identity(str(artifact))
+    config.write_text('{"revision":2}\n')
+
+    assert first != module.model_artifact_identity(str(artifact))
+
+
+def test_rollout_seeds_are_stable_and_distinct() -> None:
+    module = _module()
+
+    first = module.rollout_seed(42, "case-a", 1)
+
+    assert first == module.rollout_seed(42, "case-a", 1)
+    assert first != module.rollout_seed(42, "case-a", 2)
+    assert first != module.rollout_seed(42, "case-b", 1)
+    assert 0 <= first < 2**63
+
+
+def test_case_set_identity_changes_with_case_inventory(tmp_path: Path) -> None:
+    module = _module()
+    case = tmp_path / "case-a"
+    case.mkdir()
+    (case / "meta.json").write_text('{"case":"a"}\n')
+    data = case / "data.bin"
+    data.write_bytes(b"one")
+    first = module.case_set_identity(tmp_path, ["case-a"])
+    data.write_bytes(b"longer")
+
+    assert len(first) == 64
+    assert first != module.case_set_identity(tmp_path, ["case-a"])
+    assert module.case_set_identity(tmp_path, ["missing"]) == ""

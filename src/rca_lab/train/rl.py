@@ -2,9 +2,11 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 import math
 import os
+import platform
 import random
 from contextlib import nullcontext
 from pathlib import Path
@@ -32,8 +34,18 @@ class EpisodeRLConfig(StrictModel):
     kl_beta: float = Field(ge=0)
     max_grad_norm: float = Field(gt=0)
     seed: int = 42
+    # The current offline trainer recomputes behavior log-probabilities from
+    # the frozen model. Temperature 1 is therefore required for ratio=1 at
+    # initialization until rollout-time token logprobs are persisted.
     behavior_temperature: Literal[1.0] = 1.0
-    algorithm: Literal["episode_dapo_lora"] = "episode_dapo_lora"
+    behavior_model_sha256: str = ""
+    dataset_sha256: str = ""
+    algorithm: Literal[
+        "episode_dapo_lora",
+        "episode_anchor_dapo_lora",
+        "episode_rft_replay_lora",
+        "episode_progressive_dapo_lora",
+    ] = "episode_dapo_lora"
     lora: LoRAConfig
     wandb: WandbConfig
 
@@ -52,18 +64,66 @@ class RLEpisodeRecord(StrictModel):
     scenario_id: str = Field(min_length=1)
     rollout_id: str = Field(min_length=1)
     reward: float = Field(ge=0.0, le=1.0)
+    optimization_reward: float = Field(ge=0.0, le=1.0)
     advantage: float
+    turn_advantages: tuple[float, ...] = ()
+    behavior_model_artifact: str = ""
+    behavior_model_sha256: str = ""
+    behavior_temperature: float = Field(default=0.0, ge=0, le=2)
     score: dict[str, Any]
     turns: tuple[RLTurn, ...] = Field(min_length=1)
+
+    @model_validator(mode="after")
+    def turn_credit_matches_episode(self) -> RLEpisodeRecord:
+        if self.turn_advantages and len(self.turn_advantages) != len(self.turns):
+            raise ValueError("turn_advantages must match turns exactly")
+        return self
 
 
 def load_rl_config(path: Path) -> EpisodeRLConfig:
     return EpisodeRLConfig.model_validate(yaml.safe_load(path.read_text(encoding="utf-8")))
 
 
-def clipped_surrogate(
-    log_ratio: Any, advantage: Any, *, clip_low: float, clip_high: float
-) -> Any:
+def validate_behavior_policy(rows: list[dict[str, Any]], config: EpisodeRLConfig) -> None:
+    if config.algorithm != "episode_progressive_dapo_lora":
+        return
+    if any(not row["turn_advantages"] for row in rows):
+        raise ValueError("progressive DAPO requires turn_advantages for every episode")
+    provenance = {
+        (
+            row["behavior_model_artifact"],
+            row["behavior_model_sha256"],
+            row["behavior_temperature"],
+        )
+        for row in rows
+    }
+    expected = {(config.model_name, config.behavior_model_sha256, config.behavior_temperature)}
+    if provenance != expected or not config.behavior_model_sha256:
+        raise ValueError(
+            f"rollout behavior policy does not match training base: "
+            f"dataset={provenance} config={expected}"
+        )
+
+
+def file_sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as stream:
+        for chunk in iter(lambda: stream.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def validate_dataset_artifact(path: Path, config: EpisodeRLConfig) -> None:
+    if config.algorithm != "episode_progressive_dapo_lora":
+        return
+    if not config.dataset_sha256:
+        raise ValueError("progressive DAPO requires dataset_sha256")
+    actual = file_sha256(path)
+    if actual != config.dataset_sha256:
+        raise ValueError(f"RL dataset sha256 mismatch: got={actual} want={config.dataset_sha256}")
+
+
+def clipped_surrogate(log_ratio: Any, advantage: Any, *, clip_low: float, clip_high: float) -> Any:
     """Return the tokenwise asymmetric clipped DAPO surrogate."""
     import torch
 
@@ -150,14 +210,17 @@ def train_rl(config_path: Path) -> None:  # pragma: no cover - GPU entrypoint
     from transformers import AutoModelForCausalLM, AutoModelForImageTextToText, AutoTokenizer
 
     config = load_rl_config(config_path)
+    dataset_path = Path(config.dataset)
+    validate_dataset_artifact(dataset_path, config)
     random.seed(config.seed)
     torch.manual_seed(config.seed)
     rows = [
         RLEpisodeRecord.model_validate(json.loads(line)).model_dump(mode="json")
-        for line in Path(config.dataset).read_text(encoding="utf-8").splitlines()
+        for line in dataset_path.read_text(encoding="utf-8").splitlines()
         if line.strip()
     ]
     rows = [row for row in rows if math.isfinite(float(row["advantage"]))]
+    validate_behavior_policy(rows, config)
     if not rows:
         raise ValueError("RL dataset has no finite-advantage episodes")
 
@@ -234,8 +297,9 @@ def train_rl(config_path: Path) -> None:  # pragma: no cover - GPU entrypoint
                 **config.model_dump(),
                 "episodes": len(encoded),
                 "contract": (
-                    "whole episode grouped; behavior policy=frozen merged SFT; "
-                    "asymmetric clipped DAPO; typed terminal reward"
+                    "whole episode; behavior policy=frozen merged SFT; "
+                    f"algorithm={config.algorithm}; asymmetric clipped DAPO; "
+                    "typed terminal reward"
                 ),
             },
         )
@@ -250,10 +314,15 @@ def train_rl(config_path: Path) -> None:  # pragma: no cover - GPU entrypoint
             for episode in group:
                 token_counts = [int((turn["labels"] != -100).sum()) for turn in episode["turns"]]
                 total_tokens = sum(token_counts)
-                for turn, token_count in zip(episode["turns"], token_counts, strict=True):
+                advantages = episode["turn_advantages"] or [episode["advantage"]] * len(
+                    episode["turns"]
+                )
+                for turn, token_count, turn_advantage in zip(
+                    episode["turns"], token_counts, advantages, strict=True
+                ):
                     gpu_turn = {key: value.to(device) for key, value in turn.items()}
                     loss, policy, kl, response_tokens = _turn_loss(
-                        model, gpu_turn, float(episode["advantage"]), config
+                        model, gpu_turn, float(turn_advantage), config
                     )
                     weight = token_count / total_tokens / len(group)
                     (loss * weight).backward()
@@ -280,5 +349,29 @@ def train_rl(config_path: Path) -> None:  # pragma: no cover - GPU entrypoint
     adapter_dir.mkdir(parents=True, exist_ok=True)
     model.save_pretrained(adapter_dir)
     tokenizer.save_pretrained(adapter_dir)
+    adapter_files = sorted(
+        path for path in adapter_dir.iterdir() if path.is_file() and path.name != "training_manifest.json"
+    )
+    (adapter_dir / "training_manifest.json").write_text(
+        json.dumps(
+            {
+                "config": config.model_dump(mode="json"),
+                "dataset_sha256": file_sha256(dataset_path),
+                "adapter_files_sha256": {
+                    path.name: file_sha256(path) for path in adapter_files
+                },
+                "runtime": {
+                    "python": platform.python_version(),
+                    "torch": torch.__version__,
+                    "cuda": torch.version.cuda,
+                    "transformers": __import__("transformers").__version__,
+                    "peft": __import__("peft").__version__,
+                },
+            },
+            indent=2,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
     if wandb_enabled:
         wandb.finish()

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Run the student harness against every sealed scenario without label leakage."""
+"""Run the student harness against a typed scenario-split partition."""
 
 from __future__ import annotations
 
@@ -51,6 +51,12 @@ def main() -> None:
     )
     parser.add_argument("--runs", type=int, default=3)
     parser.add_argument(
+        "--partition",
+        choices=("train", "sealed_eval"),
+        default="sealed_eval",
+        help="split partition to execute; sealed_eval remains the default",
+    )
+    parser.add_argument(
         "--case",
         action="append",
         dest="selected_cases",
@@ -60,11 +66,11 @@ def main() -> None:
     if args.runs < 1:
         parser.error("--runs must be at least 1")
 
-    cases = yaml.safe_load(args.split.read_text(encoding="utf-8"))["sealed_eval"]
+    cases = yaml.safe_load(args.split.read_text(encoding="utf-8"))[args.partition]
     if args.selected_cases:
         unknown = sorted(set(args.selected_cases) - set(cases))
         if unknown:
-            parser.error(f"--case is not in the sealed split: {', '.join(unknown)}")
+            parser.error(f"--case is not in the {args.partition} split: {', '.join(unknown)}")
         selected = set(args.selected_cases)
         cases = [case for case in cases if case in selected]
     if args.output.exists() and any(args.output.iterdir()):
@@ -80,6 +86,7 @@ def main() -> None:
                 "structured_output_backend": args.structured_backend,
                 "runs": args.runs,
                 "cases": cases,
+                "partition": args.partition,
                 "agent_sha256": hashlib.sha256(args.agent.read_bytes()).hexdigest(),
                 "split_sha256": hashlib.sha256(args.split.read_bytes()).hexdigest(),
             },

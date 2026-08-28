@@ -1,0 +1,27 @@
+version: 1
+cases:
+  case-f01-p-v3-d691440c:
+    expected_status: confirmed
+    roots:
+      - target_aliases: [Oracle-corebanking, BANKING]
+  case-f01-r-v3-34274f3e:
+    expected_status: confirmed
+    roots:
+      - target_aliases: [PostgreSQL-commerce, commerce-postgresql]
+  case-f03-h-v3-d4192a3b:
+    expected_status: provisional
+    roots:
+      - target_aliases: [commerce-order, order-service]
+  case-f06-r-v3-6ace8a7d:
+    expected_status: provisional
+    roots:
+      - target_aliases: [commerce-payment, payment-service]
+      - pseudo_kind: external_dependency
+  case-f10-h-v3-4fe69be0:
+    expected_status: provisional
+    roots:
+      - target_aliases: [tb-w3]
+  case-f18-p-v3-d2c566ad:
+    expected_status: confirmed
+    roots:
+      - target_aliases: [core-banking-transfer, banking-transfer]

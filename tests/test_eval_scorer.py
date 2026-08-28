@@ -4,7 +4,13 @@ import pytest
 import yaml
 from pydantic import ValidationError
 
-from rca_lab.eval.scoring import EvalContract, count_format_errors, root_f1, target_names
+from rca_lab.eval.scoring import (
+    EvalContract,
+    count_format_errors,
+    root_f1,
+    score_episode,
+    target_names,
+)
 
 
 def test_train_and_sealed_contracts_are_typed_and_disjoint() -> None:
@@ -17,6 +23,22 @@ def test_train_and_sealed_contracts_are_typed_and_disjoint() -> None:
     assert len(train.cases) == 20
     assert len(sealed.cases) == 12
     assert set(train.cases).isdisjoint(sealed.cases)
+
+
+def test_train_monitor_is_a_typed_train_only_subset() -> None:
+    train = EvalContract.model_validate(
+        yaml.safe_load(Path("configs/eval/train-family-v2.yaml").read_text())
+    )
+    monitor = EvalContract.model_validate(
+        yaml.safe_load(Path("configs/eval/train-monitor-v1.yaml").read_text())
+    )
+    sealed = EvalContract.model_validate(
+        yaml.safe_load(Path("configs/eval/sealed-family-v2.yaml").read_text())
+    )
+
+    assert len(monitor.cases) == 6
+    assert set(monitor.cases) < set(train.cases)
+    assert set(monitor.cases).isdisjoint(sealed.cases)
 
 
 def test_root_identity_must_be_exactly_one_typed_variant() -> None:
@@ -94,3 +116,22 @@ def test_legacy_untyped_structured_failure_remains_a_format_error() -> None:
     ledger = [{"summary": "structured response validation failed after 2 attempts: bad JSON"}]
 
     assert count_format_errors(ledger) == 1
+
+
+def test_exact_provisional_root_requires_grounded_evidence_for_strict_success() -> None:
+    target = "11111111-1111-1111-1111-111111111111"
+    expected = {
+        "expected_status": "provisional",
+        "roots": [{"target_aliases": ["service-a"]}],
+    }
+    prompt = {"Messages": [{"content": f"- {target} (service-a): n=1"}]}
+    result = {
+        "status": "provisional",
+        "causes": [{"target": target, "mechanism": "", "support_refs": []}],
+    }
+
+    score = score_episode("case-a", expected, {"result": result, "prompts": [prompt]})
+
+    assert score["root_f1"] == 1.0
+    assert score["evidence_complete"] is False
+    assert score["strict_correct"] is False

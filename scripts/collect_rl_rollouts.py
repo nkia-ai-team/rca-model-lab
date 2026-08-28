@@ -8,6 +8,7 @@ import hashlib
 import json
 import os
 import re
+import struct
 import subprocess
 import time
 from concurrent.futures import ThreadPoolExecutor
@@ -17,14 +18,81 @@ from typing import Any
 
 import yaml
 
+_MODEL_IDENTITY_FILES = (
+    "config.json",
+    "model.safetensors.index.json",
+    "adapter_config.json",
+    "merge_manifest.json",
+)
+
+
+def model_artifact_identity(value: str) -> str:
+    path = Path(value)
+    digest = hashlib.sha256()
+    if path.is_file():
+        digest.update(path.name.encode())
+        digest.update(path.read_bytes())
+        return digest.hexdigest()
+    if not path.is_dir():
+        return ""
+    selected = [path / name for name in _MODEL_IDENTITY_FILES if (path / name).is_file()]
+    if not selected:
+        return ""
+    for item in selected:
+        digest.update(item.name.encode())
+        digest.update(item.read_bytes())
+    return digest.hexdigest()
+
+
+def file_sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as stream:
+        for chunk in iter(lambda: stream.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def case_set_identity(case_root: Path, cases: list[str]) -> str:
+    """Fingerprint case metadata plus the complete relative-path/size inventory."""
+    digest = hashlib.sha256()
+    for case in sorted(cases):
+        case_dir = case_root / case
+        meta = case_dir / "meta.json"
+        if not meta.is_file():
+            return ""
+        digest.update(case.encode())
+        digest.update(meta.read_bytes())
+        for path in sorted(item for item in case_dir.rglob("*") if item.is_file()):
+            relative = path.relative_to(case_dir)
+            digest.update(str(relative).encode())
+            digest.update(str(path.stat().st_size).encode())
+    return digest.hexdigest()
+
 
 def run_agent(
-    *, agent: Path, incident: str, trajectory_dir: Path, base_env: dict[str, str]
+    *,
+    agent: Path,
+    incident: str,
+    trajectory_dir: Path,
+    base_env: dict[str, str],
+    temperature: float,
+    seed: int,
 ) -> tuple[int, str]:
     trajectory_dir.mkdir(parents=True, exist_ok=True)
     env = {**base_env, "RCA_TRAJECTORY_DIR": str(trajectory_dir)}
     result = subprocess.run(
-        [str(agent), incident], capture_output=True, text=True, env=env, check=False
+        [
+            str(agent),
+            "--actor-temperature",
+            str(temperature),
+            "--actor-seed",
+            str(seed),
+            incident,
+        ],
+        capture_output=True,
+        text=True,
+        env=env,
+        check=False,
     )
     return result.returncode, result.stdout + result.stderr
 
@@ -36,6 +104,13 @@ def load_eligible_scenarios(dataset: Path) -> set[str]:
         for line in dataset.read_text(encoding="utf-8").splitlines()
         if line.strip()
     }
+
+
+def rollout_seed(base_seed: int, case: str, rollout_index: int) -> int:
+    """Derive a stable, distinct non-negative seed from rollout identity."""
+    payload = f"{base_seed}:{case}:{rollout_index}".encode()
+    value = struct.unpack(">Q", hashlib.sha256(payload).digest()[:8])[0]
+    return value & ((1 << 63) - 1)
 
 
 def trajectory_completed(path: Path) -> bool:
@@ -68,13 +143,19 @@ def manifest_contract(args: argparse.Namespace, cases: list[str]) -> dict[str, A
     return {
         "model": args.model,
         "model_artifact": args.model_artifact,
+        "model_artifact_sha256": model_artifact_identity(args.model_artifact),
         "base_url": args.base_url,
         "structured_output_backend": args.structured_backend,
         "group_size": args.group_size,
+        "temperature": args.temperature,
+        "base_seed": args.seed,
+        "seed_strategy": "sha256(base_seed:case_id:rollout_index)/int63",
         "cases": cases,
         "agent_sha256": hashlib.sha256(args.agent.read_bytes()).hexdigest(),
+        "restore_sha256": file_sha256(args.restore),
         "split_sha256": hashlib.sha256(args.split.read_bytes()).hexdigest(),
         "eligible_dataset_sha256": hashlib.sha256(args.eligible_dataset.read_bytes()).hexdigest(),
+        "case_set_sha256": case_set_identity(args.case_root, cases),
     }
 
 
@@ -83,6 +164,7 @@ def main() -> None:
     parser.add_argument("--split", type=Path, default=Path("configs/teacher/codex-blind-v1.yaml"))
     parser.add_argument("--agent", type=Path, required=True)
     parser.add_argument("--restore", type=Path, required=True)
+    parser.add_argument("--case-root", type=Path, default=Path("/data/eval-cases"))
     parser.add_argument("--output", type=Path, default=Path("outputs/rl/rollouts-v1"))
     parser.add_argument(
         "--eligible-dataset",
@@ -103,6 +185,8 @@ def main() -> None:
         help="server-side structured-output backend recorded for provenance",
     )
     parser.add_argument("--group-size", type=int, default=4)
+    parser.add_argument("--temperature", type=float, default=1.0)
+    parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--max-cases", type=int, default=0)
     parser.add_argument(
         "--resume",
@@ -112,6 +196,14 @@ def main() -> None:
     args = parser.parse_args()
     if args.group_size < 1:
         parser.error("--group-size must be at least 1")
+    if not 0 < args.temperature <= 2:
+        parser.error("--temperature must be in (0, 2]")
+    if args.seed < 0:
+        parser.error("--seed must be non-negative")
+    if not args.model_artifact or not model_artifact_identity(args.model_artifact):
+        parser.error("--model-artifact must identify a readable immutable model artifact")
+    if not args.restore.is_file():
+        parser.error("--restore must identify a readable reset executable")
 
     eligible = load_eligible_scenarios(args.eligible_dataset)
     cases = [
@@ -121,6 +213,8 @@ def main() -> None:
     ]
     if args.max_cases:
         cases = cases[: args.max_cases]
+    if not case_set_identity(args.case_root, cases):
+        parser.error("--case-root is missing one or more selected case artifacts")
     contract = manifest_contract(args, cases)
     manifest_path = args.output / "run-manifest.json"
     if args.output.exists() and any(args.output.iterdir()):
@@ -218,6 +312,8 @@ def main() -> None:
                     incident=incident,
                     trajectory_dir=attempt_dir / f"rollout-{index:02d}",
                     base_env=shared_env,
+                    temperature=args.temperature,
+                    seed=rollout_seed(args.seed, case, index),
                 )
                 for index in range(1, args.group_size + 1)
             ]

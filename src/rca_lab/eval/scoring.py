@@ -123,13 +123,24 @@ def score_episode(case_id: str, expected: dict[str, Any], episode: dict[str, Any
     roots_score = root_f1(expected["roots"], root_tokens(result, names))
     transient_format_errors = count_format_errors(episode.get("ledger", []))
     causes = result.get("causes", [])
-    proofs_valid = all(cause.get("proof_valid") for cause in causes)
-    proof_rate = sum(bool(cause.get("proof_valid")) for cause in causes) / len(causes) if causes else 0
+    external_causes = result.get("external_causes", [])
+    diagnoses = [*causes, *external_causes]
+    proofs_valid = bool(diagnoses) and all(cause.get("proof_valid") for cause in diagnoses)
+    proof_rate = (
+        sum(bool(cause.get("proof_valid")) for cause in diagnoses) / len(diagnoses)
+        if diagnoses
+        else 0
+    )
+    evidence_complete = bool(diagnoses) and all(
+        bool(str(cause.get("mechanism", "")).strip()) and bool(cause.get("support_refs"))
+        for cause in diagnoses
+    )
     unsupported = int(result.get("status") == "confirmed" and (roots_score < 1 or not proofs_valid))
     status_correct = result.get("status") == expected["expected_status"]
     strict = bool(
         roots_score == 1
         and status_correct
+        and evidence_complete
         and transient_format_errors == 0
         and unsupported == 0
     )
@@ -159,6 +170,7 @@ def score_episode(case_id: str, expected: dict[str, Any], episode: dict[str, Any
         "unsupported_confirmation": unsupported,
         "target_names": names,
         "proof_rate": proof_rate,
+        "evidence_complete": evidence_complete,
         "reward": reward,
     }
 

@@ -1,0 +1,23 @@
+name: muse-glimmer-30b-rca-dapo-v2-diagnostic-signal
+model_name: /home/work/models/muse-glimmer-30b-rca-teacher-v2-family-clean
+dataset: outputs/rl/dapo-v2-diagnostic.jsonl
+output_dir: outputs/muse-glimmer-30b-rca-dapo-v2
+max_length: 32768
+epochs: 1
+learning_rate: 0.000002
+gradient_accumulation_steps: 4
+clip_low: 0.20
+clip_high: 0.28
+kl_beta: 0.05
+max_grad_norm: 1.0
+seed: 42
+behavior_temperature: 1.0
+algorithm: episode_dapo_lora
+lora:
+  rank: 8
+  alpha: 16
+  dropout: 0.0
+  target_modules: all-linear
+wandb:
+  entity: nkia-ai
+  project: rca-actor-rl
