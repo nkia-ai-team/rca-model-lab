@@ -1,0 +1,408 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="RCA Student 모델의 개념, 하네스, 도구, 교사 데이터, SFT, RL, 평가 파이프라인 설명서">
+  <title>RCA Student 모델 — 개발 현황과 학습 파이프라인</title>
+  <style>
+    :root {
+      --ink: #18231f;
+      --muted: #5f6d67;
+      --paper: #f4f1e9;
+      --panel: #fffdf7;
+      --line: #d8d4c8;
+      --green: #155c49;
+      --green-2: #d9eee6;
+      --orange: #b95d2b;
+      --orange-2: #f8e3d4;
+      --blue: #2e5c8a;
+      --blue-2: #e0ebf5;
+      --purple: #67518b;
+      --purple-2: #ece5f5;
+      --red: #9d3f3f;
+      --shadow: 0 18px 50px rgba(31, 43, 38, .09);
+      --radius: 18px;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 8% 2%, rgba(185, 93, 43, .10), transparent 25rem),
+        radial-gradient(circle at 92% 10%, rgba(21, 92, 73, .10), transparent 28rem),
+        var(--paper);
+      font-family: Pretendard, "Noto Sans KR", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.72;
+    }
+    a { color: inherit; }
+    :focus-visible { outline: 3px solid #d77a41; outline-offset: 3px; }
+    code, .mono { font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace; }
+    code { font-size: .91em; color: #714526; background: #f2e9dc; padding: .15em .38em; border-radius: 5px; }
+    .skip { position: fixed; top: -80px; left: 16px; z-index: 100; background: var(--ink); color: white; padding: 10px 14px; }
+    .skip:focus { top: 12px; }
+    .shell { max-width: 1500px; margin: 0 auto; display: grid; grid-template-columns: 250px minmax(0, 1fr); }
+    aside {
+      position: sticky; top: 0; height: 100vh; padding: 34px 24px;
+      border-right: 1px solid rgba(24, 35, 31, .12); background: rgba(244, 241, 233, .78); backdrop-filter: blur(14px);
+    }
+    .brand { display: flex; align-items: center; gap: 12px; margin-bottom: 32px; }
+    .brand-mark { width: 42px; height: 42px; display: grid; place-items: center; border-radius: 13px; color: white; background: var(--green); font: 800 15px/1 monospace; }
+    .brand strong { display: block; font-size: 15px; }
+    .brand small { color: var(--muted); }
+    nav { display: grid; gap: 4px; }
+    nav a { text-decoration: none; color: var(--muted); padding: 8px 10px; border-radius: 9px; font-size: 14px; }
+    nav a:hover, nav a:focus { color: var(--green); background: rgba(21, 92, 73, .08); outline: none; }
+    .aside-note { position: absolute; bottom: 24px; left: 24px; right: 24px; color: var(--muted); font-size: 12px; }
+    main { min-width: 0; padding: 30px clamp(22px, 5vw, 76px) 90px; }
+    section { scroll-margin-top: 28px; margin: 0 auto 90px; max-width: 1140px; }
+    .hero { min-height: 690px; display: grid; align-content: center; padding: 70px 0; }
+    .eyebrow { color: var(--orange); font-weight: 800; letter-spacing: .12em; text-transform: uppercase; font-size: 13px; }
+    h1 { max-width: 900px; margin: 12px 0 20px; font-size: clamp(42px, 6vw, 82px); line-height: 1.04; letter-spacing: -.055em; }
+    h1 em { color: var(--green); font-style: normal; }
+    .lead { max-width: 820px; color: var(--muted); font-size: clamp(18px, 2vw, 23px); line-height: 1.65; }
+    .badges { display: flex; flex-wrap: wrap; gap: 9px; margin: 28px 0 38px; }
+    .badge { display: inline-flex; gap: 7px; align-items: center; border: 1px solid var(--line); background: rgba(255,253,247,.8); padding: 7px 11px; border-radius: 999px; font-size: 13px; font-weight: 700; }
+    .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); }
+    .dot.running { background: var(--orange); box-shadow: 0 0 0 4px rgba(185,93,43,.12); }
+    .principles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    .principle { background: var(--panel); border: 1px solid var(--line); padding: 22px; border-radius: var(--radius); box-shadow: var(--shadow); }
+    .principle b { display: block; margin-bottom: 6px; }
+    .principle span { color: var(--muted); font-size: 14px; }
+    .section-head { display: grid; grid-template-columns: minmax(0, .7fr) minmax(280px, .3fr); gap: 40px; align-items: end; margin-bottom: 30px; }
+    .kicker { color: var(--orange); font-weight: 800; font-size: 13px; letter-spacing: .08em; }
+    h2 { font-size: clamp(31px, 4vw, 52px); line-height: 1.13; letter-spacing: -.04em; margin: 8px 0 0; }
+    h3 { font-size: 23px; line-height: 1.3; margin: 0 0 10px; }
+    .section-head p, .muted { color: var(--muted); }
+    .callout { border-left: 4px solid var(--orange); background: var(--orange-2); padding: 18px 22px; border-radius: 0 14px 14px 0; }
+    .flow { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; align-items: stretch; }
+    .flow-step { position: relative; padding: 18px 15px; min-height: 132px; background: var(--panel); border: 1px solid var(--line); border-radius: 14px; }
+    .flow-step:not(:last-child)::after { content: "→"; position: absolute; right: -17px; top: 45%; z-index: 2; color: var(--orange); font-weight: 900; }
+    .flow-step small { display: block; color: var(--orange); font-weight: 800; margin-bottom: 8px; }
+    .flow-step b { font-size: 15px; }
+    .flow-step p { color: var(--muted); font-size: 12px; line-height: 1.5; margin: 6px 0 0; }
+    .two-col { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+    .card { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 25px; box-shadow: var(--shadow); }
+    .card p:last-child { margin-bottom: 0; }
+    .contract { display: grid; grid-template-columns: 1fr auto 1fr; gap: 18px; align-items: center; margin-top: 25px; }
+    .contract-box { min-height: 210px; padding: 23px; border-radius: 16px; }
+    .contract-box.free { background: var(--green-2); }
+    .contract-box.strict { background: var(--blue-2); }
+    .contract-arrow { color: var(--orange); font-size: 34px; font-weight: 900; }
+    .quote { margin: 15px 0 0; padding: 15px; background: rgba(255,255,255,.55); border-radius: 10px; font-size: 14px; }
+    .tool-toolbar { position: sticky; top: 8px; z-index: 20; display: flex; flex-wrap: wrap; gap: 9px; align-items: center; padding: 12px; margin-bottom: 18px; border: 1px solid var(--line); border-radius: 14px; background: rgba(255,253,247,.92); backdrop-filter: blur(12px); box-shadow: 0 8px 24px rgba(31,43,38,.08); }
+    .tool-toolbar button { border: 1px solid var(--line); background: white; color: var(--muted); border-radius: 999px; padding: 8px 12px; cursor: pointer; font: inherit; font-size: 13px; font-weight: 700; }
+    .tool-toolbar button[aria-pressed="true"] { background: var(--ink); color: white; border-color: var(--ink); }
+    .tool-toolbar input { margin-left: auto; min-width: 240px; padding: 9px 12px; border: 1px solid var(--line); border-radius: 10px; background: white; font: inherit; }
+    .tool-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+    .tool { --accent: var(--green); background: var(--panel); border: 1px solid var(--line); border-top: 4px solid var(--accent); border-radius: 15px; padding: 20px; }
+    .tool[data-group="metric"] { --accent: var(--blue); }
+    .tool[data-group="probe"] { --accent: var(--purple); }
+    .tool[data-group="control"] { --accent: var(--orange); }
+    .tool-head { display: flex; justify-content: space-between; gap: 10px; align-items: flex-start; }
+    .tool h3 { font: 750 16px/1.3 "SFMono-Regular", Consolas, monospace; color: var(--accent); }
+    .tag { white-space: nowrap; font-size: 11px; border-radius: 999px; padding: 4px 8px; color: var(--accent); background: color-mix(in srgb, var(--accent) 10%, white); }
+    .tool p { color: var(--muted); font-size: 14px; margin: 8px 0; }
+    .tool dl { display: grid; grid-template-columns: 54px 1fr; gap: 5px 9px; margin: 13px 0 0; font-size: 12px; }
+    .tool dt { color: var(--muted); font-weight: 700; }
+    .tool dd { margin: 0; }
+    .tool .example { margin-top: 13px; background: #f1eee6; border-radius: 9px; padding: 10px 12px; color: #504c44; font: 12px/1.55 "SFMono-Regular", Consolas, monospace; overflow-wrap: anywhere; }
+    .tool[hidden] { display: none; }
+    .legend { display: flex; flex-wrap: wrap; gap: 12px; margin: 12px 0 24px; color: var(--muted); font-size: 13px; }
+    .legend span::before { content: ""; display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: currentColor; margin-right: 6px; }
+    .walkthrough { display: grid; gap: 12px; }
+    .walk-step { display: grid; grid-template-columns: 52px 180px 1fr 1fr; gap: 16px; align-items: start; padding: 18px; border: 1px solid var(--line); border-radius: 14px; background: var(--panel); }
+    .num { width: 38px; height: 38px; display: grid; place-items: center; border-radius: 12px; background: var(--ink); color: white; font-weight: 900; }
+    .walk-step .action { color: var(--blue); font-weight: 800; font-family: monospace; font-size: 13px; }
+    .walk-step p { margin: 0; color: var(--muted); font-size: 14px; }
+    .decision { background: var(--green-2); border: 1px solid #a8cfc0; padding: 23px; border-radius: 16px; }
+    .decision.bad { background: #f6dfdf; border-color: #dfb4b4; }
+    .branch { display: grid; grid-template-columns: 1fr 56px 1fr; align-items: center; gap: 15px; }
+    .branch .vs { text-align: center; font-weight: 900; color: var(--orange); }
+    .episode { border: 1px solid var(--line); background: var(--panel); border-radius: var(--radius); padding: 24px; }
+    .turns { display: flex; flex-wrap: wrap; gap: 8px; margin: 18px 0; }
+    .turn { padding: 8px 10px; border-radius: 9px; background: var(--blue-2); font-size: 12px; }
+    .turn::after { content: "→"; color: var(--orange); margin-left: 10px; }
+    .turn:last-child::after { display: none; }
+    table { width: 100%; border-collapse: collapse; background: var(--panel); border-radius: 14px; overflow: hidden; }
+    th, td { padding: 14px 15px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; font-size: 14px; }
+    th { color: var(--muted); background: #eeebe3; font-size: 12px; letter-spacing: .04em; }
+    tr:last-child td { border-bottom: 0; }
+    .status { display: inline-block; border-radius: 999px; padding: 4px 8px; font-size: 11px; font-weight: 800; }
+    .status.done { background: var(--green-2); color: var(--green); }
+    .status.run { background: var(--orange-2); color: var(--orange); }
+    .status.wait { background: #ece9e1; color: var(--muted); }
+    .scorebar { display: grid; grid-template-columns: 45fr 25fr 15fr 10fr 5fr; height: 48px; overflow: hidden; border-radius: 12px; color: white; text-align: center; font-size: 12px; font-weight: 800; }
+    .scorebar span { display: grid; place-items: center; }
+    .scorebar span:nth-child(1) { background: var(--green); }
+    .scorebar span:nth-child(2) { background: var(--blue); }
+    .scorebar span:nth-child(3) { background: var(--purple); }
+    .scorebar span:nth-child(4) { background: var(--orange); }
+    .scorebar span:nth-child(5) { background: #77736b; }
+    .glossary { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .term { border-top: 1px solid var(--line); padding: 16px 4px; }
+    .term b { display: block; margin-bottom: 4px; }
+    .term span { color: var(--muted); font-size: 13px; }
+    footer { max-width: 1140px; margin: 0 auto; padding-top: 25px; border-top: 1px solid var(--line); color: var(--muted); font-size: 13px; }
+    @media (max-width: 1050px) {
+      .shell { grid-template-columns: 1fr; }
+      aside { position: relative; height: auto; padding: 18px 22px; border-right: 0; border-bottom: 1px solid var(--line); }
+      .brand { margin: 0; }
+      aside nav, .aside-note { display: none; }
+      .hero { min-height: auto; }
+      .flow { grid-template-columns: repeat(2, 1fr); }
+      .flow-step::after { display: none; }
+    }
+    @media (max-width: 760px) {
+      main { padding: 18px 16px 70px; }
+      section { margin-bottom: 66px; }
+      h1 { font-size: 43px; }
+      .principles, .two-col, .tool-grid, .glossary, .section-head { grid-template-columns: 1fr; }
+      .contract, .branch { grid-template-columns: 1fr; }
+      .contract-arrow, .branch .vs { transform: rotate(90deg); text-align: center; }
+      .tool-toolbar { position: static; }
+      .tool-toolbar input { width: 100%; min-width: 0; margin-left: 0; }
+      .walk-step { grid-template-columns: 44px 1fr; }
+      .walk-step > p { grid-column: 2; }
+      .scorebar { grid-template-columns: 1fr; height: auto; }
+      .scorebar span { min-height: 36px; }
+      table { display: block; overflow-x: auto; }
+    }
+    @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#content">본문 바로가기</a>
+  <div class="shell">
+    <aside aria-label="문서 목차">
+      <div class="brand"><div class="brand-mark">RCA</div><div><strong>Student Model Lab</strong><small>설계·학습·평가 문서</small></div></div>
+      <nav>
+        <a href="#overview">한눈에 보기</a>
+        <a href="#problem">풀려는 문제</a>
+        <a href="#harness">Student 하네스</a>
+        <a href="#tools">제공 도구 전체</a>
+        <a href="#example">실제 조사 예시</a>
+        <a href="#teacher">교사 데이터</a>
+        <a href="#training">SFT와 RL</a>
+        <a href="#evaluation">평가 계약</a>
+        <a href="#progress">현재 진행 상황</a>
+      </nav>
+      <div class="aside-note">기준: 2026-08-28 UTC<br>인프라 세션 정보 제외</div>
+    </aside>
+
+    <main id="content">
+      <section class="hero" id="overview">
+        <div class="eyebrow">Evidence-grounded agentic RCA</div>
+        <h1>정답을 찍는 모델이 아니라,<br><em>증명하며 조사하는 모델</em></h1>
+        <p class="lead">장애 징후를 보고 곧바로 원인을 말하는 분류기가 아니다. 실제 운영자처럼 도구를 선택하고, 관측을 시간축으로 연결하고, 경쟁 가설을 반박한 뒤, 인용 가능한 증거가 갖춰졌을 때만 원인을 확정하는 Student RCA 에이전트다.</p>
+        <div class="badges" aria-label="현재 상태">
+          <span class="badge"><span class="dot"></span>핵심 하네스 계약 완료</span>
+          <span class="badge"><span class="dot"></span>SFT 완료</span>
+          <span class="badge"><span class="dot running"></span>개선 RL 진행 중</span>
+          <span class="badge"><span class="dot running"></span>공정 평가 진행 중</span>
+          <span class="badge"><span class="dot" style="background:#888"></span>봉인 평가 대기</span>
+        </div>
+        <div class="principles">
+          <div class="principle"><b>원본은 전부 보존</b><span>한 번에 보여주는 양만 제한. 조회되지 않은 증거를 영구 삭제하지 않는다.</span></div>
+          <div class="principle"><b>생각은 자유롭게</b><span>가설 공간은 열어 두되, 실행 action·target·metric은 현실 계약을 통과한다.</span></div>
+          <div class="principle"><b>결론은 증거로 제한</b><span>원인·메커니즘·지지 증거·반증 증거가 연결돼야 confirmed가 가능하다.</span></div>
+        </div>
+      </section>
+
+      <section id="problem">
+        <div class="section-head"><div><span class="kicker">01 · 문제 정의</span><h2>그럴듯한 설명과 RCA는 다르다</h2></div><p>RCA에서는 첫 이상 징후가 원인이라는 보장이 없다. 상관관계를 인과로 과장하지 않고, 필요한 관측을 스스로 찾아가야 한다.</p></div>
+        <div class="two-col">
+          <div class="card"><h3>일반 모델의 실패 패턴</h3><ul><li>첫 로그나 metric spike를 근본원인으로 확정</li><li>없는 metric·target·action 생성</li><li>최근 관측만 남기고 초반 증거 유실</li><li>도구를 호출했다는 사실만으로 confirmed</li><li>최종 답에 증거 출처와 반증 과정 없음</li></ul></div>
+          <div class="card"><h3>우리가 학습시키는 패턴</h3><ul><li>증상과 원인을 분리</li><li>실제 가능한 도구와 metric 중 선택</li><li>모든 성공·실패 관측을 ledger에 영속화</li><li>원인 유형별 결정적 증명 규칙 적용</li><li>근거 부족 시 provisional/insufficient 선택</li></ul></div>
+        </div>
+        <p class="callout"><strong>예:</strong> HTTP 409는 “품절 응답”이라는 관측이다. 정상 품절인지, 재입고 배치 중단인지, 외부 RESTOCK 연동 실패인지 구분하려면 재고 전체 시계열과 유입 이벤트를 추가 조회해야 한다.</p>
+      </section>
+
+      <section id="harness">
+        <div class="section-head"><div><span class="kicker">02 · Student 하네스</span><h2>자유로운 에이전트에 현실 경계만 둔다</h2></div><p>하네스는 답을 대신 찾는 규칙 엔진이 아니다. 모델이 안전하고 재현 가능하게 조사하도록 만드는 실험 환경, 도구함, 증거 기록부, 채점기다.</p></div>
+        <div class="contract">
+          <div class="contract-box free"><h3>자유 영역 · Reasoning</h3><p>원인 후보 생성, 다음 조사 계획, 경쟁 가설, 관측 해석은 자유롭게 수행한다.</p><div class="quote">“내부 CPU보다 외부 PG 경계 실패 가능성이 높다. trace로 실패 시작점을 먼저 비교하자.”</div></div>
+          <div class="contract-arrow" aria-hidden="true">→</div>
+          <div class="contract-box strict"><h3>엄격 영역 · Execution boundary</h3><p>action, target, metric, 시간 범위, 관측, 증거 참조, final answer는 구조 검증을 통과해야 한다.</p><div class="quote"><code>target=payment-service</code><br><code>metric=실제 registry 등록값</code><br><code>support_refs=[obs-003]</code></div></div>
+        </div>
+        <div class="flow" style="margin-top:26px">
+          <div class="flow-step"><small>1</small><b>원본 증거</b><p>잘라내지 않고 전체 보존</p></div>
+          <div class="flow-step"><small>2</small><b>Capability registry</b><p>이번 사건의 실제 도구 메뉴</p></div>
+          <div class="flow-step"><small>3</small><b>모델 행동</b><p>다음 action을 구조화해 선택</p></div>
+          <div class="flow-step"><small>4</small><b>도구 실행</b><p>읽기 전용 관측 수행</p></div>
+          <div class="flow-step"><small>5</small><b>Typed ledger</b><p>원문·사실·참조를 모두 기록</p></div>
+          <div class="flow-step"><small>6</small><b>Proof validation</b><p>원인별 증명 규칙 확인</p></div>
+          <div class="flow-step"><small>7</small><b>Answer + score</b><p>근거가 붙은 결론과 보상</p></div>
+        </div>
+        <div class="two-col" style="margin-top:18px">
+          <div class="card"><h3>Capability registry</h3><p>이번 사건에서 실제 가능한 <strong>도구, 대상, metric, source, evidence kind</strong>의 동적 목록. 결제 서비스에 DB replica lag를 잘못 요청하거나, 없는 metric을 만들어 내는 행동을 실행 전에 차단한다.</p></div>
+          <div class="card"><h3>증거 지도 + typed ledger</h3><p>요약문 하나가 아니다. 원본 증거와 새 관측에 <code>ev...</code>, <code>obs-...</code> ID를 붙여 연결한 인덱스와 영속 기록부다. 초반 증거와 실패 호출도 사라지지 않는다.</p></div>
+        </div>
+      </section>
+
+      <section id="tools">
+        <div class="section-head"><div><span class="kicker">03 · Student Tool Catalog</span><h2>Student에게 준 도구 전체</h2></div><p>모두 조사용 읽기 도구다. 운영 시스템을 변경하거나 복구 명령을 실행하지 않는다. <code>note</code>와 <code>answer</code>는 조사 상태를 기록·종료하는 제어 action이다.</p></div>
+        <div class="legend"><span style="color:var(--green)">증거 탐색</span><span style="color:var(--blue)">Metric</span><span style="color:var(--purple)">전문 Probe</span><span style="color:var(--orange)">제어</span></div>
+        <div class="tool-toolbar" aria-label="도구 필터">
+          <button type="button" data-filter="all" aria-pressed="true">전체 27</button>
+          <button type="button" data-filter="evidence" aria-pressed="false">증거 탐색 6</button>
+          <button type="button" data-filter="metric" aria-pressed="false">Metric 7</button>
+          <button type="button" data-filter="probe" aria-pressed="false">전문 Probe 11</button>
+          <button type="button" data-filter="control" aria-pressed="false">제어 3</button>
+          <input id="tool-search" type="search" placeholder="도구·설명 검색" aria-label="도구 검색">
+        </div>
+        <div class="tool-grid" id="tool-grid">
+          <article class="tool" data-group="evidence"><div class="tool-head"><h3>env_top</h3><span class="tag">첫 탐색</span></div><p>이상 점수가 높은 원본 증거를 우선순위대로 본다. 사건 전체를 빠르게 조망하는 출발점.</p><dl><dt>입력</dt><dd>보고 싶은 개수</dd><dt>출력</dt><dd>상위 evidence ID·대상·종류·요약</dd></dl><div class="example">예: 상위 15건 → 오류율 spike, timeout trace, 변경 이벤트 후보</div></article>
+          <article class="tool" data-group="evidence"><div class="tool-head"><h3>env_entity</h3><span class="tag">대상 중심</span></div><p>특정 target에 연결된 증거를 모아 본다. 후보 서비스나 DB를 깊게 조사할 때 사용.</p><dl><dt>입력</dt><dd>target ID</dd><dt>출력</dt><dd>그 대상의 metric·log·trace·event 증거</dd></dl><div class="example">예: payment-service에 연결된 모든 종류의 관측 후보 조회</div></article>
+          <article class="tool" data-group="evidence"><div class="tool-head"><h3>env_query</h3><span class="tag">구조 조회</span></div><p>문자열 grep 대신 target, source, kind, 시간 범위를 조합해 원본 증거를 정확히 찾는다.</p><dl><dt>입력</dt><dd>target/source/kind/from/to/limit</dd><dt>출력</dt><dd>조건에 맞는 evidence 목록</dd></dl><div class="example">예: inventory-service + event + 09:55~10:05 + limit 12</div></article>
+          <article class="tool" data-group="evidence"><div class="tool-head"><h3>env_aggregate</h3><span class="tag">분포 확인</span></div><p>증거를 target·source·kind·metric별로 묶어 개수와 최대 이상도를 본다. 어디부터 파고들지 결정한다.</p><dl><dt>입력</dt><dd>구조 조건 + group 기준</dd><dt>출력</dt><dd>그룹별 count/max anomaly</dd></dl><div class="example">예: target별 trace_error 수 → 결제 경계에 실패 집중</div></article>
+          <article class="tool" data-group="evidence"><div class="tool-head"><h3>env_grep</h3><span class="tag">보조 검색</span></div><p>원문에서 키워드를 찾는다. 구조 조회로 표현하기 어려운 용어를 찾는 보조 수단이며 주 탐색기는 아니다.</p><dl><dt>입력</dt><dd>검색 문자열</dd><dt>출력</dt><dd>일치 evidence</dd></dl><div class="example">예: “RESTOCK”, “blocking”, “timeout”, “429”</div></article>
+          <article class="tool" data-group="evidence"><div class="tool-head"><h3>env_slice</h3><span class="tag">정확한 재열람</span></div><p>이미 찾은 evidence ID의 원문을 다시 꺼낸다. 최종 답 전 증거 인용을 확인할 때 유용하다.</p><dl><dt>입력</dt><dd>evidence ID 목록</dd><dt>출력</dt><dd>해당 원본 증거</dd></dl><div class="example">예: ev039, ev045, ev052의 실제 내용 재확인</div></article>
+
+          <article class="tool" data-group="metric"><div class="tool-head"><h3>probe_metric</h3><span class="tag">빠른 Metric</span></div><p>등록된 target·metric의 이상 여부를 빠르게 조사하는 호환 action. 결과는 ledger 관측으로 남는다.</p><dl><dt>입력</dt><dd>target ID + registry metric</dd><dt>출력</dt><dd>요약·이상 사실·시계열 접근 정보</dd></dl><div class="example">예: order-service 오류율이 최초 장애 전부터 상승했는가</div></article>
+          <article class="tool" data-group="metric"><div class="tool-head"><h3>metric_overview</h3><span class="tag">요약 보기</span></div><p>전체 point를 버리지 않으면서 min/max/변화와 같은 빠른 개요를 본다. 인과 확정용 원본 조회 전 탐색 단계.</p><dl><dt>입력</dt><dd>target ID + metric</dd><dt>출력</dt><dd>overview + total/returned/truncated 상태</dd></dl><div class="example">예: 1,440 points 중 개요만 반환, 원본은 계속 보존</div></article>
+          <article class="tool" data-group="metric"><div class="tool-head"><h3>metric_describe</h3><span class="tag">Metric 이해</span></div><p>metric의 단위, 수집 범위, point 수 등 해석에 필요한 메타데이터를 확인한다.</p><dl><dt>입력</dt><dd>target ID + metric</dd><dt>출력</dt><dd>설명·기간·point metadata</dd></dl><div class="example">예: 비율인지 누적 counter인지 확인한 뒤 비교 방식 결정</div></article>
+          <article class="tool" data-group="metric"><div class="tool-head"><h3>metric_fetch_raw</h3><span class="tag">전체 시계열</span></div><p>metric의 원본 전체 시계열을 가져오고 재인용 가능한 raw reference를 만든다. metric 인과·포화 확정의 핵심.</p><dl><dt>입력</dt><dd>target ID + metric</dd><dt>출력</dt><dd>전체 points + raw_ref + full-series 표시</dd></dl><div class="example">예: CPU 한 점이 아니라 장애 전후 전체 곡선을 증거로 보존</div></article>
+          <article class="tool" data-group="metric"><div class="tool-head"><h3>metric_fetch_window</h3><span class="tag">시간 확대</span></div><p>지정 시간창의 원본 시계열을 자세히 본다. 최초 장애 전후의 순서를 확인할 때 사용.</p><dl><dt>입력</dt><dd>target ID + metric + from/to</dd><dt>출력</dt><dd>해당 window points + raw_ref</dd></dl><div class="example">예: 09:55~10:10 재고 수량과 10:02 오류 시작 비교</div></article>
+          <article class="tool" data-group="metric"><div class="tool-head"><h3>metric_compare</h3><span class="tag">대상 비교</span></div><p>같은 metric을 두 target에서 비교해 공통 원인, 전파 방향, 특정 대상 문제를 구분한다.</p><dl><dt>입력</dt><dd>target A + target B + 공통 metric</dd><dt>출력</dt><dd>정렬된 두 시계열 비교</dd></dl><div class="example">예: 정상 replica와 장애 replica의 latency 비교</div></article>
+          <article class="tool" data-group="metric"><div class="tool-head"><h3>discover_metrics</h3><span class="tag">선택적 활성화</span></div><p>target에서 실제 조회 가능한 metric inventory를 발견해 registry를 확장한다. 자유 문자열 추측을 대신한다.</p><dl><dt>입력</dt><dd>target ID</dd><dt>출력</dt><dd>검증된 metric 이름 목록</dd></dl><div class="example">예: 신규 서비스의 실제 metric을 찾은 뒤 다음 턴에 조회</div></article>
+
+          <article class="tool" data-group="probe"><div class="tool-head"><h3>probe_events</h3><span class="tag">이벤트</span></div><p>대상의 경보·상태 변화·직접 이벤트를 조회한다. 원인을 직접 나타내는 사건이 있는지 확인한다.</p><dl><dt>입력</dt><dd>target ID</dd><dt>출력</dt><dd>시간순 event + 구조화 facts</dd></dl><div class="example">예: batch failed, OOMKilled, pod restart 이벤트</div></article>
+          <article class="tool" data-group="probe"><div class="tool-head"><h3>probe_cohort</h3><span class="tag">동료군 비교</span></div><p>같은 역할의 instance·replica·host 집단을 비교한다. 한 대상만 이상한지 전체가 이상한지 구분한다.</p><dl><dt>입력</dt><dd>target ID</dd><dt>출력</dt><dd>peer/cohort 이상 비교</dd></dl><div class="example">예: replica 5개 중 1개에서만 오류율 급증</div></article>
+          <article class="tool" data-group="probe"><div class="tool-head"><h3>probe_db_blocking</h3><span class="tag">DB Lock</span></div><p>대기 세션과 blocker 관계를 조사해 실제 blocking chain을 찾는다. DB blocking 확정의 결정적 도구.</p><dl><dt>입력</dt><dd>DB target ID</dd><dt>출력</dt><dd>blocker·waiter·세션·시간 facts</dd></dl><div class="example">예: 장기 transaction → 주문 UPDATE 37개 대기</div></article>
+          <article class="tool" data-group="probe"><div class="tool-head"><h3>probe_topsql</h3><span class="tag">SQL 부하</span></div><p>장애 구간의 비용·지연·호출이 큰 SQL을 찾는다. 느린 DB의 구체적 실행 경로를 좁힌다.</p><dl><dt>입력</dt><dd>DB target ID</dd><dt>출력</dt><dd>상위 SQL key·text·부하</dd></dl><div class="example">예: inventory UPDATE가 총 DB 시간의 대부분 차지</div></article>
+          <article class="tool" data-group="probe"><div class="tool-head"><h3>probe_logs</h3><span class="tag">로그</span></div><p>대상 로그를 시간창과 함께 읽는다. 증상·에러 문구를 찾되 로그 한 줄만으로 인과를 확정하지 않는다.</p><dl><dt>입력</dt><dd>target ID</dd><dt>출력</dt><dd>관련 log evidence + facts</dd></dl><div class="example">예: connection pool exhausted 직후 HTTP 500 반복</div></article>
+          <article class="tool" data-group="probe"><div class="tool-head"><h3>probe_traces</h3><span class="tag">호출 경계</span></div><p>분산 trace를 통해 실패가 시작되는 서비스·DB·외부 호출 경계를 찾고 전파 방향을 확인한다.</p><dl><dt>입력</dt><dd>target ID</dd><dt>출력</dt><dd>span error·latency·upstream/downstream facts</dd></dl><div class="example">예: 내부 처리 정상, 외부 PG span부터 timeout</div></article>
+          <article class="tool" data-group="probe"><div class="tool-head"><h3>probe_changes</h3><span class="tag">변경 이력</span></div><p>배포·설정·버전 변경이 최초 장애보다 앞섰는지 확인한다. 시간 선행은 필요조건이지 단독 증명은 아니다.</p><dl><dt>입력</dt><dd>target ID</dd><dt>출력</dt><dd>change event + version + timestamp</dd></dl><div class="example">예: 09:58 배포, 10:02 장애 — 추가 영향 증거 필요</div></article>
+          <article class="tool" data-group="probe"><div class="tool-head"><h3>probe_db_query_events</h3><span class="tag">DB 실행 사건</span></div><p>DB query 실행과 오류 이벤트를 시간순으로 조사한다. SQL key와 장애 시점을 연결한다.</p><dl><dt>입력</dt><dd>DB target ID</dd><dt>출력</dt><dd>query event·오류·세션 facts</dd></dl><div class="example">예: lock timeout이 발생한 SQL과 호출 프로그램 식별</div></article>
+          <article class="tool" data-group="probe"><div class="tool-head"><h3>probe_replica_lag</h3><span class="tag">복제 지연</span></div><p>DB replica의 lag와 상태를 조사한다. stale read나 read replica 지연 가설을 확인한다.</p><dl><dt>입력</dt><dd>DB target ID</dd><dt>출력</dt><dd>replica lag·상태·시간 facts</dd></dl><div class="example">예: 주문 조회 실패 직전 replica lag가 수초로 급증</div></article>
+          <article class="tool" data-group="probe"><div class="tool-head"><h3>probe_host_peers</h3><span class="tag">Host 연관</span></div><p>같은 host·인접 host의 peer 상태를 비교한다. 서비스 장애가 host 자원 문제에서 비롯됐는지 본다.</p><dl><dt>입력</dt><dd>target ID</dd><dt>출력</dt><dd>host kin/peer 이상 증거</dd></dl><div class="example">예: 같은 node의 여러 pod에서 동시에 I/O 지연</div></article>
+          <article class="tool" data-group="probe"><div class="tool-head"><h3>probe_snmp_traps</h3><span class="tag">장비 이벤트</span></div><p>네트워크·장비의 SNMP trap을 조회한다. 서비스 바깥 인프라 경계 문제를 조사한다.</p><dl><dt>입력</dt><dd>target ID</dd><dt>출력</dt><dd>trap type·장비·시간 facts</dd></dl><div class="example">예: 장애 직전 switch interface down trap</div></article>
+
+          <article class="tool" data-group="control"><div class="tool-head"><h3>sub_summarize</h3><span class="tag">기본 비활성</span></div><p>선택한 evidence ID 묶음을 보조 LLM이 요약한다. 원본을 대체하지 않으며, 현재 정책에서 필요할 때만 활성화한다.</p><dl><dt>입력</dt><dd>evidence ID 목록 + 질문</dd><dt>출력</dt><dd>참조가 유지된 보조 요약</dd></dl><div class="example">예: 12개 trace의 공통 실패 경계만 정리</div></article>
+          <article class="tool" data-group="control"><div class="tool-head"><h3>note</h3><span class="tag">조사 메모</span></div><p>현재 가설, 반박된 후보, 다음 조사 계획을 episode에 남긴다. 운영 환경은 변경하지 않는다.</p><dl><dt>입력</dt><dd>구조화할 조사 메모</dd><dt>출력</dt><dd>ledger에 남는 note</dd></dl><div class="example">예: “배포 가설 약화. 외부 PG trace를 다음에 확인.”</div></article>
+          <article class="tool" data-group="control"><div class="tool-head"><h3>answer</h3><span class="tag">종료 action</span></div><p>조사를 끝내고 원인·메커니즘·증거·확신 상태를 제출한다. proof 계약이 부족하면 confirmed가 거절된다.</p><dl><dt>입력</dt><dd>status, causes, external_causes, refs, ready</dd><dt>출력</dt><dd>검증된 RCA 결과 또는 계약 오류</dd></dl><div class="example">예: confirmed + DB blocking + support_refs=[obs-007]</div></article>
+        </div>
+        <p id="tool-empty" class="callout" hidden>검색 조건에 맞는 도구가 없다.</p>
+      </section>
+
+      <section id="example">
+        <div class="section-head"><div><span class="kicker">04 · End-to-end Example</span><h2>HTTP 409에서 재입고 중단까지</h2></div><p>같은 증상이라도 원인은 여러 개다. 아래는 Student가 도구와 ledger를 사용해 경쟁 가설을 분리하는 예시다.</p></div>
+        <div class="branch">
+          <div class="decision bad"><h3>성급한 결론</h3><p><strong>관측:</strong> HTTP 409 급증</p><p><strong>결론:</strong> 정상 품절</p><p><strong>문제:</strong> 재입고 중단과 구분할 증거 없음</p></div>
+          <div class="vs">VS</div>
+          <div class="decision"><h3>목표 조사</h3><p><strong>가설:</strong> 정상 품절 / 배치 중단 / 외부 RESTOCK 실패</p><p><strong>방법:</strong> 시계열·이벤트·변경·외부 경계를 시간축으로 연결</p></div>
+        </div>
+        <div class="walkthrough" style="margin-top:22px">
+          <div class="walk-step"><div class="num">1</div><div class="action">env_aggregate</div><p><strong>관측</strong><br>409와 inventory 관련 증거가 한 시간창에 집중.</p><p><strong>해석</strong><br>재고 계층을 우선 조사하되 아직 원인은 미정.</p></div>
+          <div class="walk-step"><div class="num">2</div><div class="action">metric_fetch_window</div><p><strong>관측</strong><br>09:55부터 재고 감소, 10:02 이후 0 유지.</p><p><strong>해석</strong><br>409는 재고 고갈의 결과. 회복 이벤트 확인 필요.</p></div>
+          <div class="walk-step"><div class="num">3</div><div class="action">env_query</div><p><strong>관측</strong><br>평소 10:00 RESTOCK 유입이 장애일에는 없음.</p><p><strong>해석</strong><br>정상 품절보다 공급 경로 중단 가설 강화.</p></div>
+          <div class="walk-step"><div class="num">4</div><div class="action">probe_events</div><p><strong>관측</strong><br>09:59 재입고 batch failed 이벤트.</p><p><strong>해석</strong><br>시간 선행 확인. 배치 실패 메커니즘 조사.</p></div>
+          <div class="walk-step"><div class="num">5</div><div class="action">probe_logs</div><p><strong>관측</strong><br>외부 warehouse 인증 실패로 RESTOCK fetch 중단.</p><p><strong>해석</strong><br>배치 실패 → 유입 부재 → 재고 고갈 → 409 사슬 성립.</p></div>
+          <div class="walk-step"><div class="num">6</div><div class="action">answer</div><p><strong>지지</strong><br><code>obs-002</code> 재고 시계열, <code>obs-004</code> batch failure, <code>obs-005</code> 인증 실패.</p><p><strong>결론</strong><br>외부 경계까지 직접 확정 가능한지에 따라 confirmed 또는 provisional.</p></div>
+        </div>
+      </section>
+
+      <section id="teacher">
+        <div class="section-head"><div><span class="kicker">05 · Teacher Data</span><h2>한 번의 정답이 아닌 재귀적 조사</h2></div><p>교사는 답 문장 하나를 만드는 게 아니라 조사하고, 비평받고, 정답을 노출하지 않는 교정을 받아 다시 조사한다.</p></div>
+        <div class="flow" style="grid-template-columns:repeat(5,1fr)">
+          <div class="flow-step"><small>1</small><b>독립 조사</b><p>정답을 보지 않고 하네스 실행</p></div>
+          <div class="flow-step"><small>2</small><b>Critic/Scorer</b><p>증거·형식·확신 검증</p></div>
+          <div class="flow-step"><small>3</small><b>실패 분류</b><p>증거 부족/탐색/형식/보정</p></div>
+          <div class="flow-step"><small>4</small><b>교정</b><p>정답 대신 다음 조사 방향 제공</p></div>
+          <div class="flow-step"><small>5</small><b>재시도·채택</b><p>통과한 최종 전체 궤적 선택</p></div>
+        </div>
+        <div class="two-col" style="margin-top:20px">
+          <div class="card"><h3>실패도 남긴다</h3><p>1차 실패, 실패 이유, 교정, 성공 재시도 관계는 recursive data와 선호쌍에 활용한다. “왜 409만 보고는 부족했는지”를 학습 재료로 만든다.</p></div>
+          <div class="card"><h3>SFT에는 성공 궤적만</h3><p>검증을 통과한 최종 branch의 실제 runtime episode만 SFT에 넣는다. 실패한 추론을 정답처럼 섞지 않는다.</p></div>
+        </div>
+        <table style="margin-top:20px"><thead><tr><th>분리</th><th>수량</th><th>계약</th></tr></thead><tbody><tr><td>학습 후보</td><td>23</td><td>교사 조사와 학습 가능</td></tr><tr><td>현재 SFT 채택</td><td>20 시나리오 / 24 궤적</td><td>264턴, 실패 관측 27개를 문맥에 유지</td></tr><tr><td>봉인 평가</td><td>12</td><td>교사 prompt·교정·학습·설계에서 완전 격리</td></tr><tr><td>제외</td><td>1</td><td>현재 계약에서 미사용</td></tr></tbody></table>
+      </section>
+
+      <section id="training">
+        <div class="section-head"><div><span class="kicker">06 · Training</span><h2>SFT로 습관을 만들고, RL로 선택을 다듬는다</h2></div><p>각 턴을 독립 샘플로 쪼개지 않는다. 앞 관측이 다음 도구 선택의 이유이므로 한 사건의 전체 multi-turn episode를 학습 단위로 사용한다.</p></div>
+        <div class="episode">
+          <h3>SFT · 전체 episode 모방</h3>
+          <div class="turns"><span class="turn">오류율 확인</span><span class="turn">변경 확인</span><span class="turn">trace 경계 확인</span><span class="turn">DB blocking 확인</span><span class="turn">경쟁 가설 반박</span><span class="turn">증거 포함 답변</span></div>
+          <p class="muted">assistant 응답에만 loss를 적용하지만, 사용자 입력·action·tool observation은 문맥으로 통째로 유지한다. base 전체가 아니라 LoRA adapter를 학습한다.</p>
+        </div>
+        <div class="branch" style="margin-top:20px">
+          <div class="decision"><h3>Chosen trajectory</h3><p>구조 조회 → 전체 시계열 → trace → blocking chain → 메커니즘과 evidence refs → 올바른 confirmed</p></div>
+          <div class="vs">&gt;</div>
+          <div class="decision bad"><h3>Rejected trajectory</h3><p>grep 반복 → 성급한 추측 → proof 없음 → 증거 ID 없이 confirmed</p></div>
+        </div>
+        <div class="card" style="margin-top:20px"><h3>RL v6 · Whole-trajectory RPO</h3><p>SFT 모델 위에서 전체 조사 궤적의 상대 선호를 학습한다. 좋은 궤적을 나쁜 궤적보다 높이는 preference loss에 작은 imitation/NLL anchor를 함께 둬, 이미 잘하던 SFT 정책이 무너지는 것을 억제한다. 모델은 adapter 형태로 유지한다.</p></div>
+      </section>
+
+      <section id="evaluation">
+        <div class="section-head"><div><span class="kicker">07 · Evaluation Contract</span><h2>정답뿐 아니라 증명 품질을 채점한다</h2></div><p>평가와 RL 학습용 성공·실패 판정은 같은 typed scorer 계약을 기준으로 한다. 근거 없는 confirmed는 큰 penalty를 받는다.</p></div>
+        <div class="scorebar" aria-label="채점 가중치"><span>원인 정확도 45%</span><span>증명 25%</span><span>확신 보정 15%</span><span>효율 10%</span><span>도구 5%</span></div>
+        <table style="margin-top:20px"><thead><tr><th>원인 유형</th><th>confirmed에 필요한 대표 증거</th></tr></thead><tbody><tr><td>DB blocking</td><td>실제 blocker-waiter session 또는 lock chain</td></tr><tr><td>변경 유발</td><td>변경이 최초 장애보다 앞서고 영향 대상·메커니즘이 연결됨</td></tr><tr><td>Metric 인과 / 자원 포화</td><td>축약값이 아닌 보존된 전체 시계열과 장애 시점</td></tr><tr><td>Runtime death</td><td>OOM kill → TaskOOM → crash loop → restart 증가가 짧은 시간의 한 사슬</td></tr><tr><td>Trace 경계</td><td>실패가 시작되는 정확한 호출 경계의 error span</td></tr><tr><td>외부 의존성</td><td>내부 정상 구간과 외부 경계 실패를 연결하는 관측</td></tr></tbody></table>
+        <div class="two-col" style="margin-top:20px"><div class="card"><h3>학습셋 모니터</h3><p>대표 train 6 case × 3회. 기본 조사 능력과 퇴행을 빠르게 확인한다.</p></div><div class="card"><h3>봉인 평가</h3><p>완전히 격리한 12 case × 3회. 최종 성능 순위는 이 결과로만 주장한다.</p></div></div>
+      </section>
+
+      <section id="progress">
+        <div class="section-head"><div><span class="kicker">08 · Current State</span><h2>현재는 최종 모델 확정 전</h2></div><p>SFT와 핵심 하네스는 준비됐다. 개선 RL과 공정 비교를 완료하고 봉인 평가 비퇴행 게이트를 통과해야 프로젝트 목표가 달성된다.</p></div>
+        <table><thead><tr><th>단계</th><th>상태</th><th>현재 의미</th></tr></thead><tbody>
+          <tr><td>Student 하네스 핵심 계약</td><td><span class="status done">완료</span></td><td>원본 보존, 구조 조회, registry, ledger, proof, scorer</td></tr>
+          <tr><td>Family split</td><td><span class="status done">완료</span></td><td>23 train / 12 sealed / 1 excluded</td></tr>
+          <tr><td>교사 데이터 1차 정제</td><td><span class="status done">완료</span></td><td>20 시나리오, 24 채택 궤적. 불완전 3건 보류</td></tr>
+          <tr><td>SFT LoRA</td><td><span class="status done">완료</span></td><td>전체 episode 단위 학습 완료</td></tr>
+          <tr><td>SFT 공정 모니터</td><td><span class="status run">진행 중</span></td><td>중단 복구 및 단일-runner 재개 계약 적용</td></tr>
+          <tr><td>개선 RL v6</td><td><span class="status run">진행 중</span></td><td>전체 궤적 RPO + imitation anchor</td></tr>
+          <tr><td>RL 동일 조건 평가</td><td><span class="status wait">대기</span></td><td>RL 완료 후 SFT와 같은 조건으로 실행</td></tr>
+          <tr><td>최종 봉인 평가</td><td><span class="status wait">대기</span></td><td>바닐라 → SFT → RL 비퇴행 비교 필요</td></tr>
+        </tbody></table>
+        <div class="callout" style="margin-top:20px"><strong>완료 조건:</strong> RL이 SFT보다 strict accuracy, mean reward, root F1, evidence coverage를 떨어뜨리지 않고, 형식 오류와 근거 없는 confirmed가 0이어야 한다.</div>
+      </section>
+
+      <section aria-labelledby="glossary-title">
+        <div class="section-head"><div><span class="kicker">09 · Glossary</span><h2 id="glossary-title">핵심 용어</h2></div><p>이 문서에서 반복되는 표현의 짧은 정의.</p></div>
+        <div class="glossary">
+          <div class="term"><b>Student</b><span>실제 RCA를 수행하도록 학습되는 오픈 모델</span></div>
+          <div class="term"><b>Teacher</b><span>좋은 조사 궤적을 만들고 실패를 교정하는 상위 모델</span></div>
+          <div class="term"><b>Capability registry</b><span>이번 사건에서 실제 가능한 target·metric·action 목록</span></div>
+          <div class="term"><b>Typed ledger</b><span>모든 성공·실패 관측을 구조화해 보존하는 기록부</span></div>
+          <div class="term"><b>support_refs</b><span>원인 주장을 직접 지지하는 evidence/observation ID</span></div>
+          <div class="term"><b>counter_refs</b><span>경쟁 가설을 반박하거나 주장의 한계를 나타내는 ID</span></div>
+          <div class="term"><b>SFT</b><span>검증된 좋은 전체 조사 궤적을 모방하는 1차 학습</span></div>
+          <div class="term"><b>RPO</b><span>좋은 전체 궤적 선호와 chosen imitation을 결합한 후속 학습</span></div>
+          <div class="term"><b>Sealed evaluation</b><span>데이터 생성과 설계에서 보지 않은 봉인 family 평가</span></div>
+        </div>
+      </section>
+
+      <footer>RCA Model Lab · 개념 및 기술 설명서 · 인프라 세션/포트/PID 정보는 의도적으로 제외함</footer>
+    </main>
+  </div>
+
+  <script>
+    (() => {
+      const buttons = [...document.querySelectorAll('[data-filter]')];
+      const tools = [...document.querySelectorAll('.tool')];
+      const search = document.getElementById('tool-search');
+      const empty = document.getElementById('tool-empty');
+      let group = 'all';
+
+      function applyFilter() {
+        const term = search.value.trim().toLocaleLowerCase('ko');
+        let visible = 0;
+        tools.forEach((tool) => {
+          const groupMatch = group === 'all' || tool.dataset.group === group;
+          const textMatch = !term || tool.textContent.toLocaleLowerCase('ko').includes(term);
+          tool.hidden = !(groupMatch && textMatch);
+          if (!tool.hidden) visible += 1;
+        });
+        empty.hidden = visible !== 0;
+      }
+
+      buttons.forEach((button) => button.addEventListener('click', () => {
+        group = button.dataset.filter;
+        buttons.forEach((item) => item.setAttribute('aria-pressed', String(item === button)));
+        applyFilter();
+      }));
+      search.addEventListener('input', applyFilter);
+    })();
+  </script>
+</body>
+</html>

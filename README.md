@@ -6,6 +6,8 @@ SFT 데이터를 합성시키고, 그걸로 오픈 모델을 파인튜닝한 뒤
 
 현재 모델의 개념, 학습 파이프라인, 예시, 진행 상황은
 [RCA 모델 개발 현황과 학습 파이프라인](docs/rca-model-development-overview.md)에 정리되어 있다.
+브라우저에서 바로 볼 수 있는 [HTML 설명서](docs/rca-model-development-overview.html)에는
+Student에게 제공한 27개 도구의 입력·출력·사용 예시도 포함되어 있다.
 
 ## 시작하기
 
