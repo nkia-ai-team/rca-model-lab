@@ -34,6 +34,20 @@
 최종 목표: 동일 하네스·도구·평가에서 Student ≥ Claude/Codex
 ```
 
+### 처음 읽는 사람을 위한 용어
+
+| 용어 | 의미 |
+|---|---|
+| Case | 정답 근본원인과 관측 데이터가 준비된 장애 사건 1건 |
+| Run / rollout | 모델이 한 case를 처음부터 끝까지 한 번 조사한 실행 기록 |
+| Episode | 질문, 모든 도구 호출, 모든 관측, 최종 답을 합친 전체 조사 기록 |
+| SFT | 검증된 교사 episode와 같은 조사 행동을 하도록 LoRA로 학습하는 단계 |
+| RL | 같은 case의 여러 rollout 점수를 비교해 더 나은 행동의 확률을 높이는 단계 |
+| Root F1 | 모델이 찾은 근본원인 집합과 정답 집합의 일치도. 1.0이면 모두 일치 |
+| Strict correct | root, proof, evidence refs, 확신 수준을 모두 통과한 실행 |
+| Majority strict | 같은 case를 3회 실행했을 때 2회 이상 strict인 사건 |
+| Provisional | 유력한 원인은 찾았지만 결정적 증명은 끝내지 못한 답 |
+
 ---
 
 ## 2. 실제 추론 변화: 바닐라와 SFT 비교
@@ -572,35 +586,83 @@ Claude·Codex와의 최종 비교는 새 봉인 case를 누구도 튜닝에 사�
 | RL v1~v3 | 퇴행, 폐기 |
 | RFT v4 | 가능성만 확인, provenance 불충분 |
 | progressive v5 | 데이터/알고리즘 진단 완료, 미승격 |
-| offline RPO v6 | 학습 완료, 공정 monitor 진행 중 |
-| online progressive GRPO | 다음 핵심 구현/학습 단계 |
+| offline RPO v6 | majority strict 퇴행으로 폐기 |
+| online progressive GRPO | SFT 정책으로 20 cases × 8 rollouts 수집 중 |
 | 최종 새 봉인 평가 | 미실행 |
 | Claude·Codex parity | 미검증 |
 
-바로 다음 결정:
+바로 다음 작업:
 
-1. v6 monitor를 끝낸다.
-2. `RL v6 ≥ SFT`를 모든 승격 지표로 판정한다.
-3. 실패하면 v6를 폐기하고 online progressive GRPO로 이동한다.
-4. 통과해도 v6는 보수적 중간 후보일 뿐이며, on-policy RL과 비교한다.
-5. 최종 후보 설정을 동결한 뒤 새 봉인 failure family에서 바닐라·SFT·RL·Claude·Codex를 동일 조건으로 비교한다.
+1. SFT 정책으로 시작한 `20 cases × 8 rollouts` 수집을 완료한다.
+2. 같은 case 안에서 root·proof·evidence 점수의 상대 advantage를 계산한다.
+3. language-model projection만 대상으로 LoRA를 갱신한다.
+4. 갱신된 최신 adapter로 새 rollout을 다시 만든다.
+5. train monitor 비퇴행을 통과한 후보만 development holdout으로 보낸다.
+6. 최종 설정을 동결한 뒤 새 봉인 failure family에서 바닐라·SFT·RL·Claude·Codex를 동일 조건으로 비교한다.
 
 현재 결론은 명확하다.
 
-> **SFT는 바닐라의 반복·정체 행동을 줄이고 실제 원인 후보 식별을 개선했다. 하지만 strict RCA는 아직 약하다. 초기 RL은 이 기반을 손상시켰고, 현재 v6는 안전한 우회 실험이다. 다음 핵심은 최신 Student가 실제 하네스에서 반복 탐색하고 scorer reward로 갱신되는 on-policy progressive GRPO다.**
+> **SFT는 바닐라의 반복·정체 행동을 줄이고 실제 원인 후보 식별을 개선했다. 하지만 strict RCA는 아직 약하다. 초기 RL과 v6는 이 기반을 안정적으로 개선하지 못해 폐기했다. 현재는 SFT Student가 실제 하네스에서 새 조사를 생성하고 scorer reward로 갱신되는 on-policy progressive GRPO를 진행 중이다.**
 
 ---
 
-## 9. 근거 artifact
+## 9. 실제 실행 기록: F15-H SFT run 2
 
-| 내용 | 파일 |
-|---|---|
-| 역사적 바닐라 평가 | `outputs/goal-eval/baseline-evidence-contract-v2.json` |
-| 역사적 SFT 평가 | `outputs/goal-eval/sft-evidence-contract-v2.json` |
-| SFT 공정 train monitor | `outputs/goal-eval/sft-fair-train-monitor.json` |
-| RL v1/v2/v3 평가 | `outputs/goal-eval/rl.json`, `rl-v2.json`, `rl-v3.json` |
-| RFT v4 monitor | `outputs/goal-eval/rft-v4-train-monitor.json` |
-| DAPO v1~v5 데이터 | `outputs/rl/dapo-v1.jsonl` 등 |
-| v6 preference data | `outputs/rl/rank-refinement-v6.jsonl` |
-| v6 config | `configs/rl/muse-glimmer-30b-rank-refinement-v6.yaml` |
-| 실제 바닐라/SFT episode | `outputs/eval/baseline-v6b-guidance-20260827`, `sft-v6b-guidance-20260827` |
+### 9.1 사건과 정답
+
+같은 시각에 commerce checkout과 food 주문이 함께 실패했다. 실제 근본원인은 두 개다.
+
+1. commerce inventory 테이블의 `EXCLUSIVE lock` 때문에 예약 쓰기가 대기했고 checkout이 timeout 됐다.
+2. 외부 PG `/pay`가 HTTP 429 `RATE_LIMITED`를 반환했고 payment가 이를 상위 요청에 전달했다.
+
+두 장애는 동시에 시작했지만 공통 원인이 아니다. 모델은 두 원인을 모두 찾고 분리해야 한다.
+
+### 9.2 Student가 받은 조사 범위
+
+```text
+관측 시간: 10:14:15~10:46:47 UTC
+전체 원본 evidence: 268
+조사 대상: 20
+정답 root: 모델에 제공하지 않음
+```
+
+### 9.3 실제 action과 observation
+
+| Turn | 실행 action | 실제 관측 | 판단 변화 |
+|---:|---|---|---|
+| 1 | `env_top(20)` | product 500 142건, payment outbound/inbound 429 각각 33건, order 502 19건, inventory 5xx | 여러 경계를 조사해야 함을 확인 |
+| 2 | `env_entity(commerce-product)` | product 500, Servlet 예외, JVM thread 이상 | 상위 증상 확인. root는 미확정 |
+| 3 | `env_entity(food-delivery-payment)` | outbound 429, inbound 429, PG 실패 로그 | 외부 PG를 원인 후보로 선택 |
+| 4 | `env_slice(ev221,ev212,ev210,ev220)` | `PG /pay failed ... 429 ... RATE_LIMITED` | 외부 PG rate limit 직접 증거 확보 |
+| 5 | `env_grep("PG /pay failed")` | 같은 실패 event·log 6건 | 반복 패턴 확인 |
+| 6~9 | `env_query(...)` | payment 429와 product/order 오류 재비교 | PG 원인은 강화. inventory DB lock은 미조사 |
+| 10 | 중복 query | `이미 실행함 — 새 정보 없음` | 새 증거 없음 |
+
+### 9.4 Ledger 실제 관측
+
+```json
+{
+  "id": "obs-004",
+  "turn": 4,
+  "action": "env_slice",
+  "target": "ev221,ev212,ev210,ev220",
+  "evidence_refs": ["ev210", "ev212", "ev220", "ev221"],
+  "ok": true,
+  "progress": true,
+  "summary": "PG /pay failed ... 429 Too Many Requests ... RATE_LIMITED"
+}
+```
+
+### 9.5 최종 답과 scorer 판정
+
+Student는 외부 PG 429가 payment outbound/inbound에 전파됐다고 `provisional`로 답하고 `ev010`, `ev011`, `ev221` 등을 인용했다. 그러나 inventory lock root를 찾지 못했고 commerce 오류를 PG 장애의 하류 영향으로 잘못 합쳤다. `proof_type`도 `unknown`이었다.
+
+| 항목 | 결과 | 판정 이유 |
+|---|---:|---|
+| Root F1 | 0.8 | 외부 PG root는 찾았지만 inventory lock root를 놓침 |
+| Reward | 0.572 | 부분 root, 유효 evidence refs, provisional status 반영 |
+| Proof rate | 0 | 결정적 proof type 미충족 |
+| Evidence complete | false | 두 root 전체의 지지·반증 증거 미완성 |
+| Strict correct | false | 전체 root, 인과 분리, proof 계약을 모두 만족하지 못함 |
+
+이 실행은 SFT의 개선과 한계를 동시에 보여준다. 바닐라처럼 호스트 metric에 멈추지 않고 외부 PG 원인을 찾았지만, 두 원인을 분리하고 결정적으로 증명하는 단계에는 도달하지 못했다.
