@@ -262,9 +262,21 @@ def score_episode(case_id: str, expected: dict[str, Any], episode: dict[str, Any
 
 
 def score_directory(output: Path, contract: dict[str, Any], runs_per_case: int) -> dict[str, Any]:
+    if runs_per_case < 1:
+        raise ValueError("runs_per_case must be positive")
     rows: list[dict[str, Any]] = []
+    invalid_runs: list[str] = []
     for case_id, expected in contract["cases"].items():
         trajectories = sorted((output / case_id).glob("traj-run*/agent-*.jsonl"))
+        counts = Counter(path.parent.name for path in trajectories)
+        expected_names = {f"traj-run{index}" for index in range(1, runs_per_case + 1)}
+        for run_name in sorted(expected_names | set(counts)):
+            expected_count = 1 if run_name in expected_names else 0
+            actual_count = counts[run_name]
+            if actual_count != expected_count:
+                invalid_runs.append(
+                    f"{case_id}/{run_name}={actual_count}/{expected_count}"
+                )
         for path in trajectories:
             rows.append(
                 {
@@ -272,6 +284,10 @@ def score_directory(output: Path, contract: dict[str, Any], runs_per_case: int) 
                     "run": path.parent.name,
                 }
             )
+    if invalid_runs:
+        raise ValueError(
+            "evaluation run set is incomplete or duplicated: " + ", ".join(invalid_runs)
+        )
     majority = sum(
         sum(row["strict_correct"] for row in rows if row["case_id"] == case_id)
         >= runs_per_case // 2 + 1

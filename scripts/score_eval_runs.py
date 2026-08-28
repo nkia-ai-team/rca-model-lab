@@ -14,7 +14,13 @@ from rca_lab.eval.scoring import score_directory as score
 from rca_lab.provenance import file_sha256
 
 
-def evaluation_provenance(output: Path, contract: Path) -> dict[str, object]:
+def evaluation_provenance(
+    output: Path,
+    contract: Path,
+    *,
+    expected_cases: list[str],
+    expected_runs: int,
+) -> dict[str, object]:
     manifest_path = output / "run-manifest.json"
     if not manifest_path.is_file():
         raise ValueError(f"missing evaluation run manifest: {manifest_path}")
@@ -42,6 +48,10 @@ def evaluation_provenance(output: Path, contract: Path) -> dict[str, object]:
     ]
     if missing:
         raise ValueError(f"evaluation run manifest missing provenance: {missing}")
+    if manifest["cases"] != expected_cases:
+        raise ValueError("evaluation manifest case order/population differs from scoring contract")
+    if int(manifest["runs"]) != expected_runs:
+        raise ValueError("evaluation manifest run count differs from scoring request")
     return {
         "run_manifest_sha256": file_sha256(manifest_path),
         "scoring_contract_sha256": file_sha256(contract),
@@ -61,9 +71,12 @@ def main() -> None:
         yaml.safe_load(args.contract.read_text(encoding="utf-8"))
     ).model_dump(mode="json", exclude_none=True)
     report = score(args.output, contract, args.runs)
-    provenance = evaluation_provenance(args.output, args.contract)
-    if int(provenance["runs"]) != args.runs:
-        raise SystemExit("FAIL: scoring run count differs from immutable evaluation manifest")
+    provenance = evaluation_provenance(
+        args.output,
+        args.contract,
+        expected_cases=list(contract["cases"]),
+        expected_runs=args.runs,
+    )
     report["evaluation_provenance"] = provenance
     args.report.parent.mkdir(parents=True, exist_ok=True)
     args.report.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n")

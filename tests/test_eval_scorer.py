@@ -384,6 +384,53 @@ def test_behavior_diagnostics_do_not_require_metric_actions_for_success() -> Non
     assert score["used_specialized_probe"] is True
 
 
+def test_score_directory_rejects_incomplete_run_sets(tmp_path: Path) -> None:
+    contract = {
+        "cases": {
+            "case-a": {
+                "expected_status": "provisional",
+                "roots": [{"target_ids": ["root-a"]}],
+            },
+            "case-b": {
+                "expected_status": "provisional",
+                "roots": [{"target_ids": ["root-b"]}],
+            },
+        }
+    }
+    episode_dir = tmp_path / "case-a" / "traj-run1"
+    episode_dir.mkdir(parents=True)
+    (episode_dir / "agent-a.jsonl").write_text(
+        json.dumps(
+            {
+                "event": "episode_completed",
+                "result": {
+                    "status": "provisional",
+                    "causes": [],
+                    "external_causes": [],
+                    "turns": 1,
+                },
+                "ledger": [],
+            }
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+
+    with pytest.raises(ValueError, match="case-b/traj-run1=0/1"):
+        score_directory(tmp_path, contract, runs_per_case=1)
+
+    duplicate = episode_dir / "agent-duplicate.jsonl"
+    duplicate.write_text((episode_dir / "agent-a.jsonl").read_text(), encoding="utf-8")
+    case_b = tmp_path / "case-b" / "traj-run1"
+    case_b.mkdir(parents=True)
+    (case_b / "agent-b.jsonl").write_text(
+        (episode_dir / "agent-a.jsonl").read_text(), encoding="utf-8"
+    )
+
+    with pytest.raises(ValueError, match="case-a/traj-run1=2/1"):
+        score_directory(tmp_path, contract, runs_per_case=1)
+
+
 def test_external_episode_requires_canonical_identity_linked_boundary_and_known_refs() -> None:
     target = "11111111-1111-1111-1111-111111111111"
     expected = {
