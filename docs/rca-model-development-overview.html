@@ -179,6 +179,7 @@
       <div class="brand"><div class="brand-mark">RCA</div><div><strong>Student Model Lab</strong><small>설계·학습·평가 문서</small></div></div>
       <nav>
         <a href="#overview">한눈에 보기</a>
+        <a href="#north-star">최종 목표</a>
         <a href="#problem">풀려는 문제</a>
         <a href="#harness">Student 하네스</a>
         <a href="#tools">제공 도구 전체</a>
@@ -197,16 +198,35 @@
         <h1>정답을 찍는 모델이 아니라,<br><em>증명하며 조사하는 모델</em></h1>
         <p class="lead">장애 징후를 보고 곧바로 원인을 말하는 분류기가 아니다. 실제 운영자처럼 도구를 선택하고, 관측을 시간축으로 연결하고, 경쟁 가설을 반박한 뒤, 인용 가능한 증거가 갖춰졌을 때만 원인을 확정하는 Student RCA 에이전트다.</p>
         <div class="badges" aria-label="현재 상태">
+          <span class="badge"><span class="dot" style="background:var(--purple)"></span>목표: Student ≥ Claude/Codex</span>
           <span class="badge"><span class="dot"></span>핵심 하네스 계약 완료</span>
           <span class="badge"><span class="dot"></span>SFT 완료</span>
           <span class="badge"><span class="dot running"></span>개선 RL 진행 중</span>
-          <span class="badge"><span class="dot running"></span>공정 평가 진행 중</span>
+          <span class="badge"><span class="dot"></span>SFT 모니터 18/18 완료</span>
           <span class="badge"><span class="dot" style="background:#888"></span>봉인 평가 대기</span>
         </div>
         <div class="principles">
           <div class="principle"><b>원본은 전부 보존</b><span>한 번에 보여주는 양만 제한. 조회되지 않은 증거를 영구 삭제하지 않는다.</span></div>
           <div class="principle"><b>생각은 자유롭게</b><span>가설 공간은 열어 두되, 실행 action·target·metric은 현실 계약을 통과한다.</span></div>
           <div class="principle"><b>결론은 증거로 제한</b><span>원인·메커니즘·지지 증거·반증 증거가 연결돼야 confirmed가 가능하다.</span></div>
+        </div>
+      </section>
+
+      <section id="north-star">
+        <div class="section-head"><div><span class="kicker">00 · North Star</span><h2>최종 목표는 Teacher와 동급 이상</h2></div><p>바닐라 대비 개선은 중간 단계다. 동일한 사건과 동일한 도구·채점 조건에서 Student가 Claude·Codex와 비슷하거나 더 잘 조사해야 한다.</p></div>
+        <div class="branch">
+          <div class="decision"><h3>내부 승격 조건</h3><p><strong>RL ≥ SFT ≥ vanilla</strong></p><p>새 학습 단계가 앞 단계의 strict accuracy, reward, root F1, evidence coverage를 떨어뜨리지 않아야 한다.</p></div>
+          <div class="vs">→</div>
+          <div class="decision" style="background:var(--purple-2);border-color:#c9b9df"><h3>최종 성공 조건</h3><p><strong>Student ≥ Claude / Codex</strong></p><p>동일 봉인 family, 동일 하네스, 동일 action 계약, 동일 scorer와 반복 횟수로 비교한다.</p></div>
+        </div>
+        <div class="card" style="margin-top:20px">
+          <h3>고정 골격</h3>
+          <p><strong>Teacher data → 전체 episode SFT → SFT 위의 RL → 공정 평가</strong></p>
+          <p class="muted">하네스, 교사 조합, 데이터 생성·교정, base model, LoRA, loss, SFT/RL 알고리즘과 하이퍼파라미터는 계속 실험한다. SFT 다음에 RL을 수행한다는 큰 순서는 유지한다.</p>
+        </div>
+        <div class="two-col" style="margin-top:20px">
+          <div class="card"><h3>계속 바꾸는 변수</h3><ul><li>도구·관측·proof·종료 정책</li><li>교사 비평과 재시도 데이터</li><li>base model·LoRA·학습률·epoch</li><li>preference pair·KL/anchor 강도</li><li>token 한도·sampling·추론 설정</li></ul></div>
+          <div class="card"><h3>절대 섞지 않는 경계</h3><p>최종 봉인 결과를 보고 계속 튜닝하면 봉인셋이 개발셋으로 오염된다.</p><ul><li>반복 실험: train monitor / development holdout</li><li>최종 비교: 후보와 설정을 고정한 뒤 봉인셋</li><li>봉인 case별 결과를 교정·prompt·학습에 재사용 금지</li></ul></div>
         </div>
       </section>
 
@@ -349,12 +369,13 @@
           <tr><td>Family split</td><td><span class="status done">완료</span></td><td>23 train / 12 sealed / 1 excluded</td></tr>
           <tr><td>교사 데이터 1차 정제</td><td><span class="status done">완료</span></td><td>20 시나리오, 24 채택 궤적. 불완전 3건 보류</td></tr>
           <tr><td>SFT LoRA</td><td><span class="status done">완료</span></td><td>전체 episode 단위 학습 완료</td></tr>
-          <tr><td>SFT 공정 모니터</td><td><span class="status run">진행 중</span></td><td>중단 복구 및 단일-runner 재개 계약 적용</td></tr>
+          <tr><td>SFT 공정 모니터</td><td><span class="status done">완료</span></td><td>18/18, 형식 오류 0, evidence complete 18, strict 2, mean root F1 0.222</td></tr>
           <tr><td>개선 RL v6</td><td><span class="status run">진행 중</span></td><td>전체 궤적 RPO + imitation anchor</td></tr>
           <tr><td>RL 동일 조건 평가</td><td><span class="status wait">대기</span></td><td>RL 완료 후 SFT와 같은 조건으로 실행</td></tr>
           <tr><td>최종 봉인 평가</td><td><span class="status wait">대기</span></td><td>바닐라 → SFT → RL 비퇴행 비교 필요</td></tr>
+          <tr><td>Claude·Codex 기준선 비교</td><td><span class="status wait">대기</span></td><td>동일 봉인 계약에서 Student parity-or-better 검증</td></tr>
         </tbody></table>
-        <div class="callout" style="margin-top:20px"><strong>완료 조건:</strong> RL이 SFT보다 strict accuracy, mean reward, root F1, evidence coverage를 떨어뜨리지 않고, 형식 오류와 근거 없는 confirmed가 0이어야 한다.</div>
+        <div class="callout" style="margin-top:20px"><strong>내부 승격 조건:</strong> RL이 SFT보다 strict accuracy, mean reward, root F1, evidence coverage를 떨어뜨리지 않고, 형식 오류와 근거 없는 confirmed가 0이어야 한다.<br><strong>최종 완료 조건:</strong> 승격된 Student가 동일 봉인 계약에서 Claude·Codex와 동급 이상이어야 한다.</div>
       </section>
 
       <section aria-labelledby="glossary-title">
