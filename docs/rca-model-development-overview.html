@@ -222,7 +222,17 @@
         <div class="card" style="margin-top:20px">
           <h3>고정 골격</h3>
           <p><strong>Teacher data → 전체 episode SFT → SFT 위의 RL → 공정 평가</strong></p>
-          <p class="muted">하네스, 교사 조합, 데이터 생성·교정, base model, LoRA, loss, SFT/RL 알고리즘과 하이퍼파라미터는 계속 실험한다. SFT 다음에 RL을 수행한다는 큰 순서는 유지한다.</p>
+          <p class="muted">하네스, 교사 조합, 데이터 생성·교정, base model, LoRA, loss, SFT/RL 알고리즘과 하이퍼파라미터는 계속 실험한다. 다만 바닐라에서 바로 RL을 시작하지 않고, SFT로 조사 습관을 만든 뒤 그 SFT 정책 위에서 RL을 수행한다.</p>
+        </div>
+        <h3 style="margin-top:28px">한 번의 실험 루프</h3>
+        <div class="flow" aria-label="RCA Student 반복 실험 과정">
+          <div class="flow-step"><small>1</small><b>실험 조합 선택</b><p>하네스·교사 데이터·base model·LoRA와 학습 파라미터를 정한다.</p></div>
+          <div class="flow-step"><small>2</small><b>전체 episode SFT</b><p>검증된 전체 조사 궤적으로 기본 조사 정책을 만든다.</p></div>
+          <div class="flow-step"><small>3</small><b>SFT 위의 RL</b><p>SFT 정책을 시작점으로 더 나은 전체 궤적을 선호하게 한다.</p></div>
+          <div class="flow-step"><small>4</small><b>개발 평가</b><p>monitor·dev holdout에서 RL ≥ SFT ≥ vanilla를 검사한다.</p></div>
+          <div class="flow-step"><small>5</small><b>분석·재설계</b><p>미달이면 봉인셋을 열지 않고 변수와 데이터를 고쳐 반복한다.</p></div>
+          <div class="flow-step"><small>6</small><b>후보 동결</b><p>내부 조건을 통과한 adapter·하네스·설정을 고정한다.</p></div>
+          <div class="flow-step"><small>7</small><b>Teacher 봉인 비교</b><p>같은 조건에서 Student ≥ Claude/Codex인지 최종 판정한다.</p></div>
         </div>
         <div class="two-col" style="margin-top:20px">
           <div class="card"><h3>계속 바꾸는 변수</h3><ul><li>도구·관측·proof·종료 정책</li><li>교사 비평과 재시도 데이터</li><li>base model·LoRA·학습률·epoch</li><li>preference pair·KL/anchor 강도</li><li>token 한도·sampling·추론 설정</li></ul></div>
