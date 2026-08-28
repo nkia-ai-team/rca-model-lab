@@ -1,0 +1,405 @@
+diff --git a/packages/prime-rl-configs/src/prime_rl/configs/trainer.py b/packages/prime-rl-configs/src/prime_rl/configs/trainer.py
+index bfa439c..40f50ac 100644
+--- a/packages/prime-rl-configs/src/prime_rl/configs/trainer.py
++++ b/packages/prime-rl-configs/src/prime_rl/configs/trainer.py
+@@ -20,7 +20,9 @@ from prime_rl.utils.config import BaseConfig, default_output_dir
+ 
+ # -- Shared trainer configs (used by both SFT and RL trainers) --
+ 
+-AttnImplementation: TypeAlias = Literal["flash_attention_2", "flash_attention_3", "flash_attention_4", "auto"]
++AttnImplementation: TypeAlias = Literal[
++    "flash_attention_2", "flash_attention_3", "flash_attention_4", "sdpa", "auto"
++]
+ EPCommBackend: TypeAlias = Literal["torch", "deepep"]
+ 
+ 
+@@ -128,6 +130,9 @@ class LoRAConfig(BaseConfig):
+     modules_to_save: list[str] = []
+     """Module names or regex patterns to keep fully trainable (not freeze). Same matching rules as ``target_modules``."""
+ 
++    init_adapter: Path | None = None
++    """Optional PEFT adapter directory used instead of random LoRA initialization."""
++
+ 
+ class DebugModelConfig(BaseConfig):
+     num_layers: int | None = None
+diff --git a/src/prime_rl/trainer/lora.py b/src/prime_rl/trainer/lora.py
+index 900c29b..030debb 100644
+--- a/src/prime_rl/trainer/lora.py
++++ b/src/prime_rl/trainer/lora.py
+@@ -1,8 +1,11 @@
+ import re
++from pathlib import Path
+ from typing import Callable, List
+ 
+ import torch
+ import torch.nn as nn
++from safetensors.torch import load_file
++from torch.distributed.tensor import DTensor, distribute_tensor
+ 
+ from prime_rl.configs.trainer import LoRAConfig
+ from prime_rl.trainer.models.layers.lora import (
+@@ -77,6 +80,9 @@ class LoRAState:
+         for _, module in self._modules:
+             module.reset_parameters(0)
+ 
++    def registered_modules(self) -> tuple[tuple[str, MultiLoRAModule], ...]:
++        return tuple(self._modules)
++
+ 
+ _LORA_STATE: LoRAState | None = None
+ 
+@@ -104,6 +110,45 @@ def strip_lora_from_state_dict(state_dict: dict[str, torch.Tensor]) -> dict[str,
+     return new_state_dict
+ 
+ 
++def _canonical_peft_key(key: str) -> str:
++    key = key.removeprefix("base_model.model.")
++    return key.replace(".lora_A.default.weight", ".lora_A.weight").replace(
++        ".lora_B.default.weight", ".lora_B.weight"
++    )
++
++
++def load_peft_adapter(path: str | Path) -> None:
++    """Load a complete PEFT adapter into already-sharded Prime LoRA modules."""
++    adapter_path = Path(path)
++    weights_path = adapter_path / "adapter_model.safetensors"
++    if not weights_path.is_file():
++        raise FileNotFoundError(f"PEFT adapter weights not found: {weights_path}")
++    source = {_canonical_peft_key(key): value for key, value in load_file(weights_path).items()}
++    expected: set[str] = set()
++    with torch.no_grad():
++        for prefix, module in get_lora_state().registered_modules():
++            for name, parameter in module.named_parameters_for_adapter(0):
++                key = f"{prefix}.{name}.weight"
++                expected.add(key)
++                if key not in source:
++                    raise ValueError(f"PEFT adapter is missing Prime LoRA tensor: {key}")
++                value = source[key]
++                if tuple(value.shape) != tuple(parameter.shape):
++                    raise ValueError(
++                        f"PEFT adapter shape mismatch for {key}: "
++                        f"{tuple(value.shape)} != {tuple(parameter.shape)}"
++                    )
++                if isinstance(parameter, DTensor):
++                    full = value.to(device=parameter.device, dtype=parameter.dtype)
++                    distributed = distribute_tensor(full, parameter.device_mesh, parameter.placements)
++                    parameter.copy_(distributed)
++                else:
++                    parameter.copy_(value.to(device=parameter.device, dtype=parameter.dtype))
++    unexpected = sorted(set(source) - expected)
++    if unexpected:
++        raise ValueError(f"PEFT adapter has unexpected LoRA tensors: {unexpected[:10]}")
++
++
+ def _get_module_by_name(model: nn.Module, module_name: str) -> nn.Module:
+     """Get a module by its fully qualified name."""
+     parts = module_name.split(".")
+diff --git a/src/prime_rl/trainer/model.py b/src/prime_rl/trainer/model.py
+index 5ebce64..9621628 100644
+--- a/src/prime_rl/trainer/model.py
++++ b/src/prime_rl/trainer/model.py
+@@ -36,7 +36,12 @@ from prime_rl.configs.trainer import (
+     TokenizerConfig,
+ )
+ from prime_rl.trainer.distributed import DeepEPExpertParallel, MXFP8AllToAllExpertParallel
+-from prime_rl.trainer.lora import apply_lora_to_model, freeze_all_except_lora_and_specified, strip_lora_from_state_dict
++from prime_rl.trainer.lora import (
++    apply_lora_to_model,
++    freeze_all_except_lora_and_specified,
++    load_peft_adapter,
++    strip_lora_from_state_dict,
++)
+ from prime_rl.trainer.models import (
+     AutoModelForCausalLMPrimeRL,
+     PreTrainedModelPrimeRL,
+@@ -1057,6 +1062,9 @@ def load_dcp_from_hf(model: nn.Module, config: ModelConfig, parallel_dims: Paral
+             generator = torch.Generator(device="cuda").manual_seed(seed_tensor.item())
+         for module in lora_modules:
+             module._init_lora_parameters(generator)
++        if config.lora is not None and config.lora.init_adapter is not None:
++            load_peft_adapter(config.lora.init_adapter)
++            logger.info(f"Loaded initial PEFT adapter from {config.lora.init_adapter}")
+     logger.debug(f"Loaded weights using HF DCP in {format_time(time.perf_counter() - load_dcp_start_time)}")
+ 
+ 
+diff --git a/src/prime_rl/trainer/models/layers/lm_head.py b/src/prime_rl/trainer/models/layers/lm_head.py
+index 9896d32..761e0e9 100644
+--- a/src/prime_rl/trainer/models/layers/lm_head.py
++++ b/src/prime_rl/trainer/models/layers/lm_head.py
+@@ -8,7 +8,7 @@ import torch.nn as nn
+ from torch import Tensor
+ 
+ from prime_rl.utils.logger import get_logger
+-from prime_rl.utils.vlm import get_final_logit_softcapping
++from prime_rl.utils.vlm import get_final_logit_softcapping, get_output_multiplier
+ 
+ 
+ class PrimeLmOutput(TypedDict, total=False):
+@@ -233,7 +233,12 @@ def inject_prime_lm_head(
+     if final_logit_softcapping:
+         from prime_rl.trainer.models.layers.lm_head_gemma import inject_gemma_lm_head
+ 
+-        inject_gemma_lm_head(model, chunk_size, final_logit_softcapping)
++        inject_gemma_lm_head(
++            model,
++            chunk_size,
++            final_logit_softcapping,
++            logit_scale=get_output_multiplier(model.config),
++        )
+         return
+ 
+     # Replace the lm_head with the appropriate wrapper
+diff --git a/src/prime_rl/trainer/models/layers/lm_head_gemma.py b/src/prime_rl/trainer/models/layers/lm_head_gemma.py
+index 7fee1a8..9c4e428 100644
+--- a/src/prime_rl/trainer/models/layers/lm_head_gemma.py
++++ b/src/prime_rl/trainer/models/layers/lm_head_gemma.py
+@@ -13,10 +13,13 @@ from prime_rl.utils.logger import get_logger
+ 
+ 
+ class GemmaFusedOutputLinear(torch.nn.Linear):
+-    def __init__(self, in_features: int, out_features: int, chunk_size: int, softcap: float):
++    def __init__(
++        self, in_features: int, out_features: int, chunk_size: int, softcap: float, logit_scale: float
++    ):
+         super().__init__(in_features, out_features, bias=False)
+         self.chunk_size = chunk_size
+         self.softcap = softcap
++        self.logit_scale = logit_scale
+ 
+     def forward(
+         self,
+@@ -33,7 +36,7 @@ class GemmaFusedOutputLinear(torch.nn.Linear):
+         inv_t = 1.0 / temperature.reshape(b * s).contiguous()  # [N]
+ 
+         logprobs, entropy = _GemmaChunkedLogProbEntropyFn.apply(
+-            hidden_states, self.weight, labels, inv_t, self.chunk_size, self.softcap
++            hidden_states, self.weight, labels, inv_t, self.chunk_size, self.softcap, self.logit_scale
+         )
+ 
+         logprobs = logprobs.reshape(b, s)
+@@ -42,14 +45,15 @@ class GemmaFusedOutputLinear(torch.nn.Linear):
+ 
+ 
+ class GemmaVanillaOutputLinear(torch.nn.Linear):
+-    def __init__(self, in_features: int, out_features: int, softcap: float):
++    def __init__(self, in_features: int, out_features: int, softcap: float, logit_scale: float):
+         super().__init__(in_features, out_features, bias=False)
+         self.softcap = softcap
++        self.logit_scale = logit_scale
+ 
+     def forward(
+         self, hidden_states: torch.Tensor, labels: torch.Tensor | None = None, temperature: Tensor | None = None
+     ) -> PrimeLmOutput:
+-        logits = super().forward(hidden_states)
++        logits = super().forward(hidden_states) * self.logit_scale
+         logits = self.softcap * torch.tanh(logits / self.softcap)
+         return PrimeLmOutput(logits=logits)
+ 
+@@ -64,6 +68,7 @@ class _GemmaChunkedLogProbEntropyFn(torch.autograd.Function):
+         inv_temperature: torch.Tensor,  # [N]
+         chunk_size: int,
+         softcap: float,
++        logit_scale: float,
+     ) -> tuple[torch.Tensor, torch.Tensor]:
+         """
+         Returns per-token logprobs and entropy by chunking over flattened sequence tokens.
+@@ -101,7 +106,7 @@ class _GemmaChunkedLogProbEntropyFn(torch.autograd.Function):
+                 vocab_end = min(vocab_start + vocab_chunk_size, vocab)
+                 weight_chunk = weight[vocab_start:vocab_end]
+                 logits_chunk = hidden_chunk @ weight_chunk.t()
+-                scaled_logits = logits_chunk.to(torch.float32)
++                scaled_logits = logits_chunk.to(torch.float32) * logit_scale
+                 scaled_logits = softcap * torch.tanh(scaled_logits / softcap)
+                 scaled_logits = scaled_logits * inv_t_chunk
+ 
+@@ -120,6 +125,7 @@ class _GemmaChunkedLogProbEntropyFn(torch.autograd.Function):
+         ctx.save_for_backward(hidden, weight, labels, inv_temperature, logz)
+         ctx.chunk_size = chunk_size
+         ctx.softcap = softcap
++        ctx.logit_scale = logit_scale
+ 
+         return logprobs, entropy
+ 
+@@ -132,6 +138,7 @@ class _GemmaChunkedLogProbEntropyFn(torch.autograd.Function):
+         hidden, weight, labels, inv_temperature, logz = ctx.saved_tensors
+         chunk_size: int = ctx.chunk_size
+         softcap: float = ctx.softcap
++        logit_scale: float = ctx.logit_scale
+ 
+         n, _ = hidden.shape
+         vocab = weight.shape[0]
+@@ -153,7 +160,7 @@ class _GemmaChunkedLogProbEntropyFn(torch.autograd.Function):
+                 weight_chunk = weight[vocab_start:vocab_end]
+                 logits_chunk = hidden_chunk @ weight_chunk.t()
+                 logits_f = logits_chunk.to(torch.float32)
+-                tanh_val = torch.tanh(logits_f / softcap)
++                tanh_val = torch.tanh(logits_f * logit_scale / softcap)
+                 scaled_logits = softcap * tanh_val
+                 scaled_logits = scaled_logits * inv_t_chunk
+                 probs = torch.exp(scaled_logits - logz_chunk.unsqueeze(-1))
+@@ -164,17 +171,22 @@ class _GemmaChunkedLogProbEntropyFn(torch.autograd.Function):
+                     idx = (labels_chunk[mask] - vocab_start).to(torch.long)
+                     grad_logits[mask, idx] += grad_chunk[mask]
+                 grad_logits = grad_logits * inv_t_chunk
+-                grad_logits = grad_logits * (1 - tanh_val**2)
++                grad_logits = grad_logits * (1 - tanh_val**2) * logit_scale
+ 
+                 grad_hidden[start:end].add_(grad_logits.to(hidden.dtype) @ weight_chunk)
+                 grad_weight[vocab_start:vocab_end].add_(grad_logits.to(weight.dtype).t() @ hidden_chunk)
+ 
+-        return grad_hidden, grad_weight, None, None, None, None
++        return grad_hidden, grad_weight, None, None, None, None, None
+ 
+ 
+-def inject_gemma_lm_head(model: nn.Module, chunk_size: int | None, softcap: float) -> None:
++def inject_gemma_lm_head(
++    model: nn.Module, chunk_size: int | None, softcap: float, logit_scale: float = 1.0
++) -> None:
+     logger = get_logger()
+-    logger.info(f"Injecting Gemma LM head with chunk size {chunk_size}, softcap={softcap}")
++    logger.info(
++        f"Injecting softcapped LM head with chunk size {chunk_size}, "
++        f"softcap={softcap}, logit_scale={logit_scale}"
++    )
+ 
+     old_lm_head = model.lm_head
+     if chunk_size is not None:
+@@ -183,12 +195,14 @@ def inject_gemma_lm_head(model: nn.Module, chunk_size: int | None, softcap: floa
+             out_features=old_lm_head.out_features,
+             chunk_size=chunk_size,
+             softcap=softcap,
++            logit_scale=logit_scale,
+         )
+     else:
+         model.lm_head = GemmaVanillaOutputLinear(
+             in_features=old_lm_head.in_features,
+             out_features=old_lm_head.out_features,
+             softcap=softcap,
++            logit_scale=logit_scale,
+         )
+     model.lm_head.weight = old_lm_head.weight
+     del old_lm_head
+diff --git a/src/prime_rl/utils/vlm.py b/src/prime_rl/utils/vlm.py
+index c40c93c..9b05538 100644
+--- a/src/prime_rl/utils/vlm.py
++++ b/src/prime_rl/utils/vlm.py
+@@ -30,6 +30,9 @@ VLM_REGISTRY: dict[str, VLMModelInfo] = {
+     "qwen3_5_moe": VLMModelInfo(vision_encoder_attr="model.visual", language_model_attr="model.language_model"),
+     "qwen3_vl_moe": VLMModelInfo(vision_encoder_attr="model.visual", language_model_attr="model.language_model"),
+     "gemma4": VLMModelInfo(vision_encoder_attr="model.vision_tower", language_model_attr="model.language_model"),
++    "muse_glimmer": VLMModelInfo(
++        vision_encoder_attr="model.vision_tower", language_model_attr="model.language_model"
++    ),
+ }
+ 
+ # Text-only default
+@@ -97,6 +100,11 @@ def get_final_logit_softcapping(model_config: PretrainedConfig) -> float | None:
+     return getattr(model_config.get_text_config(), "final_logit_softcapping", None)
+ 
+ 
++def get_output_multiplier(model_config: PretrainedConfig) -> float:
++    """Return the model-family logit multiplier applied before softcapping."""
++    return float(getattr(model_config.get_text_config(), "output_multiplier", 1.0))
++
++
+ def get_layer_prefix(model_config: PretrainedConfig, override: str | None = None) -> str:
+     """Return the weight key prefix for language model layers.
+ 
+diff --git a/tests/unit/train/rl/test_fused_lm_head.py b/tests/unit/train/rl/test_fused_lm_head.py
+index dc02e38..45012b8 100644
+--- a/tests/unit/train/rl/test_fused_lm_head.py
++++ b/tests/unit/train/rl/test_fused_lm_head.py
+@@ -5,6 +5,7 @@ from transformers.models.llama.configuration_llama import LlamaConfig
+ 
+ from prime_rl.trainer.models import cast_float_and_contiguous
+ from prime_rl.trainer.models.layers.lm_head import FusedOutputLinear, VanillaOutputLinear, inject_prime_lm_head
++from prime_rl.trainer.models.layers.lm_head_gemma import GemmaFusedOutputLinear, GemmaVanillaOutputLinear
+ from prime_rl.trainer.models.llama import LlamaForCausalLM as PrimeRLLlamaForCausalLM
+ from prime_rl.trainer.rl.loss import compute_entropy, selective_log_softmax, shift_tensor_left, shift_tensor_right
+ from prime_rl.utils.utils import default_dtype
+@@ -126,6 +127,39 @@ def test_vanilla_lm_head_returns_logits():
+     torch.testing.assert_close(out["logits"], logits_ref, rtol=0, atol=1e-6)
+ 
+ 
++def test_softcapped_lm_head_applies_model_output_multiplier_forward_and_backward_cpu():
++    torch.manual_seed(17)
++    b, s, h, v = 2, 4, 8, 37
++    softcap = 30.0
++    logit_scale = 0.125
++    temperature = torch.full((b, s), 1.7, dtype=torch.float32)
++    labels = torch.randint(0, v, (b, s), dtype=torch.long)
++    hidden0 = torch.randn(b, s, h, dtype=torch.float32, requires_grad=True)
++    weight0 = torch.randn(v, h, dtype=torch.float32, requires_grad=True)
++
++    logits = hidden0 @ weight0.t()
++    logits = softcap * torch.tanh(logits * logit_scale / softcap)
++    scaled = logits / temperature.unsqueeze(-1)
++    logprobs0 = torch.log_softmax(scaled, dim=-1).gather(-1, labels.unsqueeze(-1)).squeeze(-1)
++    logprobs0.sum().backward()
++    hidden_grad0 = hidden0.grad.detach().clone()
++    weight_grad0 = weight0.grad.detach().clone()
++
++    hidden1 = hidden0.detach().clone().requires_grad_(True)
++    fused = GemmaFusedOutputLinear(h, v, 3, softcap, logit_scale)
++    fused.weight = torch.nn.Parameter(weight0.detach().clone())
++    output = fused(hidden1, labels, temperature)
++    output["logprobs"].sum().backward()
++
++    torch.testing.assert_close(output["logprobs"], logprobs0, rtol=0, atol=1e-5)
++    torch.testing.assert_close(hidden1.grad, hidden_grad0, rtol=0, atol=1e-5)
++    torch.testing.assert_close(fused.weight.grad, weight_grad0, rtol=0, atol=1e-5)
++
++    vanilla = GemmaVanillaOutputLinear(h, v, softcap, logit_scale)
++    vanilla.weight = torch.nn.Parameter(weight0.detach().clone())
++    torch.testing.assert_close(vanilla(hidden0.detach())["logits"], logits.detach())
++
++
+ def test_fused_vs_vanilla_integration():
+     """Integration test comparing fused and vanilla outputs after postprocessing."""
+     torch.manual_seed(42)
+diff --git a/tests/unit/train/test_lora_init_adapter.py b/tests/unit/train/test_lora_init_adapter.py
+new file mode 100644
+index 0000000..6007619
+--- /dev/null
++++ b/tests/unit/train/test_lora_init_adapter.py
+@@ -0,0 +1,38 @@
++import torch
++from safetensors.torch import save_file
++
++from prime_rl.configs.trainer import LoRAConfig
++from prime_rl.trainer.lora import _canonical_peft_key, load_peft_adapter, setup_lora_state
++from prime_rl.trainer.models.layers.lora import MultiLoRALinear
++
++
++def test_peft_adapter_keys_are_canonicalized_for_prime_modules() -> None:
++    assert _canonical_peft_key(
++        "base_model.model.model.language_model.layers.0.self_attn.q_proj.lora_A.default.weight"
++    ) == "model.language_model.layers.0.self_attn.q_proj.lora_A.weight"
++    assert _canonical_peft_key(
++        "base_model.model.model.language_model.layers.0.self_attn.q_proj.lora_B.weight"
++    ) == "model.language_model.layers.0.self_attn.q_proj.lora_B.weight"
++
++
++def test_peft_adapter_initializes_every_registered_prime_tensor(tmp_path) -> None:
++    state = setup_lora_state(LoRAConfig(rank=2, alpha=4), torch.device("cpu"))
++    module = MultiLoRALinear(torch.nn.Linear(4, 6, bias=False), rank=2, n_adapters=1)
++    prefix = "model.language_model.layers.0.self_attn.q_proj"
++    state.register_module(prefix, module)
++    expected_a = torch.arange(8, dtype=torch.float32).reshape(2, 4)
++    expected_b = torch.arange(12, dtype=torch.float32).reshape(6, 2)
++    adapter = tmp_path / "adapter"
++    adapter.mkdir()
++    save_file(
++        {
++            f"base_model.model.{prefix}.lora_A.default.weight": expected_a,
++            f"base_model.model.{prefix}.lora_B.default.weight": expected_b,
++        },
++        adapter / "adapter_model.safetensors",
++    )
++
++    load_peft_adapter(adapter)
++
++    torch.testing.assert_close(module.lora_A[0], expected_a)
++    torch.testing.assert_close(module.lora_B[0], expected_b)
+
