@@ -36,3 +36,13 @@ def test_manifest_writer_hashes_complete_adapter(tmp_path: Path) -> None:
 
     assert set(hashes) == {"adapter_config.json", "adapter_model.safetensors"}
     assert all(len(value) == 64 for value in hashes.values())
+
+
+def test_posthoc_fields_require_exact_executed_config(tmp_path: Path) -> None:
+    module = _module()
+    with pytest.raises(ValueError, match="executed-config"):
+        module.build_manifest(
+            tmp_path / "config.yaml",
+            tmp_path / "adapter",
+            posthoc_fields=("dataset_sha256",),
+        )
