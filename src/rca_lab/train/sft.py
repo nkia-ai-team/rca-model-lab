@@ -49,6 +49,9 @@ class FullTrajectorySFTConfig(StrictModel):
     assistant_only_loss: Literal[True] = True
     case_balanced_loss: Literal[True] = True
     use_liger_kernel: bool = True
+    loss_backend: Literal["selective_fused_linear_ce", "model_full_logits"] = (
+        "model_full_logits"
+    )
     adapter_scope: Literal["language_model", "all_linear"] = "all_linear"
     lora: LoRAConfig
     wandb: WandbConfig
@@ -57,7 +60,18 @@ class FullTrajectorySFTConfig(StrictModel):
     def lora_scope_matches_declared_contract(self) -> FullTrajectorySFTConfig:
         if self.adapter_scope == "language_model" and self.lora.target_modules == "all-linear":
             raise ValueError("language_model adapter scope requires an explicit module pattern")
+        if self.loss_backend == "selective_fused_linear_ce" and not self.use_liger_kernel:
+            raise ValueError("selective fused loss requires use_liger_kernel=true")
         return self
+
+
+def training_subprocess_environment(current: dict[str, str]) -> dict[str, str]:
+    """Return an isolated CUDA training environment for a fresh Python process."""
+    environment = dict(current)
+    environment.pop("PYTHONPATH", None)
+    environment["PYTHONNOUSERSITE"] = "1"
+    environment.setdefault("PYTORCH_CUDA_ALLOC_CONF", "expandable_segments:True")
+    return environment
 
 
 def load_sft_config(path: Path) -> FullTrajectorySFTConfig:
@@ -175,6 +189,33 @@ def train_sft(config_path: Path) -> None:  # pragma: no cover - GPU entrypoint
         TrainingArguments,
     )
 
+    def selective_fused_causal_loss(
+        model: torch.nn.Module, turn: dict[str, torch.Tensor]
+    ) -> torch.Tensor:
+        """Compute exact assistant-token CE without materializing full-sequence logits."""
+        from liger_kernel.transformers import LigerFusedLinearCrossEntropyLoss
+
+        base_model = model.get_base_model()
+        outputs = base_model.model(
+            input_ids=turn["input_ids"],
+            attention_mask=turn["attention_mask"],
+            use_cache=False,
+        )
+        shifted_labels = turn["labels"][:, 1:]
+        selected = shifted_labels != -100
+        if not bool(selected.any()):
+            raise ValueError("runtime turn has no shifted assistant target tokens")
+        hidden = outputs.last_hidden_state[:, :-1, :][selected]
+        targets = shifted_labels[selected]
+        text_config = base_model.config.text_config
+        hidden = hidden * float(text_config.output_multiplier)
+        criterion = LigerFusedLinearCrossEntropyLoss(
+            ignore_index=-100,
+            reduction="mean",
+            softcap=float(text_config.final_logit_softcapping),
+        )
+        return criterion(base_model.lm_head.weight, hidden, targets)
+
     config = load_sft_config(config_path)
     if config.batch_size != 1:
         raise ValueError("episode_exact_runtime requires batch_size=1")
@@ -255,14 +296,17 @@ def train_sft(config_path: Path) -> None:  # pragma: no cover - GPU entrypoint
             prepared = self._prepare_inputs(inputs)
             turns = prepared["episode_turns"]
             sample_weight = prepared["sample_weight"]
-            token_counts = [int((turn["labels"] != -100).sum().item()) for turn in turns]
+            token_counts = [int((turn["labels"][:, 1:] != -100).sum().item()) for turn in turns]
             total_tokens = sum(token_counts)
             if total_tokens == 0:
                 raise ValueError("episode has no assistant tokens")
             detached = torch.zeros((), device=turns[0]["input_ids"].device)
             for turn, token_count in zip(turns, token_counts, strict=True):
                 with self.compute_loss_context_manager():
-                    loss = model(**turn).loss
+                    if config.loss_backend == "selective_fused_linear_ce":
+                        loss = selective_fused_causal_loss(model, turn)
+                    else:
+                        loss = model(**turn).loss
                 weight = token_count / total_tokens
                 # Accelerate owns gradient-accumulation scaling. Dividing here
                 # as well shrinks gradients twice on current Trainer versions.

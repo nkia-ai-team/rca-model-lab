@@ -19,6 +19,10 @@ trajectory_mode: episode_exact_runtime
 assistant_only_loss: true
 case_balanced_loss: true
 use_liger_kernel: true
+# Muse-Glimmer's full 32K x vocabulary logits tensor alone requires about
+# 17 GiB. Compute the mathematically equivalent loss only at assistant target
+# positions through Liger's fused LM-head cross entropy instead.
+loss_backend: selective_fused_linear_ce
 adapter_scope: language_model
 lora:
   rank: 8

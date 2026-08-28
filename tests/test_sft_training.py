@@ -8,6 +8,7 @@ from rca_lab.train.sft import (
     load_sft_config,
     load_verified_training_rows,
     mask_assistant_spans,
+    training_subprocess_environment,
 )
 
 
@@ -18,6 +19,7 @@ def test_production_config_preserves_episodes_with_exact_runtime_turns() -> None
     assert config.assistant_only_loss is True
     assert config.case_balanced_loss is True
     assert config.use_liger_kernel is True
+    assert config.loss_backend == "selective_fused_linear_ce"
     assert config.adapter_scope == "language_model"
     assert config.lora.target_modules.startswith(r"^model\.language_model")
     assert config.save_total_limit == 1
@@ -29,6 +31,17 @@ def test_production_config_preserves_episodes_with_exact_runtime_turns() -> None
     assert config.gradient_accumulation_steps == 1
     assert len(rows) == 23
     assert len({row["scenario_id"] for row in rows}) == 20
+
+
+def test_training_subprocess_environment_isolates_container_packages_and_allocator() -> None:
+    environment = training_subprocess_environment(
+        {"PYTHONPATH": "/home/work/.local/site-packages", "KEEP": "yes"}
+    )
+
+    assert "PYTHONPATH" not in environment
+    assert environment["PYTHONNOUSERSITE"] == "1"
+    assert environment["PYTORCH_CUDA_ALLOC_CONF"] == "expandable_segments:True"
+    assert environment["KEEP"] == "yes"
 
 
 def test_case_balance_preserves_all_trajectories_with_equal_case_mass() -> None:
