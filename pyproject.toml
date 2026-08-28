@@ -19,6 +19,7 @@ train = [
     "datasets>=3.0",
     "accelerate>=1.0",
     "wandb>=0.19",
+    "liger-kernel>=0.5",
 ]
 dev = ["pytest>=8.0", "ruff>=0.6", "ipykernel"]
 
