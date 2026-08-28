@@ -31,6 +31,7 @@ class TrajectoryPreferenceConfig(StrictModel):
     learning_rate: float = Field(gt=0)
     gradient_accumulation_steps: int = Field(ge=1)
     beta: float = Field(gt=0)
+    imitation_eta: float = Field(ge=0)
     max_grad_norm: float = Field(gt=0)
     seed: int = 42
     lora: LoRAConfig
@@ -74,6 +75,28 @@ def preference_loss_and_slope(margin: Any, beta: float) -> tuple[Any, Any]:
     return loss, slope
 
 
+def regularized_preference_loss_and_slopes(
+    margin: Any,
+    chosen_mean_logp: Any,
+    *,
+    beta: float,
+    imitation_eta: float,
+) -> tuple[Any, Any, Any, Any]:
+    """Return trajectory RPO loss and coefficients for chosen/rejected log-probs.
+
+    RPO adds ``eta * beta * -log(pi(chosen))`` to DPO.  Keeping the imitation
+    coefficient tied to beta follows the paper's objective and prevents the
+    small preference set from erasing the successful investigation policy.
+    """
+    dpo_loss, margin_slope = preference_loss_and_slope(margin, beta)
+    imitation_weight = imitation_eta * beta
+    imitation_loss = -chosen_mean_logp
+    loss = dpo_loss + imitation_weight * imitation_loss
+    chosen_slope = margin_slope - imitation_weight
+    rejected_slope = -margin_slope
+    return loss, chosen_slope, rejected_slope, imitation_loss
+
+
 def _turn_logp_sums(model: Any, turn: dict[str, Any]) -> tuple[Any, Any, int]:
     """Return current/reference response log-prob sums for one actor turn."""
     import torch
@@ -106,7 +129,7 @@ def _turn_logp_sums(model: Any, turn: dict[str, Any]) -> tuple[Any, Any, int]:
     return current_sum, reference_sum, response_tokens
 
 
-def _trajectory_log_ratio(model: Any, turns: list[dict[str, Any]]) -> tuple[Any, int]:
+def _trajectory_log_ratio(model: Any, turns: list[dict[str, Any]]) -> tuple[Any, Any, int]:
     current_total = None
     reference_total = None
     token_total = 0
@@ -117,7 +140,8 @@ def _trajectory_log_ratio(model: Any, turns: list[dict[str, Any]]) -> tuple[Any,
         token_total += tokens
     if current_total is None or reference_total is None or token_total == 0:
         raise ValueError("trajectory has no response tokens")
-    return (current_total - reference_total) / token_total, token_total
+    current_mean_logp = current_total / token_total
+    return (current_total - reference_total) / token_total, current_mean_logp, token_total
 
 
 def _backward_trajectory(
@@ -250,18 +274,33 @@ def train_preference(config_path: Path) -> None:  # pragma: no cover - GPU entry
             loss_total = 0.0
             margin_total = 0.0
             tokens_total = 0
+            imitation_total = 0.0
             for pair in group:
                 chosen = [{key: value.to(device) for key, value in turn.items()} for turn in pair["chosen_turns"]]
                 rejected = [{key: value.to(device) for key, value in turn.items()} for turn in pair["rejected_turns"]]
-                chosen_ratio, chosen_tokens = _trajectory_log_ratio(model, chosen)
-                rejected_ratio, rejected_tokens = _trajectory_log_ratio(model, rejected)
+                chosen_ratio, chosen_mean_logp, chosen_tokens = _trajectory_log_ratio(
+                    model, chosen
+                )
+                rejected_ratio, _, rejected_tokens = _trajectory_log_ratio(model, rejected)
                 margin = chosen_ratio - rejected_ratio
-                loss, slope = preference_loss_and_slope(margin, config.beta)
+                loss, chosen_slope, rejected_slope, imitation_loss = (
+                    regularized_preference_loss_and_slopes(
+                        margin,
+                        chosen_mean_logp,
+                        beta=config.beta,
+                        imitation_eta=config.imitation_eta,
+                    )
+                )
                 scale = 1.0 / len(group)
-                _backward_trajectory(model, chosen, slope.detach() * scale, chosen_tokens)
-                _backward_trajectory(model, rejected, -slope.detach() * scale, rejected_tokens)
+                _backward_trajectory(
+                    model, chosen, chosen_slope.detach() * scale, chosen_tokens
+                )
+                _backward_trajectory(
+                    model, rejected, rejected_slope.detach() * scale, rejected_tokens
+                )
                 loss_total += float(loss) * scale
                 margin_total += float(margin) * scale
+                imitation_total += float(imitation_loss) * scale
                 tokens_total += chosen_tokens + rejected_tokens
             torch.nn.utils.clip_grad_norm_(model.parameters(), config.max_grad_norm)
             optimizer.step()
@@ -271,6 +310,7 @@ def train_preference(config_path: Path) -> None:  # pragma: no cover - GPU entry
                 "step": global_step,
                 "train/loss": loss_total,
                 "train/preference_margin": margin_total,
+                "train/chosen_nll": imitation_total,
                 "train/response_tokens": tokens_total,
             }
             print(json.dumps(record))

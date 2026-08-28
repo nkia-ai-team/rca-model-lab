@@ -1,13 +1,14 @@
-name: muse-glimmer-30b-rca-rank-refinement-v6
+name: muse-glimmer-30b-rca-rank-refinement-rpo-v6
 model_name: /home/work/models/muse-glimmer-30b-rca-teacher-v2-family-clean
 dataset: outputs/rl/rank-refinement-v6.jsonl
 dataset_sha256: 640b08873880b9807da22e5868a43ee342e74f5e4be8329737f27419f62aa458
-output_dir: outputs/muse-glimmer-30b-rca-rank-refinement-v6
+output_dir: outputs/muse-glimmer-30b-rca-rank-refinement-rpo-v6
 max_length: 32768
 epochs: 1
 learning_rate: 0.0000005
 gradient_accumulation_steps: 1
 beta: 0.10
+imitation_eta: 0.005
 max_grad_norm: 1.0
 seed: 42
 lora:
@@ -18,4 +19,3 @@ lora:
 wandb:
   entity: nkia-ai
   project: rca-actor-rl
-

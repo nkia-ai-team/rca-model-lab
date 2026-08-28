@@ -9,6 +9,7 @@ from rca_lab.train.preference import (
     TrajectoryPreferenceRecord,
     load_preference_config,
     preference_loss_and_slope,
+    regularized_preference_loss_and_slopes,
     validate_preference_dataset,
 )
 
@@ -18,6 +19,7 @@ def test_rank_refinement_config_is_typed() -> None:
         Path("configs/rl/muse-glimmer-30b-rank-refinement-v6.yaml")
     )
     assert config.beta == 0.1
+    assert config.imitation_eta == 0.005
     assert config.learning_rate == 5e-7
 
 
@@ -29,6 +31,24 @@ def test_preference_loss_pushes_chosen_margin_up() -> None:
     assert loss.item() == pytest.approx(0.693147, rel=1e-5)
     assert slope.item() < 0
     assert margin.grad.item() == pytest.approx(slope.item())
+
+
+def test_regularized_preference_loss_anchors_chosen_trajectory() -> None:
+    torch = pytest.importorskip("torch")
+    margin = torch.tensor(0.0)
+    chosen_mean_logp = torch.tensor(-2.0)
+    loss, chosen_slope, rejected_slope, imitation_loss = (
+        regularized_preference_loss_and_slopes(
+            margin,
+            chosen_mean_logp,
+            beta=0.1,
+            imitation_eta=0.005,
+        )
+    )
+    assert imitation_loss.item() == pytest.approx(2.0)
+    assert loss.item() == pytest.approx(0.694147, rel=1e-5)
+    assert chosen_slope.item() == pytest.approx(-0.0505)
+    assert rejected_slope.item() == pytest.approx(0.05)
 
 
 def test_preference_dataset_hash_rejects_mutation(tmp_path: Path) -> None:
