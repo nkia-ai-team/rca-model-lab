@@ -7,6 +7,7 @@ served_model=${3:-rca-actor}
 lora_adapter=${4:-}
 vllm_bin=${VLLM_BIN:-/home/work/venv-vllm/bin/vllm}
 max_num_seqs=${VLLM_MAX_NUM_SEQS:-8}
+max_num_batched_tokens=${VLLM_MAX_NUM_BATCHED_TOKENS:-16384}
 gpu_memory_utilization=${VLLM_GPU_MEMORY_UTILIZATION:-0.95}
 
 test -d "$model_path"
@@ -41,6 +42,8 @@ exec "$vllm_bin" serve "$model_path" \
   --max-model-len 32768 \
   --gpu-memory-utilization "$gpu_memory_utilization" \
   --max-num-seqs "$max_num_seqs" \
+  --max-num-batched-tokens "$max_num_batched_tokens" \
+  --enable-chunked-prefill \
   --enable-prefix-caching \
   "${lora_args[@]}" \
   --structured-outputs-config '{"backend":"guidance"}'

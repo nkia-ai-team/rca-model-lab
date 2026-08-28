@@ -50,6 +50,8 @@ def test_serves_adapter_without_merging(tmp_path: Path) -> None:
     assert args[args.index("--served-model-name") + 1] == "rca-actor-base"
     assert args[args.index("--gpu-memory-utilization") + 1] == "0.95"
     assert args[args.index("--max-num-seqs") + 1] == "8"
+    assert args[args.index("--max-num-batched-tokens") + 1] == "16384"
+    assert "--enable-chunked-prefill" in args
     assert "--enable-lora" in args
     assert args[args.index("--max-lora-rank") + 1] == "8"
     target_index = args.index("--lora-target-modules")
@@ -94,6 +96,7 @@ def test_inference_capacity_can_be_tuned_without_editing_script(tmp_path: Path) 
         "CAPTURE_PYTHONNOUSERSITE": str(python_no_user_site),
         "VLLM_GPU_MEMORY_UTILIZATION": "0.92",
         "VLLM_MAX_NUM_SEQS": "12",
+        "VLLM_MAX_NUM_BATCHED_TOKENS": "24576",
     }
 
     subprocess.run(
@@ -103,3 +106,4 @@ def test_inference_capacity_can_be_tuned_without_editing_script(tmp_path: Path) 
     args = output.read_text(encoding="utf-8").splitlines()
     assert args[args.index("--gpu-memory-utilization") + 1] == "0.92"
     assert args[args.index("--max-num-seqs") + 1] == "12"
+    assert args[args.index("--max-num-batched-tokens") + 1] == "24576"
