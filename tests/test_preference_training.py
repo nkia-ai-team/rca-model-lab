@@ -15,9 +15,9 @@ from rca_lab.train.preference import (
 
 
 def test_rank_refinement_config_is_typed() -> None:
-    config = load_preference_config(
-        Path("configs/rl/muse-glimmer-30b-rank-refinement-v6.yaml")
-    )
+    config = load_preference_config(Path("configs/rl/muse-glimmer-30b-rank-refinement-v6.yaml"))
+    assert config.algorithm == "whole_trajectory_rpo_lora"
+    assert config.model_sha256 == "a1c6b1c130e4bb62ae9db58a5629b0fca46d45f6340b782e74d11bd9fa872071"
     assert config.beta == 0.1
     assert config.imitation_eta == 0.005
     assert config.learning_rate == 5e-7
@@ -37,13 +37,11 @@ def test_regularized_preference_loss_anchors_chosen_trajectory() -> None:
     torch = pytest.importorskip("torch")
     margin = torch.tensor(0.0)
     chosen_mean_logp = torch.tensor(-2.0)
-    loss, chosen_slope, rejected_slope, imitation_loss = (
-        regularized_preference_loss_and_slopes(
-            margin,
-            chosen_mean_logp,
-            beta=0.1,
-            imitation_eta=0.005,
-        )
+    loss, chosen_slope, rejected_slope, imitation_loss = regularized_preference_loss_and_slopes(
+        margin,
+        chosen_mean_logp,
+        beta=0.1,
+        imitation_eta=0.005,
     )
     assert imitation_loss.item() == pytest.approx(2.0)
     assert loss.item() == pytest.approx(0.694147, rel=1e-5)

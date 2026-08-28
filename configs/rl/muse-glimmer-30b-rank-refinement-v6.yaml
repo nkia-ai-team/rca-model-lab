@@ -1,5 +1,7 @@
 name: muse-glimmer-30b-rca-rank-refinement-rpo-v6
+algorithm: whole_trajectory_rpo_lora
 model_name: /home/work/models/muse-glimmer-30b-rca-teacher-v2-family-clean
+model_sha256: a1c6b1c130e4bb62ae9db58a5629b0fca46d45f6340b782e74d11bd9fa872071
 dataset: outputs/rl/rank-refinement-v6.jsonl
 dataset_sha256: 640b08873880b9807da22e5868a43ee342e74f5e4be8329737f27419f62aa458
 output_dir: outputs/muse-glimmer-30b-rca-rank-refinement-rpo-v6

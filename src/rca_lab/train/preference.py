@@ -8,21 +8,23 @@ import platform
 import random
 from contextlib import nullcontext
 from pathlib import Path
-from typing import Any
+from typing import Any, Literal
 
 import yaml
 from pydantic import Field
 
 from rca_lab.data.sft import SFTMessage
 from rca_lab.harness.models import StrictModel
-from rca_lab.provenance import file_sha256
+from rca_lab.provenance import file_sha256, resolve_model_identity
 from rca_lab.train.rl import _response_shape, _selected_logps
 from rca_lab.train.sft import LoRAConfig, WandbConfig, mask_assistant_spans
 
 
 class TrajectoryPreferenceConfig(StrictModel):
     name: str
+    algorithm: Literal["whole_trajectory_rpo_lora"]
     model_name: str
+    model_sha256: str = Field(min_length=64, max_length=64)
     dataset: str
     dataset_sha256: str = Field(min_length=64, max_length=64)
     output_dir: str
@@ -54,15 +56,15 @@ class TrajectoryPreferenceRecord(StrictModel):
 
 
 def load_preference_config(path: Path) -> TrajectoryPreferenceConfig:
-    return TrajectoryPreferenceConfig.model_validate(yaml.safe_load(path.read_text(encoding="utf-8")))
+    return TrajectoryPreferenceConfig.model_validate(
+        yaml.safe_load(path.read_text(encoding="utf-8"))
+    )
 
 
 def validate_preference_dataset(path: Path, expected_sha256: str) -> None:
     actual = file_sha256(path)
     if actual != expected_sha256:
-        raise ValueError(
-            f"preference dataset sha256 mismatch: got={actual} want={expected_sha256}"
-        )
+        raise ValueError(f"preference dataset sha256 mismatch: got={actual} want={expected_sha256}")
 
 
 def preference_loss_and_slope(margin: Any, beta: float) -> tuple[Any, Any]:
@@ -174,6 +176,7 @@ def train_preference(config_path: Path) -> None:  # pragma: no cover - GPU entry
     from transformers import AutoModelForCausalLM, AutoModelForImageTextToText, AutoTokenizer
 
     config = load_preference_config(config_path)
+    resolve_model_identity(config.model_name, config.model_sha256)
     dataset_path = Path(config.dataset)
     validate_preference_dataset(dataset_path, config.dataset_sha256)
     rows = [
@@ -276,11 +279,15 @@ def train_preference(config_path: Path) -> None:  # pragma: no cover - GPU entry
             tokens_total = 0
             imitation_total = 0.0
             for pair in group:
-                chosen = [{key: value.to(device) for key, value in turn.items()} for turn in pair["chosen_turns"]]
-                rejected = [{key: value.to(device) for key, value in turn.items()} for turn in pair["rejected_turns"]]
-                chosen_ratio, chosen_mean_logp, chosen_tokens = _trajectory_log_ratio(
-                    model, chosen
-                )
+                chosen = [
+                    {key: value.to(device) for key, value in turn.items()}
+                    for turn in pair["chosen_turns"]
+                ]
+                rejected = [
+                    {key: value.to(device) for key, value in turn.items()}
+                    for turn in pair["rejected_turns"]
+                ]
+                chosen_ratio, chosen_mean_logp, chosen_tokens = _trajectory_log_ratio(model, chosen)
                 rejected_ratio, _, rejected_tokens = _trajectory_log_ratio(model, rejected)
                 margin = chosen_ratio - rejected_ratio
                 loss, chosen_slope, rejected_slope, imitation_loss = (
@@ -292,9 +299,7 @@ def train_preference(config_path: Path) -> None:  # pragma: no cover - GPU entry
                     )
                 )
                 scale = 1.0 / len(group)
-                _backward_trajectory(
-                    model, chosen, chosen_slope.detach() * scale, chosen_tokens
-                )
+                _backward_trajectory(model, chosen, chosen_slope.detach() * scale, chosen_tokens)
                 _backward_trajectory(
                     model, rejected, rejected_slope.detach() * scale, rejected_tokens
                 )
@@ -322,12 +327,15 @@ def train_preference(config_path: Path) -> None:  # pragma: no cover - GPU entry
     model.save_pretrained(adapter_dir)
     tokenizer.save_pretrained(adapter_dir)
     adapter_files = sorted(
-        path for path in adapter_dir.iterdir() if path.is_file() and path.name != "training_manifest.json"
+        path
+        for path in adapter_dir.iterdir()
+        if path.is_file() and path.name != "training_manifest.json"
     )
     (adapter_dir / "training_manifest.json").write_text(
         json.dumps(
             {
                 "config": config.model_dump(mode="json"),
+                "config_sha256": file_sha256(config_path),
                 "dataset_sha256": file_sha256(dataset_path),
                 "adapter_files_sha256": {path.name: file_sha256(path) for path in adapter_files},
                 "runtime": {
