@@ -19,16 +19,27 @@ import yaml
 from rca_lab.provenance import case_set_identity, file_sha256, resolve_model_identity
 
 
-def wait_for_model(url: str, timeout: int = 300) -> None:
+def served_model_ids(payload: object) -> set[str]:
+    if not isinstance(payload, dict) or not isinstance(payload.get("data"), list):
+        return set()
+    return {
+        str(item["id"])
+        for item in payload["data"]
+        if isinstance(item, dict) and isinstance(item.get("id"), str)
+    }
+
+
+def wait_for_model(url: str, expected_model: str, timeout: int = 300) -> None:
     deadline = time.monotonic() + timeout
     while time.monotonic() < deadline:
         try:
             with urlopen(f"{url}/models", timeout=5) as response:
-                if response.status == 200:
+                payload = json.load(response)
+                if response.status == 200 and expected_model in served_model_ids(payload):
                     return
         except OSError:
             time.sleep(2)
-    raise TimeoutError(f"model endpoint did not become ready: {url}")
+    raise TimeoutError(f"model endpoint did not serve {expected_model}: {url}")
 
 
 def eval_manifest_contract(args: argparse.Namespace, cases: list[str]) -> dict[str, object]:
@@ -43,6 +54,8 @@ def eval_manifest_contract(args: argparse.Namespace, cases: list[str]) -> dict[s
         "runs": args.runs,
         "cases": cases,
         "partition": args.partition,
+        "actor_temperature": 0.0,
+        "actor_seed": 0,
         "agent_sha256": file_sha256(args.agent),
         "restore_sha256": file_sha256(args.restore),
         "split_sha256": file_sha256(args.split),
@@ -121,7 +134,7 @@ def main() -> None:
         + "\n",
         encoding="utf-8",
     )
-    wait_for_model(args.base_url)
+    wait_for_model(args.base_url, args.model)
     shared_env = {
         **os.environ,
         "LUCIDA_AI_RCA_PROBE_URL": args.base_url,
@@ -180,7 +193,7 @@ def main() -> None:
             trajectory_dir.mkdir(exist_ok=True)
             env = {**shared_env, "RCA_TRAJECTORY_DIR": str(trajectory_dir)}
             result = subprocess.run(
-                [str(args.agent), current_incident],
+                [str(args.agent), "--actor-temperature", "0", current_incident],
                 capture_output=True,
                 text=True,
                 env=env,

@@ -49,3 +49,13 @@ def test_eval_manifest_seals_model_restore_and_case_artifacts(tmp_path: Path) ->
     assert len(manifest["agent_sha256"]) == 64
     assert len(manifest["restore_sha256"]) == 64
     assert len(manifest["case_set_sha256"]) == 64
+    assert manifest["actor_temperature"] == 0.0
+    assert manifest["actor_seed"] == 0
+
+
+def test_served_model_ids_rejects_stale_or_malformed_endpoint() -> None:
+    module = _module()
+
+    assert module.served_model_ids({"data": [{"id": "rca-actor"}]}) == {"rca-actor"}
+    assert module.served_model_ids({"data": [{"id": "other"}]}) == {"other"}
+    assert module.served_model_ids({"unexpected": []}) == set()
