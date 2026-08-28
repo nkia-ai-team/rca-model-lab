@@ -29,6 +29,12 @@ def test_trainer_starts_rl_from_exact_sft_adapter_without_merging() -> None:
     assert lora["target_modules"] == [
         r"^model\.language_model\..*\.(q_proj|k_proj|v_proj|o_proj|up_proj|down_proj|gate_proj)$"
     ]
+    assert config["loss"] == {
+        "type": "ipo",
+        "eps": 0.1,
+        "adv_tau": 1.0,
+        "kl_tau": 0.001,
+    }
 
 
 def test_orchestrator_uses_online_group_rollouts_and_production_harness() -> None:

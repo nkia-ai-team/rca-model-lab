@@ -21,6 +21,14 @@ target_modules = [
   '^model\.language_model\..*\.(q_proj|k_proj|v_proj|o_proj|up_proj|down_proj|gate_proj)$',
 ]
 
+# Declare the Prime-RL token objective explicitly. Do not depend on library
+# defaults: the sealed run manifest must identify the exact update contract.
+[loss]
+type = "ipo"
+eps = 0.1
+adv_tau = 1.0
+kl_tau = 0.001
+
 [optim]
 type = "adamw"
 lr = 1e-6
