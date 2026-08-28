@@ -8,28 +8,12 @@ import json
 from pathlib import Path
 from typing import Any
 
-_COMPARABLE_PROVENANCE = (
-    "agent_sha256",
-    "restore_sha256",
-    "split_sha256",
-    "case_set_sha256",
-    "structured_output_backend",
-    "actor_temperature",
-    "actor_seed",
-    "runs",
-    "cases",
-)
+from rca_lab.eval.provenance import provenance_failures
 
 
 def compare(reference: dict[str, Any], candidate: dict[str, Any]) -> tuple[bool, tuple[str, ...]]:
     failures: list[str] = []
-    reference_provenance = reference.get("evaluation_provenance", {})
-    candidate_provenance = candidate.get("evaluation_provenance", {})
-    for key in _COMPARABLE_PROVENANCE:
-        if key not in reference_provenance or key not in candidate_provenance:
-            failures.append(f"missing comparable provenance: {key}")
-        elif reference_provenance[key] != candidate_provenance[key]:
-            failures.append(f"evaluation provenance mismatch: {key}")
+    failures.extend(provenance_failures(reference, candidate))
     if reference.get("completed_runs") != candidate.get("completed_runs"):
         failures.append("completed run count mismatch")
     if int(candidate.get("format_errors", -1)) != 0:

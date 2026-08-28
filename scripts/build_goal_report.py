@@ -12,6 +12,7 @@ from typing import Any
 
 import yaml
 
+from rca_lab.eval.provenance import provenance_failures
 from rca_lab.eval.scoring import EvalContract
 from rca_lab.scenarios.split import load_teacher_split
 
@@ -40,12 +41,32 @@ def build_report(
     contract = EvalContract.model_validate(yaml.safe_load(contract_path.read_text()))
     if set(contract.cases) != set(split.sealed_eval):
         raise ValueError("sealed scoring contract does not exactly match sealed split")
-    overlap = sorted({_family(item) for item in split.train} & {_family(item) for item in split.sealed_eval})
+    overlap = sorted(
+        {_family(item) for item in split.train} & {_family(item) for item in split.sealed_eval}
+    )
     stages = {
         "baseline": json.loads(baseline_path.read_text()),
         "sft": json.loads(sft_path.read_text()),
         "rl": json.loads(rl_path.read_text()),
     }
+    expected_split_sha256 = _digest(split_path)
+    expected_contract_sha256 = _digest(contract_path)
+    for name, stage in stages.items():
+        provenance = stage.get("evaluation_provenance", {})
+        if provenance.get("partition") != "sealed_eval":
+            raise ValueError(f"{name}: final report requires sealed_eval provenance")
+        if provenance.get("runs") != runs:
+            raise ValueError(f"{name}: evaluation run count mismatch")
+        if provenance.get("cases") != list(contract.cases):
+            raise ValueError(f"{name}: evaluation cases do not match sealed contract")
+        if provenance.get("split_sha256") != expected_split_sha256:
+            raise ValueError(f"{name}: evaluation split digest mismatch")
+        if provenance.get("scoring_contract_sha256") != expected_contract_sha256:
+            raise ValueError(f"{name}: scoring contract digest mismatch")
+    for name in ("sft", "rl"):
+        failures = provenance_failures(stages["baseline"], stages[name])
+        if failures:
+            raise ValueError(f"{name}: incomparable evaluation: {'; '.join(failures)}")
     return {
         "contract": {"sealed_cases": len(contract.cases), "runs_per_case": runs},
         "schema": {
@@ -76,9 +97,7 @@ def main() -> None:
     parser.add_argument("--sft", type=Path, required=True)
     parser.add_argument("--rl", type=Path, required=True)
     parser.add_argument("--runs", type=int, default=3)
-    parser.add_argument(
-        "--output", type=Path, default=Path("outputs/goal-eval/final-report.json")
-    )
+    parser.add_argument("--output", type=Path, default=Path("outputs/goal-eval/final-report.json"))
     args = parser.parse_args()
     report = build_report(
         split_path=args.split,

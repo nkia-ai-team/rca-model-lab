@@ -20,9 +20,11 @@ def report() -> dict:
         "restore_sha256": "b",
         "split_sha256": "c",
         "case_set_sha256": "d",
+        "scoring_contract_sha256": "e",
         "structured_output_backend": "guidance",
         "actor_temperature": 0.0,
         "actor_seed": 0,
+        "partition": "sealed_eval",
         "runs": 3,
         "cases": ["case-a"],
     }
