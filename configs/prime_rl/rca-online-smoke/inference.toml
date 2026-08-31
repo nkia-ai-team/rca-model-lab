@@ -37,4 +37,4 @@ lora_target_modules = [
   "down_proj",
   "gate_proj",
 ]
-structured_outputs_config = { backend = "guidance" }
+structured_outputs_config = { backend = "guidance", disable_any_whitespace = true }

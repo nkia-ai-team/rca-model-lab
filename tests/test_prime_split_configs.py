@@ -129,6 +129,10 @@ def test_inference_budget_targets_throughput_without_reducing_kv_capacity() -> N
     assert config["enable_lora"] is True
     assert config["attention_backend"] == "FLASH_ATTN"
     assert config["kernel_config"]["enable_flashinfer_autotune"] is False
+    assert config["structured_outputs_config"] == {
+        "backend": "guidance",
+        "disable_any_whitespace": True,
+    }
 
 
 def test_relay_path_is_the_path_prime_sends_to_remote_vllm() -> None:
