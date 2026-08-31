@@ -109,6 +109,13 @@ class RCAStudentTask(vf.Task[RCAStudentData, vf.State, RCAStudentTaskConfig]):
             "turns": float(score["turns"]),
             "observed_evidence_refs": float(score["observed_evidence_refs"]),
             "grounded_answer_refs": float(score["grounded_answer_refs"]),
+            "root_target_coverage": float(score["root_target_coverage"]),
+            "root_observed_evidence_refs": float(
+                score["root_observed_evidence_refs"]
+            ),
+            "root_grounded_answer_refs": float(
+                score["root_grounded_answer_refs"]
+            ),
         }
 
 

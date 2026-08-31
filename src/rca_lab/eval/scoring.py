@@ -168,10 +168,9 @@ def diagnosis_optimization_reward(
 def exploration_bootstrap_reward(
     *,
     diagnosis_reward: float,
-    proof_rate: float,
-    evidence_complete: bool,
-    observed_evidence_refs: int,
-    grounded_answer_refs: int,
+    root_target_coverage: float,
+    root_observed_evidence_refs: int,
+    root_grounded_answer_refs: int,
     rejected_actions: int,
     action_count: int,
     unsupported_confirmation: int,
@@ -179,11 +178,11 @@ def exploration_bootstrap_reward(
 ) -> float:
     """Reward grounded investigation before switching to diagnosis-only RL.
 
-    The bootstrap stage never rewards a tool name, turn count, or a successful
-    RPC by itself. Credit comes only from distinct evidence returned by the
-    environment and references grounded in the terminal answer. This makes the
-    short curriculum useful when every initial rollout has zero root F1 while
-    bounding the value of repeated or decorative tool calls.
+    The bootstrap stage never rewards a tool name, turn count, generic evidence
+    volume, or a successful RPC by itself. Process credit requires a successful
+    observation whose typed target is one of the hidden expected root or
+    external-boundary targets. This gives an all-zero diagnosis group relative
+    signal without reinforcing broad, irrelevant scans.
     """
 
     rejected_rate = rejected_actions / max(1, action_count)
@@ -191,16 +190,33 @@ def exploration_bootstrap_reward(
         0.0,
         min(
             1.0,
-            0.55 * diagnosis_reward
-            + 0.15 * float(evidence_complete)
-            + 0.10 * proof_rate
-            + 0.10 * min(1.0, observed_evidence_refs / 8)
-            + 0.10 * min(1.0, grounded_answer_refs / 4)
+            0.60 * diagnosis_reward
+            + 0.20 * root_target_coverage
+            + 0.10 * min(1.0, root_observed_evidence_refs / 4)
+            + 0.10 * min(1.0, root_grounded_answer_refs / 2)
             - 0.15 * rejected_rate
             - 0.25 * float(unsupported_confirmation)
             - 0.10 * float(min(1, format_errors)),
         ),
     )
+
+
+def _expected_probe_targets(expected: dict[str, Any]) -> tuple[frozenset[str], ...]:
+    """Return one canonical probe-target set per expected root identity."""
+
+    groups = []
+    for root in expected["roots"]:
+        target_ids = root.get("target_ids") or root.get("boundary_target_ids") or []
+        groups.append(frozenset(map(str, target_ids)))
+    return tuple(groups)
+
+
+def _observation_target(item: dict[str, Any]) -> str:
+    target = str(item.get("target", ""))
+    if target:
+        return target
+    query = item.get("query")
+    return str(query.get("target", "")) if isinstance(query, dict) else ""
 
 
 def score_episode(case_id: str, expected: dict[str, Any], episode: dict[str, Any]) -> dict[str, Any]:
@@ -273,6 +289,31 @@ def score_episode(case_id: str, expected: dict[str, Any], episode: dict[str, Any
         for ref in cause.get("evidence_refs", [])
         if str(ref) in known_refs
     }
+    expected_probe_targets = _expected_probe_targets(expected)
+    root_observations = [
+        item
+        for item in ledger
+        if item.get("ok")
+        and item.get("evidence_refs")
+        and any(
+            _observation_target(item) in target_group
+            for target_group in expected_probe_targets
+        )
+    ]
+    root_observed_evidence_refs = {
+        str(ref)
+        for item in root_observations
+        for ref in item.get("evidence_refs", [])
+        if ref
+    }
+    observed_root_targets = {_observation_target(item) for item in root_observations}
+    root_target_coverage = (
+        sum(bool(target_group & observed_root_targets) for target_group in expected_probe_targets)
+        / len(expected_probe_targets)
+        if expected_probe_targets
+        else 0.0
+    )
+    root_grounded_answer_refs = grounded_answer_refs & root_observed_evidence_refs
     efficiency = max(0.0, 1 - max(0, turns - 1) / 12)
     tool_success = sum(bool(item.get("ok")) for item in ledger) / len(ledger) if ledger else 0
     reward = max(
@@ -298,10 +339,9 @@ def score_episode(case_id: str, expected: dict[str, Any], episode: dict[str, Any
     )
     bootstrap_reward = exploration_bootstrap_reward(
         diagnosis_reward=optimization_reward,
-        proof_rate=proof_rate,
-        evidence_complete=evidence_complete,
-        observed_evidence_refs=len(observed_evidence_refs),
-        grounded_answer_refs=len(grounded_answer_refs),
+        root_target_coverage=root_target_coverage,
+        root_observed_evidence_refs=len(root_observed_evidence_refs),
+        root_grounded_answer_refs=len(root_grounded_answer_refs),
         rejected_actions=rejected_actions,
         action_count=len(actions),
         unsupported_confirmation=unsupported,
@@ -322,6 +362,9 @@ def score_episode(case_id: str, expected: dict[str, Any], episode: dict[str, Any
         "exploration_bootstrap_reward": bootstrap_reward,
         "observed_evidence_refs": len(observed_evidence_refs),
         "grounded_answer_refs": len(grounded_answer_refs),
+        "root_target_coverage": root_target_coverage,
+        "root_observed_evidence_refs": len(root_observed_evidence_refs),
+        "root_grounded_answer_refs": len(root_grounded_answer_refs),
         "turns": turns,
         "actions": actions,
         "distinct_actions": len(set(actions)),

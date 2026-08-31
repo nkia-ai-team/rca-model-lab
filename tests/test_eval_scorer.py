@@ -30,13 +30,12 @@ def test_rl_reward_excludes_efficiency_and_tool_success_noise() -> None:
     assert wrong == 0.0
 
 
-def test_bootstrap_reward_uses_grounded_evidence_not_tool_names_or_turn_efficiency() -> None:
+def test_bootstrap_reward_uses_root_grounded_evidence_not_tool_names_or_turn_efficiency() -> None:
     grounded = exploration_bootstrap_reward(
         diagnosis_reward=0.0,
-        proof_rate=0.0,
-        evidence_complete=True,
-        observed_evidence_refs=8,
-        grounded_answer_refs=4,
+        root_target_coverage=1.0,
+        root_observed_evidence_refs=4,
+        root_grounded_answer_refs=2,
         rejected_actions=0,
         action_count=12,
         unsupported_confirmation=0,
@@ -44,27 +43,25 @@ def test_bootstrap_reward_uses_grounded_evidence_not_tool_names_or_turn_efficien
     )
     empty = exploration_bootstrap_reward(
         diagnosis_reward=0.0,
-        proof_rate=0.0,
-        evidence_complete=False,
-        observed_evidence_refs=0,
-        grounded_answer_refs=0,
+        root_target_coverage=0.0,
+        root_observed_evidence_refs=0,
+        root_grounded_answer_refs=0,
         rejected_actions=0,
         action_count=1,
         unsupported_confirmation=0,
         format_errors=0,
     )
 
-    assert grounded == pytest.approx(0.35)
+    assert grounded == pytest.approx(0.4)
     assert empty == 0.0
 
 
 def test_bootstrap_reward_caps_evidence_and_penalizes_rejected_actions() -> None:
     capped = exploration_bootstrap_reward(
         diagnosis_reward=0.0,
-        proof_rate=0.0,
-        evidence_complete=False,
-        observed_evidence_refs=800,
-        grounded_answer_refs=400,
+        root_target_coverage=1.0,
+        root_observed_evidence_refs=800,
+        root_grounded_answer_refs=400,
         rejected_actions=0,
         action_count=12,
         unsupported_confirmation=0,
@@ -72,18 +69,32 @@ def test_bootstrap_reward_caps_evidence_and_penalizes_rejected_actions() -> None
     )
     repeated = exploration_bootstrap_reward(
         diagnosis_reward=0.0,
-        proof_rate=0.0,
-        evidence_complete=False,
-        observed_evidence_refs=800,
-        grounded_answer_refs=400,
+        root_target_coverage=1.0,
+        root_observed_evidence_refs=800,
+        root_grounded_answer_refs=400,
         rejected_actions=6,
         action_count=12,
         unsupported_confirmation=0,
         format_errors=0,
     )
 
-    assert capped == pytest.approx(0.2)
-    assert repeated == pytest.approx(0.125)
+    assert capped == pytest.approx(0.4)
+    assert repeated == pytest.approx(0.325)
+
+
+def test_bootstrap_reward_does_not_credit_large_irrelevant_evidence_scan() -> None:
+    irrelevant = exploration_bootstrap_reward(
+        diagnosis_reward=0.0,
+        root_target_coverage=0.0,
+        root_observed_evidence_refs=0,
+        root_grounded_answer_refs=0,
+        rejected_actions=0,
+        action_count=12,
+        unsupported_confirmation=0,
+        format_errors=0,
+    )
+
+    assert irrelevant == 0.0
 
 
 def test_train_and_sealed_contracts_are_typed_and_disjoint() -> None:
