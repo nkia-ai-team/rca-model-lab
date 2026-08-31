@@ -36,12 +36,17 @@ stack.
 The trainer environment must apply `trainer-overrides.txt` after installing
 Prime. Prime pins Transformers 5.6.2, which cannot load the `muse_glimmer`
 architecture; the override uses the same Muse-capable Transformers 5.15.1 as
-the SFT environment and also declares Prime's missing metrics dependency:
+the SFT environment and also declares Prime's missing metrics dependency.
+Use the installer rather than invoking `uv pip` inside the Prime checkout:
 
 ```bash
-uv pip install --python /absolute/path/to/trainer/python \
-  -r integrations/prime_rl/trainer-overrides.txt
+scripts/install_prime_trainer_overrides.sh /absolute/path/to/trainer/python
 ```
+
+Prime declares Transformers under `tool.uv.override-dependencies`. A direct
+`uv pip install` launched inside that workspace will silently keep Prime's
+5.6.2 pin even when the requirements file requests 5.15.1. The installer runs
+the post-install override outside Prime's workspace and verifies both versions.
 
 All stages are bound to the pinned
 `RedHatAI/Muse-Glimmer-30B-FP8-block` source revision. Transformers dequantizes
