@@ -10,6 +10,7 @@ max_num_seqs=${VLLM_MAX_NUM_SEQS:-8}
 max_num_batched_tokens=${VLLM_MAX_NUM_BATCHED_TOKENS:-16384}
 gpu_memory_utilization=${VLLM_GPU_MEMORY_UTILIZATION:-0.95}
 tokenizer_path=${VLLM_TOKENIZER_PATH:-}
+structured_outputs_config=${VLLM_STRUCTURED_OUTPUTS_CONFIG:-'{"backend":"guidance","disable_any_whitespace":true}'}
 
 test -d "$model_path"
 test -x "$vllm_bin"
@@ -54,4 +55,4 @@ exec "$vllm_bin" serve "$model_path" \
   --enable-prefix-caching \
   --language-model-only \
   "${lora_args[@]}" \
-  --structured-outputs-config '{"backend":"guidance"}'
+  --structured-outputs-config "$structured_outputs_config"

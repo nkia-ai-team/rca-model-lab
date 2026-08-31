@@ -13,10 +13,10 @@ def _fake_vllm(tmp_path: Path) -> tuple[Path, Path, Path]:
     executable = tmp_path / "vllm"
     executable.write_text(
         "#!/usr/bin/env bash\n"
-        "printf '%s\\n' \"$@\" > \"$CAPTURE_ARGS\"\n"
-        "printf '%s\\n' \"${PYTHONNOUSERSITE:-}\" > \"$CAPTURE_PYTHONNOUSERSITE\"\n"
+        'printf \'%s\\n\' "$@" > "$CAPTURE_ARGS"\n'
+        'printf \'%s\\n\' "${PYTHONNOUSERSITE:-}" > "$CAPTURE_PYTHONNOUSERSITE"\n'
         "if [[ -v PYTHONPATH ]]; then printf 'set\\n'; else printf 'unset\\n'; fi "
-        ">> \"$CAPTURE_PYTHONNOUSERSITE\"\n",
+        '>> "$CAPTURE_PYTHONNOUSERSITE"\n',
         encoding="utf-8",
     )
     executable.chmod(0o755)
@@ -51,6 +51,9 @@ def test_serves_adapter_without_merging(tmp_path: Path) -> None:
     assert args[args.index("--gpu-memory-utilization") + 1] == "0.95"
     assert args[args.index("--max-num-seqs") + 1] == "8"
     assert args[args.index("--max-num-batched-tokens") + 1] == "16384"
+    assert args[args.index("--structured-outputs-config") + 1] == (
+        '{"backend":"guidance","disable_any_whitespace":true}'
+    )
     assert "--enable-chunked-prefill" in args
     assert "--language-model-only" in args
     assert "--enable-lora" in args
@@ -78,9 +81,7 @@ def test_base_model_contract_remains_backward_compatible(tmp_path: Path) -> None
         "CAPTURE_PYTHONNOUSERSITE": str(python_no_user_site),
     }
 
-    subprocess.run(
-        [str(SCRIPT), str(base), "8002", "rca-actor"], check=True, env=env
-    )
+    subprocess.run([str(SCRIPT), str(base), "8002", "rca-actor"], check=True, env=env)
 
     args = output.read_text(encoding="utf-8").splitlines()
     assert args[args.index("--served-model-name") + 1] == "rca-actor"
@@ -100,9 +101,7 @@ def test_inference_capacity_can_be_tuned_without_editing_script(tmp_path: Path) 
         "VLLM_MAX_NUM_BATCHED_TOKENS": "24576",
     }
 
-    subprocess.run(
-        [str(SCRIPT), str(base), "8002", "rca-actor"], check=True, env=env
-    )
+    subprocess.run([str(SCRIPT), str(base), "8002", "rca-actor"], check=True, env=env)
 
     args = output.read_text(encoding="utf-8").splitlines()
     assert args[args.index("--gpu-memory-utilization") + 1] == "0.92"
