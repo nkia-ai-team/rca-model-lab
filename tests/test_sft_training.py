@@ -46,6 +46,8 @@ def test_high_reasoning_experiment_reuses_the_verified_full_trajectory_set() -> 
     assert high.output_dir != low.output_dir
     assert high.checkpoint_format == "compressed_tensors_fp8_block"
     assert high.dequantize_for_training is True
+    assert high.adapter_parameter_dtype == "bfloat16"
+    assert high.optimizer_state_dtype == "float32"
     assert high.tokenizer_name.endswith("models/muse-glimmer-30b-tokenizer")
 
 

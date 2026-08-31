@@ -22,6 +22,7 @@ from rca_lab.train.checkpoint import (
     save_training_tokenizer_artifacts,
     verify_training_checkpoint,
 )
+from rca_lab.train.precision import build_fp32_master_adamw, configure_lora_precision
 
 ReasoningStrength = Literal["low", "high"]
 
@@ -345,6 +346,13 @@ def train_sft(config_path: Path) -> None:  # pragma: no cover - GPU entrypoint
             task_type="CAUSAL_LM",
         ),
     )
+    precision = configure_lora_precision(model, torch_module=torch)
+    optimizer = build_fp32_master_adamw(
+        model.parameters(),
+        torch_module=torch,
+        lr=config.learning_rate,
+        weight_decay=0.0,
+    )
 
     wandb_enabled = bool(os.environ.get("WANDB_API_KEY")) or Path("~/.netrc").expanduser().exists()
     if wandb_enabled:
@@ -368,6 +376,7 @@ def train_sft(config_path: Path) -> None:  # pragma: no cover - GPU entrypoint
                     "each scenario contributes equal total loss per epoch; "
                     "multiple accepted trajectories share that scenario weight"
                 ),
+                "precision_contract": precision,
             },
         )
 
@@ -393,6 +402,7 @@ def train_sft(config_path: Path) -> None:  # pragma: no cover - GPU entrypoint
         args=arguments,
         train_dataset=EpisodeDataset(),
         data_collator=EpisodeCollator(),
+        optimizers=(optimizer, None),
     )
     trainer.train()
     adapter_dir = Path(config.output_dir) / "adapter"
@@ -409,6 +419,7 @@ def train_sft(config_path: Path) -> None:  # pragma: no cover - GPU entrypoint
             "transformers": __import__("transformers").__version__,
             "peft": __import__("peft").__version__,
             "checkpoint": verify_training_checkpoint(config),
+            "precision": precision,
         },
     )
     (adapter_dir / "training_manifest.json").write_text(

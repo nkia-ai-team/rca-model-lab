@@ -21,6 +21,7 @@ from rca_lab.train.checkpoint import (
     load_training_model,
     load_training_tokenizer,
 )
+from rca_lab.train.precision import build_fp32_master_adamw, configure_lora_precision
 from rca_lab.train.rl import _response_shape, _selected_logps
 from rca_lab.train.sft import (
     LoRAConfig,
@@ -255,6 +256,7 @@ def train_preference(config_path: Path) -> None:  # pragma: no cover - GPU entry
             task_type="CAUSAL_LM",
         ),
     )
+    precision = configure_lora_precision(model, torch_module=torch)
     model.enable_input_require_grads()
     model.gradient_checkpointing_enable()
     model.train()
@@ -262,8 +264,9 @@ def train_preference(config_path: Path) -> None:  # pragma: no cover - GPU entry
         if isinstance(module, torch.nn.Dropout):
             module.eval()
     device = next(model.parameters()).device
-    optimizer = torch.optim.AdamW(
-        (parameter for parameter in model.parameters() if parameter.requires_grad),
+    optimizer = build_fp32_master_adamw(
+        model.parameters(),
+        torch_module=torch,
         lr=config.learning_rate,
     )
 
@@ -275,7 +278,7 @@ def train_preference(config_path: Path) -> None:  # pragma: no cover - GPU entry
             entity=config.wandb.entity,
             project=config.wandb.project,
             name=config.name,
-            config={**config.model_dump(), "pairs": len(encoded)},
+            config={**config.model_dump(), "pairs": len(encoded), "precision": precision},
         )
     global_step = 0
     for epoch in range(config.epochs):
@@ -353,6 +356,7 @@ def train_preference(config_path: Path) -> None:  # pragma: no cover - GPU entry
                     "cuda": torch.version.cuda,
                     "transformers": __import__("transformers").__version__,
                     "peft": __import__("peft").__version__,
+                    "precision": precision,
                 },
             },
             indent=2,

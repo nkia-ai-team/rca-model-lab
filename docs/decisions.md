@@ -16,3 +16,4 @@
 | 2026-08-21 | 데이터셋·가중치 공유는 HF Hub private (org `nkia-ai-lab`), 버전은 태그 | 클라우드 GPU 에서 `load_dataset(revision=)` 한 줄로 재현 가능. git LFS 는 레포를 무겁게 하고 데이터 버전을 코드 버전에 묶는다. 외부 업로드가 정책상 막히면 사내 스토리지+DVC 로 전환 |
 | 2026-08-27 | ThinkFL student harness 코드는 `rca-model-lab`에서 Python/Pydantic 계약으로 관리 | 모델 학습·합성·평가 소유권을 `lucida-next` 제품 코드에서 분리하고, 공용 schema/scorer를 SFT와 RL이 함께 사용 |
 | 2026-08-27 | 원본 증거는 무제한 보존하고 actor-facing prompt/query view만 제한 | RCA는 잘린 원본으로 증명하면 안 되며, 비용 제어와 증거 손실 방지를 분리해야 함 |
+| 2026-08-31 | LoRA 파라미터·gradient는 BF16, AdamW master weight·state는 FP32로 통일 | 작은 adapter 업데이트의 정밀도를 보존하고 SFT·선호학습·GRPO의 수치 계약을 일치시킴. compressed-tensors FP8 base 커널은 학습 backward를 지원할 때까지 추론 전용 |

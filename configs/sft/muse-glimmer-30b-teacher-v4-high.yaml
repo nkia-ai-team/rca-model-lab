@@ -7,6 +7,8 @@ model_config_sha256: 5f1476af88c0462bc448f05b36eaa4c2fae3bbe3cfafc2f281c7bf45295
 model_index_sha256: 22970c4e6b652245647b907d908147798d49e316623f43d1c611b1a12c79ba2d
 tokenizer_sha256: 399ef208c3f43075d950340f15ef628a409062e872202170620b4fb2323e68a2
 training_compute_dtype: bfloat16
+adapter_parameter_dtype: bfloat16
+optimizer_state_dtype: float32
 dequantize_for_training: true
 dataset: data/processed/sft-teacher-v3-contract-clean.jsonl
 dataset_manifest: data/processed/sft-teacher-v3-contract-clean.manifest.json

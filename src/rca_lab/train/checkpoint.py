@@ -34,6 +34,8 @@ class TrainingCheckpointContract(StrictModel):
     model_index_sha256: str = ""
     tokenizer_sha256: str = ""
     training_compute_dtype: Literal["bfloat16"] = "bfloat16"
+    adapter_parameter_dtype: Literal["bfloat16"] = "bfloat16"
+    optimizer_state_dtype: Literal["float32"] = "float32"
     dequantize_for_training: bool = False
 
     @model_validator(mode="after")
@@ -93,6 +95,8 @@ def verify_training_checkpoint(contract: TrainingCheckpointContract) -> dict[str
         "checkpoint_format": contract.checkpoint_format,
         "model_revision": contract.model_revision,
         "training_compute_dtype": contract.training_compute_dtype,
+        "adapter_parameter_dtype": contract.adapter_parameter_dtype,
+        "optimizer_state_dtype": contract.optimizer_state_dtype,
         "dequantize_for_training": contract.dequantize_for_training,
         "source_weight_dtype": (
             "float8_e4m3fn"

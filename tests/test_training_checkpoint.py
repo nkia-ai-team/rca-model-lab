@@ -64,6 +64,8 @@ def test_fp8_training_contract_verifies_checkpoint_and_tokenizer(tmp_path: Path)
     assert evidence["checkpoint_format"] == "compressed_tensors_fp8_block"
     assert evidence["source_weight_dtype"] == "float8_e4m3fn"
     assert evidence["training_compute_dtype"] == "bfloat16"
+    assert evidence["adapter_parameter_dtype"] == "bfloat16"
+    assert evidence["optimizer_state_dtype"] == "float32"
     assert evidence["dequantize_for_training"] is True
     assert evidence["model_revision"] == "8" * 40
 

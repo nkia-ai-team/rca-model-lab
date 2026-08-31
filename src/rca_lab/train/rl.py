@@ -21,6 +21,7 @@ from rca_lab.train.checkpoint import (
     load_training_model,
     load_training_tokenizer,
 )
+from rca_lab.train.precision import build_fp32_master_adamw, configure_lora_precision
 from rca_lab.train.sft import (
     LoRAConfig,
     ReasoningStrength,
@@ -352,6 +353,7 @@ def train_rl(config_path: Path) -> None:  # pragma: no cover - GPU entrypoint
                 task_type="CAUSAL_LM",
             ),
         )
+    precision = configure_lora_precision(model, torch_module=torch)
     model.enable_input_require_grads()
     model.gradient_checkpointing_enable()
     device = next(model.parameters()).device
@@ -372,8 +374,9 @@ def train_rl(config_path: Path) -> None:  # pragma: no cover - GPU entrypoint
                     # Iteration 0 starts from a zero-initialized LoRA, so the
                     # rollout policy and immutable SFT reference are identical.
                     turn["reference_logps"] = turn["old_logps"].clone()
-    optimizer = torch.optim.AdamW(
-        (parameter for parameter in model.parameters() if parameter.requires_grad),
+    optimizer = build_fp32_master_adamw(
+        model.parameters(),
+        torch_module=torch,
         lr=config.learning_rate,
     )
 
@@ -394,6 +397,7 @@ def train_rl(config_path: Path) -> None:  # pragma: no cover - GPU entrypoint
                     f"algorithm={config.algorithm}; asymmetric clipped DAPO; "
                     "typed terminal reward"
                 ),
+                "precision": precision,
             },
         )
 
@@ -467,6 +471,7 @@ def train_rl(config_path: Path) -> None:  # pragma: no cover - GPU entrypoint
                     "cuda": torch.version.cuda,
                     "transformers": __import__("transformers").__version__,
                     "peft": __import__("peft").__version__,
+                    "precision": precision,
                 },
             },
             indent=2,
