@@ -246,6 +246,22 @@ wheels = [
 ]
 
 [[package]]
+name = "compressed-tensors"
+version = "0.18.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "loguru" },
+    { name = "psutil" },
+    { name = "pydantic" },
+    { name = "torch" },
+    { name = "transformers" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/68/3c/93365d6edb698395232d8375273f289d4796a4ec25f49fcd58efbfeaeb4f/compressed_tensors-0.18.0.tar.gz", hash = "sha256:56b90295637cd4027b52041676f6c4e6cb933e1ca10f114b345fddde00c16b8b", size = 289481, upload-time = "2026-08-08T01:51:53.695Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/2f/bf/e17189bd834e5a4487c97ed576564a66ab56ccd7840608f49dcecf61abfc/compressed_tensors-0.18.0-py3-none-any.whl", hash = "sha256:91168237c2d815614c44dfc354c61c613085c811dabbb2ccdb929e9aaa313b8f", size = 224997, upload-time = "2026-08-08T01:51:52.273Z" },
+]
+
+[[package]]
 name = "cuda-bindings"
 version = "12.9.7"
 source = { registry = "https://pypi.org/simple" }
@@ -625,6 +641,19 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/ff/a5/27575f85fd91cb92a0d72b4c37daa79021334926b5c4624f7ce9fa15e6ae/liger_kernel-0.8.2.tar.gz", hash = "sha256:387673ed6bf64fc8150cc8315fed578d2fc717ec3450f53489f480880223c1b8", size = 6136426, upload-time = "2026-08-18T20:54:30.62Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/e2/b3/a66f1d9143697784ad2c2abf665b02c47aa17857232ed72224588186103c/liger_kernel-0.8.2-py3-none-any.whl", hash = "sha256:84c0a7bc9bf4d4cf8ea5ba89ff84d28686afc94215b220851d9f57dc87852741", size = 644266, upload-time = "2026-08-18T20:54:28.728Z" },
+]
+
+[[package]]
+name = "loguru"
+version = "0.7.3"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "colorama", marker = "sys_platform == 'win32'" },
+    { name = "win32-setctime", marker = "sys_platform == 'win32'" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/3a/05/a1dae3dffd1116099471c643b8924f5aa6524411dc6c63fdae648c4f1aca/loguru-0.7.3.tar.gz", hash = "sha256:19480589e77d47b8d85b2c827ad95d49bf31b0dcde16593892eb51dd18706eb6", size = 63559, upload-time = "2024-12-06T11:20:56.608Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/0c/29/0348de65b8cc732daa3e33e67806420b2ae89bdce2b04af740289c5c6c8c/loguru-0.7.3-py3-none-any.whl", hash = "sha256:31a33c10c8e1e10422bfd431aeb5d351c7cf7fa671e3c4df004162264b28220c", size = 61595, upload-time = "2024-12-06T11:20:54.538Z" },
 ]
 
 [[package]]
@@ -1279,10 +1308,12 @@ dev = [
 ]
 train = [
     { name = "accelerate" },
+    { name = "compressed-tensors" },
     { name = "datasets" },
     { name = "liger-kernel" },
     { name = "peft" },
     { name = "torch" },
+    { name = "torchao" },
     { name = "transformers" },
     { name = "trl" },
     { name = "wandb" },
@@ -1291,17 +1322,19 @@ train = [
 [package.metadata]
 requires-dist = [
     { name = "accelerate", marker = "extra == 'train'", specifier = ">=1.0" },
+    { name = "compressed-tensors", marker = "extra == 'train'", specifier = ">=0.18,<0.19" },
     { name = "datasets", marker = "extra == 'train'", specifier = ">=3.0" },
     { name = "ipykernel", marker = "extra == 'dev'" },
     { name = "liger-kernel", marker = "extra == 'train'", specifier = ">=0.5" },
-    { name = "peft", marker = "extra == 'train'", specifier = ">=0.15" },
+    { name = "peft", marker = "extra == 'train'", specifier = ">=0.20,<0.21" },
     { name = "pydantic", specifier = ">=2.0" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.0" },
     { name = "python-dotenv", specifier = ">=1.0" },
     { name = "pyyaml", specifier = ">=6.0" },
     { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.6" },
     { name = "torch", marker = "extra == 'train'", specifier = ">=2.6", index = "https://download.pytorch.org/whl/cu128" },
-    { name = "transformers", marker = "extra == 'train'", specifier = ">=4.51" },
+    { name = "torchao", marker = "extra == 'train'", specifier = ">=0.18,<0.19" },
+    { name = "transformers", marker = "extra == 'train'", specifier = ">=5.15,<5.16" },
     { name = "trl", marker = "extra == 'train'", specifier = ">=0.19" },
     { name = "wandb", marker = "extra == 'train'", specifier = ">=0.19" },
 ]
@@ -1527,6 +1560,15 @@ wheels = [
 ]
 
 [[package]]
+name = "torchao"
+version = "0.18.0"
+source = { registry = "https://pypi.org/simple" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/19/55/ed9ad98f0f09d5a1124d09830043d13a39e63539f9590d2bdb6d71cbc4a4/torchao-0.18.0-cp310-abi3-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:6540b148e40ba81cbd4de86392225a076a1591146e9cebb099b3b234ba9feebe", size = 3372585, upload-time = "2026-08-03T19:43:10.993Z" },
+    { url = "https://files.pythonhosted.org/packages/c4/4d/485477bb8f05bd501016059c6d8abd742f830cb1b24ab7704e086c7cc35a/torchao-0.18.0-py3-none-any.whl", hash = "sha256:5c2b4485341bf28b7fed2c4fc95b9f298e209f41685350f067de85527a05585e", size = 1369798, upload-time = "2026-08-03T19:43:12.649Z" },
+]
+
+[[package]]
 name = "tornado"
 version = "6.5.8"
 source = { registry = "https://pypi.org/simple" }
@@ -1698,6 +1740,15 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/34/74/c6428f875774288bec1396f5bfcbc2d925700a4dad61727fd5f2b12f249d/wcwidth-0.8.2.tar.gz", hash = "sha256:91fbef97204b96a3d4d421609b80340b760cf33e26da123ff243d76b1fda8dda", size = 1466253, upload-time = "2026-06-29T18:11:11.601Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/96/42/3e5985a0a7e57de470b320c6d6a1a67c844f6737a587f3d44dd13d1819e7/wcwidth-0.8.2-py3-none-any.whl", hash = "sha256:d63947694a0539a1d51e01eda7caf800c291020e6cdd7e28ad7b14dd33ad4f85", size = 323166, upload-time = "2026-06-29T18:11:09.888Z" },
+]
+
+[[package]]
+name = "win32-setctime"
+version = "1.2.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/b3/8f/705086c9d734d3b663af0e9bb3d4de6578d08f46b1b101c2442fd9aecaa2/win32_setctime-1.2.0.tar.gz", hash = "sha256:ae1fdf948f5640aae05c511ade119313fb6a30d7eabe25fef9764dca5873c4c0", size = 4867, upload-time = "2024-12-07T15:28:28.314Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/e1/07/c6fe3ad3e685340704d314d765b7912993bcb8dc198f0e7a89382d37974b/win32_setctime-1.2.0-py3-none-any.whl", hash = "sha256:95d644c4e708aba81dc3704a116d8cbc974d70b3bdb8be1d150e36be6e9d1390", size = 4083, upload-time = "2024-12-07T15:28:26.465Z" },
 ]
 
 [[package]]

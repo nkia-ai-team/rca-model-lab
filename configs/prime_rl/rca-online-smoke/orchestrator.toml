@@ -34,7 +34,7 @@ max_completion_tokens = 2048
 # tokenizer defaults to "high", so omitting this silently changes the system
 # tokens at rollout time and invalidates the train/inference contract.
 [train.sampling.extra_body.chat_template_kwargs]
-reasoning_strength = "low"
+reasoning_strength = "high"
 
 [[train.source]]
 name = "rca-student"

@@ -1,5 +1,5 @@
 # Muse-Glimmer was added after Prime-RL's pinned Transformers release.
-transformers==5.15.0
+transformers==5.15.1
 
 # Prime imports the metrics server in every trainer process but does not declare it.
 prometheus-client==0.22.1

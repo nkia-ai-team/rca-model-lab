@@ -35,13 +35,31 @@ stack.
 
 The trainer environment must apply `trainer-overrides.txt` after installing
 Prime. Prime pins Transformers 5.6.2, which cannot load the `muse_glimmer`
-architecture; the override uses the same Muse-capable Transformers 5.15.0 as
+architecture; the override uses the same Muse-capable Transformers 5.15.1 as
 the SFT environment and also declares Prime's missing metrics dependency:
 
 ```bash
 uv pip install --python /absolute/path/to/trainer/python \
   -r integrations/prime_rl/trainer-overrides.txt
 ```
+
+All stages are bound to the pinned
+`RedHatAI/Muse-Glimmer-30B-FP8-block` source revision. Transformers dequantizes
+that compressed checkpoint to BF16 for SFT, while vLLM serves the original FP8
+weights and a separate LoRA adapter. Prime's DCP loader cannot reconstruct the
+checkpoint's block scales directly, so its trainer reads a disposable dense
+BF16 loading cache derived from that same FP8 source:
+
+```bash
+CUDA_VISIBLE_DEVICES=0 scripts/materialize_prime_training_cache.py \
+  configs/sft/muse-glimmer-30b-teacher-v4-high.yaml \
+  --output /home/work/models/muse-glimmer-30b-fp8-block-bf16-train-cache
+```
+
+`training_cache_manifest.json` binds the cache to the source revision and file
+hashes. The materializer also preserves the custom tokenizer and chat template
+byte-for-byte. This cache is neither a new base model nor a merged adapter and
+may be deleted and regenerated; do not upload it as the canonical checkpoint.
 
 ## Split KT sessions
 

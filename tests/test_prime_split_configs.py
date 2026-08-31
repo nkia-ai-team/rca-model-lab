@@ -24,9 +24,9 @@ def test_trainer_starts_rl_from_exact_sft_adapter_without_merging() -> None:
     assert config["model"]["attn"] == "sdpa"
     assert config["model"]["seq_len"] == 32768
     assert lora["rank"] == 8
-    assert lora["init_adapter"].endswith(
-        "/outputs/muse-glimmer-30b-teacher-v3-contract-clean/adapter"
-    )
+    assert config["model"]["name"].endswith("/muse-glimmer-30b-fp8-block-bf16-train-cache")
+    assert lora["init_adapter"].endswith("/rca-adapters/muse-glimmer-30b-teacher-v4-high/adapter")
+    assert config["tokenizer"]["name"].endswith("/models/muse-glimmer-30b-tokenizer")
     assert lora["target_modules"] == [
         r"^model\.language_model\..*\.(q_proj|k_proj|v_proj|o_proj|up_proj|down_proj|gate_proj)$"
     ]
@@ -47,7 +47,7 @@ def test_trainer_runtime_uses_muse_capable_transformers_and_metrics_dependency()
         if (line := raw.strip()) and not line.startswith("#")
     }
     assert requirements == {
-        "transformers==5.15.0",
+        "transformers==5.15.1",
         "prometheus-client==0.22.1",
     }
 
@@ -61,7 +61,7 @@ def test_orchestrator_uses_online_group_rollouts_and_production_harness() -> Non
         "temperature": 0.7,
         "max_completion_tokens": 2048,
         "extra_body": {
-            "chat_template_kwargs": {"reasoning_strength": "low"},
+            "chat_template_kwargs": {"reasoning_strength": "high"},
         },
     }
     assert source["env"]["taskset"]["id"] == "rca-student"
@@ -74,9 +74,7 @@ def test_standalone_env_server_runs_the_same_harness_with_eight_slots() -> None:
     config = _toml("env-server.toml")
 
     assert config["env"]["taskset"]["id"] == "rca-student"
-    assert config["env"]["taskset"]["task"]["reward_stage"] == (
-        "exploration_bootstrap"
-    )
+    assert config["env"]["taskset"]["task"]["reward_stage"] == ("exploration_bootstrap")
     assert config["env"]["agent"]["harness"]["id"] == "rca-student"
     assert config["env"]["agent"]["runtime"]["type"] == "subprocess"
     assert config["env"]["max_concurrent_agents"] == 8
@@ -114,6 +112,9 @@ def test_progressive_second_stage_resumes_both_sides_from_same_checkpoint() -> N
 def test_inference_budget_targets_throughput_without_reducing_kv_capacity() -> None:
     config = _toml("inference.toml")["vllm"]
     assert config["served_model_name"] == ["rca-actor"]
+    assert config["model"].endswith("/muse-glimmer-30b-fp8-block")
+    assert config["tokenizer"].endswith("/models/muse-glimmer-30b-tokenizer")
+    assert config["dtype"] == "auto"
     assert config["gpu_memory_utilization"] == 0.95
     assert config["max_num_seqs"] == 8
     assert config["max_num_batched_tokens"] == 16384

@@ -11,9 +11,10 @@ liveness_timeout_seconds = 60.0
 type = "filesystem"
 
 [vllm]
-model = "/home/work/models/muse-glimmer-30b"
+model = "/home/work/models/muse-glimmer-30b-fp8-block"
+tokenizer = "/home/work/rca-model-lab/models/muse-glimmer-30b-tokenizer"
 served_model_name = ["rca-actor"]
-dtype = "bfloat16"
+dtype = "auto"
 max_model_len = 32768
 gpu_memory_utilization = 0.95
 max_num_seqs = 8

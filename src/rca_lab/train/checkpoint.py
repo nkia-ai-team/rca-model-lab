@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import re
+import shutil
 from pathlib import Path
 from typing import Any, Literal
 
@@ -135,6 +136,19 @@ def load_training_tokenizer(contract: TrainingCheckpointContract) -> Any:
 
     verify_training_checkpoint(contract)
     return AutoTokenizer.from_pretrained(contract.resolved_tokenizer_name)
+
+
+def save_training_tokenizer_artifacts(contract: TrainingCheckpointContract, output: Path) -> str:
+    """Save a usable tokenizer while preserving its identity-critical files exactly."""
+    load_training_tokenizer(contract).save_pretrained(output)
+    source = Path(contract.resolved_tokenizer_name)
+    if source.is_dir():
+        for name in _TOKENIZER_IDENTITY_FILES:
+            shutil.copy2(source / name, output / name)
+    identity = tokenizer_artifact_identity(output)
+    if contract.tokenizer_sha256 and identity != contract.tokenizer_sha256:
+        raise ValueError("saved tokenizer identity differs from the training contract")
+    return identity
 
 
 def load_training_model(
