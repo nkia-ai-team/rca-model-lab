@@ -1,0 +1,21 @@
+ARG BASE_IMAGE=lucida/vllm-openai:v0.26.0-gemma4-mtpfix
+FROM ${BASE_IMAGE}
+
+# Build with the prepared, pinned Prime-RL checkout as the Docker context:
+#   docker build -f /path/to/Dockerfile.inference /path/to/prime-rl-rca
+# The three editable installs are local packages from that same checkout. The
+# base image already provides CUDA, Torch, vLLM, FastAPI, and serving runtime
+# dependencies; no trainer-only packages are installed on server 104.
+COPY . /opt/prime-rl
+RUN python3 -m pip install --no-cache-dir --no-deps \
+      -e /opt/prime-rl \
+      -e /opt/prime-rl/packages/prime-rl-configs \
+      -e /opt/prime-rl/deps/pydantic-config \
+    && python3 -m pip install --no-cache-dir \
+      "tomli>=2.2,<3" \
+      "transformers==5.15.1" \
+    && python3 -c 'import tomli, transformers, vllm; from prime_rl.entrypoints.inference import main; assert transformers.__version__ == "5.15.1"; assert vllm.__version__ == "0.26.0"'
+
+WORKDIR /opt/prime-rl
+ENTRYPOINT []
+CMD ["inference"]

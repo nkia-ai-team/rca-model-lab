@@ -118,6 +118,21 @@ and sends the packed token batch to the remote trainer. The inference session
 only generates tokens; the training session only computes gradients and updates
 the LoRA adapter.
 
+Server 104 reuses its existing vLLM 0.26 image and adds only the prepared
+Prime-RL inference wrapper. Build it from the pinned, patched Prime checkout;
+this does not install vLLM in KT Cloud:
+
+```bash
+docker build \
+  -t rca-prime-inference:muse-v1 \
+  -f /home/swlee/projects/rca-model-lab/integrations/prime_rl/Dockerfile.inference \
+  /home/swlee/projects/prime-rl-rca
+```
+
+The image keeps the original FP8 base and dynamically reloads separate LoRA
+directories through Prime's `/load_lora_adapter` endpoint. It never merges the
+adapter into the 30B checkpoint.
+
 Online training is progressive. `env-server.toml` is the short exploration
 bootstrap stage. It rewards diagnosis quality plus bounded credit for distinct
 environment evidence that is actually cited in the final answer. It does not
