@@ -5,7 +5,7 @@ from __future__ import annotations
 import asyncio
 import json
 from pathlib import Path
-from typing import Any
+from typing import Any, Literal
 
 import verifiers.v1 as vf
 import yaml
@@ -32,6 +32,7 @@ class RCAStudentTaskConfig(vf.TaskConfig):
     )
     lease_dir: Path = Path("/tmp/rca-prime-rl-scenario")
     max_episode_bytes: int = 64 * 1024 * 1024
+    reward_stage: Literal["exploration_bootstrap", "diagnosis"] = "diagnosis"
 
 
 class RCAStudentTask(vf.Task[RCAStudentData, vf.State, RCAStudentTaskConfig]):
@@ -83,10 +84,12 @@ class RCAStudentTask(vf.Task[RCAStudentData, vf.State, RCAStudentTaskConfig]):
 
     @vf.reward(weight=1.0)
     async def rca_reward(self, runtime: vf.Runtime) -> float:
-        # Train only on grounded diagnosis quality. The broader evaluation
-        # reward includes efficiency/tool-success diagnostics that can rank
-        # equally incorrect episodes and recreate the RL-v1 failure mode.
-        return float((await self._score(runtime))["optimization_reward"])
+        score = await self._score(runtime)
+        reward_key = {
+            "exploration_bootstrap": "exploration_bootstrap_reward",
+            "diagnosis": "optimization_reward",
+        }[self.config.reward_stage]
+        return float(score[reward_key])
 
     @vf.metric
     async def rca_metrics(self, runtime: vf.Runtime) -> dict[str, float]:
@@ -94,6 +97,9 @@ class RCAStudentTask(vf.Task[RCAStudentData, vf.State, RCAStudentTaskConfig]):
         return {
             "evaluation_reward": float(score["reward"]),
             "optimization_reward": float(score["optimization_reward"]),
+            "exploration_bootstrap_reward": float(
+                score["exploration_bootstrap_reward"]
+            ),
             "root_f1": float(score["root_f1"]),
             "strict_correct": float(score["strict_correct"]),
             "proof_rate": float(score["proof_rate"]),
@@ -101,6 +107,8 @@ class RCAStudentTask(vf.Task[RCAStudentData, vf.State, RCAStudentTaskConfig]):
             "format_errors": float(score["format_errors"]),
             "unsupported_confirmation": float(score["unsupported_confirmation"]),
             "turns": float(score["turns"]),
+            "observed_evidence_refs": float(score["observed_evidence_refs"]),
+            "grounded_answer_refs": float(score["grounded_answer_refs"]),
         }
 
 

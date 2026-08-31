@@ -37,6 +37,8 @@ def monitor_command(args: argparse.Namespace, cases: list[str]) -> list[str]:
         args.model_artifact_sha256,
         "--structured-backend",
         "guidance",
+        "--reasoning-strength",
+        "low",
         "--runs",
         str(args.runs),
     ]

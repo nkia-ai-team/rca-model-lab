@@ -27,8 +27,14 @@ name = "/home/swlee/projects/rca-model-lab/models/muse-glimmer-30b-tokenizer"
 name = "default"
 
 [train.sampling]
-temperature = 1.0
+temperature = 0.7
 max_completion_tokens = 2048
+
+# SFT was trained with this exact Muse-Glimmer chat-template branch.  The
+# tokenizer defaults to "high", so omitting this silently changes the system
+# tokens at rollout time and invalidates the train/inference contract.
+[train.sampling.extra_body.chat_template_kwargs]
+reasoning_strength = "low"
 
 [[train.source]]
 name = "rca-student"

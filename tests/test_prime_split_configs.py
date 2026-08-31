@@ -58,13 +58,37 @@ def test_orchestrator_uses_online_group_rollouts_and_production_harness() -> Non
     assert config["batch_size"] == config["group_size"] == 8
     assert config["seq_len"] == 32768
     assert config["train"]["sampling"] == {
-        "temperature": 1.0,
+        "temperature": 0.7,
         "max_completion_tokens": 2048,
+        "extra_body": {
+            "chat_template_kwargs": {"reasoning_strength": "low"},
+        },
     }
     assert source["env"]["taskset"]["id"] == "rca-student"
     assert source["env"]["agent"]["harness"]["id"] == "rca-student"
     assert source["env"]["max_concurrent_agents"] == config["group_size"]
     assert config["concurrency"]["max_inflight"] == 16
+
+
+def test_standalone_env_server_runs_the_same_harness_with_eight_slots() -> None:
+    config = _toml("env-server.toml")
+
+    assert config["env"]["taskset"]["id"] == "rca-student"
+    assert config["env"]["taskset"]["task"]["reward_stage"] == (
+        "exploration_bootstrap"
+    )
+    assert config["env"]["agent"]["harness"]["id"] == "rca-student"
+    assert config["env"]["agent"]["runtime"]["type"] == "subprocess"
+    assert config["env"]["max_concurrent_agents"] == 8
+    assert config["serve"]["max_concurrent"] == 8
+    assert config["serve"]["pool"] == {"type": "static", "num_workers": 1}
+
+
+def test_progressive_second_stage_removes_exploration_shaping() -> None:
+    config = _toml("env-server-diagnosis.toml")
+
+    assert config["env"]["taskset"]["task"]["reward_stage"] == "diagnosis"
+    assert config["env"]["agent"]["harness"]["id"] == "rca-student"
 
 
 def test_inference_budget_targets_throughput_without_reducing_kv_capacity() -> None:
@@ -77,6 +101,8 @@ def test_inference_budget_targets_throughput_without_reducing_kv_capacity() -> N
     assert config["enable_prefix_caching"] is True
     assert config["language_model_only"] is True
     assert config["enable_lora"] is True
+    assert config["attention_backend"] == "FLASH_ATTN"
+    assert config["kernel_config"]["enable_flashinfer_autotune"] is False
 
 
 def test_relay_path_is_the_path_prime_sends_to_remote_vllm() -> None:

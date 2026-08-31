@@ -164,10 +164,12 @@ class OpenSshBroadcastStore:
             f"{endpoint.user}@{endpoint.host}",
         ]
 
-    def _sftp_args(self) -> list[str]:
+    def _scp_args(self) -> list[str]:
         endpoint = self.endpoint
         return [
-            "sftp",
+            "scp",
+            "-O",
+            "-r",
             "-i",
             str(endpoint.identity_file),
             "-P",
@@ -180,7 +182,6 @@ class OpenSshBroadcastStore:
             f"UserKnownHostsFile={endpoint.known_hosts_file}",
             "-o",
             f"ConnectTimeout={endpoint.connect_timeout_seconds}",
-            f"{endpoint.user}@{endpoint.host}",
         ]
 
     def _ssh(self, command: str, *, check: bool = True) -> subprocess.CompletedProcess[str]:
@@ -192,22 +193,17 @@ class OpenSshBroadcastStore:
             timeout=self.endpoint.command_timeout_seconds,
         )
 
-    def _sftp(self, command: str) -> None:
+    def _scp(self, source: str | Path, destination: str | Path) -> None:
         subprocess.run(
-            self._sftp_args(),
-            input=f"{command}\n",
+            [*self._scp_args(), str(source), str(destination)],
             check=True,
             capture_output=True,
             text=True,
             timeout=self.endpoint.transfer_timeout_seconds,
         )
 
-    @staticmethod
-    def _sftp_quote(path: str | Path | PurePosixPath) -> str:
-        value = str(path).replace("\\", "\\\\").replace('"', '\\"')
-        if "\n" in value or "\r" in value:
-            raise ValueError("SFTP paths cannot contain newlines")
-        return f'"{value}"'
+    def _remote_spec(self, path: PurePosixPath) -> str:
+        return f"{self.endpoint.user}@{self.endpoint.host}:{path}"
 
     def published_steps(self) -> list[PublishedStep]:
         root = shlex.quote(str(self.root))
@@ -246,9 +242,7 @@ class OpenSshBroadcastStore:
         if destination.exists():
             raise FileExistsError(destination)
         destination.parent.mkdir(parents=True, exist_ok=True)
-        self._sftp(
-            f"get -R {self._sftp_quote(self._path(step))} {self._sftp_quote(destination)}"
-        )
+        self._scp(self._remote_spec(self._path(step)), destination)
 
     def publish_step(self, step: int, source: Path) -> None:
         if not source.is_dir():
@@ -257,9 +251,7 @@ class OpenSshBroadcastStore:
         final_path = self._path(step)
         staging_path = self.root / f".relay-{_step_name(step)}-{uuid.uuid4().hex}"
         self._ssh(f"mkdir -p {root}")
-        self._sftp(
-            f"put -R {self._sftp_quote(source)} {self._sftp_quote(staging_path)}"
-        )
+        self._scp(source, self._remote_spec(staging_path))
         final = shlex.quote(str(final_path))
         staging = shlex.quote(str(staging_path))
         # Both targets are validated children of remote_broadcast_dir.  The

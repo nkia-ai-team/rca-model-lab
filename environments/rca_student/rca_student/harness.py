@@ -2,13 +2,13 @@
 
 from __future__ import annotations
 
-import hashlib
 from pathlib import Path
 
 import verifiers.v1 as vf
 from pydantic import Field
 
 from rca_lab.prime_rl.paths import project_path
+from rca_lab.prime_rl.seeding import actor_seed
 
 
 class RCAStudentHarnessConfig(vf.HarnessConfig):
@@ -44,7 +44,7 @@ class RCAStudentHarness(vf.Harness[RCAStudentHarnessConfig]):
     ) -> vf.ProgramResult:
         if mcp_urls:
             raise ValueError("RCA student owns its typed tools; external MCP tools are forbidden")
-        seed = int.from_bytes(hashlib.sha256(trace.id.encode()).digest()[:8], "big")
+        seed = actor_seed(trace.id)
         env = {
             **self.config.resolved_env,
             "LUCIDA_AI_RCA_PROBE_URL": endpoint,
@@ -53,6 +53,11 @@ class RCAStudentHarness(vf.Harness[RCAStudentHarnessConfig]):
             "LUCIDA_AI_MODEL": ctx.model,
             "LUCIDA_QDRANT_URL": "http://localhost:1",
             "LUCIDA_LLM_PROVIDER": "vllm",
+            # The Go OpenAI-compatible client authenticates with this key. The
+            # verifier interception endpoint uses the per-trace secret as its
+            # Bearer token, so forwarding the exact value is part of the trace
+            # attribution contract rather than optional provider configuration.
+            "LUCIDA_AI_API_KEY": secret,
             "LUCIDA_SECRET_KEY": secret,
             "POSTGRES_DSN": self.config.postgres_dsn,
             "CLICKHOUSE_ADDR": self.config.clickhouse_addr,

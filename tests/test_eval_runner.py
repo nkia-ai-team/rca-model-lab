@@ -38,6 +38,8 @@ def test_eval_manifest_seals_model_restore_and_case_artifacts(tmp_path: Path) ->
         model_artifact_sha256="",
         base_url="http://localhost:8002/v1",
         structured_backend="guidance",
+        reasoning_strength="low",
+        restore_timeout=900,
         runs=3,
         partition="sealed_eval",
         agent=agent,
@@ -54,6 +56,9 @@ def test_eval_manifest_seals_model_restore_and_case_artifacts(tmp_path: Path) ->
     assert len(manifest["case_set_sha256"]) == 64
     assert manifest["actor_temperature"] == 0.0
     assert manifest["actor_seed"] == 0
+    assert manifest["reasoning_strength"] == "low"
+    assert manifest["request_contract_enforced"] is True
+    assert manifest["restore_timeout_seconds"] == 900
 
 
 def test_served_model_ids_rejects_stale_or_malformed_endpoint() -> None:

@@ -18,6 +18,8 @@ max_model_len = 32768
 gpu_memory_utilization = 0.95
 max_num_seqs = 8
 max_num_batched_tokens = 16384
+attention_backend = "FLASH_ATTN"
+kernel_config = { enable_flashinfer_autotune = false }
 enable_chunked_prefill = true
 enable_prefix_caching = true
 language_model_only = true

@@ -1,0 +1,25 @@
+# Standalone RCA environment server paired with orchestrator.toml.
+output_dir = "/tmp/rca-prime-rl/rca-online-smoke-env"
+
+[env.taskset]
+id = "rca-student"
+
+[env.taskset.task]
+reward_stage = "exploration_bootstrap"
+
+[env.agent.harness]
+id = "rca-student"
+
+[env.agent.runtime]
+type = "subprocess"
+
+[env]
+max_concurrent_agents = 8
+
+[serve]
+address = "tcp://127.0.0.1:5000"
+max_concurrent = 8
+
+[serve.pool]
+type = "static"
+num_workers = 1

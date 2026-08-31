@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import subprocess
 from pathlib import Path
 
 import pytest
@@ -9,6 +10,7 @@ from rca_lab.prime_rl.weight_relay import (
     RECEIVER_READY,
     SENDER_READY,
     SOURCE_GENERATION,
+    OpenSshBroadcastStore,
     PrimeLoraWeightRelay,
     PublishedStep,
     SshEndpoint,
@@ -149,3 +151,50 @@ def test_relay_config_requires_same_adapter_path_locally_and_on_vllm(tmp_path: P
         local_broadcast_dir=Path("/tmp/rca-prime/broadcasts"),
     )
     assert config.local_broadcast_dir == Path("/tmp/rca-prime/broadcasts")
+
+
+def test_remote_adapter_transfer_uses_legacy_scp_for_large_kt_files(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    key = tmp_path / "key"
+    key.touch()
+    store = OpenSshBroadcastStore(
+        SshEndpoint(
+            host="proxy.example.com",
+            port=10515,
+            user="work",
+            identity_file=key,
+            remote_broadcast_dir="/home/work/run/broadcasts",
+        )
+    )
+    calls: list[list[str]] = []
+
+    def run(args: list[str], **_: object) -> subprocess.CompletedProcess[str]:
+        calls.append(args)
+        return subprocess.CompletedProcess(args, 0, "", "")
+
+    monkeypatch.setattr(subprocess, "run", run)
+    destination = tmp_path / "downloaded-step"
+    store.download_step(3, destination)
+
+    assert calls == [
+        [
+            "scp",
+            "-O",
+            "-r",
+            "-i",
+            str(key),
+            "-P",
+            "10515",
+            "-o",
+            "BatchMode=yes",
+            "-o",
+            "StrictHostKeyChecking=no",
+            "-o",
+            "UserKnownHostsFile=/dev/null",
+            "-o",
+            "ConnectTimeout=10",
+            "work@proxy.example.com:/home/work/run/broadcasts/step_3",
+            str(destination),
+        ]
+    ]

@@ -165,6 +165,44 @@ def diagnosis_optimization_reward(
     )
 
 
+def exploration_bootstrap_reward(
+    *,
+    diagnosis_reward: float,
+    proof_rate: float,
+    evidence_complete: bool,
+    observed_evidence_refs: int,
+    grounded_answer_refs: int,
+    rejected_actions: int,
+    action_count: int,
+    unsupported_confirmation: int,
+    format_errors: int,
+) -> float:
+    """Reward grounded investigation before switching to diagnosis-only RL.
+
+    The bootstrap stage never rewards a tool name, turn count, or a successful
+    RPC by itself. Credit comes only from distinct evidence returned by the
+    environment and references grounded in the terminal answer. This makes the
+    short curriculum useful when every initial rollout has zero root F1 while
+    bounding the value of repeated or decorative tool calls.
+    """
+
+    rejected_rate = rejected_actions / max(1, action_count)
+    return max(
+        0.0,
+        min(
+            1.0,
+            0.55 * diagnosis_reward
+            + 0.15 * float(evidence_complete)
+            + 0.10 * proof_rate
+            + 0.10 * min(1.0, observed_evidence_refs / 8)
+            + 0.10 * min(1.0, grounded_answer_refs / 4)
+            - 0.15 * rejected_rate
+            - 0.25 * float(unsupported_confirmation)
+            - 0.10 * float(min(1, format_errors)),
+        ),
+    )
+
+
 def score_episode(case_id: str, expected: dict[str, Any], episode: dict[str, Any]) -> dict[str, Any]:
     result = episode.get("result", {})
     names = target_names(episode)
@@ -184,6 +222,13 @@ def score_episode(case_id: str, expected: dict[str, Any], episode: dict[str, Any
         str(ref)
         for item in ledger
         for ref in [item.get("id"), *item.get("evidence_refs", [])]
+        if ref
+    }
+    observed_evidence_refs = {
+        str(ref)
+        for item in ledger
+        if item.get("ok")
+        for ref in item.get("evidence_refs", [])
         if ref
     }
     cause_targets = {str(cause.get("target", "")) for cause in causes}
@@ -217,6 +262,17 @@ def score_episode(case_id: str, expected: dict[str, Any], episode: dict[str, Any
     turns = int(result.get("turns", len(ledger)))
     actions = [str(item["action"]) for item in ledger if item.get("action")]
     rejected_actions = sum(not bool(item.get("ok")) for item in ledger)
+    grounded_answer_refs = {
+        str(ref)
+        for cause in causes
+        for ref in [*cause.get("support_refs", []), *cause.get("counter_refs", [])]
+        if str(ref) in known_refs
+    } | {
+        str(ref)
+        for cause in external_causes
+        for ref in cause.get("evidence_refs", [])
+        if str(ref) in known_refs
+    }
     efficiency = max(0.0, 1 - max(0, turns - 1) / 12)
     tool_success = sum(bool(item.get("ok")) for item in ledger) / len(ledger) if ledger else 0
     reward = max(
@@ -240,6 +296,17 @@ def score_episode(case_id: str, expected: dict[str, Any], episode: dict[str, Any
         unsupported_confirmation=unsupported,
         format_errors=transient_format_errors,
     )
+    bootstrap_reward = exploration_bootstrap_reward(
+        diagnosis_reward=optimization_reward,
+        proof_rate=proof_rate,
+        evidence_complete=evidence_complete,
+        observed_evidence_refs=len(observed_evidence_refs),
+        grounded_answer_refs=len(grounded_answer_refs),
+        rejected_actions=rejected_actions,
+        action_count=len(actions),
+        unsupported_confirmation=unsupported,
+        format_errors=transient_format_errors,
+    )
     return {
         "case_id": case_id,
         "status": result.get("status", "missing"),
@@ -252,6 +319,9 @@ def score_episode(case_id: str, expected: dict[str, Any], episode: dict[str, Any
         "evidence_complete": evidence_complete,
         "reward": reward,
         "optimization_reward": optimization_reward,
+        "exploration_bootstrap_reward": bootstrap_reward,
+        "observed_evidence_refs": len(observed_evidence_refs),
+        "grounded_answer_refs": len(grounded_answer_refs),
         "turns": turns,
         "actions": actions,
         "distinct_actions": len(set(actions)),

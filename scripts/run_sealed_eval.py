@@ -18,6 +18,7 @@ from urllib.request import urlopen
 
 import yaml
 
+from rca_lab.openai_proxy import enforced_openai_endpoint
 from rca_lab.provenance import case_set_identity, file_sha256, resolve_model_identity
 
 
@@ -58,6 +59,9 @@ def eval_manifest_contract(args: argparse.Namespace, cases: list[str]) -> dict[s
         "partition": args.partition,
         "actor_temperature": 0.0,
         "actor_seed": 0,
+        "reasoning_strength": args.reasoning_strength,
+        "request_contract_enforced": True,
+        "restore_timeout_seconds": args.restore_timeout,
         "agent_sha256": file_sha256(args.agent),
         "restore_sha256": file_sha256(args.restore),
         "split_sha256": file_sha256(args.split),
@@ -145,7 +149,19 @@ def main() -> None:
         default="unspecified",
         help="server-side structured-output backend recorded for provenance",
     )
+    parser.add_argument(
+        "--reasoning-strength",
+        choices=("low", "medium", "high"),
+        default="low",
+        help="chat-template branch enforced by the evaluator; must match SFT",
+    )
     parser.add_argument("--runs", type=int, default=3)
+    parser.add_argument(
+        "--restore-timeout",
+        type=int,
+        default=900,
+        help="maximum seconds allowed for one idempotent scenario restore",
+    )
     parser.add_argument(
         "--partition",
         choices=("train", "sealed_eval"),
@@ -166,6 +182,8 @@ def main() -> None:
     args = parser.parse_args()
     if args.runs < 1:
         parser.error("--runs must be at least 1")
+    if args.restore_timeout < 1:
+        parser.error("--restore-timeout must be at least 1")
     try:
         resolve_model_identity(args.model_artifact, args.model_artifact_sha256)
     except ValueError as error:
@@ -204,11 +222,21 @@ def main() -> None:
             encoding="utf-8",
         )
     wait_for_model(args.base_url, args.model)
+    with enforced_openai_endpoint(
+        args.base_url.removesuffix("/v1"),
+        temperature=0.0,
+        seed=0,
+        reasoning_strength=args.reasoning_strength,
+    ) as enforced_endpoint:
+        run_evaluation(args, cases, f"{enforced_endpoint}/v1")
+
+
+def run_evaluation(args: argparse.Namespace, cases: list[str], actor_base_url: str) -> None:
     shared_env = {
         **os.environ,
-        "LUCIDA_AI_RCA_PROBE_URL": args.base_url,
+        "LUCIDA_AI_RCA_PROBE_URL": actor_base_url,
         "LUCIDA_AI_MODEL_RCA_PROBE": args.model,
-        "LUCIDA_AI_URL": args.base_url,
+        "LUCIDA_AI_URL": actor_base_url,
         "LUCIDA_AI_MODEL": args.model,
         "LUCIDA_QDRANT_URL": "http://localhost:1",
         "LUCIDA_LLM_PROVIDER": "vllm",
@@ -241,9 +269,31 @@ def main() -> None:
             archive_incomplete_case(case_dir, args.output / ".interrupted")
         print(f"[eval] [{case_index}/{total_cases}] restoring {case}", flush=True)
         case_dir.mkdir(parents=True, exist_ok=True)
-        restored = subprocess.run(
-            [str(args.restore), case], capture_output=True, text=True, check=False
-        )
+        try:
+            restored = subprocess.run(
+                [str(args.restore), case],
+                capture_output=True,
+                text=True,
+                check=False,
+                timeout=args.restore_timeout,
+            )
+        except subprocess.TimeoutExpired as error:
+            stdout = error.stdout.decode() if isinstance(error.stdout, bytes) else error.stdout or ""
+            stderr = error.stderr.decode() if isinstance(error.stderr, bytes) else error.stderr or ""
+            (case_dir / "restore.log").write_text(
+                stdout
+                + stderr
+                + f"\nrestore timed out after {args.restore_timeout}s\n",
+                encoding="utf-8",
+            )
+            with summary.open("a", encoding="utf-8") as stream:
+                stream.write(f"{case}\tRESTORE_TIMEOUT\n")
+            print(
+                f"[eval] [{case_index}/{total_cases}] restore timed out {case} "
+                f"after {args.restore_timeout}s",
+                flush=True,
+            )
+            continue
         (case_dir / "restore.log").write_text(restored.stdout + restored.stderr, encoding="utf-8")
         matches = re.findall(r"incident id: ([0-9a-f-]+)", restored.stdout + restored.stderr)
         if restored.returncode or not matches:
