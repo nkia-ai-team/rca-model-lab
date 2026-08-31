@@ -1,5 +1,6 @@
-# Standalone vLLM process on the KT inference H200.
-output_dir = "/home/work/prime-rl-rca/outputs/rca-online-smoke-inference"
+# Standalone Prime vLLM process on server 104, physical GPU 2.
+# Pin the process with CUDA_VISIBLE_DEVICES=2 at launch time.
+output_dir = "/home/swlee/projects/prime-rl-rca/outputs/rca-online-smoke-inference"
 backend_port = 8100
 
 [server]
@@ -11,8 +12,8 @@ liveness_timeout_seconds = 60.0
 type = "filesystem"
 
 [vllm]
-model = "/home/work/models/muse-glimmer-30b-fp8-block"
-tokenizer = "/home/work/rca-model-lab/models/muse-glimmer-30b-tokenizer"
+model = "/home/swlee/models/muse-glimmer-30b-fp8-block"
+tokenizer = "/home/swlee/projects/rca-model-lab/models/muse-glimmer-30b-tokenizer"
 served_model_name = ["rca-actor"]
 dtype = "auto"
 max_model_len = 32768

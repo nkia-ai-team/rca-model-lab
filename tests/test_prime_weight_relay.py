@@ -10,6 +10,7 @@ from rca_lab.prime_rl.weight_relay import (
     RECEIVER_READY,
     SENDER_READY,
     SOURCE_GENERATION,
+    LocalEndpoint,
     OpenSshBroadcastStore,
     PrimeLoraWeightRelay,
     PublishedStep,
@@ -94,6 +95,20 @@ def test_relay_does_not_commit_locally_when_inference_upload_fails(tmp_path: Pat
     assert not (tmp_path / "step_0" / FINISHED).exists()
 
 
+def test_local_inference_uses_the_shared_orchestrator_broadcast_path(tmp_path: Path) -> None:
+    trainer = FakeTrainer()
+    trainer.finished = True
+    relay = PrimeLoraWeightRelay(tmp_path, trainer, None)
+
+    assert relay.sync_once() == 0
+    (tmp_path / "step_0" / RECEIVER_READY).touch()
+    assert relay.sync_once() == 1
+
+    step_dir = tmp_path / "step_0"
+    assert (step_dir / "adapter_model.safetensors").read_bytes() == b"adapter"
+    assert (step_dir / FINISHED).is_file()
+
+
 def test_new_sender_generation_resets_stale_completed_step(tmp_path: Path) -> None:
     trainer = FakeTrainer()
     trainer.finished = True
@@ -151,6 +166,30 @@ def test_relay_config_requires_same_adapter_path_locally_and_on_vllm(tmp_path: P
         local_broadcast_dir=Path("/tmp/rca-prime/broadcasts"),
     )
     assert config.local_broadcast_dir == Path("/tmp/rca-prime/broadcasts")
+
+
+def test_relay_config_supports_vllm_on_the_local_orchestrator_host(tmp_path: Path) -> None:
+    broadcasts = Path("/tmp/rca-prime/broadcasts")
+    config = WeightRelayConfig(
+        trainer={
+            "host": "proxy.example.com",
+            "port": 10658,
+            "user": "work",
+            "identity_file": tmp_path / "key",
+            "remote_broadcast_dir": "/home/work/run/broadcasts",
+        },
+        inference={"type": "local", "broadcast_dir": broadcasts},
+        local_broadcast_dir=broadcasts,
+    )
+
+    assert config.inference == LocalEndpoint(broadcast_dir=broadcasts)
+
+    with pytest.raises(ValueError, match="must be identical"):
+        WeightRelayConfig(
+            trainer=config.trainer,
+            inference={"type": "local", "broadcast_dir": broadcasts},
+            local_broadcast_dir=Path("/tmp/another-path"),
+        )
 
 
 def test_remote_adapter_transfer_uses_legacy_scp_for_large_kt_files(

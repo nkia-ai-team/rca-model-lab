@@ -1,9 +1,9 @@
 """Relay Prime-RL filesystem LoRA broadcasts across isolated SSH hosts.
 
 Prime's filesystem transport assumes that trainer, orchestrator, and inference
-see the same path.  KT training and inference containers do not share a
-filesystem, so this module mirrors the existing four-marker handshake without
-changing Prime's trainer or receiver semantics.
+see the same path.  The KT trainer cannot see server 104's local filesystem, so
+this module mirrors the existing four-marker handshake without changing
+Prime's trainer or receiver semantics.
 """
 
 from __future__ import annotations
@@ -17,7 +17,7 @@ import time
 import uuid
 from dataclasses import dataclass
 from pathlib import Path, PurePosixPath
-from typing import Protocol
+from typing import Literal, Protocol
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
@@ -72,13 +72,29 @@ class SshEndpoint(BaseModel):
         return normalized
 
 
+class LocalEndpoint(BaseModel):
+    """Broadcast root shared by the orchestrator and local vLLM process."""
+
+    model_config = ConfigDict(extra="forbid", frozen=True)
+
+    type: Literal["local"] = "local"
+    broadcast_dir: Path
+
+    @field_validator("broadcast_dir")
+    @classmethod
+    def validate_broadcast_dir(cls, value: Path) -> Path:
+        if not value.is_absolute() or value == Path("/") or ".." in value.parts:
+            raise ValueError("broadcast_dir must be a safe absolute path below root")
+        return value
+
+
 class WeightRelayConfig(BaseModel):
     """Typed deployment contract for the cross-session adapter relay."""
 
     model_config = ConfigDict(extra="forbid", frozen=True)
 
     trainer: SshEndpoint
-    inference: SshEndpoint
+    inference: SshEndpoint | LocalEndpoint
     local_broadcast_dir: Path
     poll_interval_seconds: float = Field(default=0.25, gt=0, le=60)
 
@@ -87,9 +103,14 @@ class WeightRelayConfig(BaseModel):
         local = str(self.local_broadcast_dir)
         if not self.local_broadcast_dir.is_absolute():
             raise ValueError("local_broadcast_dir must be absolute")
-        if local != self.inference.remote_broadcast_dir:
+        inference_path = (
+            str(self.inference.broadcast_dir)
+            if isinstance(self.inference, LocalEndpoint)
+            else self.inference.remote_broadcast_dir
+        )
+        if local != inference_path:
             raise ValueError(
-                "local_broadcast_dir and inference.remote_broadcast_dir must be identical; "
+                "local_broadcast_dir and the inference broadcast path must be identical; "
                 "Prime sends that absolute adapter path to vLLM"
             )
         return self
@@ -267,7 +288,7 @@ class PrimeLoraWeightRelay:
         self,
         local_broadcast_dir: Path,
         trainer: TrainerBroadcastStore,
-        inference: InferenceBroadcastStore,
+        inference: InferenceBroadcastStore | None,
     ) -> None:
         self.local_broadcast_dir = local_broadcast_dir
         self.trainer = trainer
@@ -294,7 +315,8 @@ class PrimeLoraWeightRelay:
             try:
                 self.trainer.download_step(offer.step, staging)
                 self._validate_adapter(staging)
-                self.inference.publish_step(offer.step, staging)
+                if self.inference is not None:
+                    self.inference.publish_step(offer.step, staging)
                 self._install_local(step_dir, staging)
                 committed += 1
             finally:

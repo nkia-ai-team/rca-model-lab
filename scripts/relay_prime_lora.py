@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Relay Prime-RL LoRA broadcasts between isolated KT Cloud sessions."""
+"""Relay Prime-RL LoRA broadcasts from the remote trainer to inference."""
 
 from __future__ import annotations
 
@@ -9,6 +9,7 @@ from pathlib import Path
 import yaml
 
 from rca_lab.prime_rl.weight_relay import (
+    LocalEndpoint,
     OpenSshBroadcastStore,
     PrimeLoraWeightRelay,
     WeightRelayConfig,
@@ -24,7 +25,11 @@ def main() -> None:
         yaml.safe_load(args.config.read_text(encoding="utf-8"))
     )
     trainer = OpenSshBroadcastStore(config.trainer)
-    inference = OpenSshBroadcastStore(config.inference)
+    inference = (
+        None
+        if isinstance(config.inference, LocalEndpoint)
+        else OpenSshBroadcastStore(config.inference)
+    )
     relay = PrimeLoraWeightRelay(config.local_broadcast_dir, trainer, inference)
     if args.once:
         print(f"committed={relay.sync_once()}")

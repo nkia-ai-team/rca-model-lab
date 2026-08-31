@@ -80,13 +80,14 @@ hashes. The materializer also preserves the custom tokenizer and chat template
 byte-for-byte. This cache is neither a new base model nor a merged adapter and
 may be deleted and regenerated; do not upload it as the canonical checkpoint.
 
-## Split KT sessions
+## Split training and inference hosts
 
 `configs/prime_rl/rca-online-smoke/` contains standalone configs for the
-four-process deployment:
+four-process deployment. KT Cloud owns training only; server 104 owns
+inference and local coordination:
 
-- `trainer.toml` runs only the FSDP2 LoRA trainer on the training H200;
-- `inference.toml` runs only vLLM on the inference H200;
+- `trainer.toml` runs only the FSDP2 LoRA trainer on the KT Cloud H200;
+- `inference.toml` runs only vLLM on server 104 physical GPU 2;
 - `env-server.toml` runs the production RCA harness, scenario lease and scorer
   locally;
 - `orchestrator.toml` schedules rollout groups, packs trajectories and sends
@@ -139,19 +140,19 @@ trainer directly at the original SFT adapter; that would discard the bootstrap
 updates.
 
 The orchestrator binds the ZMQ batch transport on local ports 5555 and 5556.
-Expose those ports to the trainer with SSH reverse forwards. Expose the vLLM
-router and admin engine to the orchestrator with local forwards for ports 8000
-and 8100.
+Expose those ports to the KT trainer with SSH reverse forwards. vLLM is on the
+same server as the orchestrator, so ports 8000 and 8100 stay local and require
+no inference SSH tunnel.
 
-Prime's LoRA filesystem broadcast normally requires a shared mount. These KT
-containers have isolated filesystems, so run `scripts/relay_prime_lora.py` with
-a local copy of `relay.example.yaml`. The relay preserves Prime's
-`.sender_ready -> .receiver_ready -> .started -> .finished` protocol and only
-publishes `.finished` locally after the complete adapter exists on the vLLM
-host. It uses legacy SCP because KT's SFTP subsystem corrupts the protocol on
-large adapter transfers. `local_broadcast_dir` and the inference host's
-`remote_broadcast_dir` must be the identical absolute path because Prime sends
-that path to vLLM's adapter-load endpoint.
+Prime's LoRA filesystem broadcast normally requires a shared mount. The KT
+trainer and server 104 do not share a filesystem, so run
+`scripts/relay_prime_lora.py` with a local copy of `relay.example.yaml`. The
+relay preserves Prime's
+`.sender_ready -> .receiver_ready -> .started -> .finished` protocol, downloads
+the completed adapter from KT with legacy SCP, and publishes it atomically into
+the local path shared by the orchestrator and vLLM. `local_broadcast_dir` and
+`inference.broadcast_dir` must be identical because Prime sends that absolute
+adapter path to vLLM's adapter-load endpoint.
 
 The current inference image has an immutable FlashInfer version mismatch, so
 `inference.toml` selects FlashAttention and disables FlashInfer autotuning. It

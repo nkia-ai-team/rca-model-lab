@@ -1,14 +1,11 @@
 trainer:
-  host: proxy2.ainexus.ktcloud.com
-  port: 10515
-  user: work
-  identity_file: /absolute/path/to/train_session_id_container
-  remote_broadcast_dir: /home/work/prime-rl-rca/outputs/rca-online-smoke/broadcasts
-inference:
   host: proxy1.ainexus.ktcloud.com
   port: 10658
   user: work
-  identity_file: /absolute/path/to/inference_session_id_container
-  remote_broadcast_dir: /tmp/rca-prime-rl/rca-online-smoke/broadcasts
+  identity_file: /absolute/path/to/id_container
+  remote_broadcast_dir: /home/work/prime-rl-rca/outputs/rca-online-smoke/broadcasts
+inference:
+  type: local
+  broadcast_dir: /tmp/rca-prime-rl/rca-online-smoke/broadcasts
 local_broadcast_dir: /tmp/rca-prime-rl/rca-online-smoke/broadcasts
 poll_interval_seconds: 0.25

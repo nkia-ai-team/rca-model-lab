@@ -3,12 +3,14 @@
 from rca_lab.prime_rl.paths import project_path, project_root
 from rca_lab.prime_rl.scenario import ScenarioLease, ScenarioState, parse_incident_id
 from rca_lab.prime_rl.weight_relay import (
+    LocalEndpoint,
     OpenSshBroadcastStore,
     PrimeLoraWeightRelay,
     WeightRelayConfig,
 )
 
 __all__ = [
+    "LocalEndpoint",
     "OpenSshBroadcastStore",
     "PrimeLoraWeightRelay",
     "ScenarioLease",
