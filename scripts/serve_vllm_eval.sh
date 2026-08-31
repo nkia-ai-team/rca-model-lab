@@ -9,11 +9,17 @@ vllm_bin=${VLLM_BIN:-/home/work/venv-vllm/bin/vllm}
 max_num_seqs=${VLLM_MAX_NUM_SEQS:-8}
 max_num_batched_tokens=${VLLM_MAX_NUM_BATCHED_TOKENS:-16384}
 gpu_memory_utilization=${VLLM_GPU_MEMORY_UTILIZATION:-0.95}
+tokenizer_path=${VLLM_TOKENIZER_PATH:-}
 
 test -d "$model_path"
 test -x "$vllm_bin"
 
 lora_args=()
+tokenizer_args=()
+if [[ -n "$tokenizer_path" ]]; then
+  test -d "$tokenizer_path"
+  tokenizer_args=(--tokenizer "$tokenizer_path")
+fi
 base_served_model="$served_model"
 if [[ -n "$lora_adapter" ]]; then
   test -d "$lora_adapter"
@@ -36,6 +42,7 @@ export FLASHINFER_DISABLE_VERSION_CHECK=${FLASHINFER_DISABLE_VERSION_CHECK:-1}
 export PYTHONNOUSERSITE=1
 unset PYTHONPATH
 exec "$vllm_bin" serve "$model_path" \
+  "${tokenizer_args[@]}" \
   --served-model-name "$base_served_model" \
   --host 127.0.0.1 \
   --port "$port" \

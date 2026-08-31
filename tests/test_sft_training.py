@@ -44,6 +44,9 @@ def test_high_reasoning_experiment_reuses_the_verified_full_trajectory_set() -> 
     assert high.dataset_manifest == low.dataset_manifest
     assert high.expected_trajectories == 23
     assert high.output_dir != low.output_dir
+    assert high.checkpoint_format == "compressed_tensors_fp8_block"
+    assert high.dequantize_for_training is True
+    assert high.tokenizer_name.endswith("models/muse-glimmer-30b-tokenizer")
 
 
 def test_runtime_tokenization_receives_the_declared_reasoning_strength() -> None:

@@ -16,6 +16,11 @@ from pydantic import Field
 from rca_lab.data.sft import SFTMessage
 from rca_lab.harness.models import StrictModel
 from rca_lab.provenance import file_sha256, resolve_model_identity
+from rca_lab.train.checkpoint import (
+    TrainingCheckpointContract,
+    load_training_model,
+    load_training_tokenizer,
+)
 from rca_lab.train.rl import _response_shape, _selected_logps
 from rca_lab.train.sft import (
     LoRAConfig,
@@ -26,10 +31,9 @@ from rca_lab.train.sft import (
 )
 
 
-class TrajectoryPreferenceConfig(StrictModel):
+class TrajectoryPreferenceConfig(TrainingCheckpointContract):
     name: str
     algorithm: Literal["whole_trajectory_rpo_lora"]
-    model_name: str
     model_sha256: str = Field(min_length=64, max_length=64)
     dataset: str
     dataset_sha256: str = Field(min_length=64, max_length=64)
@@ -179,7 +183,6 @@ def _backward_trajectory(
 def train_preference(config_path: Path) -> None:  # pragma: no cover - GPU entrypoint
     import torch
     from peft import LoraConfig, get_peft_model
-    from transformers import AutoModelForCausalLM, AutoModelForImageTextToText, AutoTokenizer
 
     config = load_preference_config(config_path)
     resolve_model_identity(config.model_name, config.model_sha256)
@@ -194,7 +197,7 @@ def train_preference(config_path: Path) -> None:  # pragma: no cover - GPU entry
         raise ValueError("preference dataset is empty")
     random.seed(config.seed)
     torch.manual_seed(config.seed)
-    tokenizer = AutoTokenizer.from_pretrained(config.model_name)
+    tokenizer = load_training_tokenizer(config)
     start_id = tokenizer.convert_tokens_to_ids("<|start|>")
     assistant_role_ids = tuple(tokenizer.encode("assistant", add_special_tokens=False))
     message_id = tokenizer.convert_tokens_to_ids("<|message|>")
@@ -236,15 +239,11 @@ def train_preference(config_path: Path) -> None:  # pragma: no cover - GPU entry
         }
         for row in rows
     ]
-    load_kwargs = {
-        "torch_dtype": torch.bfloat16,
-        "device_map": "auto",
-        "attn_implementation": os.environ.get("ATTN", "sdpa"),
-    }
-    try:
-        model = AutoModelForCausalLM.from_pretrained(config.model_name, **load_kwargs)
-    except ValueError:
-        model = AutoModelForImageTextToText.from_pretrained(config.model_name, **load_kwargs)
+    model = load_training_model(
+        config,
+        torch_module=torch,
+        attention_implementation=os.environ.get("ATTN", "sdpa"),
+    )
     model.config.use_cache = False
     model = get_peft_model(
         model,

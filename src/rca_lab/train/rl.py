@@ -16,6 +16,11 @@ from pydantic import Field, model_validator
 from rca_lab.data.sft import SFTMessage
 from rca_lab.harness.models import StrictModel
 from rca_lab.provenance import file_sha256, resolve_model_identity
+from rca_lab.train.checkpoint import (
+    TrainingCheckpointContract,
+    load_training_model,
+    load_training_tokenizer,
+)
 from rca_lab.train.sft import (
     LoRAConfig,
     ReasoningStrength,
@@ -25,9 +30,8 @@ from rca_lab.train.sft import (
 )
 
 
-class EpisodeRLConfig(StrictModel):
+class EpisodeRLConfig(TrainingCheckpointContract):
     name: str
-    model_name: str
     dataset: str
     output_dir: str
     max_length: int = Field(ge=1)
@@ -265,7 +269,6 @@ def _turn_loss(
 def train_rl(config_path: Path) -> None:  # pragma: no cover - GPU entrypoint
     import torch
     from peft import LoraConfig, PeftModel, get_peft_model
-    from transformers import AutoModelForCausalLM, AutoModelForImageTextToText, AutoTokenizer
 
     config = load_rl_config(config_path)
     dataset_path = Path(config.dataset)
@@ -282,7 +285,7 @@ def train_rl(config_path: Path) -> None:  # pragma: no cover - GPU entrypoint
     if not rows:
         raise ValueError("RL dataset has no finite-advantage episodes")
 
-    tokenizer = AutoTokenizer.from_pretrained(config.model_name)
+    tokenizer = load_training_tokenizer(config)
     start_id = tokenizer.convert_tokens_to_ids("<|start|>")
     assistant_role_ids = tuple(tokenizer.encode("assistant", add_special_tokens=False))
     message_id = tokenizer.convert_tokens_to_ids("<|message|>")
@@ -319,15 +322,11 @@ def train_rl(config_path: Path) -> None:  # pragma: no cover - GPU entrypoint
             )
         encoded.append({**row, "turns": turns})
 
-    load_kwargs = {
-        "torch_dtype": torch.bfloat16,
-        "device_map": "auto",
-        "attn_implementation": os.environ.get("ATTN", "sdpa"),
-    }
-    try:
-        model = AutoModelForCausalLM.from_pretrained(config.model_name, **load_kwargs)
-    except ValueError:
-        model = AutoModelForImageTextToText.from_pretrained(config.model_name, **load_kwargs)
+    model = load_training_model(
+        config,
+        torch_module=torch,
+        attention_implementation=os.environ.get("ATTN", "sdpa"),
+    )
     model.config.use_cache = False
     if config.algorithm == "episode_online_progressive_grpo_lora":
         resolved_base_sha = resolve_model_identity(config.model_name, config.base_model_sha256)

@@ -15,6 +15,12 @@ from pydantic import Field, model_validator
 from rca_lab.data.sft import SFTDatasetManifest
 from rca_lab.harness.models import StrictModel
 from rca_lab.provenance import file_sha256
+from rca_lab.train.checkpoint import (
+    TrainingCheckpointContract,
+    load_training_model,
+    load_training_tokenizer,
+    verify_training_checkpoint,
+)
 
 ReasoningStrength = Literal["low", "high"]
 
@@ -31,9 +37,8 @@ class WandbConfig(StrictModel):
     project: str
 
 
-class FullTrajectorySFTConfig(StrictModel):
+class FullTrajectorySFTConfig(TrainingCheckpointContract):
     name: str
-    model_name: str
     dataset: str
     dataset_manifest: str
     terminal_contract: str | None = None
@@ -198,13 +203,7 @@ def train_sft(config_path: Path) -> None:  # pragma: no cover - GPU entrypoint
 
     import torch
     from peft import LoraConfig, get_peft_model
-    from transformers import (
-        AutoModelForCausalLM,
-        AutoModelForImageTextToText,
-        AutoTokenizer,
-        Trainer,
-        TrainingArguments,
-    )
+    from transformers import Trainer, TrainingArguments
 
     def selective_fused_causal_loss(
         model: torch.nn.Module, turn: dict[str, torch.Tensor]
@@ -236,7 +235,7 @@ def train_sft(config_path: Path) -> None:  # pragma: no cover - GPU entrypoint
     config = load_sft_config(config_path)
     if config.batch_size != 1:
         raise ValueError("episode_exact_runtime requires batch_size=1")
-    tokenizer = AutoTokenizer.from_pretrained(config.model_name)
+    tokenizer = load_training_tokenizer(config)
     rows = load_verified_training_rows(config)
     if len(rows) % config.gradient_accumulation_steps:
         raise ValueError(
@@ -333,15 +332,11 @@ def train_sft(config_path: Path) -> None:  # pragma: no cover - GPU entrypoint
                 detached += loss.detach() * weight * sample_weight
             return detached
 
-    load_kwargs = {
-        "torch_dtype": torch.bfloat16,
-        "device_map": "auto",
-        "attn_implementation": os.environ.get("ATTN", "sdpa"),
-    }
-    try:
-        model = AutoModelForCausalLM.from_pretrained(config.model_name, **load_kwargs)
-    except ValueError:
-        model = AutoModelForImageTextToText.from_pretrained(config.model_name, **load_kwargs)
+    model = load_training_model(
+        config,
+        torch_module=torch,
+        attention_implementation=os.environ.get("ATTN", "sdpa"),
+    )
     model.config.use_cache = False
     model = get_peft_model(
         model,
@@ -416,6 +411,7 @@ def train_sft(config_path: Path) -> None:  # pragma: no cover - GPU entrypoint
             "cuda": torch.version.cuda,
             "transformers": __import__("transformers").__version__,
             "peft": __import__("peft").__version__,
+            "checkpoint": verify_training_checkpoint(config),
         },
     )
     (adapter_dir / "training_manifest.json").write_text(

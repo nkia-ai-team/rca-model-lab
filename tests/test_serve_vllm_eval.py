@@ -108,3 +108,25 @@ def test_inference_capacity_can_be_tuned_without_editing_script(tmp_path: Path) 
     assert args[args.index("--gpu-memory-utilization") + 1] == "0.92"
     assert args[args.index("--max-num-seqs") + 1] == "12"
     assert args[args.index("--max-num-batched-tokens") + 1] == "24576"
+
+
+def test_inference_can_pin_the_training_tokenizer_without_dequantizing_fp8(
+    tmp_path: Path,
+) -> None:
+    base = tmp_path / "fp8-base"
+    tokenizer = tmp_path / "tokenizer"
+    base.mkdir()
+    tokenizer.mkdir()
+    executable, output, python_no_user_site = _fake_vllm(tmp_path)
+    env = os.environ | {
+        "VLLM_BIN": str(executable),
+        "VLLM_TOKENIZER_PATH": str(tokenizer),
+        "CAPTURE_ARGS": str(output),
+        "CAPTURE_PYTHONNOUSERSITE": str(python_no_user_site),
+    }
+
+    subprocess.run([str(SCRIPT), str(base)], check=True, env=env)
+
+    args = output.read_text(encoding="utf-8").splitlines()
+    assert args[args.index("--tokenizer") + 1] == str(tokenizer)
+    assert "--dtype" not in args
