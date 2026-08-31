@@ -36,7 +36,9 @@ stack.
 The trainer environment must apply `trainer-overrides.txt` after installing
 Prime. Prime pins Transformers 5.6.2, which cannot load the `muse_glimmer`
 architecture; the override uses the same Muse-capable Transformers 5.15.1 as
-the SFT environment and also declares Prime's missing metrics dependency.
+the SFT environment, declares Prime's missing metrics dependency, and installs
+the Torch 2.11 / CUDA 12.8 FlashAttention wheel required by Prime's unconditional
+`ring_flash_attn` import. The RCA trainer still uses SDPA for model attention.
 Use the installer rather than invoking `uv pip` inside the Prime checkout:
 
 ```bash
@@ -46,7 +48,8 @@ scripts/install_prime_trainer_overrides.sh /absolute/path/to/trainer/python
 Prime declares Transformers under `tool.uv.override-dependencies`. A direct
 `uv pip install` launched inside that workspace will silently keep Prime's
 5.6.2 pin even when the requirements file requests 5.15.1. The installer runs
-the post-install override outside Prime's workspace and verifies both versions.
+the post-install override outside Prime's workspace and verifies all runtime
+versions.
 
 All stages are bound to the pinned
 `RedHatAI/Muse-Glimmer-30B-FP8-block` source revision. Transformers dequantizes
@@ -77,6 +80,18 @@ four-process deployment:
   locally;
 - `orchestrator.toml` schedules rollout groups, packs trajectories and sends
   training batches locally.
+
+Launch the single-H200 trainer through `torchrun`, which supplies the rank and
+rendezvous variables required even for a one-process FSDP mesh:
+
+```bash
+CUDA_VISIBLE_DEVICES=0 scripts/run_prime_trainer.sh \
+  /absolute/path/to/prime-rl \
+  /absolute/path/to/trainer.toml
+```
+
+Invoking Prime's `trainer` console script directly does not provide `RANK`,
+`WORLD_SIZE`, or the rendezvous address and fails before loading the model.
 
 Each training group contains eight rollouts and
 `env.max_concurrent_agents = 8`, so those eight model investigations execute in

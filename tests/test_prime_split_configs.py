@@ -47,6 +47,11 @@ def test_trainer_runtime_uses_muse_capable_transformers_and_metrics_dependency()
         if (line := raw.strip()) and not line.startswith("#")
     }
     assert requirements == {
+        (
+            "flash-attn @ https://github.com/mjun0812/"
+            "flash-attention-prebuild-wheels/releases/download/v0.9.4/"
+            "flash_attn-2.8.3+cu128torch2.11-cp312-cp312-linux_x86_64.whl"
+        ),
         "transformers==5.15.1",
         "prometheus-client==0.22.1",
     }

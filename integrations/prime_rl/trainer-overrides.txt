@@ -3,3 +3,7 @@ transformers==5.15.1
 
 # Prime imports the metrics server in every trainer process but does not declare it.
 prometheus-client==0.22.1
+
+# Prime's GPU extra installs ring-flash-attn, whose module is imported even
+# when this experiment selects SDPA. Use Prime's Torch 2.11 / CUDA 12.8 wheel.
+flash-attn @ https://github.com/mjun0812/flash-attention-prebuild-wheels/releases/download/v0.9.4/flash_attn-2.8.3+cu128torch2.11-cp312-cp312-linux_x86_64.whl

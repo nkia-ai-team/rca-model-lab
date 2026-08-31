@@ -32,6 +32,7 @@ trap 'rmdir "$isolated_dir"' EXIT
 from importlib.metadata import version
 
 expected = {
+    "flash-attn": "2.8.3+cu128torch2.11",
     "prometheus-client": "0.22.1",
     "transformers": "5.15.1",
 }
