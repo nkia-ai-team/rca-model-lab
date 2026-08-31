@@ -1,0 +1,5 @@
+# Muse-Glimmer tokenizer/config support for the CPU orchestrator.
+transformers==5.15.1
+
+# Prime imports its metrics server in the orchestrator process.
+prometheus-client==0.22.1

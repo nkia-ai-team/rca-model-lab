@@ -33,6 +33,17 @@ must include a CPU PyTorch wheel and `prometheus-client` in addition to the
 patched Prime package. It does not need TorchTitan, vLLM, or the CUDA trainer
 stack.
 
+After preparing the pinned Prime checkout, install its CPU-only coordinator
+runtime and the editable RCA environment with:
+
+```bash
+scripts/install_prime_orchestrator.sh /absolute/path/to/prime-rl
+```
+
+The installer reapplies the Muse-capable Transformers version after Prime's
+workspace sync and verifies the exact Prime, RCA environment, CPU Torch,
+Transformers, and metrics package identities.
+
 The trainer environment must apply `trainer-overrides.txt` after installing
 Prime. Prime pins Transformers 5.6.2, which cannot load the `muse_glimmer`
 architecture; the override uses the same Muse-capable Transformers 5.15.1 as
