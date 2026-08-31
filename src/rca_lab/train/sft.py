@@ -19,6 +19,7 @@ from rca_lab.train.checkpoint import (
     TrainingCheckpointContract,
     load_training_model,
     load_training_tokenizer,
+    save_training_tokenizer_artifacts,
     verify_training_checkpoint,
 )
 
@@ -57,9 +58,7 @@ class FullTrajectorySFTConfig(TrainingCheckpointContract):
     assistant_only_loss: Literal[True] = True
     case_balanced_loss: Literal[True] = True
     use_liger_kernel: bool = True
-    loss_backend: Literal["selective_fused_linear_ce", "model_full_logits"] = (
-        "model_full_logits"
-    )
+    loss_backend: Literal["selective_fused_linear_ce", "model_full_logits"] = "model_full_logits"
     adapter_scope: Literal["language_model", "all_linear"] = "all_linear"
     lora: LoRAConfig
     wandb: WandbConfig
@@ -191,9 +190,7 @@ def build_sft_training_manifest(
         "config": config.model_dump(mode="json"),
         "config_sha256": file_sha256(config_path),
         "dataset_sha256": file_sha256(Path(config.dataset)),
-        "adapter_files_sha256": {
-            path.name: file_sha256(path) for path in adapter_files
-        },
+        "adapter_files_sha256": {path.name: file_sha256(path) for path in adapter_files},
         "runtime": runtime,
     }
 
@@ -400,7 +397,7 @@ def train_sft(config_path: Path) -> None:  # pragma: no cover - GPU entrypoint
     trainer.train()
     adapter_dir = Path(config.output_dir) / "adapter"
     trainer.save_model(str(adapter_dir))
-    tokenizer.save_pretrained(adapter_dir)
+    save_training_tokenizer_artifacts(config, adapter_dir)
     manifest = build_sft_training_manifest(
         config_path=config_path,
         config=config,
