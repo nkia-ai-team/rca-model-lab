@@ -12,7 +12,8 @@ liveness_timeout_seconds = 60.0
 type = "filesystem"
 
 [vllm]
-model = "/home/swlee/models/muse-glimmer-30b-fp8-block"
+# Intentionally omitted. Supply --vllm.model with the path reported by the
+# model-download owner; this config must not guess a server-104 destination.
 tokenizer = "/home/swlee/projects/rca-model-lab/models/muse-glimmer-30b-tokenizer"
 served_model_name = ["rca-actor"]
 dtype = "auto"

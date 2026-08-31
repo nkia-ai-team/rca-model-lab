@@ -117,7 +117,7 @@ def test_progressive_second_stage_resumes_both_sides_from_same_checkpoint() -> N
 def test_inference_budget_targets_throughput_without_reducing_kv_capacity() -> None:
     config = _toml("inference.toml")["vllm"]
     assert config["served_model_name"] == ["rca-actor"]
-    assert config["model"].endswith("/muse-glimmer-30b-fp8-block")
+    assert "model" not in config
     assert config["tokenizer"].endswith("/models/muse-glimmer-30b-tokenizer")
     assert config["dtype"] == "auto"
     assert config["gpu_memory_utilization"] == 0.95

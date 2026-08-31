@@ -133,6 +133,17 @@ The image keeps the original FP8 base and dynamically reloads separate LoRA
 directories through Prime's `/load_lora_adapter` endpoint. It never merges the
 adapter into the 30B checkpoint.
 
+`inference.toml` deliberately has no model path. The download owner supplies
+the authoritative server-104 path at launch time:
+
+```bash
+RCA_INFERENCE_MODEL_PATH=/path/reported/by/download-owner
+test -d "$RCA_INFERENCE_MODEL_PATH"
+docker run ... rca-prime-inference:muse-v1 \
+  inference @ /path/to/inference.toml \
+  --vllm.model "$RCA_INFERENCE_MODEL_PATH"
+```
+
 Online training is progressive. `env-server.toml` is the short exploration
 bootstrap stage. It rewards diagnosis quality plus bounded credit for distinct
 environment evidence that is actually cited in the final answer. It does not
