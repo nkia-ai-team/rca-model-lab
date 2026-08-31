@@ -17,7 +17,13 @@ from rca_lab.data.sft import SFTMessage
 from rca_lab.harness.models import StrictModel
 from rca_lab.provenance import file_sha256, resolve_model_identity
 from rca_lab.train.rl import _response_shape, _selected_logps
-from rca_lab.train.sft import LoRAConfig, WandbConfig, mask_assistant_spans
+from rca_lab.train.sft import (
+    LoRAConfig,
+    ReasoningStrength,
+    WandbConfig,
+    mask_assistant_spans,
+    tokenize_runtime_messages,
+)
 
 
 class TrajectoryPreferenceConfig(StrictModel):
@@ -36,6 +42,7 @@ class TrajectoryPreferenceConfig(StrictModel):
     imitation_eta: float = Field(ge=0)
     max_grad_norm: float = Field(gt=0)
     seed: int = 42
+    reasoning_strength: ReasoningStrength = "low"
     lora: LoRAConfig
     wandb: WandbConfig
 
@@ -196,8 +203,10 @@ def train_preference(config_path: Path) -> None:  # pragma: no cover - GPU entry
     def encode_turns(turns: list[dict[str, Any]]) -> list[dict[str, Any]]:
         encoded = []
         for turn in turns:
-            tokenized = tokenizer.apply_chat_template(
-                turn["messages"], tokenize=True, reasoning_strength="low"
+            tokenized = tokenize_runtime_messages(
+                tokenizer,
+                turn["messages"],
+                reasoning_strength=config.reasoning_strength,
             )
             input_ids = list(tokenized["input_ids"])
             if len(input_ids) > config.max_length:

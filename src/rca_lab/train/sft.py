@@ -16,6 +16,8 @@ from rca_lab.data.sft import SFTDatasetManifest
 from rca_lab.harness.models import StrictModel
 from rca_lab.provenance import file_sha256
 
+ReasoningStrength = Literal["low", "high"]
+
 
 class LoRAConfig(StrictModel):
     rank: int = Field(ge=1)
@@ -45,6 +47,7 @@ class FullTrajectorySFTConfig(StrictModel):
     batch_size: int = Field(ge=1)
     gradient_accumulation_steps: int = Field(ge=1)
     save_total_limit: int = Field(ge=1)
+    reasoning_strength: ReasoningStrength = "low"
     trajectory_mode: Literal["episode_exact_runtime"] = "episode_exact_runtime"
     assistant_only_loss: Literal[True] = True
     case_balanced_loss: Literal[True] = True
@@ -84,6 +87,20 @@ def case_balanced_weights(scenario_ids: list[str]) -> list[float]:
         raise ValueError("cannot balance an empty scenario population")
     counts = Counter(scenario_ids)
     return [len(scenario_ids) / (len(counts) * counts[item]) for item in scenario_ids]
+
+
+def tokenize_runtime_messages(
+    tokenizer: Any,
+    messages: Any,
+    *,
+    reasoning_strength: ReasoningStrength,
+) -> Any:
+    """Render training turns with the same reasoning contract used at rollout."""
+    return tokenizer.apply_chat_template(
+        messages,
+        tokenize=True,
+        reasoning_strength=reasoning_strength,
+    )
 
 
 def load_verified_training_rows(config: FullTrajectorySFTConfig) -> list[dict[str, Any]]:
@@ -236,8 +253,10 @@ def train_sft(config_path: Path) -> None:  # pragma: no cover - GPU entrypoint
     for row, sample_weight in zip(rows, sample_weights, strict=True):
         episode_turns: list[dict[str, Any]] = []
         for turn in row["turns"]:
-            tokenized = tokenizer.apply_chat_template(
-                turn["messages"], tokenize=True, reasoning_strength="low"
+            tokenized = tokenize_runtime_messages(
+                tokenizer,
+                turn["messages"],
+                reasoning_strength=config.reasoning_strength,
             )
             input_ids = list(tokenized["input_ids"])
             if len(input_ids) > config.max_length:

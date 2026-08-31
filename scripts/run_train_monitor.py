@@ -38,7 +38,7 @@ def monitor_command(args: argparse.Namespace, cases: list[str]) -> list[str]:
         "--structured-backend",
         "guidance",
         "--reasoning-strength",
-        "low",
+        args.reasoning_strength,
         "--runs",
         str(args.runs),
     ]
@@ -76,6 +76,12 @@ def main() -> None:
     parser.add_argument("--base-url", default="http://localhost:8002/v1")
     parser.add_argument("--model", default="rca-actor")
     parser.add_argument("--runs", type=int, default=3)
+    parser.add_argument(
+        "--reasoning-strength",
+        choices=("low", "medium", "high"),
+        default="low",
+        help="chat-template branch; must match the trained adapter",
+    )
     parser.add_argument(
         "--resume",
         action="store_true",

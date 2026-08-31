@@ -27,6 +27,7 @@ def test_monitor_command_pins_train_partition_and_every_case() -> None:
         model="rca-actor",
         model_artifact="/remote/model",
         model_artifact_sha256="a" * 64,
+        reasoning_strength="high",
         runs=3,
         resume=False,
     )
@@ -37,6 +38,7 @@ def test_monitor_command_pins_train_partition_and_every_case() -> None:
     assert command.count("--case") == 2
     assert command[-4:] == ["--case", "case-a", "--case", "case-b"]
     assert command[command.index("--model-artifact-sha256") + 1] == "a" * 64
+    assert command[command.index("--reasoning-strength") + 1] == "high"
 
 
 def test_monitor_command_forwards_resume() -> None:
@@ -51,6 +53,7 @@ def test_monitor_command_forwards_resume() -> None:
         model="rca-actor",
         model_artifact="/remote/model",
         model_artifact_sha256="a" * 64,
+        reasoning_strength="low",
         runs=3,
         resume=True,
     )

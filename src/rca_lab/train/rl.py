@@ -16,7 +16,13 @@ from pydantic import Field, model_validator
 from rca_lab.data.sft import SFTMessage
 from rca_lab.harness.models import StrictModel
 from rca_lab.provenance import file_sha256, resolve_model_identity
-from rca_lab.train.sft import LoRAConfig, WandbConfig, mask_assistant_spans
+from rca_lab.train.sft import (
+    LoRAConfig,
+    ReasoningStrength,
+    WandbConfig,
+    mask_assistant_spans,
+    tokenize_runtime_messages,
+)
 
 
 class EpisodeRLConfig(StrictModel):
@@ -33,6 +39,7 @@ class EpisodeRLConfig(StrictModel):
     kl_beta: float = Field(ge=0)
     max_grad_norm: float = Field(gt=0)
     seed: int = 42
+    reasoning_strength: ReasoningStrength = "low"
     # Online GRPO snapshots the exact pre-update behavior policy and recomputes
     # its token log-probabilities. Temperature 1 therefore preserves ratio=1 at
     # initialization until rollout-time token logprobs are persisted directly.
@@ -284,8 +291,10 @@ def train_rl(config_path: Path) -> None:  # pragma: no cover - GPU entrypoint
     for row in rows:
         turns: list[dict[str, Any]] = []
         for turn in row["turns"]:
-            tokenized = tokenizer.apply_chat_template(
-                turn["messages"], tokenize=True, reasoning_strength="low"
+            tokenized = tokenize_runtime_messages(
+                tokenizer,
+                turn["messages"],
+                reasoning_strength=config.reasoning_strength,
             )
             input_ids = list(tokenized["input_ids"])
             if len(input_ids) > config.max_length:

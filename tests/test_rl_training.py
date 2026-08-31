@@ -24,6 +24,7 @@ def test_rl_config_locks_episode_dapo_contract() -> None:
     assert config.clip_high > config.clip_low
     assert config.lora.rank == 8
     assert config.behavior_temperature == 1.0
+    assert config.reasoning_strength == "low"
 
 
 def test_response_must_be_a_contiguous_suffix() -> None:

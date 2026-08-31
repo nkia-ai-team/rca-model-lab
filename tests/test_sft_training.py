@@ -8,6 +8,7 @@ from rca_lab.train.sft import (
     load_sft_config,
     load_verified_training_rows,
     mask_assistant_spans,
+    tokenize_runtime_messages,
     training_subprocess_environment,
 )
 
@@ -23,6 +24,7 @@ def test_production_config_preserves_episodes_with_exact_runtime_turns() -> None
     assert config.adapter_scope == "language_model"
     assert config.lora.target_modules.startswith(r"^model\.language_model")
     assert config.save_total_limit == 1
+    assert config.reasoning_strength == "low"
     rows = load_verified_training_rows(config)
     assert config.terminal_contract == "configs/eval/train-family-v2.yaml"
     assert config.curation_manifest == (
@@ -31,6 +33,32 @@ def test_production_config_preserves_episodes_with_exact_runtime_turns() -> None
     assert config.gradient_accumulation_steps == 1
     assert len(rows) == 23
     assert len({row["scenario_id"] for row in rows}) == 20
+
+
+def test_high_reasoning_experiment_reuses_the_verified_full_trajectory_set() -> None:
+    low = load_sft_config(Path("configs/sft/muse-glimmer-30b-teacher-v3.yaml"))
+    high = load_sft_config(Path("configs/sft/muse-glimmer-30b-teacher-v4-high.yaml"))
+
+    assert high.reasoning_strength == "high"
+    assert high.dataset == low.dataset
+    assert high.dataset_manifest == low.dataset_manifest
+    assert high.expected_trajectories == 23
+    assert high.output_dir != low.output_dir
+
+
+def test_runtime_tokenization_receives_the_declared_reasoning_strength() -> None:
+    class RecordingTokenizer:
+        def apply_chat_template(self, messages, **kwargs):
+            return {"messages": messages, **kwargs}
+
+    rendered = tokenize_runtime_messages(
+        RecordingTokenizer(),
+        [{"role": "user", "content": "incident"}],
+        reasoning_strength="high",
+    )
+
+    assert rendered["tokenize"] is True
+    assert rendered["reasoning_strength"] == "high"
 
 
 def test_training_subprocess_environment_isolates_container_packages_and_allocator() -> None:
