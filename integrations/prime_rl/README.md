@@ -79,6 +79,16 @@ only root identity, proof validity, status, and strict correctness. A model is
 promoted only by the diagnosis-stage sealed evaluation, never by the bootstrap
 score.
 
+The transition is a checkpoint resume, not a new adapter initialization. Stop
+the bootstrap processes only after both local and remote `step_3` checkpoints
+exist. Then start the diagnosis environment with `env-server-diagnosis.toml`,
+the local scheduler with `orchestrator-diagnosis.toml`, and the remote trainer
+with `trainer-diagnosis.toml`. Both diagnosis configs declare `resume.step = 3`
+and `max_steps = 6`, so Prime restores the same policy and optimizer state and
+trains steps 4 through 6 under the stricter reward. Do not point the diagnosis
+trainer directly at the original SFT adapter; that would discard the bootstrap
+updates.
+
 The orchestrator binds the ZMQ batch transport on local ports 5555 and 5556.
 Expose those ports to the trainer with SSH reverse forwards. Expose the vLLM
 router and admin engine to the orchestrator with local forwards for ports 8000

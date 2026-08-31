@@ -1,0 +1,55 @@
+# Resume the remote trainer from the bootstrap checkpoint. Prime restores the
+# LoRA, optimizer, scheduler and counters from step_3 before training step 4.
+output_dir = "/home/work/prime-rl-rca/outputs/rca-online-smoke"
+max_steps = 6
+
+[resume]
+step = 3
+
+[model]
+name = "/home/work/models/muse-glimmer-30b"
+seq_len = 32768
+attn = "sdpa"
+impl = "hf"
+optimization_dtype = "bfloat16"
+reduce_dtype = "bfloat16"
+optim_cpu_offload = true
+fused_lm_head_token_chunk_size = 4096
+
+[model.lora]
+rank = 8
+alpha = 16.0
+dropout = 0.0
+init_adapter = "/home/work/rca-model-lab/outputs/muse-glimmer-30b-teacher-v3-contract-clean/adapter"
+target_modules = [
+  '^model\.language_model\..*\.(q_proj|k_proj|v_proj|o_proj|up_proj|down_proj|gate_proj)$',
+]
+
+[loss]
+type = "ipo"
+eps = 0.1
+adv_tau = 1.0
+kl_tau = 0.001
+
+[optim]
+type = "adamw"
+lr = 1e-6
+weight_decay = 0.0
+max_norm = 1.0
+
+[scheduler]
+type = "constant"
+
+[ckpt]
+interval = 1
+keep_last = 2
+
+[weight_broadcast]
+type = "filesystem"
+timeout = 1800
+
+[rollout_transport]
+type = "zmq"
+host = "127.0.0.1"
+port = 5555
+hwm = 10

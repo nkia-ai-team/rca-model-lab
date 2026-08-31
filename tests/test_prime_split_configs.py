@@ -91,6 +91,26 @@ def test_progressive_second_stage_removes_exploration_shaping() -> None:
     assert config["env"]["agent"]["harness"]["id"] == "rca-student"
 
 
+def test_progressive_second_stage_resumes_both_sides_from_same_checkpoint() -> None:
+    bootstrap_orchestrator = _toml("orchestrator.toml")
+    bootstrap_trainer = _toml("trainer.toml")
+    diagnosis_orchestrator = _toml("orchestrator-diagnosis.toml")
+    diagnosis_trainer = _toml("trainer-diagnosis.toml")
+
+    assert bootstrap_orchestrator["max_steps"] == 3
+    assert bootstrap_trainer["max_steps"] == 3
+    assert diagnosis_orchestrator["resume"] == {"step": 3}
+    assert diagnosis_trainer["resume"] == {"step": 3}
+    assert diagnosis_orchestrator["max_steps"] == 6
+    assert diagnosis_trainer["max_steps"] == 6
+    assert diagnosis_orchestrator["output_dir"] == bootstrap_orchestrator["output_dir"]
+    assert diagnosis_trainer["output_dir"] == bootstrap_trainer["output_dir"]
+    assert diagnosis_orchestrator["train"] == bootstrap_orchestrator["train"]
+    assert diagnosis_trainer["model"] == bootstrap_trainer["model"]
+    assert diagnosis_trainer["loss"] == bootstrap_trainer["loss"]
+    assert diagnosis_trainer["optim"] == bootstrap_trainer["optim"]
+
+
 def test_inference_budget_targets_throughput_without_reducing_kv_capacity() -> None:
     config = _toml("inference.toml")["vllm"]
     assert config["served_model_name"] == ["rca-actor"]
