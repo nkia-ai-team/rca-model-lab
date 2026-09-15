@@ -1,0 +1,139 @@
+{
+ "status": "normal",
+ "assessment_basis": "존재 4구획(구획 존재 사실 기준 — 이상 단정 아님, 레벨 기반 판정 폐지). 급증=분당 비율 5배·현재 10건 이상(임시), 소멸=기대 출현 5회 이상인데 0회(임시), 기준선=첫 증상 직전 60분(override 가능), 템플릿=숫자·16진 정규화(양방향 오류 알려짐)",
+ "summary": "로그 종류 4구획: 기준선 미관측 0/0종, 급증 0/0종, 소멸 0/0종, 최빈 표시 5/11종. 원문은 mode=grep에 template_id로.",
+ "findings": [
+  {
+   "baseline_count": 5280,
+   "baseline_seen": "seen_in_baseline",
+   "current_count": 2075,
+   "first_at": "2026-08-03 02:44:49.555703615",
+   "last_at": "2026-08-03 03:14:48.845957796",
+   "refs": [
+    "ch:lucida_logs_local:71bf7e79-5bbe-4a29-855d-26e1465ab1d6:tmpl:7533030251353138528"
+   ],
+   "sample_first_line": "Notification sent successfully for dispatch event",
+   "section": "frequent",
+   "severities": [
+    "INFO"
+   ],
+   "template": "Notification sent successfully for dispatch event",
+   "template_id": "7533030251353138528"
+  },
+  {
+   "baseline_count": 2585,
+   "baseline_seen": "seen_in_baseline",
+   "current_count": 1092,
+   "first_at": "2026-08-03 02:45:11.692160033",
+   "last_at": "2026-08-03 03:14:48.845855824",
+   "refs": [
+    "ch:lucida_logs_local:71bf7e79-5bbe-4a29-855d-26e1465ab1d6:tmpl:1465478632324549186"
+   ],
+   "sample_first_line": "Received dispatch event: {\"dispatchId\":1121444,\"orderId\":1122482,\"status\":\"DELIVERED\",\"eventType\":\"DISPATCH_DELIVERED\"}",
+   "section": "frequent",
+   "severities": [
+    "INFO"
+   ],
+   "template": "Received dispatch event: {\"dispatchId\":N,\"orderId\":N,\"status\":\"DELIVERED\",\"eventType\":\"DISPATCH_DELIVERED\"}",
+   "template_id": "1465478632324549186"
+  },
+  {
+   "baseline_count": 2585,
+   "baseline_seen": "seen_in_baseline",
+   "current_count": 1092,
+   "first_at": "2026-08-03 02:45:11.692360050",
+   "last_at": "2026-08-03 03:14:48.845948947",
+   "refs": [
+    "ch:lucida_logs_local:71bf7e79-5bbe-4a29-855d-26e1465ab1d6:tmpl:391924154378068937"
+   ],
+   "sample_first_line": "Sending dispatch notification: {\"dispatchId\":1121444,\"orderId\":1122482,\"status\":\"DELIVERED\",\"eventType\":\"DISPATCH_DELIVERED\"}",
+   "section": "frequent",
+   "severities": [
+    "INFO"
+   ],
+   "template": "Sending dispatch notification: {\"dispatchId\":N,\"orderId\":N,\"status\":\"DELIVERED\",\"eventType\":\"DISPATCH_DELIVERED\"}",
+   "template_id": "391924154378068937"
+  },
+  {
+   "baseline_count": 2695,
+   "baseline_seen": "seen_in_baseline",
+   "current_count": 983,
+   "first_at": "2026-08-03 02:44:49.555308478",
+   "last_at": "2026-08-03 03:14:16.446397452",
+   "refs": [
+    "ch:lucida_logs_local:71bf7e79-5bbe-4a29-855d-26e1465ab1d6:tmpl:16864140612412208717"
+   ],
+   "sample_first_line": "Received dispatch event: {\"dispatchId\":1123052,\"orderId\":1124089,\"status\":\"ASSIGNED\",\"eventType\":\"DISPATCH_ASSIGNED\"}",
+   "section": "frequent",
+   "severities": [
+    "INFO"
+   ],
+   "template": "Received dispatch event: {\"dispatchId\":N,\"orderId\":N,\"status\":\"ASSIGNED\",\"eventType\":\"DISPATCH_ASSIGNED\"}",
+   "template_id": "16864140612412208717"
+  },
+  {
+   "baseline_count": 2695,
+   "baseline_seen": "seen_in_baseline",
+   "current_count": 983,
+   "first_at": "2026-08-03 02:44:49.555693999",
+   "last_at": "2026-08-03 03:14:16.446449662",
+   "refs": [
+    "ch:lucida_logs_local:71bf7e79-5bbe-4a29-855d-26e1465ab1d6:tmpl:3580227596295477649"
+   ],
+   "sample_first_line": "Sending dispatch notification: {\"dispatchId\":1123052,\"orderId\":1124089,\"status\":\"ASSIGNED\",\"eventType\":\"DISPATCH_ASSIGNED\"}",
+   "section": "frequent",
+   "severities": [
+    "INFO"
+   ],
+   "template": "Sending dispatch notification: {\"dispatchId\":N,\"orderId\":N,\"status\":\"ASSIGNED\",\"eventType\":\"DISPATCH_ASSIGNED\"}",
+   "template_id": "3580227596295477649"
+  },
+  {
+   "baseline_window": "2026-08-03T01:44:48Z/2026-08-03T02:44:48Z",
+   "level_distribution": {
+    "INFO": 12015
+   },
+   "section": "summary_meta",
+   "volume": {
+    "baseline_rate_per_min": 534.1,
+    "baseline_total": 32043,
+    "current_rate_per_min": 387.6,
+    "current_total": 12015
+   }
+  }
+ ],
+ "truncated": true,
+ "refs": [
+  "ch:lucida_logs_local:71bf7e79-5bbe-4a29-855d-26e1465ab1d6:tmpl:7533030251353138528",
+  "ch:lucida_logs_local:71bf7e79-5bbe-4a29-855d-26e1465ab1d6:tmpl:1465478632324549186",
+  "ch:lucida_logs_local:71bf7e79-5bbe-4a29-855d-26e1465ab1d6:tmpl:391924154378068937",
+  "ch:lucida_logs_local:71bf7e79-5bbe-4a29-855d-26e1465ab1d6:tmpl:16864140612412208717",
+  "ch:lucida_logs_local:71bf7e79-5bbe-4a29-855d-26e1465ab1d6:tmpl:3580227596295477649"
+ ],
+ "scopes": [
+  {
+   "class": "new_in_window",
+   "total": 0,
+   "returned": 0,
+   "omitted": 0
+  },
+  {
+   "class": "surged",
+   "total": 0,
+   "returned": 0,
+   "omitted": 0
+  },
+  {
+   "class": "disappeared",
+   "total": 0,
+   "returned": 0,
+   "omitted": 0
+  },
+  {
+   "class": "frequent",
+   "total": 11,
+   "returned": 5,
+   "omitted": 6
+  }
+ ]
+}

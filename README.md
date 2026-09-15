@@ -12,6 +12,7 @@ make setup
 ```
 
 필요한 것: `uv`, 로그인된 `claude` / `codex` CLI, 옆 디렉토리에 `rca-scenario-runner` 체크아웃,
+RCA 관측 도구(`tools/rca-mcp`)를 쓰려면 Go ≥ 1.25 와 Docker, 옆 디렉토리에 `lucida-next` 체크아웃 — [tools/rca-mcp/README.md](tools/rca-mcp/README.md).
 W&B 팀 `nkia-ai` 초대 수락 후 `.env` 에 자기 `WANDB_API_KEY` — [docs/wandb-setup.md](docs/wandb-setup.md).
 HF org `nkia-ai-lab` 초대 수락 후 `.env` 에 자기 `HF_TOKEN` (write, https://huggingface.co/settings/tokens).
 학습은 클라우드 GPU 에서 `make sync-train`. 나머지 타겟은 `make help`.
@@ -29,6 +30,7 @@ HF org `nkia-ai-lab` 초대 수락 후 `.env` 에 자기 `HF_TOKEN` (write, http
 | `src/rca_lab/eval` | 채점기 — SFT 평가와 RL reward 가 공유 | ✔ |
 | `prompts/` | 교사용/학생용 프롬프트 | ✔ |
 | `configs/` | 실험 설정 yaml | ✔ |
+| `tools/rca-mcp` | RCA 관측 도구 (Go, MCP stdio 서버). 교사 모델 CLI가 MCP로 사용 | ✔ |
 | `data/{raw,synth,processed}`, `models/`, `outputs/` | 데이터·가중치·실험 산출물 | ✘ (.gitkeep 만) |
 
 ## 규칙

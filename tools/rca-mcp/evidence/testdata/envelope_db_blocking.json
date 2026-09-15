@@ -1,0 +1,20 @@
+{
+ "status": "normal",
+ "assessment_basis": "폴 29개 전량에서 블로킹 표식 0건 — 조회 성공한 배제 근거. 짝 연결 등급=verified",
+ "summary": "블로킹 없음 — 창 내 폴 29개(행 2284개)를 전부 훑었고 블로킹 표식이 한 건도 없었다(engine=oracle). 창: from=인자, to=인자",
+ "observed_range": {
+  "from": "2026-08-03T02:44:26Z",
+  "to": "2026-08-03T03:15:26Z"
+ },
+ "refs": [
+  "ch:dpm_session_local:00149c2f-8a97-43bf-8907-c25029973e51:polls:29"
+ ],
+ "scopes": [
+  {
+   "class": "event",
+   "total": 0,
+   "returned": 0,
+   "omitted": 0
+  }
+ ]
+}

@@ -1,0 +1,52 @@
+{
+ "status": "normal",
+ "assessment_basis": "최대 프로세스 점유율 50% 이상 = 지배 소비자 존재(임시 판정식)",
+ "summary": "cpu 기준 프로세스 상위 3개(전체 55개). 최대 mongod(pid 1258372) 점유 16%.",
+ "findings": [
+  {
+   "avg": 141.64635858005667,
+   "pid": "1258372",
+   "process": "mongod",
+   "refs": [
+    "vm:sms.process.cpu_utilization{target_id=515fba8f-f6ab-4efc-affd-9d263fe36b6c,name=mongod,pid=1258372}:2026-08-03T02:44:00Z/2026-08-03T03:14:00Z"
+   ],
+   "share": 0.15649019623649124
+  },
+  {
+   "avg": 132.00498461123667,
+   "pid": "1257629",
+   "process": "java",
+   "refs": [
+    "vm:sms.process.cpu_utilization{target_id=515fba8f-f6ab-4efc-affd-9d263fe36b6c,name=java,pid=1257629}:2026-08-03T02:44:00Z/2026-08-03T03:14:00Z"
+   ],
+   "share": 0.14583845397149472
+  },
+  {
+   "avg": 112.36181524302336,
+   "pid": "1300565",
+   "process": "java",
+   "refs": [
+    "vm:sms.process.cpu_utilization{target_id=515fba8f-f6ab-4efc-affd-9d263fe36b6c,name=java,pid=1300565}:2026-08-03T02:44:00Z/2026-08-03T03:14:00Z"
+   ],
+   "share": 0.12413677762800462
+  }
+ ],
+ "observed_range": {
+  "from": "2026-08-03T02:44:00Z",
+  "to": "2026-08-03T03:14:00Z"
+ },
+ "truncated": true,
+ "refs": [
+  "vm:sms.process.cpu_utilization{target_id=515fba8f-f6ab-4efc-affd-9d263fe36b6c,name=mongod,pid=1258372}:2026-08-03T02:44:00Z/2026-08-03T03:14:00Z",
+  "vm:sms.process.cpu_utilization{target_id=515fba8f-f6ab-4efc-affd-9d263fe36b6c,name=java,pid=1257629}:2026-08-03T02:44:00Z/2026-08-03T03:14:00Z",
+  "vm:sms.process.cpu_utilization{target_id=515fba8f-f6ab-4efc-affd-9d263fe36b6c,name=java,pid=1300565}:2026-08-03T02:44:00Z/2026-08-03T03:14:00Z"
+ ],
+ "scopes": [
+  {
+   "class": "process",
+   "total": 55,
+   "returned": 3,
+   "omitted": 52
+  }
+ ]
+}

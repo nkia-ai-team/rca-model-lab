@@ -14,3 +14,4 @@
 | 2026-08-21 | 학습 모니터링은 W&B, 팀 프로젝트 `rca-model-lab` 하나에 전부 | 여러 명이 클라우드에서 따로 돌리는 run 을 한 곳에서 비교하기 위해. SFT 와 GRPO 를 같은 프로젝트에 둔다 |
 | 2026-08-21 | 브랜치 전략은 trunk-based (main + 단명 feature 브랜치, squash). 실험은 브랜치가 아니라 config+W&B | 배포 없는 2~3인 실험 레포. 실험마다 브랜치를 따면 코드가 갈라져 결과 비교가 안 된다 |
 | 2026-08-21 | 데이터셋·가중치 공유는 HF Hub private (org `nkia-ai-lab`), 버전은 태그 | 클라우드 GPU 에서 `load_dataset(revision=)` 한 줄로 재현 가능. git LFS 는 레포를 무겁게 하고 데이터 버전을 코드 버전에 묶는다. 외부 업로드가 정책상 막히면 사내 스토리지+DVC 로 전환 |
+| 2026-09-15 | RCA 관측 도구를 `tools/rca-mcp/` 독립 Go 모듈로 내장, `claude`/`codex` CLI에 MCP stdio로 연결 | 원본(rca-agent-next)은 개인 사이드 저장소라 원격이 없다. Go 19k줄을 Python으로 포팅하는 대신 MCP로 붙이면 교사 모델 CLI 호출 규칙과 그대로 맞는다. "로직 없음" 규칙은 `src/rca_lab` 실험 모듈에 관한 것이고 외부 도구 vendoring은 예외 (NKIAAI-835) |

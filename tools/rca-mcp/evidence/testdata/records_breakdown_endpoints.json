@@ -1,0 +1,3197 @@
+[
+ {
+  "EID": "EIX-0001",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "endpoint",
+  "RecordKind": "finding",
+  "FindingClass": "breakdown_endpoints/endpoint_latency",
+  "EntityKey": "entry|SERVER|http.route|GET /api/products/{id}",
+  "Headline": "진입점 entry/GET /api/products/{id}(http.route) p50_ms 2.89 / 기준선 2.83 — anomalous",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "duration",
+   "Metric": "p50_ms",
+   "Observed": 2.89,
+   "Baseline": 2.83,
+   "Magnitude": 2.89,
+   "Direction": "up"
+  },
+  "Window": {
+   "From": "2026-08-03T02:44:50Z",
+   "To": "2026-08-03T03:15:50Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "observed"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": 1178,
+   "Status": "anomalous",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "ok"
+  },
+  "Provenance": {
+   "Source": "breakdown_endpoints",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-b1410921de41"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:otel_traces_local:commerce-product:SERVER:GET /api/products/{id}",
+   "ch:otel_traces_local:trace:046b3612b6770b7ea80b340b62c995b7#2540aaec1803638e"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": false,
+   "OmittedN": 0
+  }
+ },
+ {
+  "EID": "EIX-0002",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "endpoint",
+  "RecordKind": "finding",
+  "FindingClass": "breakdown_endpoints/endpoint_failure",
+  "EntityKey": "entry|SERVER|http.route|GET /api/products/{id}",
+  "Headline": "진입점 entry/GET /api/products/{id}(http.route) failed_rate 0 / 기준선 0 — anomalous",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "share",
+   "Metric": "failed_rate",
+   "Observed": 0,
+   "Baseline": 0,
+   "Magnitude": 0,
+   "Direction": "flat"
+  },
+  "Window": {
+   "From": "2026-08-03T02:44:50Z",
+   "To": "2026-08-03T03:15:50Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "observed"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": 1178,
+   "Status": "anomalous",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "ok"
+  },
+  "Provenance": {
+   "Source": "breakdown_endpoints",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-40f62ce3a205"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:otel_traces_local:commerce-product:SERVER:GET /api/products/{id}",
+   "ch:otel_traces_local:trace:046b3612b6770b7ea80b340b62c995b7#2540aaec1803638e"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": false,
+   "OmittedN": 0
+  }
+ },
+ {
+  "EID": "EIX-0003",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "endpoint",
+  "RecordKind": "finding",
+  "FindingClass": "breakdown_endpoints/endpoint_latency",
+  "EntityKey": "entry|SERVER|http.route|GET /api/products",
+  "Headline": "진입점 entry/GET /api/products(http.route) p50_ms 2.75 / 기준선 2.84 — normal",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "duration",
+   "Metric": "p50_ms",
+   "Observed": 2.75,
+   "Baseline": 2.84,
+   "Magnitude": 2.75,
+   "Direction": "down"
+  },
+  "Window": {
+   "From": "2026-08-03T02:44:50Z",
+   "To": "2026-08-03T03:15:50Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "observed"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": 1004,
+   "Status": "anomalous",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "ok"
+  },
+  "Provenance": {
+   "Source": "breakdown_endpoints",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-b1410921de41"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:otel_traces_local:commerce-product:SERVER:GET /api/products",
+   "ch:otel_traces_local:trace:bc1adce6a905faf478b5fd6926a639a1#2ee7d1c809068676"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": false,
+   "OmittedN": 0
+  }
+ },
+ {
+  "EID": "EIX-0004",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "endpoint",
+  "RecordKind": "finding",
+  "FindingClass": "breakdown_endpoints/endpoint_failure",
+  "EntityKey": "entry|SERVER|http.route|GET /api/products",
+  "Headline": "진입점 entry/GET /api/products(http.route) failed_rate 0 / 기준선 0 — normal",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "share",
+   "Metric": "failed_rate",
+   "Observed": 0,
+   "Baseline": 0,
+   "Magnitude": 0,
+   "Direction": "flat"
+  },
+  "Window": {
+   "From": "2026-08-03T02:44:50Z",
+   "To": "2026-08-03T03:15:50Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "observed"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": 1004,
+   "Status": "anomalous",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "ok"
+  },
+  "Provenance": {
+   "Source": "breakdown_endpoints",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-40f62ce3a205"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:otel_traces_local:commerce-product:SERVER:GET /api/products",
+   "ch:otel_traces_local:trace:bc1adce6a905faf478b5fd6926a639a1#2ee7d1c809068676"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": false,
+   "OmittedN": 0
+  }
+ },
+ {
+  "EID": "EIX-0005",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "endpoint",
+  "RecordKind": "finding",
+  "FindingClass": "breakdown_endpoints/endpoint_latency",
+  "EntityKey": "entry|SERVER|http.route|POST /api/products/{id}/reserve-stock",
+  "Headline": "진입점 entry/POST /api/products/{id}/reserve-stock(http.route) p50_ms 6.12 / 기준선 6.44 — normal",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "duration",
+   "Metric": "p50_ms",
+   "Observed": 6.12,
+   "Baseline": 6.44,
+   "Magnitude": 6.12,
+   "Direction": "down"
+  },
+  "Window": {
+   "From": "2026-08-03T02:44:50Z",
+   "To": "2026-08-03T03:15:50Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "observed"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": 192,
+   "Status": "anomalous",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "ok"
+  },
+  "Provenance": {
+   "Source": "breakdown_endpoints",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-b1410921de41"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:otel_traces_local:commerce-product:SERVER:POST /api/products/{id}/reserve-stock",
+   "ch:otel_traces_local:trace:24597724419e3f911487cc35b6f0e15c#86bf2991321d373d"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": false,
+   "OmittedN": 0
+  }
+ },
+ {
+  "EID": "EIX-0006",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "endpoint",
+  "RecordKind": "finding",
+  "FindingClass": "breakdown_endpoints/endpoint_failure",
+  "EntityKey": "entry|SERVER|http.route|POST /api/products/{id}/reserve-stock",
+  "Headline": "진입점 entry/POST /api/products/{id}/reserve-stock(http.route) failed_rate 0 / 기준선 0 — normal",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "share",
+   "Metric": "failed_rate",
+   "Observed": 0,
+   "Baseline": 0,
+   "Magnitude": 0,
+   "Direction": "flat"
+  },
+  "Window": {
+   "From": "2026-08-03T02:44:50Z",
+   "To": "2026-08-03T03:15:50Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "observed"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": 192,
+   "Status": "anomalous",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "ok"
+  },
+  "Provenance": {
+   "Source": "breakdown_endpoints",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-40f62ce3a205"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:otel_traces_local:commerce-product:SERVER:POST /api/products/{id}/reserve-stock",
+   "ch:otel_traces_local:trace:24597724419e3f911487cc35b6f0e15c#86bf2991321d373d"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": false,
+   "OmittedN": 0
+  }
+ },
+ {
+  "EID": "EIX-0007",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "endpoint",
+  "RecordKind": "finding",
+  "FindingClass": "breakdown_endpoints/endpoint_latency",
+  "EntityKey": "entry|SERVER|http.route|GET /api/products/{id}/variants",
+  "Headline": "진입점 entry/GET /api/products/{id}/variants(http.route) p50_ms 1.33 / 기준선 1.32 — normal",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "duration",
+   "Metric": "p50_ms",
+   "Observed": 1.33,
+   "Baseline": 1.32,
+   "Magnitude": 1.33,
+   "Direction": "up"
+  },
+  "Window": {
+   "From": "2026-08-03T02:44:50Z",
+   "To": "2026-08-03T03:15:50Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "observed"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": 367,
+   "Status": "anomalous",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "ok"
+  },
+  "Provenance": {
+   "Source": "breakdown_endpoints",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-b1410921de41"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:otel_traces_local:commerce-product:SERVER:GET /api/products/{id}/variants",
+   "ch:otel_traces_local:trace:8e39279e54b6243839f917fa4095d970#e584fb878e294405"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": false,
+   "OmittedN": 0
+  }
+ },
+ {
+  "EID": "EIX-0008",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "endpoint",
+  "RecordKind": "finding",
+  "FindingClass": "breakdown_endpoints/endpoint_failure",
+  "EntityKey": "entry|SERVER|http.route|GET /api/products/{id}/variants",
+  "Headline": "진입점 entry/GET /api/products/{id}/variants(http.route) failed_rate 0 / 기준선 0 — normal",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "share",
+   "Metric": "failed_rate",
+   "Observed": 0,
+   "Baseline": 0,
+   "Magnitude": 0,
+   "Direction": "flat"
+  },
+  "Window": {
+   "From": "2026-08-03T02:44:50Z",
+   "To": "2026-08-03T03:15:50Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "observed"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": 367,
+   "Status": "anomalous",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "ok"
+  },
+  "Provenance": {
+   "Source": "breakdown_endpoints",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-40f62ce3a205"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:otel_traces_local:commerce-product:SERVER:GET /api/products/{id}/variants",
+   "ch:otel_traces_local:trace:8e39279e54b6243839f917fa4095d970#e584fb878e294405"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": false,
+   "OmittedN": 0
+  }
+ },
+ {
+  "EID": "EIX-0009",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "endpoint",
+  "RecordKind": "finding",
+  "FindingClass": "breakdown_endpoints/endpoint_latency",
+  "EntityKey": "entry|SERVER|http.route|GET /api/categories",
+  "Headline": "진입점 entry/GET /api/categories(http.route) p50_ms 1.31 / 기준선 1.3 — normal",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "duration",
+   "Metric": "p50_ms",
+   "Observed": 1.31,
+   "Baseline": 1.3,
+   "Magnitude": 1.31,
+   "Direction": "up"
+  },
+  "Window": {
+   "From": "2026-08-03T02:44:50Z",
+   "To": "2026-08-03T03:15:50Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "observed"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": 107,
+   "Status": "anomalous",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "ok"
+  },
+  "Provenance": {
+   "Source": "breakdown_endpoints",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-b1410921de41"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:otel_traces_local:commerce-product:SERVER:GET /api/categories",
+   "ch:otel_traces_local:trace:8b2180fe022c6bcbd14227fff33b06e9#289a9a2f90c65439"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": false,
+   "OmittedN": 0
+  }
+ },
+ {
+  "EID": "EIX-0010",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "endpoint",
+  "RecordKind": "finding",
+  "FindingClass": "breakdown_endpoints/endpoint_failure",
+  "EntityKey": "entry|SERVER|http.route|GET /api/categories",
+  "Headline": "진입점 entry/GET /api/categories(http.route) failed_rate 0 / 기준선 0 — normal",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "share",
+   "Metric": "failed_rate",
+   "Observed": 0,
+   "Baseline": 0,
+   "Magnitude": 0,
+   "Direction": "flat"
+  },
+  "Window": {
+   "From": "2026-08-03T02:44:50Z",
+   "To": "2026-08-03T03:15:50Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "observed"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": 107,
+   "Status": "anomalous",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "ok"
+  },
+  "Provenance": {
+   "Source": "breakdown_endpoints",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-40f62ce3a205"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:otel_traces_local:commerce-product:SERVER:GET /api/categories",
+   "ch:otel_traces_local:trace:8b2180fe022c6bcbd14227fff33b06e9#289a9a2f90c65439"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": false,
+   "OmittedN": 0
+  }
+ },
+ {
+  "EID": "EIX-0011",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "endpoint",
+  "RecordKind": "finding",
+  "FindingClass": "breakdown_endpoints/endpoint_latency",
+  "EntityKey": "entry|SERVER|http.route|GET /actuator/health",
+  "Headline": "진입점 entry/GET /actuator/health(http.route) p50_ms 0.91 / 기준선 0.91 — insufficient_sample",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "duration",
+   "Metric": "p50_ms",
+   "Observed": 0.91,
+   "Baseline": 0.91,
+   "Magnitude": 0.91,
+   "Direction": "flat"
+  },
+  "Window": {
+   "From": "2026-08-03T02:44:50Z",
+   "To": "2026-08-03T03:15:50Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "observed"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": 27,
+   "Status": "anomalous",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "low"
+  },
+  "Provenance": {
+   "Source": "breakdown_endpoints",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-b1410921de41"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:otel_traces_local:commerce-product:SERVER:GET /actuator/health",
+   "ch:otel_traces_local:trace:3aa5ca45ff3ff73831775035f06fdff7#7e9d5268f36c42db"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": false,
+   "OmittedN": 0
+  }
+ },
+ {
+  "EID": "EIX-0012",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "endpoint",
+  "RecordKind": "finding",
+  "FindingClass": "breakdown_endpoints/endpoint_failure",
+  "EntityKey": "entry|SERVER|http.route|GET /actuator/health",
+  "Headline": "진입점 entry/GET /actuator/health(http.route) failed_rate 0 / 기준선 0 — insufficient_sample",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "share",
+   "Metric": "failed_rate",
+   "Observed": 0,
+   "Baseline": 0,
+   "Magnitude": 0,
+   "Direction": "flat"
+  },
+  "Window": {
+   "From": "2026-08-03T02:44:50Z",
+   "To": "2026-08-03T03:15:50Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "observed"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": 27,
+   "Status": "anomalous",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "low"
+  },
+  "Provenance": {
+   "Source": "breakdown_endpoints",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-40f62ce3a205"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:otel_traces_local:commerce-product:SERVER:GET /actuator/health",
+   "ch:otel_traces_local:trace:3aa5ca45ff3ff73831775035f06fdff7#7e9d5268f36c42db"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": false,
+   "OmittedN": 0
+  }
+ },
+ {
+  "EID": "EIX-0013",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "endpoint",
+  "RecordKind": "finding",
+  "FindingClass": "breakdown_endpoints/endpoint_latency",
+  "EntityKey": "step|INTERNAL|framework_segment|hibernate-6.0 :: SELECT com.commerce.product.entity.Product",
+  "Headline": "진입점 step/hibernate-6.0 :: SELECT com.commerce.product.entity.Product(framework_segment) p50_ms 1.23 / 기준선 1.22 — normal",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "duration",
+   "Metric": "p50_ms",
+   "Observed": 1.23,
+   "Baseline": 1.22,
+   "Magnitude": 1.23,
+   "Direction": "up"
+  },
+  "Window": {
+   "From": "2026-08-03T02:44:50Z",
+   "To": "2026-08-03T03:15:50Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "observed"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": 1193,
+   "Status": "anomalous",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "ok"
+  },
+  "Provenance": {
+   "Source": "breakdown_endpoints",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-b1410921de41"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:otel_traces_local:commerce-product:INTERNAL:hibernate-6.0 :: SELECT com.commerce.product.entity.Product",
+   "ch:otel_traces_local:trace:ac15d9b1fe3263a917b5895bcbf1228e#5e98ed1003e16d29"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": false,
+   "OmittedN": 0
+  }
+ },
+ {
+  "EID": "EIX-0014",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "endpoint",
+  "RecordKind": "finding",
+  "FindingClass": "breakdown_endpoints/endpoint_failure",
+  "EntityKey": "step|INTERNAL|framework_segment|hibernate-6.0 :: SELECT com.commerce.product.entity.Product",
+  "Headline": "진입점 step/hibernate-6.0 :: SELECT com.commerce.product.entity.Product(framework_segment) failed_rate 0 / 기준선 0 — normal",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "share",
+   "Metric": "failed_rate",
+   "Observed": 0,
+   "Baseline": 0,
+   "Magnitude": 0,
+   "Direction": "flat"
+  },
+  "Window": {
+   "From": "2026-08-03T02:44:50Z",
+   "To": "2026-08-03T03:15:50Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "observed"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": 1193,
+   "Status": "anomalous",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "ok"
+  },
+  "Provenance": {
+   "Source": "breakdown_endpoints",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-40f62ce3a205"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:otel_traces_local:commerce-product:INTERNAL:hibernate-6.0 :: SELECT com.commerce.product.entity.Product",
+   "ch:otel_traces_local:trace:ac15d9b1fe3263a917b5895bcbf1228e#5e98ed1003e16d29"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": false,
+   "OmittedN": 0
+  }
+ },
+ {
+  "EID": "EIX-0015",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "endpoint",
+  "RecordKind": "finding",
+  "FindingClass": "breakdown_endpoints/endpoint_latency",
+  "EntityKey": "step|INTERNAL|framework_segment|spring-data-1.8 :: ProductRepository.findById",
+  "Headline": "진입점 step/spring-data-1.8 :: ProductRepository.findById(framework_segment) p50_ms 0.61 / 기준선 0.64 — normal",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "duration",
+   "Metric": "p50_ms",
+   "Observed": 0.61,
+   "Baseline": 0.64,
+   "Magnitude": 0.61,
+   "Direction": "down"
+  },
+  "Window": {
+   "From": "2026-08-03T02:44:50Z",
+   "To": "2026-08-03T03:15:50Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "observed"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": 1737,
+   "Status": "anomalous",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "ok"
+  },
+  "Provenance": {
+   "Source": "breakdown_endpoints",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-b1410921de41"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:otel_traces_local:commerce-product:INTERNAL:spring-data-1.8 :: ProductRepository.findById",
+   "ch:otel_traces_local:trace:046b3612b6770b7ea80b340b62c995b7#bf51a60c466328f4"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": false,
+   "OmittedN": 0
+  }
+ },
+ {
+  "EID": "EIX-0016",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "endpoint",
+  "RecordKind": "finding",
+  "FindingClass": "breakdown_endpoints/endpoint_failure",
+  "EntityKey": "step|INTERNAL|framework_segment|spring-data-1.8 :: ProductRepository.findById",
+  "Headline": "진입점 step/spring-data-1.8 :: ProductRepository.findById(framework_segment) failed_rate 0 / 기준선 0 — normal",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "share",
+   "Metric": "failed_rate",
+   "Observed": 0,
+   "Baseline": 0,
+   "Magnitude": 0,
+   "Direction": "flat"
+  },
+  "Window": {
+   "From": "2026-08-03T02:44:50Z",
+   "To": "2026-08-03T03:15:50Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "observed"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": 1737,
+   "Status": "anomalous",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "ok"
+  },
+  "Provenance": {
+   "Source": "breakdown_endpoints",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-40f62ce3a205"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:otel_traces_local:commerce-product:INTERNAL:spring-data-1.8 :: ProductRepository.findById",
+   "ch:otel_traces_local:trace:046b3612b6770b7ea80b340b62c995b7#bf51a60c466328f4"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": false,
+   "OmittedN": 0
+  }
+ },
+ {
+  "EID": "EIX-0017",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "endpoint",
+  "RecordKind": "finding",
+  "FindingClass": "breakdown_endpoints/endpoint_latency",
+  "EntityKey": "step|INTERNAL|framework_segment|spring-data-1.8 :: ProductRepository.findAll",
+  "Headline": "진입점 step/spring-data-1.8 :: ProductRepository.findAll(framework_segment) p50_ms 2.21 / 기준선 2.29 — normal",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "duration",
+   "Metric": "p50_ms",
+   "Observed": 2.21,
+   "Baseline": 2.29,
+   "Magnitude": 2.21,
+   "Direction": "down"
+  },
+  "Window": {
+   "From": "2026-08-03T02:44:50Z",
+   "To": "2026-08-03T03:15:50Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "observed"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": 400,
+   "Status": "anomalous",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "ok"
+  },
+  "Provenance": {
+   "Source": "breakdown_endpoints",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-b1410921de41"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:otel_traces_local:commerce-product:INTERNAL:spring-data-1.8 :: ProductRepository.findAll",
+   "ch:otel_traces_local:trace:ac15d9b1fe3263a917b5895bcbf1228e#b3dc80da4e6cfa57"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": false,
+   "OmittedN": 0
+  }
+ },
+ {
+  "EID": "EIX-0018",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "endpoint",
+  "RecordKind": "finding",
+  "FindingClass": "breakdown_endpoints/endpoint_failure",
+  "EntityKey": "step|INTERNAL|framework_segment|spring-data-1.8 :: ProductRepository.findAll",
+  "Headline": "진입점 step/spring-data-1.8 :: ProductRepository.findAll(framework_segment) failed_rate 0 / 기준선 0 — normal",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "share",
+   "Metric": "failed_rate",
+   "Observed": 0,
+   "Baseline": 0,
+   "Magnitude": 0,
+   "Direction": "flat"
+  },
+  "Window": {
+   "From": "2026-08-03T02:44:50Z",
+   "To": "2026-08-03T03:15:50Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "observed"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": 400,
+   "Status": "anomalous",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "ok"
+  },
+  "Provenance": {
+   "Source": "breakdown_endpoints",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-40f62ce3a205"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:otel_traces_local:commerce-product:INTERNAL:spring-data-1.8 :: ProductRepository.findAll",
+   "ch:otel_traces_local:trace:ac15d9b1fe3263a917b5895bcbf1228e#b3dc80da4e6cfa57"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": false,
+   "OmittedN": 0
+  }
+ },
+ {
+  "EID": "EIX-0019",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "endpoint",
+  "RecordKind": "finding",
+  "FindingClass": "breakdown_endpoints/endpoint_latency",
+  "EntityKey": "step|INTERNAL|framework_segment|spring-data-1.8 :: ProductRepository.findByCategoryId",
+  "Headline": "진입점 step/spring-data-1.8 :: ProductRepository.findByCategoryId(framework_segment) p50_ms 1.73 / 기준선 1.74 — normal",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "duration",
+   "Metric": "p50_ms",
+   "Observed": 1.73,
+   "Baseline": 1.74,
+   "Magnitude": 1.73,
+   "Direction": "down"
+  },
+  "Window": {
+   "From": "2026-08-03T02:44:50Z",
+   "To": "2026-08-03T03:15:50Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "observed"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": 397,
+   "Status": "anomalous",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "ok"
+  },
+  "Provenance": {
+   "Source": "breakdown_endpoints",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-b1410921de41"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:otel_traces_local:commerce-product:INTERNAL:spring-data-1.8 :: ProductRepository.findByCategoryId",
+   "ch:otel_traces_local:trace:bc1adce6a905faf478b5fd6926a639a1#9ab62c19c4f9fdb8"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": false,
+   "OmittedN": 0
+  }
+ },
+ {
+  "EID": "EIX-0020",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "endpoint",
+  "RecordKind": "finding",
+  "FindingClass": "breakdown_endpoints/endpoint_failure",
+  "EntityKey": "step|INTERNAL|framework_segment|spring-data-1.8 :: ProductRepository.findByCategoryId",
+  "Headline": "진입점 step/spring-data-1.8 :: ProductRepository.findByCategoryId(framework_segment) failed_rate 0 / 기준선 0 — normal",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "share",
+   "Metric": "failed_rate",
+   "Observed": 0,
+   "Baseline": 0,
+   "Magnitude": 0,
+   "Direction": "flat"
+  },
+  "Window": {
+   "From": "2026-08-03T02:44:50Z",
+   "To": "2026-08-03T03:15:50Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "observed"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": 397,
+   "Status": "anomalous",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "ok"
+  },
+  "Provenance": {
+   "Source": "breakdown_endpoints",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-40f62ce3a205"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:otel_traces_local:commerce-product:INTERNAL:spring-data-1.8 :: ProductRepository.findByCategoryId",
+   "ch:otel_traces_local:trace:bc1adce6a905faf478b5fd6926a639a1#9ab62c19c4f9fdb8"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": false,
+   "OmittedN": 0
+  }
+ },
+ {
+  "EID": "EIX-0021",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "endpoint",
+  "RecordKind": "finding",
+  "FindingClass": "breakdown_endpoints/endpoint_latency",
+  "EntityKey": "step|INTERNAL|framework_segment|hibernate-6.0 :: Session.find com.commerce.product.entity.Product",
+  "Headline": "진입점 step/hibernate-6.0 :: Session.find com.commerce.product.entity.Product(framework_segment) p50_ms 0.35 / 기준선 0.36 — …",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "duration",
+   "Metric": "p50_ms",
+   "Observed": 0.35,
+   "Baseline": 0.36,
+   "Magnitude": 0.35,
+   "Direction": "down"
+  },
+  "Window": {
+   "From": "2026-08-03T02:44:50Z",
+   "To": "2026-08-03T03:15:50Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "observed"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": 1737,
+   "Status": "anomalous",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "ok"
+  },
+  "Provenance": {
+   "Source": "breakdown_endpoints",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-b1410921de41"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:otel_traces_local:commerce-product:INTERNAL:hibernate-6.0 :: Session.find com.commerce.product.entity.Product",
+   "ch:otel_traces_local:trace:046b3612b6770b7ea80b340b62c995b7#0c23596484b2f62c"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": false,
+   "OmittedN": 0
+  }
+ },
+ {
+  "EID": "EIX-0022",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "endpoint",
+  "RecordKind": "finding",
+  "FindingClass": "breakdown_endpoints/endpoint_failure",
+  "EntityKey": "step|INTERNAL|framework_segment|hibernate-6.0 :: Session.find com.commerce.product.entity.Product",
+  "Headline": "진입점 step/hibernate-6.0 :: Session.find com.commerce.product.entity.Product(framework_segment) failed_rate 0 / 기준선 0 — n…",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "share",
+   "Metric": "failed_rate",
+   "Observed": 0,
+   "Baseline": 0,
+   "Magnitude": 0,
+   "Direction": "flat"
+  },
+  "Window": {
+   "From": "2026-08-03T02:44:50Z",
+   "To": "2026-08-03T03:15:50Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "observed"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": 1737,
+   "Status": "anomalous",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "ok"
+  },
+  "Provenance": {
+   "Source": "breakdown_endpoints",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-40f62ce3a205"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:otel_traces_local:commerce-product:INTERNAL:hibernate-6.0 :: Session.find com.commerce.product.entity.Product",
+   "ch:otel_traces_local:trace:046b3612b6770b7ea80b340b62c995b7#0c23596484b2f62c"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": false,
+   "OmittedN": 0
+  }
+ },
+ {
+  "EID": "EIX-0023",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "endpoint",
+  "RecordKind": "finding",
+  "FindingClass": "breakdown_endpoints/endpoint_latency",
+  "EntityKey": "step|INTERNAL|framework_segment|spring-data-1.8 :: ProductRepository.findByNameContainingIgnoreCase",
+  "Headline": "진입점 step/spring-data-1.8 :: ProductRepository.findByNameContainingIgnoreCase(framework_segment) p50_ms 3.21 / 기준선 3.16 …",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "duration",
+   "Metric": "p50_ms",
+   "Observed": 3.21,
+   "Baseline": 3.16,
+   "Magnitude": 3.21,
+   "Direction": "up"
+  },
+  "Window": {
+   "From": "2026-08-03T02:44:50Z",
+   "To": "2026-08-03T03:15:50Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "observed"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": 207,
+   "Status": "anomalous",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "ok"
+  },
+  "Provenance": {
+   "Source": "breakdown_endpoints",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-b1410921de41"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:otel_traces_local:commerce-product:INTERNAL:spring-data-1.8 :: ProductRepository.findByNameContainingIgnoreCase",
+   "ch:otel_traces_local:trace:9f59eb46f075e4dc01814f27de328e5e#0cc44768779990b6"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": false,
+   "OmittedN": 0
+  }
+ },
+ {
+  "EID": "EIX-0024",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "endpoint",
+  "RecordKind": "finding",
+  "FindingClass": "breakdown_endpoints/endpoint_failure",
+  "EntityKey": "step|INTERNAL|framework_segment|spring-data-1.8 :: ProductRepository.findByNameContainingIgnoreCase",
+  "Headline": "진입점 step/spring-data-1.8 :: ProductRepository.findByNameContainingIgnoreCase(framework_segment) failed_rate 0 / 기준선 0 —…",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "share",
+   "Metric": "failed_rate",
+   "Observed": 0,
+   "Baseline": 0,
+   "Magnitude": 0,
+   "Direction": "flat"
+  },
+  "Window": {
+   "From": "2026-08-03T02:44:50Z",
+   "To": "2026-08-03T03:15:50Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "observed"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": 207,
+   "Status": "anomalous",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "ok"
+  },
+  "Provenance": {
+   "Source": "breakdown_endpoints",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-40f62ce3a205"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:otel_traces_local:commerce-product:INTERNAL:spring-data-1.8 :: ProductRepository.findByNameContainingIgnoreCase",
+   "ch:otel_traces_local:trace:9f59eb46f075e4dc01814f27de328e5e#0cc44768779990b6"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": false,
+   "OmittedN": 0
+  }
+ },
+ {
+  "EID": "EIX-0025",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "endpoint",
+  "RecordKind": "finding",
+  "FindingClass": "breakdown_endpoints/endpoint_latency",
+  "EntityKey": "step|INTERNAL|framework_segment|hibernate-6.0 :: SELECT",
+  "Headline": "진입점 step/hibernate-6.0 :: SELECT(framework_segment) p50_ms 0.73 / 기준선 0.71 — normal",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "duration",
+   "Metric": "p50_ms",
+   "Observed": 0.73,
+   "Baseline": 0.71,
+   "Magnitude": 0.73,
+   "Direction": "up"
+  },
+  "Window": {
+   "From": "2026-08-03T02:44:50Z",
+   "To": "2026-08-03T03:15:50Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "observed"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": 789,
+   "Status": "anomalous",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "ok"
+  },
+  "Provenance": {
+   "Source": "breakdown_endpoints",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-b1410921de41"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:otel_traces_local:commerce-product:INTERNAL:hibernate-6.0 :: SELECT",
+   "ch:otel_traces_local:trace:bc1adce6a905faf478b5fd6926a639a1#ec348a2111ed2ae7"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": false,
+   "OmittedN": 0
+  }
+ },
+ {
+  "EID": "EIX-0026",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "endpoint",
+  "RecordKind": "finding",
+  "FindingClass": "breakdown_endpoints/endpoint_failure",
+  "EntityKey": "step|INTERNAL|framework_segment|hibernate-6.0 :: SELECT",
+  "Headline": "진입점 step/hibernate-6.0 :: SELECT(framework_segment) failed_rate 0 / 기준선 0 — normal",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "share",
+   "Metric": "failed_rate",
+   "Observed": 0,
+   "Baseline": 0,
+   "Magnitude": 0,
+   "Direction": "flat"
+  },
+  "Window": {
+   "From": "2026-08-03T02:44:50Z",
+   "To": "2026-08-03T03:15:50Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "observed"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": 789,
+   "Status": "anomalous",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "ok"
+  },
+  "Provenance": {
+   "Source": "breakdown_endpoints",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-40f62ce3a205"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:otel_traces_local:commerce-product:INTERNAL:hibernate-6.0 :: SELECT",
+   "ch:otel_traces_local:trace:bc1adce6a905faf478b5fd6926a639a1#ec348a2111ed2ae7"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": false,
+   "OmittedN": 0
+  }
+ },
+ {
+  "EID": "EIX-0027",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "endpoint",
+  "RecordKind": "finding",
+  "FindingClass": "breakdown_endpoints/endpoint_latency",
+  "EntityKey": "step|INTERNAL|framework_segment|hibernate-6.0 :: Transaction.commit",
+  "Headline": "진입점 step/hibernate-6.0 :: Transaction.commit(framework_segment) p50_ms 0.16 / 기준선 0.16 — normal",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "duration",
+   "Metric": "p50_ms",
+   "Observed": 0.16,
+   "Baseline": 0.16,
+   "Magnitude": 0.16,
+   "Direction": "flat"
+  },
+  "Window": {
+   "From": "2026-08-03T02:44:50Z",
+   "To": "2026-08-03T03:15:50Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "observed"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": 2244,
+   "Status": "anomalous",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "ok"
+  },
+  "Provenance": {
+   "Source": "breakdown_endpoints",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-b1410921de41"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:otel_traces_local:commerce-product:INTERNAL:hibernate-6.0 :: Transaction.commit",
+   "ch:otel_traces_local:trace:6d93fa86c39aa5676f90f3d3c30bb9c5#25fe310ffd190114"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": false,
+   "OmittedN": 0
+  }
+ },
+ {
+  "EID": "EIX-0028",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "endpoint",
+  "RecordKind": "finding",
+  "FindingClass": "breakdown_endpoints/endpoint_failure",
+  "EntityKey": "step|INTERNAL|framework_segment|hibernate-6.0 :: Transaction.commit",
+  "Headline": "진입점 step/hibernate-6.0 :: Transaction.commit(framework_segment) failed_rate 0 / 기준선 0 — normal",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "share",
+   "Metric": "failed_rate",
+   "Observed": 0,
+   "Baseline": 0,
+   "Magnitude": 0,
+   "Direction": "flat"
+  },
+  "Window": {
+   "From": "2026-08-03T02:44:50Z",
+   "To": "2026-08-03T03:15:50Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "observed"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": 2244,
+   "Status": "anomalous",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "ok"
+  },
+  "Provenance": {
+   "Source": "breakdown_endpoints",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-40f62ce3a205"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:otel_traces_local:commerce-product:INTERNAL:hibernate-6.0 :: Transaction.commit",
+   "ch:otel_traces_local:trace:6d93fa86c39aa5676f90f3d3c30bb9c5#25fe310ffd190114"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": false,
+   "OmittedN": 0
+  }
+ },
+ {
+  "EID": "EIX-0029",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "endpoint",
+  "RecordKind": "finding",
+  "FindingClass": "breakdown_endpoints/endpoint_latency",
+  "EntityKey": "step|INTERNAL|framework_segment|spring-data-1.8 :: ProductVariantRepository.findByProductId",
+  "Headline": "진입점 step/spring-data-1.8 :: ProductVariantRepository.findByProductId(framework_segment) p50_ms 0.44 / 기준선 0.44 — normal",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "duration",
+   "Metric": "p50_ms",
+   "Observed": 0.44,
+   "Baseline": 0.44,
+   "Magnitude": 0.44,
+   "Direction": "flat"
+  },
+  "Window": {
+   "From": "2026-08-03T02:44:50Z",
+   "To": "2026-08-03T03:15:50Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "observed"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": 246,
+   "Status": "anomalous",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "ok"
+  },
+  "Provenance": {
+   "Source": "breakdown_endpoints",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-b1410921de41"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:otel_traces_local:commerce-product:INTERNAL:spring-data-1.8 :: ProductVariantRepository.findByProductId",
+   "ch:otel_traces_local:trace:347e6b4c178af8d027f314bb3879db9a#0c8c737baa3ea7cd"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": false,
+   "OmittedN": 0
+  }
+ },
+ {
+  "EID": "EIX-0030",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "endpoint",
+  "RecordKind": "finding",
+  "FindingClass": "breakdown_endpoints/endpoint_failure",
+  "EntityKey": "step|INTERNAL|framework_segment|spring-data-1.8 :: ProductVariantRepository.findByProductId",
+  "Headline": "진입점 step/spring-data-1.8 :: ProductVariantRepository.findByProductId(framework_segment) failed_rate 0 / 기준선 0 — normal",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "share",
+   "Metric": "failed_rate",
+   "Observed": 0,
+   "Baseline": 0,
+   "Magnitude": 0,
+   "Direction": "flat"
+  },
+  "Window": {
+   "From": "2026-08-03T02:44:50Z",
+   "To": "2026-08-03T03:15:50Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "observed"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": 246,
+   "Status": "anomalous",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "ok"
+  },
+  "Provenance": {
+   "Source": "breakdown_endpoints",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-40f62ce3a205"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:otel_traces_local:commerce-product:INTERNAL:spring-data-1.8 :: ProductVariantRepository.findByProductId",
+   "ch:otel_traces_local:trace:347e6b4c178af8d027f314bb3879db9a#0c8c737baa3ea7cd"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": false,
+   "OmittedN": 0
+  }
+ },
+ {
+  "EID": "EIX-0031",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "endpoint",
+  "RecordKind": "finding",
+  "FindingClass": "breakdown_endpoints/endpoint_latency",
+  "EntityKey": "step|INTERNAL|framework_segment|spring-data-1.8 :: CategoryRepository.findAll",
+  "Headline": "진입점 step/spring-data-1.8 :: CategoryRepository.findAll(framework_segment) p50_ms 0.86 / 기준선 0.87 — normal",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "duration",
+   "Metric": "p50_ms",
+   "Observed": 0.86,
+   "Baseline": 0.87,
+   "Magnitude": 0.86,
+   "Direction": "down"
+  },
+  "Window": {
+   "From": "2026-08-03T02:44:50Z",
+   "To": "2026-08-03T03:15:50Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "observed"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": 107,
+   "Status": "anomalous",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "ok"
+  },
+  "Provenance": {
+   "Source": "breakdown_endpoints",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-b1410921de41"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:otel_traces_local:commerce-product:INTERNAL:spring-data-1.8 :: CategoryRepository.findAll",
+   "ch:otel_traces_local:trace:8b2180fe022c6bcbd14227fff33b06e9#aea225d45b991615"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": false,
+   "OmittedN": 0
+  }
+ },
+ {
+  "EID": "EIX-0032",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "endpoint",
+  "RecordKind": "finding",
+  "FindingClass": "breakdown_endpoints/endpoint_failure",
+  "EntityKey": "step|INTERNAL|framework_segment|spring-data-1.8 :: CategoryRepository.findAll",
+  "Headline": "진입점 step/spring-data-1.8 :: CategoryRepository.findAll(framework_segment) failed_rate 0 / 기준선 0 — normal",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "share",
+   "Metric": "failed_rate",
+   "Observed": 0,
+   "Baseline": 0,
+   "Magnitude": 0,
+   "Direction": "flat"
+  },
+  "Window": {
+   "From": "2026-08-03T02:44:50Z",
+   "To": "2026-08-03T03:15:50Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "observed"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": 107,
+   "Status": "anomalous",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "ok"
+  },
+  "Provenance": {
+   "Source": "breakdown_endpoints",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-40f62ce3a205"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:otel_traces_local:commerce-product:INTERNAL:spring-data-1.8 :: CategoryRepository.findAll",
+   "ch:otel_traces_local:trace:8b2180fe022c6bcbd14227fff33b06e9#aea225d45b991615"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": false,
+   "OmittedN": 0
+  }
+ },
+ {
+  "EID": "EIX-0033",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "endpoint",
+  "RecordKind": "finding",
+  "FindingClass": "breakdown_endpoints/endpoint_latency",
+  "EntityKey": "step|INTERNAL|framework_segment|hibernate-6.0 :: SELECT com.commerce.product.entity.ProductVariant",
+  "Headline": "진입점 step/hibernate-6.0 :: SELECT com.commerce.product.entity.ProductVariant(framework_segment) p50_ms 0.34 / 기준선 0.34 —…",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "duration",
+   "Metric": "p50_ms",
+   "Observed": 0.34,
+   "Baseline": 0.34,
+   "Magnitude": 0.34,
+   "Direction": "flat"
+  },
+  "Window": {
+   "From": "2026-08-03T02:44:50Z",
+   "To": "2026-08-03T03:15:50Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "observed"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": 246,
+   "Status": "anomalous",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "ok"
+  },
+  "Provenance": {
+   "Source": "breakdown_endpoints",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-b1410921de41"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:otel_traces_local:commerce-product:INTERNAL:hibernate-6.0 :: SELECT com.commerce.product.entity.ProductVariant",
+   "ch:otel_traces_local:trace:347e6b4c178af8d027f314bb3879db9a#e929a2e7acdfb07a"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": false,
+   "OmittedN": 0
+  }
+ },
+ {
+  "EID": "EIX-0034",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "endpoint",
+  "RecordKind": "finding",
+  "FindingClass": "breakdown_endpoints/endpoint_failure",
+  "EntityKey": "step|INTERNAL|framework_segment|hibernate-6.0 :: SELECT com.commerce.product.entity.ProductVariant",
+  "Headline": "진입점 step/hibernate-6.0 :: SELECT com.commerce.product.entity.ProductVariant(framework_segment) failed_rate 0 / 기준선 0 — …",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "share",
+   "Metric": "failed_rate",
+   "Observed": 0,
+   "Baseline": 0,
+   "Magnitude": 0,
+   "Direction": "flat"
+  },
+  "Window": {
+   "From": "2026-08-03T02:44:50Z",
+   "To": "2026-08-03T03:15:50Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "observed"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": 246,
+   "Status": "anomalous",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "ok"
+  },
+  "Provenance": {
+   "Source": "breakdown_endpoints",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-40f62ce3a205"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:otel_traces_local:commerce-product:INTERNAL:hibernate-6.0 :: SELECT com.commerce.product.entity.ProductVariant",
+   "ch:otel_traces_local:trace:347e6b4c178af8d027f314bb3879db9a#e929a2e7acdfb07a"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": false,
+   "OmittedN": 0
+  }
+ },
+ {
+  "EID": "EIX-0035",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "endpoint",
+  "RecordKind": "finding",
+  "FindingClass": "breakdown_endpoints/endpoint_latency",
+  "EntityKey": "step|INTERNAL|framework_segment|hibernate-6.0 :: SELECT com.commerce.product.entity.Category",
+  "Headline": "진입점 step/hibernate-6.0 :: SELECT com.commerce.product.entity.Category(framework_segment) p50_ms 0.51 / 기준선 0.48 — normal",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "duration",
+   "Metric": "p50_ms",
+   "Observed": 0.51,
+   "Baseline": 0.48,
+   "Magnitude": 0.51,
+   "Direction": "up"
+  },
+  "Window": {
+   "From": "2026-08-03T02:44:50Z",
+   "To": "2026-08-03T03:15:50Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "observed"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": 107,
+   "Status": "anomalous",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "ok"
+  },
+  "Provenance": {
+   "Source": "breakdown_endpoints",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-b1410921de41"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:otel_traces_local:commerce-product:INTERNAL:hibernate-6.0 :: SELECT com.commerce.product.entity.Category",
+   "ch:otel_traces_local:trace:8b2180fe022c6bcbd14227fff33b06e9#71866ab3aefe35b4"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": false,
+   "OmittedN": 0
+  }
+ },
+ {
+  "EID": "EIX-0036",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "endpoint",
+  "RecordKind": "finding",
+  "FindingClass": "breakdown_endpoints/endpoint_failure",
+  "EntityKey": "step|INTERNAL|framework_segment|hibernate-6.0 :: SELECT com.commerce.product.entity.Category",
+  "Headline": "진입점 step/hibernate-6.0 :: SELECT com.commerce.product.entity.Category(framework_segment) failed_rate 0 / 기준선 0 — normal",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "share",
+   "Metric": "failed_rate",
+   "Observed": 0,
+   "Baseline": 0,
+   "Magnitude": 0,
+   "Direction": "flat"
+  },
+  "Window": {
+   "From": "2026-08-03T02:44:50Z",
+   "To": "2026-08-03T03:15:50Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "observed"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": 107,
+   "Status": "anomalous",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "ok"
+  },
+  "Provenance": {
+   "Source": "breakdown_endpoints",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-40f62ce3a205"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:otel_traces_local:commerce-product:INTERNAL:hibernate-6.0 :: SELECT com.commerce.product.entity.Category",
+   "ch:otel_traces_local:trace:8b2180fe022c6bcbd14227fff33b06e9#71866ab3aefe35b4"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": false,
+   "OmittedN": 0
+  }
+ },
+ {
+  "EID": "EIX-0037",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "endpoint",
+  "RecordKind": "finding",
+  "FindingClass": "breakdown_endpoints/endpoint_latency",
+  "EntityKey": "egress|CLIENT|http_call|http GET testbed-inventory:8082",
+  "Headline": "진입점 egress/http GET testbed-inventory:8082(http_call) p50_ms 1.74 / 기준선 1.73 — anomalous",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "duration",
+   "Metric": "p50_ms",
+   "Observed": 1.74,
+   "Baseline": 1.73,
+   "Magnitude": 1.74,
+   "Direction": "up"
+  },
+  "Window": {
+   "From": "2026-08-03T02:44:50Z",
+   "To": "2026-08-03T03:15:50Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "observed"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": 829,
+   "Status": "anomalous",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "ok"
+  },
+  "Provenance": {
+   "Source": "breakdown_endpoints",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-b1410921de41"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:otel_traces_local:commerce-product:CLIENT:http GET testbed-inventory:8082",
+   "ch:otel_traces_local:trace:e6113b01a4605202105e31ee12054413#215a160a5370594b"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": false,
+   "OmittedN": 0
+  }
+ },
+ {
+  "EID": "EIX-0038",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "endpoint",
+  "RecordKind": "finding",
+  "FindingClass": "breakdown_endpoints/endpoint_failure",
+  "EntityKey": "egress|CLIENT|http_call|http GET testbed-inventory:8082",
+  "Headline": "진입점 egress/http GET testbed-inventory:8082(http_call) failed_rate 0 / 기준선 0 — anomalous",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "share",
+   "Metric": "failed_rate",
+   "Observed": 0,
+   "Baseline": 0,
+   "Magnitude": 0,
+   "Direction": "flat"
+  },
+  "Window": {
+   "From": "2026-08-03T02:44:50Z",
+   "To": "2026-08-03T03:15:50Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "observed"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": 829,
+   "Status": "anomalous",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "ok"
+  },
+  "Provenance": {
+   "Source": "breakdown_endpoints",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-40f62ce3a205"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:otel_traces_local:commerce-product:CLIENT:http GET testbed-inventory:8082",
+   "ch:otel_traces_local:trace:e6113b01a4605202105e31ee12054413#215a160a5370594b"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": false,
+   "OmittedN": 0
+  }
+ },
+ {
+  "EID": "EIX-0039",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "endpoint",
+  "RecordKind": "finding",
+  "FindingClass": "breakdown_endpoints/endpoint_latency",
+  "EntityKey": "egress|CLIENT|db_call|db postgresql SELECT -",
+  "Headline": "진입점 egress/db postgresql SELECT -(db_call) p50_ms 0.34 / 기준선 0.34 — normal",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "duration",
+   "Metric": "p50_ms",
+   "Observed": 0.34,
+   "Baseline": 0.34,
+   "Magnitude": 0.34,
+   "Direction": "flat"
+  },
+  "Window": {
+   "From": "2026-08-03T02:44:50Z",
+   "To": "2026-08-03T03:15:50Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "observed"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": 2526,
+   "Status": "anomalous",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "ok"
+  },
+  "Provenance": {
+   "Source": "breakdown_endpoints",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-b1410921de41"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:otel_traces_local:commerce-product:CLIENT:db postgresql SELECT -",
+   "ch:otel_traces_local:trace:046b3612b6770b7ea80b340b62c995b7#b59fc3bb11792a2b"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": false,
+   "OmittedN": 0
+  }
+ },
+ {
+  "EID": "EIX-0040",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "endpoint",
+  "RecordKind": "finding",
+  "FindingClass": "breakdown_endpoints/endpoint_failure",
+  "EntityKey": "egress|CLIENT|db_call|db postgresql SELECT -",
+  "Headline": "진입점 egress/db postgresql SELECT -(db_call) failed_rate 0 / 기준선 0 — normal",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "share",
+   "Metric": "failed_rate",
+   "Observed": 0,
+   "Baseline": 0,
+   "Magnitude": 0,
+   "Direction": "flat"
+  },
+  "Window": {
+   "From": "2026-08-03T02:44:50Z",
+   "To": "2026-08-03T03:15:50Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "observed"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": 2526,
+   "Status": "anomalous",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "ok"
+  },
+  "Provenance": {
+   "Source": "breakdown_endpoints",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-40f62ce3a205"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:otel_traces_local:commerce-product:CLIENT:db postgresql SELECT -",
+   "ch:otel_traces_local:trace:046b3612b6770b7ea80b340b62c995b7#b59fc3bb11792a2b"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": false,
+   "OmittedN": 0
+  }
+ },
+ {
+  "EID": "EIX-0041",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "endpoint",
+  "RecordKind": "finding",
+  "FindingClass": "breakdown_endpoints/endpoint_latency",
+  "EntityKey": "egress|CLIENT|http_call|http POST testbed-inventory:8082",
+  "Headline": "진입점 egress/http POST testbed-inventory:8082(http_call) p50_ms 4.66 / 기준선 4.93 — normal",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "duration",
+   "Metric": "p50_ms",
+   "Observed": 4.66,
+   "Baseline": 4.93,
+   "Magnitude": 4.66,
+   "Direction": "down"
+  },
+  "Window": {
+   "From": "2026-08-03T02:44:50Z",
+   "To": "2026-08-03T03:15:50Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "observed"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": 192,
+   "Status": "anomalous",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "ok"
+  },
+  "Provenance": {
+   "Source": "breakdown_endpoints",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-b1410921de41"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:otel_traces_local:commerce-product:CLIENT:http POST testbed-inventory:8082",
+   "ch:otel_traces_local:trace:cc238068b6e39216a9de463445954a4a#3c3e6cd96bdd6cf9"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": false,
+   "OmittedN": 0
+  }
+ },
+ {
+  "EID": "EIX-0042",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "endpoint",
+  "RecordKind": "finding",
+  "FindingClass": "breakdown_endpoints/endpoint_failure",
+  "EntityKey": "egress|CLIENT|http_call|http POST testbed-inventory:8082",
+  "Headline": "진입점 egress/http POST testbed-inventory:8082(http_call) failed_rate 0 / 기준선 0 — normal",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "share",
+   "Metric": "failed_rate",
+   "Observed": 0,
+   "Baseline": 0,
+   "Magnitude": 0,
+   "Direction": "flat"
+  },
+  "Window": {
+   "From": "2026-08-03T02:44:50Z",
+   "To": "2026-08-03T03:15:50Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "observed"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": 192,
+   "Status": "anomalous",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "ok"
+  },
+  "Provenance": {
+   "Source": "breakdown_endpoints",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-40f62ce3a205"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:otel_traces_local:commerce-product:CLIENT:http POST testbed-inventory:8082",
+   "ch:otel_traces_local:trace:cc238068b6e39216a9de463445954a4a#3c3e6cd96bdd6cf9"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": false,
+   "OmittedN": 0
+  }
+ },
+ {
+  "EID": "EIX-0043",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "endpoint",
+  "RecordKind": "finding",
+  "FindingClass": "breakdown_endpoints/endpoint_latency",
+  "EntityKey": "egress|CLIENT|db_call|db postgresql SELECT product_schema.products",
+  "Headline": "진입점 egress/db postgresql SELECT product_schema.products(db_call) p50_ms 0.44 / 기준선 0.4 — normal",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "duration",
+   "Metric": "p50_ms",
+   "Observed": 0.44,
+   "Baseline": 0.4,
+   "Magnitude": 0.44,
+   "Direction": "up"
+  },
+  "Window": {
+   "From": "2026-08-03T02:44:50Z",
+   "To": "2026-08-03T03:15:50Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "observed"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": 1193,
+   "Status": "anomalous",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "ok"
+  },
+  "Provenance": {
+   "Source": "breakdown_endpoints",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-b1410921de41"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:otel_traces_local:commerce-product:CLIENT:db postgresql SELECT product_schema.products",
+   "ch:otel_traces_local:trace:9f59eb46f075e4dc01814f27de328e5e#e0c297572844a84c"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": false,
+   "OmittedN": 0
+  }
+ },
+ {
+  "EID": "EIX-0044",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "endpoint",
+  "RecordKind": "finding",
+  "FindingClass": "breakdown_endpoints/endpoint_failure",
+  "EntityKey": "egress|CLIENT|db_call|db postgresql SELECT product_schema.products",
+  "Headline": "진입점 egress/db postgresql SELECT product_schema.products(db_call) failed_rate 0 / 기준선 0 — normal",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "share",
+   "Metric": "failed_rate",
+   "Observed": 0,
+   "Baseline": 0,
+   "Magnitude": 0,
+   "Direction": "flat"
+  },
+  "Window": {
+   "From": "2026-08-03T02:44:50Z",
+   "To": "2026-08-03T03:15:50Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "observed"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": 1193,
+   "Status": "anomalous",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "ok"
+  },
+  "Provenance": {
+   "Source": "breakdown_endpoints",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-40f62ce3a205"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:otel_traces_local:commerce-product:CLIENT:db postgresql SELECT product_schema.products",
+   "ch:otel_traces_local:trace:9f59eb46f075e4dc01814f27de328e5e#e0c297572844a84c"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": false,
+   "OmittedN": 0
+  }
+ },
+ {
+  "EID": "EIX-0045",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "endpoint",
+  "RecordKind": "finding",
+  "FindingClass": "breakdown_endpoints/endpoint_latency",
+  "EntityKey": "egress|CLIENT|db_call|db postgresql SELECT product_schema.categories",
+  "Headline": "진입점 egress/db postgresql SELECT product_schema.categories(db_call) p50_ms 0.19 / 기준선 0.19 — normal",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "duration",
+   "Metric": "p50_ms",
+   "Observed": 0.19,
+   "Baseline": 0.19,
+   "Magnitude": 0.19,
+   "Direction": "flat"
+  },
+  "Window": {
+   "From": "2026-08-03T02:44:50Z",
+   "To": "2026-08-03T03:15:50Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "observed"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": 2046,
+   "Status": "anomalous",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "ok"
+  },
+  "Provenance": {
+   "Source": "breakdown_endpoints",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-b1410921de41"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:otel_traces_local:commerce-product:CLIENT:db postgresql SELECT product_schema.categories",
+   "ch:otel_traces_local:trace:8b2180fe022c6bcbd14227fff33b06e9#7d6e33af50e5f3b5"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": false,
+   "OmittedN": 0
+  }
+ },
+ {
+  "EID": "EIX-0046",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "endpoint",
+  "RecordKind": "finding",
+  "FindingClass": "breakdown_endpoints/endpoint_failure",
+  "EntityKey": "egress|CLIENT|db_call|db postgresql SELECT product_schema.categories",
+  "Headline": "진입점 egress/db postgresql SELECT product_schema.categories(db_call) failed_rate 0 / 기준선 0 — normal",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "share",
+   "Metric": "failed_rate",
+   "Observed": 0,
+   "Baseline": 0,
+   "Magnitude": 0,
+   "Direction": "flat"
+  },
+  "Window": {
+   "From": "2026-08-03T02:44:50Z",
+   "To": "2026-08-03T03:15:50Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "observed"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": 2046,
+   "Status": "anomalous",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "ok"
+  },
+  "Provenance": {
+   "Source": "breakdown_endpoints",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-40f62ce3a205"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:otel_traces_local:commerce-product:CLIENT:db postgresql SELECT product_schema.categories",
+   "ch:otel_traces_local:trace:8b2180fe022c6bcbd14227fff33b06e9#7d6e33af50e5f3b5"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": false,
+   "OmittedN": 0
+  }
+ },
+ {
+  "EID": "EIX-0047",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "endpoint",
+  "RecordKind": "finding",
+  "FindingClass": "breakdown_endpoints/endpoint_latency",
+  "EntityKey": "egress|CLIENT|db_call|db postgresql SELECT product_schema.product_variants",
+  "Headline": "진입점 egress/db postgresql SELECT product_schema.product_variants(db_call) p50_ms 0.2 / 기준선 0.2 — normal",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "duration",
+   "Metric": "p50_ms",
+   "Observed": 0.2,
+   "Baseline": 0.2,
+   "Magnitude": 0.2,
+   "Direction": "flat"
+  },
+  "Window": {
+   "From": "2026-08-03T02:44:50Z",
+   "To": "2026-08-03T03:15:50Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "observed"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": 246,
+   "Status": "anomalous",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "ok"
+  },
+  "Provenance": {
+   "Source": "breakdown_endpoints",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-b1410921de41"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:otel_traces_local:commerce-product:CLIENT:db postgresql SELECT product_schema.product_variants",
+   "ch:otel_traces_local:trace:347e6b4c178af8d027f314bb3879db9a#a2ba4308d8f700ac"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": false,
+   "OmittedN": 0
+  }
+ },
+ {
+  "EID": "EIX-0048",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "endpoint",
+  "RecordKind": "finding",
+  "FindingClass": "breakdown_endpoints/endpoint_failure",
+  "EntityKey": "egress|CLIENT|db_call|db postgresql SELECT product_schema.product_variants",
+  "Headline": "진입점 egress/db postgresql SELECT product_schema.product_variants(db_call) failed_rate 0 / 기준선 0 — normal",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "share",
+   "Metric": "failed_rate",
+   "Observed": 0,
+   "Baseline": 0,
+   "Magnitude": 0,
+   "Direction": "flat"
+  },
+  "Window": {
+   "From": "2026-08-03T02:44:50Z",
+   "To": "2026-08-03T03:15:50Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "observed"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": 246,
+   "Status": "anomalous",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "ok"
+  },
+  "Provenance": {
+   "Source": "breakdown_endpoints",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-40f62ce3a205"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:otel_traces_local:commerce-product:CLIENT:db postgresql SELECT product_schema.product_variants",
+   "ch:otel_traces_local:trace:347e6b4c178af8d027f314bb3879db9a#a2ba4308d8f700ac"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": false,
+   "OmittedN": 0
+  }
+ },
+ {
+  "EID": "EIX-0049",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "endpoint",
+  "RecordKind": "finding",
+  "FindingClass": "breakdown_endpoints/endpoint_latency",
+  "EntityKey": "egress|CLIENT|db_call|db postgresql - -",
+  "Headline": "진입점 egress/db postgresql - -(db_call) p50_ms 0.26 / 기준선 0.26 — normal",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "duration",
+   "Metric": "p50_ms",
+   "Observed": 0.26,
+   "Baseline": 0.26,
+   "Magnitude": 0.26,
+   "Direction": "flat"
+  },
+  "Window": {
+   "From": "2026-08-03T02:44:50Z",
+   "To": "2026-08-03T03:15:50Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "observed"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": 113,
+   "Status": "anomalous",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "ok"
+  },
+  "Provenance": {
+   "Source": "breakdown_endpoints",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-b1410921de41"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:otel_traces_local:commerce-product:CLIENT:db postgresql - -",
+   "ch:otel_traces_local:trace:24597724419e3f911487cc35b6f0e15c#3dfb7a9725c0645b"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": false,
+   "OmittedN": 0
+  }
+ },
+ {
+  "EID": "EIX-0050",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "endpoint",
+  "RecordKind": "finding",
+  "FindingClass": "breakdown_endpoints/endpoint_failure",
+  "EntityKey": "egress|CLIENT|db_call|db postgresql - -",
+  "Headline": "진입점 egress/db postgresql - -(db_call) failed_rate 0 / 기준선 0 — normal",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "share",
+   "Metric": "failed_rate",
+   "Observed": 0,
+   "Baseline": 0,
+   "Magnitude": 0,
+   "Direction": "flat"
+  },
+  "Window": {
+   "From": "2026-08-03T02:44:50Z",
+   "To": "2026-08-03T03:15:50Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "observed"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": 113,
+   "Status": "anomalous",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "ok"
+  },
+  "Provenance": {
+   "Source": "breakdown_endpoints",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-40f62ce3a205"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:otel_traces_local:commerce-product:CLIENT:db postgresql - -",
+   "ch:otel_traces_local:trace:24597724419e3f911487cc35b6f0e15c#3dfb7a9725c0645b"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": false,
+   "OmittedN": 0
+  }
+ },
+ {
+  "EID": "EIX-0051",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "endpoint",
+  "RecordKind": "meta",
+  "FindingClass": "",
+  "EntityKey": "",
+  "Headline": "breakdown_endpoints meta class coverage — 감사 재료(술어 판정 대상 아님)",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "",
+   "Metric": "",
+   "Observed": null,
+   "Baseline": null,
+   "Magnitude": null,
+   "Direction": ""
+  },
+  "Window": {
+   "From": "2026-08-03T02:44:50Z",
+   "To": "2026-08-03T03:15:50Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "observed"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "anomalous",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "ok"
+  },
+  "Provenance": {
+   "Source": "breakdown_endpoints",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": ""
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": null,
+  "Masked": null,
+  "Truncation": {
+   "Truncated": false,
+   "OmittedN": 0
+  }
+ },
+ {
+  "EID": "EIX-0052",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "endpoint",
+  "RecordKind": "query_scope",
+  "FindingClass": "breakdown_endpoints/endpoint_latency",
+  "EntityKey": "*",
+  "Headline": "조회 범위 breakdown_endpoints/endpoint_latency(entry+step+egress): 총 25건 중 25건 반환, 0건 미확인",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "count",
+   "Metric": "p50_ms",
+   "Observed": null,
+   "Baseline": null,
+   "Magnitude": null,
+   "Direction": "n/a"
+  },
+  "Window": {
+   "From": "2026-08-03T02:44:50Z",
+   "To": "2026-08-03T03:15:50Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "observed"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "normal",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "ok"
+  },
+  "Provenance": {
+   "Source": "breakdown_endpoints",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-b7ecb66f6f20"
+  },
+  "Scope": {
+   "Selector": {
+    "Source": "breakdown_endpoints",
+    "TargetID": "11111111-2222-3333-4444-555555555555",
+    "Aspect": "endpoint",
+    "Metric": "p50_ms",
+    "EntityKey": "*",
+    "Window": "full"
+   },
+   "Total": 25,
+   "Returned": 25,
+   "Omitted": 0
+  },
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": null,
+  "Masked": null,
+  "Truncation": {
+   "Truncated": false,
+   "OmittedN": 0
+  }
+ },
+ {
+  "EID": "EIX-0053",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "endpoint",
+  "RecordKind": "query_scope",
+  "FindingClass": "breakdown_endpoints/endpoint_failure",
+  "EntityKey": "*",
+  "Headline": "조회 범위 breakdown_endpoints/endpoint_failure(entry+step+egress): 총 25건 중 25건 반환, 0건 미확인",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "count",
+   "Metric": "failed_rate",
+   "Observed": null,
+   "Baseline": null,
+   "Magnitude": null,
+   "Direction": "n/a"
+  },
+  "Window": {
+   "From": "2026-08-03T02:44:50Z",
+   "To": "2026-08-03T03:15:50Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "observed"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "normal",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "ok"
+  },
+  "Provenance": {
+   "Source": "breakdown_endpoints",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-039c878cda60"
+  },
+  "Scope": {
+   "Selector": {
+    "Source": "breakdown_endpoints",
+    "TargetID": "11111111-2222-3333-4444-555555555555",
+    "Aspect": "endpoint",
+    "Metric": "failed_rate",
+    "EntityKey": "*",
+    "Window": "full"
+   },
+   "Total": 25,
+   "Returned": 25,
+   "Omitted": 0
+  },
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": null,
+  "Masked": null,
+  "Truncation": {
+   "Truncated": false,
+   "OmittedN": 0
+  }
+ }
+]

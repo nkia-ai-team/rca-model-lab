@@ -1,0 +1,45 @@
+{
+ "status": "normal",
+ "assessment_basis": "onset = sustained robust z≥3(§5.2 척도 공유, 연속 3버킷 중 2), 구간 반환·겹침은 indeterminate. counter는 30s 버킷 increase. 한도%는 검증된 짝 표에서만(§6.3 — 계산만, 판정 없음)",
+ "summary": "시계열 1개 정독 — onset 산출 0개. 기준선 표본 빈약.",
+ "findings": [
+  {
+   "baseline_median": 0.18593188478567,
+   "bucket_seconds": 30,
+   "metric": "lucida:disks_utilization_max:max1h",
+   "onset": {
+    "skipped": "간헐 방출(존재율 2% \u003c 30%) — 첫 표본을 발단으로 오인할 수 있어 onset 미산출"
+   },
+   "refs": [
+    "vm:lucida:disks_utilization_max:max1h{target_id=00000000-0000-0000-0000-00000000aaaa}:2026-08-03T02:44:00Z/2026-08-03T03:14:00Z"
+   ],
+   "series": "00000000…/lucida:disks_utilization_max:max1h",
+   "start": "2026-08-03T03:00:00Z",
+   "stats": {
+    "max": 0.879916210641,
+    "median": 0.879916210641,
+    "min": 0.879916210641
+   },
+   "target_id": "00000000-0000-0000-0000-00000000aaaa",
+   "unit": "",
+   "value_kind": "gauge",
+   "values": [
+    0.879916210641
+   ]
+  },
+  {
+   "baseline_note": "기준선 표본 빈약 — onset 확신도 low, 보수적으로 읽을 것",
+   "baseline_samples_max": 1,
+   "baseline_thin": true,
+   "baseline_window": "2026-08-03T01:44:00Z/2026-08-03T02:44:00Z",
+   "class": "read_meta"
+  }
+ ],
+ "observed_range": {
+  "from": "2026-08-03T02:44:00Z",
+  "to": "2026-08-03T03:14:00Z"
+ },
+ "refs": [
+  "vm:lucida:disks_utilization_max:max1h{target_id=00000000-0000-0000-0000-00000000aaaa}:2026-08-03T02:44:00Z/2026-08-03T03:14:00Z"
+ ]
+}

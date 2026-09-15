@@ -1,0 +1,50 @@
+{
+ "status": "anomalous",
+ "assessment_basis": "문제 신호 4종 중 1개 이상 발생",
+ "summary": "클러스터 a072cd3d-4a33-4542-832d-b4beec88609f: 관측 pod 55개 중 문제 신호 1건 — 신호·pod는 findings 참조.",
+ "findings": [
+  {
+   "desc": "재시작 증가",
+   "namespace": "rca-testbed-banking",
+   "pod": "testbed-transfer-7f757b5659-h5qp5",
+   "refs": [
+    "vm:kcm.pod:a072cd3d-4a33-4542-832d-b4beec88609f:rca-testbed-banking/testbed-transfer-7f757b5659-h5qp5:2026-08-03T02:44:00Z/2026-08-03T03:14:00Z"
+   ],
+   "signal": "restart_increase",
+   "value": 26
+  }
+ ],
+ "observed_range": {
+  "from": "2026-08-03T02:44:00Z",
+  "to": "2026-08-03T03:14:00Z"
+ },
+ "refs": [
+  "vm:kcm.pod:a072cd3d-4a33-4542-832d-b4beec88609f:rca-testbed-banking/testbed-transfer-7f757b5659-h5qp5:2026-08-03T02:44:00Z/2026-08-03T03:14:00Z"
+ ],
+ "scopes": [
+  {
+   "class": "restart_increase",
+   "total": 1,
+   "returned": 1,
+   "omitted": 0
+  },
+  {
+   "class": "crash_loop_back_off",
+   "total": 0,
+   "returned": 0,
+   "omitted": 0
+  },
+  {
+   "class": "oom_killed",
+   "total": 0,
+   "returned": 0,
+   "omitted": 0
+  },
+  {
+   "class": "waiting",
+   "total": 0,
+   "returned": 0,
+   "omitted": 0
+  }
+ ]
+}

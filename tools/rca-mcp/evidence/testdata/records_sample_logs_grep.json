@@ -1,0 +1,1841 @@
+[
+ {
+  "EID": "EIX-0001",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "log",
+  "RecordKind": "finding",
+  "FindingClass": "sample_logs/grep",
+  "EntityKey": "2026-08-03 02:44:48.703251575|15324910179957895429",
+  "Headline": "grep 매치 1줄 at 2026-08-03 02:44:48.703251575(INFO, 귀속 target_id)",
+  "RawExcerpt": "Received payment event: {\"paymentId\":1123011,\"orderId\":1124088,\"amount\":28000,\"status\":\"APPROVED\"}",
+  "Effect": {
+   "Kind": "count",
+   "Metric": "",
+   "Observed": 1,
+   "Baseline": null,
+   "Magnitude": 1,
+   "Direction": "n/a"
+  },
+  "Window": {
+   "From": "2026-08-03T02:00:00Z",
+   "To": "2026-08-03T03:00:00Z",
+   "ChangeFrom": "2026-08-03T02:44:48.703251575Z",
+   "ChangeTo": "2026-08-03T02:44:48.703251575Z",
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "unknown"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "normal",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "low"
+  },
+  "Provenance": {
+   "Source": "sample_logs",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-65145aaaa7ad"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:lucida_logs_local:71bf7e79-5bbe-4a29-855d-26e1465ab1d6:2026-08-03 02:44:48.703251575:15324910179957895429"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": true,
+   "OmittedN": 11985
+  }
+ },
+ {
+  "EID": "EIX-0002",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "log",
+  "RecordKind": "finding",
+  "FindingClass": "sample_logs/grep",
+  "EntityKey": "2026-08-03 02:44:48.703304103|6397877218871452910",
+  "Headline": "grep 매치 1줄 at 2026-08-03 02:44:48.703304103(INFO, 귀속 target_id)",
+  "RawExcerpt": "Sending payment notification: {\"paymentId\":1123011,\"orderId\":1124088,\"amount\":28000,\"status\":\"APPROVED\"}",
+  "Effect": {
+   "Kind": "count",
+   "Metric": "",
+   "Observed": 1,
+   "Baseline": null,
+   "Magnitude": 1,
+   "Direction": "n/a"
+  },
+  "Window": {
+   "From": "2026-08-03T02:00:00Z",
+   "To": "2026-08-03T03:00:00Z",
+   "ChangeFrom": "2026-08-03T02:44:48.703304103Z",
+   "ChangeTo": "2026-08-03T02:44:48.703304103Z",
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "unknown"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "normal",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "low"
+  },
+  "Provenance": {
+   "Source": "sample_logs",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-65145aaaa7ad"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:lucida_logs_local:71bf7e79-5bbe-4a29-855d-26e1465ab1d6:2026-08-03 02:44:48.703304103:6397877218871452910"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": true,
+   "OmittedN": 11985
+  }
+ },
+ {
+  "EID": "EIX-0003",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "log",
+  "RecordKind": "finding",
+  "FindingClass": "sample_logs/grep",
+  "EntityKey": "2026-08-03 02:44:48.703310823|3413264263808057815",
+  "Headline": "grep 매치 1줄 at 2026-08-03 02:44:48.703310823(INFO, 귀속 target_id)",
+  "RawExcerpt": "Notification sent successfully for payment event",
+  "Effect": {
+   "Kind": "count",
+   "Metric": "",
+   "Observed": 1,
+   "Baseline": null,
+   "Magnitude": 1,
+   "Direction": "n/a"
+  },
+  "Window": {
+   "From": "2026-08-03T02:00:00Z",
+   "To": "2026-08-03T03:00:00Z",
+   "ChangeFrom": "2026-08-03T02:44:48.703310823Z",
+   "ChangeTo": "2026-08-03T02:44:48.703310823Z",
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "unknown"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "normal",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "low"
+  },
+  "Provenance": {
+   "Source": "sample_logs",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-65145aaaa7ad"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:lucida_logs_local:71bf7e79-5bbe-4a29-855d-26e1465ab1d6:2026-08-03 02:44:48.703310823:3413264263808057815"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": true,
+   "OmittedN": 11985
+  }
+ },
+ {
+  "EID": "EIX-0004",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "log",
+  "RecordKind": "finding",
+  "FindingClass": "sample_logs/grep",
+  "EntityKey": "2026-08-03 02:44:48.709127260|3720074912609059170",
+  "Headline": "grep 매치 1줄 at 2026-08-03 02:44:48.709127260(INFO, 귀속 target_id)",
+  "RawExcerpt": "Received payment event: {\"paymentId\":1123012,\"orderId\":1124087,\"amount\":21973,\"status\":\"APPROVED\"}",
+  "Effect": {
+   "Kind": "count",
+   "Metric": "",
+   "Observed": 1,
+   "Baseline": null,
+   "Magnitude": 1,
+   "Direction": "n/a"
+  },
+  "Window": {
+   "From": "2026-08-03T02:00:00Z",
+   "To": "2026-08-03T03:00:00Z",
+   "ChangeFrom": "2026-08-03T02:44:48.70912726Z",
+   "ChangeTo": "2026-08-03T02:44:48.70912726Z",
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "unknown"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "normal",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "low"
+  },
+  "Provenance": {
+   "Source": "sample_logs",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-65145aaaa7ad"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:lucida_logs_local:71bf7e79-5bbe-4a29-855d-26e1465ab1d6:2026-08-03 02:44:48.709127260:3720074912609059170"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": true,
+   "OmittedN": 11985
+  }
+ },
+ {
+  "EID": "EIX-0005",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "log",
+  "RecordKind": "finding",
+  "FindingClass": "sample_logs/grep",
+  "EntityKey": "2026-08-03 02:44:48.709158412|112290365532895202",
+  "Headline": "grep 매치 1줄 at 2026-08-03 02:44:48.709158412(INFO, 귀속 target_id)",
+  "RawExcerpt": "Sending payment notification: {\"paymentId\":1123012,\"orderId\":1124087,\"amount\":21973,\"status\":\"APPROVED\"}",
+  "Effect": {
+   "Kind": "count",
+   "Metric": "",
+   "Observed": 1,
+   "Baseline": null,
+   "Magnitude": 1,
+   "Direction": "n/a"
+  },
+  "Window": {
+   "From": "2026-08-03T02:00:00Z",
+   "To": "2026-08-03T03:00:00Z",
+   "ChangeFrom": "2026-08-03T02:44:48.709158412Z",
+   "ChangeTo": "2026-08-03T02:44:48.709158412Z",
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "unknown"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "normal",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "low"
+  },
+  "Provenance": {
+   "Source": "sample_logs",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-65145aaaa7ad"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:lucida_logs_local:71bf7e79-5bbe-4a29-855d-26e1465ab1d6:2026-08-03 02:44:48.709158412:112290365532895202"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": true,
+   "OmittedN": 11985
+  }
+ },
+ {
+  "EID": "EIX-0006",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "log",
+  "RecordKind": "finding",
+  "FindingClass": "sample_logs/grep",
+  "EntityKey": "2026-08-03 02:44:48.709164188|3413264263808057815",
+  "Headline": "grep 매치 1줄 at 2026-08-03 02:44:48.709164188(INFO, 귀속 target_id)",
+  "RawExcerpt": "Notification sent successfully for payment event",
+  "Effect": {
+   "Kind": "count",
+   "Metric": "",
+   "Observed": 1,
+   "Baseline": null,
+   "Magnitude": 1,
+   "Direction": "n/a"
+  },
+  "Window": {
+   "From": "2026-08-03T02:00:00Z",
+   "To": "2026-08-03T03:00:00Z",
+   "ChangeFrom": "2026-08-03T02:44:48.709164188Z",
+   "ChangeTo": "2026-08-03T02:44:48.709164188Z",
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "unknown"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "normal",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "low"
+  },
+  "Provenance": {
+   "Source": "sample_logs",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-65145aaaa7ad"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:lucida_logs_local:71bf7e79-5bbe-4a29-855d-26e1465ab1d6:2026-08-03 02:44:48.709164188:3413264263808057815"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": true,
+   "OmittedN": 11985
+  }
+ },
+ {
+  "EID": "EIX-0007",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "log",
+  "RecordKind": "finding",
+  "FindingClass": "sample_logs/grep",
+  "EntityKey": "2026-08-03 02:44:48.712587000|15637740265897793671",
+  "Headline": "grep 매치 1줄 at 2026-08-03 02:44:48.712587000(INFO, 귀속 target_id)",
+  "RawExcerpt": "Received payment event: {\"paymentId\":1123013,\"orderId\":1124089,\"amount\":13903,\"status\":\"APPROVED\"}",
+  "Effect": {
+   "Kind": "count",
+   "Metric": "",
+   "Observed": 1,
+   "Baseline": null,
+   "Magnitude": 1,
+   "Direction": "n/a"
+  },
+  "Window": {
+   "From": "2026-08-03T02:00:00Z",
+   "To": "2026-08-03T03:00:00Z",
+   "ChangeFrom": "2026-08-03T02:44:48.712587Z",
+   "ChangeTo": "2026-08-03T02:44:48.712587Z",
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "unknown"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "normal",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "low"
+  },
+  "Provenance": {
+   "Source": "sample_logs",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-65145aaaa7ad"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:lucida_logs_local:71bf7e79-5bbe-4a29-855d-26e1465ab1d6:2026-08-03 02:44:48.712587000:15637740265897793671"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": true,
+   "OmittedN": 11985
+  }
+ },
+ {
+  "EID": "EIX-0008",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "log",
+  "RecordKind": "finding",
+  "FindingClass": "sample_logs/grep",
+  "EntityKey": "2026-08-03 02:44:48.712625016|7360742069775003733",
+  "Headline": "grep 매치 1줄 at 2026-08-03 02:44:48.712625016(INFO, 귀속 target_id)",
+  "RawExcerpt": "Sending payment notification: {\"paymentId\":1123013,\"orderId\":1124089,\"amount\":13903,\"status\":\"APPROVED\"}",
+  "Effect": {
+   "Kind": "count",
+   "Metric": "",
+   "Observed": 1,
+   "Baseline": null,
+   "Magnitude": 1,
+   "Direction": "n/a"
+  },
+  "Window": {
+   "From": "2026-08-03T02:00:00Z",
+   "To": "2026-08-03T03:00:00Z",
+   "ChangeFrom": "2026-08-03T02:44:48.712625016Z",
+   "ChangeTo": "2026-08-03T02:44:48.712625016Z",
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "unknown"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "normal",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "low"
+  },
+  "Provenance": {
+   "Source": "sample_logs",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-65145aaaa7ad"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:lucida_logs_local:71bf7e79-5bbe-4a29-855d-26e1465ab1d6:2026-08-03 02:44:48.712625016:7360742069775003733"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": true,
+   "OmittedN": 11985
+  }
+ },
+ {
+  "EID": "EIX-0009",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "log",
+  "RecordKind": "finding",
+  "FindingClass": "sample_logs/grep",
+  "EntityKey": "2026-08-03 02:44:48.712631688|3413264263808057815",
+  "Headline": "grep 매치 1줄 at 2026-08-03 02:44:48.712631688(INFO, 귀속 target_id)",
+  "RawExcerpt": "Notification sent successfully for payment event",
+  "Effect": {
+   "Kind": "count",
+   "Metric": "",
+   "Observed": 1,
+   "Baseline": null,
+   "Magnitude": 1,
+   "Direction": "n/a"
+  },
+  "Window": {
+   "From": "2026-08-03T02:00:00Z",
+   "To": "2026-08-03T03:00:00Z",
+   "ChangeFrom": "2026-08-03T02:44:48.712631688Z",
+   "ChangeTo": "2026-08-03T02:44:48.712631688Z",
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "unknown"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "normal",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "low"
+  },
+  "Provenance": {
+   "Source": "sample_logs",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-65145aaaa7ad"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:lucida_logs_local:71bf7e79-5bbe-4a29-855d-26e1465ab1d6:2026-08-03 02:44:48.712631688:3413264263808057815"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": true,
+   "OmittedN": 11985
+  }
+ },
+ {
+  "EID": "EIX-0010",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "log",
+  "RecordKind": "finding",
+  "FindingClass": "sample_logs/grep",
+  "EntityKey": "2026-08-03 02:44:48.716198341|15783478592377216965",
+  "Headline": "grep 매치 1줄 at 2026-08-03 02:44:48.716198341(INFO, 귀속 target_id)",
+  "RawExcerpt": "Received payment event: {\"paymentId\":1123014,\"orderId\":1124090,\"amount\":26744,\"status\":\"APPROVED\"}",
+  "Effect": {
+   "Kind": "count",
+   "Metric": "",
+   "Observed": 1,
+   "Baseline": null,
+   "Magnitude": 1,
+   "Direction": "n/a"
+  },
+  "Window": {
+   "From": "2026-08-03T02:00:00Z",
+   "To": "2026-08-03T03:00:00Z",
+   "ChangeFrom": "2026-08-03T02:44:48.716198341Z",
+   "ChangeTo": "2026-08-03T02:44:48.716198341Z",
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "unknown"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "normal",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "low"
+  },
+  "Provenance": {
+   "Source": "sample_logs",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-65145aaaa7ad"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:lucida_logs_local:71bf7e79-5bbe-4a29-855d-26e1465ab1d6:2026-08-03 02:44:48.716198341:15783478592377216965"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": true,
+   "OmittedN": 11985
+  }
+ },
+ {
+  "EID": "EIX-0011",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "log",
+  "RecordKind": "finding",
+  "FindingClass": "sample_logs/grep",
+  "EntityKey": "2026-08-03 02:44:48.716225749|8860211905597656793",
+  "Headline": "grep 매치 1줄 at 2026-08-03 02:44:48.716225749(INFO, 귀속 target_id)",
+  "RawExcerpt": "Sending payment notification: {\"paymentId\":1123014,\"orderId\":1124090,\"amount\":26744,\"status\":\"APPROVED\"}",
+  "Effect": {
+   "Kind": "count",
+   "Metric": "",
+   "Observed": 1,
+   "Baseline": null,
+   "Magnitude": 1,
+   "Direction": "n/a"
+  },
+  "Window": {
+   "From": "2026-08-03T02:00:00Z",
+   "To": "2026-08-03T03:00:00Z",
+   "ChangeFrom": "2026-08-03T02:44:48.716225749Z",
+   "ChangeTo": "2026-08-03T02:44:48.716225749Z",
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "unknown"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "normal",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "low"
+  },
+  "Provenance": {
+   "Source": "sample_logs",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-65145aaaa7ad"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:lucida_logs_local:71bf7e79-5bbe-4a29-855d-26e1465ab1d6:2026-08-03 02:44:48.716225749:8860211905597656793"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": true,
+   "OmittedN": 11985
+  }
+ },
+ {
+  "EID": "EIX-0012",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "log",
+  "RecordKind": "finding",
+  "FindingClass": "sample_logs/grep",
+  "EntityKey": "2026-08-03 02:44:48.716231141|3413264263808057815",
+  "Headline": "grep 매치 1줄 at 2026-08-03 02:44:48.716231141(INFO, 귀속 target_id)",
+  "RawExcerpt": "Notification sent successfully for payment event",
+  "Effect": {
+   "Kind": "count",
+   "Metric": "",
+   "Observed": 1,
+   "Baseline": null,
+   "Magnitude": 1,
+   "Direction": "n/a"
+  },
+  "Window": {
+   "From": "2026-08-03T02:00:00Z",
+   "To": "2026-08-03T03:00:00Z",
+   "ChangeFrom": "2026-08-03T02:44:48.716231141Z",
+   "ChangeTo": "2026-08-03T02:44:48.716231141Z",
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "unknown"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "normal",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "low"
+  },
+  "Provenance": {
+   "Source": "sample_logs",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-65145aaaa7ad"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:lucida_logs_local:71bf7e79-5bbe-4a29-855d-26e1465ab1d6:2026-08-03 02:44:48.716231141:3413264263808057815"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": true,
+   "OmittedN": 11985
+  }
+ },
+ {
+  "EID": "EIX-0013",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "log",
+  "RecordKind": "finding",
+  "FindingClass": "sample_logs/grep",
+  "EntityKey": "2026-08-03 02:44:49.555308478|18274570088409004733",
+  "Headline": "grep 매치 1줄 at 2026-08-03 02:44:49.555308478(INFO, 귀속 target_id)",
+  "RawExcerpt": "Received dispatch event: {\"dispatchId\":1123052,\"orderId\":1124089,\"status\":\"ASSIGNED\",\"eventType\":\"DISPATCH_ASSIGNED\"}",
+  "Effect": {
+   "Kind": "count",
+   "Metric": "",
+   "Observed": 1,
+   "Baseline": null,
+   "Magnitude": 1,
+   "Direction": "n/a"
+  },
+  "Window": {
+   "From": "2026-08-03T02:00:00Z",
+   "To": "2026-08-03T03:00:00Z",
+   "ChangeFrom": "2026-08-03T02:44:49.555308478Z",
+   "ChangeTo": "2026-08-03T02:44:49.555308478Z",
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "unknown"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "normal",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "low"
+  },
+  "Provenance": {
+   "Source": "sample_logs",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-65145aaaa7ad"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:lucida_logs_local:71bf7e79-5bbe-4a29-855d-26e1465ab1d6:2026-08-03 02:44:49.555308478:18274570088409004733"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": true,
+   "OmittedN": 11985
+  }
+ },
+ {
+  "EID": "EIX-0014",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "log",
+  "RecordKind": "finding",
+  "FindingClass": "sample_logs/grep",
+  "EntityKey": "2026-08-03 02:44:49.555693999|18349738095961289555",
+  "Headline": "grep 매치 1줄 at 2026-08-03 02:44:49.555693999(INFO, 귀속 target_id)",
+  "RawExcerpt": "Sending dispatch notification: {\"dispatchId\":1123052,\"orderId\":1124089,\"status\":\"ASSIGNED\",\"eventType\":\"DISPATCH_ASSIGNED\"}",
+  "Effect": {
+   "Kind": "count",
+   "Metric": "",
+   "Observed": 1,
+   "Baseline": null,
+   "Magnitude": 1,
+   "Direction": "n/a"
+  },
+  "Window": {
+   "From": "2026-08-03T02:00:00Z",
+   "To": "2026-08-03T03:00:00Z",
+   "ChangeFrom": "2026-08-03T02:44:49.555693999Z",
+   "ChangeTo": "2026-08-03T02:44:49.555693999Z",
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "unknown"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "normal",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "low"
+  },
+  "Provenance": {
+   "Source": "sample_logs",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-65145aaaa7ad"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:lucida_logs_local:71bf7e79-5bbe-4a29-855d-26e1465ab1d6:2026-08-03 02:44:49.555693999:18349738095961289555"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": true,
+   "OmittedN": 11985
+  }
+ },
+ {
+  "EID": "EIX-0015",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "log",
+  "RecordKind": "finding",
+  "FindingClass": "sample_logs/grep",
+  "EntityKey": "2026-08-03 02:44:49.555703615|7533030251353138528",
+  "Headline": "grep 매치 1줄 at 2026-08-03 02:44:49.555703615(INFO, 귀속 target_id)",
+  "RawExcerpt": "Notification sent successfully for dispatch event",
+  "Effect": {
+   "Kind": "count",
+   "Metric": "",
+   "Observed": 1,
+   "Baseline": null,
+   "Magnitude": 1,
+   "Direction": "n/a"
+  },
+  "Window": {
+   "From": "2026-08-03T02:00:00Z",
+   "To": "2026-08-03T03:00:00Z",
+   "ChangeFrom": "2026-08-03T02:44:49.555703615Z",
+   "ChangeTo": "2026-08-03T02:44:49.555703615Z",
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "unknown"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "normal",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "low"
+  },
+  "Provenance": {
+   "Source": "sample_logs",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-65145aaaa7ad"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:lucida_logs_local:71bf7e79-5bbe-4a29-855d-26e1465ab1d6:2026-08-03 02:44:49.555703615:7533030251353138528"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": true,
+   "OmittedN": 11985
+  }
+ },
+ {
+  "EID": "EIX-0016",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "log",
+  "RecordKind": "finding",
+  "FindingClass": "sample_logs/grep",
+  "EntityKey": "2026-08-03 02:44:49.560308176|12460730510970432664",
+  "Headline": "grep 매치 1줄 at 2026-08-03 02:44:49.560308176(INFO, 귀속 target_id)",
+  "RawExcerpt": "Received dispatch event: {\"dispatchId\":1123053,\"orderId\":1124090,\"status\":\"ASSIGNED\",\"eventType\":\"DISPATCH_ASSIGNED\"}",
+  "Effect": {
+   "Kind": "count",
+   "Metric": "",
+   "Observed": 1,
+   "Baseline": null,
+   "Magnitude": 1,
+   "Direction": "n/a"
+  },
+  "Window": {
+   "From": "2026-08-03T02:00:00Z",
+   "To": "2026-08-03T03:00:00Z",
+   "ChangeFrom": "2026-08-03T02:44:49.560308176Z",
+   "ChangeTo": "2026-08-03T02:44:49.560308176Z",
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "unknown"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "normal",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "low"
+  },
+  "Provenance": {
+   "Source": "sample_logs",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-65145aaaa7ad"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:lucida_logs_local:71bf7e79-5bbe-4a29-855d-26e1465ab1d6:2026-08-03 02:44:49.560308176:12460730510970432664"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": true,
+   "OmittedN": 11985
+  }
+ },
+ {
+  "EID": "EIX-0017",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "log",
+  "RecordKind": "finding",
+  "FindingClass": "sample_logs/grep",
+  "EntityKey": "2026-08-03 02:44:49.560463024|13009695519799716871",
+  "Headline": "grep 매치 1줄 at 2026-08-03 02:44:49.560463024(INFO, 귀속 target_id)",
+  "RawExcerpt": "Sending dispatch notification: {\"dispatchId\":1123053,\"orderId\":1124090,\"status\":\"ASSIGNED\",\"eventType\":\"DISPATCH_ASSIGNED\"}",
+  "Effect": {
+   "Kind": "count",
+   "Metric": "",
+   "Observed": 1,
+   "Baseline": null,
+   "Magnitude": 1,
+   "Direction": "n/a"
+  },
+  "Window": {
+   "From": "2026-08-03T02:00:00Z",
+   "To": "2026-08-03T03:00:00Z",
+   "ChangeFrom": "2026-08-03T02:44:49.560463024Z",
+   "ChangeTo": "2026-08-03T02:44:49.560463024Z",
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "unknown"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "normal",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "low"
+  },
+  "Provenance": {
+   "Source": "sample_logs",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-65145aaaa7ad"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:lucida_logs_local:71bf7e79-5bbe-4a29-855d-26e1465ab1d6:2026-08-03 02:44:49.560463024:13009695519799716871"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": true,
+   "OmittedN": 11985
+  }
+ },
+ {
+  "EID": "EIX-0018",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "log",
+  "RecordKind": "finding",
+  "FindingClass": "sample_logs/grep",
+  "EntityKey": "2026-08-03 02:44:49.560482016|7533030251353138528",
+  "Headline": "grep 매치 1줄 at 2026-08-03 02:44:49.560482016(INFO, 귀속 target_id)",
+  "RawExcerpt": "Notification sent successfully for dispatch event",
+  "Effect": {
+   "Kind": "count",
+   "Metric": "",
+   "Observed": 1,
+   "Baseline": null,
+   "Magnitude": 1,
+   "Direction": "n/a"
+  },
+  "Window": {
+   "From": "2026-08-03T02:00:00Z",
+   "To": "2026-08-03T03:00:00Z",
+   "ChangeFrom": "2026-08-03T02:44:49.560482016Z",
+   "ChangeTo": "2026-08-03T02:44:49.560482016Z",
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "unknown"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "normal",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "low"
+  },
+  "Provenance": {
+   "Source": "sample_logs",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-65145aaaa7ad"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:lucida_logs_local:71bf7e79-5bbe-4a29-855d-26e1465ab1d6:2026-08-03 02:44:49.560482016:7533030251353138528"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": true,
+   "OmittedN": 11985
+  }
+ },
+ {
+  "EID": "EIX-0019",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "log",
+  "RecordKind": "finding",
+  "FindingClass": "sample_logs/grep",
+  "EntityKey": "2026-08-03 02:44:49.771156282|5204623643446341960",
+  "Headline": "grep 매치 1줄 at 2026-08-03 02:44:49.771156282(INFO, 귀속 target_id)",
+  "RawExcerpt": "Received order event: {\"orderId\":1124090,\"customerId\":\"cust-921\",\"restaurantId\":21,\"totalAmount\":26744,\"status\":\"PENDING\"}",
+  "Effect": {
+   "Kind": "count",
+   "Metric": "",
+   "Observed": 1,
+   "Baseline": null,
+   "Magnitude": 1,
+   "Direction": "n/a"
+  },
+  "Window": {
+   "From": "2026-08-03T02:00:00Z",
+   "To": "2026-08-03T03:00:00Z",
+   "ChangeFrom": "2026-08-03T02:44:49.771156282Z",
+   "ChangeTo": "2026-08-03T02:44:49.771156282Z",
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "unknown"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "normal",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "low"
+  },
+  "Provenance": {
+   "Source": "sample_logs",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-65145aaaa7ad"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:lucida_logs_local:71bf7e79-5bbe-4a29-855d-26e1465ab1d6:2026-08-03 02:44:49.771156282:5204623643446341960"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": true,
+   "OmittedN": 11985
+  }
+ },
+ {
+  "EID": "EIX-0020",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "log",
+  "RecordKind": "finding",
+  "FindingClass": "sample_logs/grep",
+  "EntityKey": "2026-08-03 02:44:49.771215738|12829717307680608448",
+  "Headline": "grep 매치 1줄 at 2026-08-03 02:44:49.771215738(INFO, 귀속 target_id)",
+  "RawExcerpt": "Sending order notification: {\"orderId\":1124090,\"customerId\":\"cust-921\",\"restaurantId\":21,\"totalAmount\":26744,\"status\":\"PENDING\"}",
+  "Effect": {
+   "Kind": "count",
+   "Metric": "",
+   "Observed": 1,
+   "Baseline": null,
+   "Magnitude": 1,
+   "Direction": "n/a"
+  },
+  "Window": {
+   "From": "2026-08-03T02:00:00Z",
+   "To": "2026-08-03T03:00:00Z",
+   "ChangeFrom": "2026-08-03T02:44:49.771215738Z",
+   "ChangeTo": "2026-08-03T02:44:49.771215738Z",
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "unknown"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "normal",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "low"
+  },
+  "Provenance": {
+   "Source": "sample_logs",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-65145aaaa7ad"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:lucida_logs_local:71bf7e79-5bbe-4a29-855d-26e1465ab1d6:2026-08-03 02:44:49.771215738:12829717307680608448"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": true,
+   "OmittedN": 11985
+  }
+ },
+ {
+  "EID": "EIX-0021",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "log",
+  "RecordKind": "finding",
+  "FindingClass": "sample_logs/grep",
+  "EntityKey": "2026-08-03 02:44:49.771223690|15483116791988301106",
+  "Headline": "grep 매치 1줄 at 2026-08-03 02:44:49.771223690(INFO, 귀속 target_id)",
+  "RawExcerpt": "Notification sent successfully for order event",
+  "Effect": {
+   "Kind": "count",
+   "Metric": "",
+   "Observed": 1,
+   "Baseline": null,
+   "Magnitude": 1,
+   "Direction": "n/a"
+  },
+  "Window": {
+   "From": "2026-08-03T02:00:00Z",
+   "To": "2026-08-03T03:00:00Z",
+   "ChangeFrom": "2026-08-03T02:44:49.77122369Z",
+   "ChangeTo": "2026-08-03T02:44:49.77122369Z",
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "unknown"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "normal",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "low"
+  },
+  "Provenance": {
+   "Source": "sample_logs",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-65145aaaa7ad"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:lucida_logs_local:71bf7e79-5bbe-4a29-855d-26e1465ab1d6:2026-08-03 02:44:49.771223690:15483116791988301106"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": true,
+   "OmittedN": 11985
+  }
+ },
+ {
+  "EID": "EIX-0022",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "log",
+  "RecordKind": "finding",
+  "FindingClass": "sample_logs/grep",
+  "EntityKey": "2026-08-03 02:44:52.723249508|15998390090295856396",
+  "Headline": "grep 매치 1줄 at 2026-08-03 02:44:52.723249508(INFO, 귀속 target_id)",
+  "RawExcerpt": "Received payment event: {\"paymentId\":1123015,\"orderId\":1124091,\"amount\":37794,\"status\":\"APPROVED\"}",
+  "Effect": {
+   "Kind": "count",
+   "Metric": "",
+   "Observed": 1,
+   "Baseline": null,
+   "Magnitude": 1,
+   "Direction": "n/a"
+  },
+  "Window": {
+   "From": "2026-08-03T02:00:00Z",
+   "To": "2026-08-03T03:00:00Z",
+   "ChangeFrom": "2026-08-03T02:44:52.723249508Z",
+   "ChangeTo": "2026-08-03T02:44:52.723249508Z",
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "unknown"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "normal",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "low"
+  },
+  "Provenance": {
+   "Source": "sample_logs",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-65145aaaa7ad"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:lucida_logs_local:71bf7e79-5bbe-4a29-855d-26e1465ab1d6:2026-08-03 02:44:52.723249508:15998390090295856396"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": true,
+   "OmittedN": 11985
+  }
+ },
+ {
+  "EID": "EIX-0023",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "log",
+  "RecordKind": "finding",
+  "FindingClass": "sample_logs/grep",
+  "EntityKey": "2026-08-03 02:44:52.723301092|17933892778214307089",
+  "Headline": "grep 매치 1줄 at 2026-08-03 02:44:52.723301092(INFO, 귀속 target_id)",
+  "RawExcerpt": "Sending payment notification: {\"paymentId\":1123015,\"orderId\":1124091,\"amount\":37794,\"status\":\"APPROVED\"}",
+  "Effect": {
+   "Kind": "count",
+   "Metric": "",
+   "Observed": 1,
+   "Baseline": null,
+   "Magnitude": 1,
+   "Direction": "n/a"
+  },
+  "Window": {
+   "From": "2026-08-03T02:00:00Z",
+   "To": "2026-08-03T03:00:00Z",
+   "ChangeFrom": "2026-08-03T02:44:52.723301092Z",
+   "ChangeTo": "2026-08-03T02:44:52.723301092Z",
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "unknown"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "normal",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "low"
+  },
+  "Provenance": {
+   "Source": "sample_logs",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-65145aaaa7ad"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:lucida_logs_local:71bf7e79-5bbe-4a29-855d-26e1465ab1d6:2026-08-03 02:44:52.723301092:17933892778214307089"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": true,
+   "OmittedN": 11985
+  }
+ },
+ {
+  "EID": "EIX-0024",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "log",
+  "RecordKind": "finding",
+  "FindingClass": "sample_logs/grep",
+  "EntityKey": "2026-08-03 02:44:52.723310452|3413264263808057815",
+  "Headline": "grep 매치 1줄 at 2026-08-03 02:44:52.723310452(INFO, 귀속 target_id)",
+  "RawExcerpt": "Notification sent successfully for payment event",
+  "Effect": {
+   "Kind": "count",
+   "Metric": "",
+   "Observed": 1,
+   "Baseline": null,
+   "Magnitude": 1,
+   "Direction": "n/a"
+  },
+  "Window": {
+   "From": "2026-08-03T02:00:00Z",
+   "To": "2026-08-03T03:00:00Z",
+   "ChangeFrom": "2026-08-03T02:44:52.723310452Z",
+   "ChangeTo": "2026-08-03T02:44:52.723310452Z",
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "unknown"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "normal",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "low"
+  },
+  "Provenance": {
+   "Source": "sample_logs",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-65145aaaa7ad"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:lucida_logs_local:71bf7e79-5bbe-4a29-855d-26e1465ab1d6:2026-08-03 02:44:52.723310452:3413264263808057815"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": true,
+   "OmittedN": 11985
+  }
+ },
+ {
+  "EID": "EIX-0025",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "log",
+  "RecordKind": "finding",
+  "FindingClass": "sample_logs/grep",
+  "EntityKey": "2026-08-03 02:44:53.569235813|13230356731152704257",
+  "Headline": "grep 매치 1줄 at 2026-08-03 02:44:53.569235813(INFO, 귀속 target_id)",
+  "RawExcerpt": "Received dispatch event: {\"dispatchId\":1123054,\"orderId\":1124091,\"status\":\"ASSIGNED\",\"eventType\":\"DISPATCH_ASSIGNED\"}",
+  "Effect": {
+   "Kind": "count",
+   "Metric": "",
+   "Observed": 1,
+   "Baseline": null,
+   "Magnitude": 1,
+   "Direction": "n/a"
+  },
+  "Window": {
+   "From": "2026-08-03T02:00:00Z",
+   "To": "2026-08-03T03:00:00Z",
+   "ChangeFrom": "2026-08-03T02:44:53.569235813Z",
+   "ChangeTo": "2026-08-03T02:44:53.569235813Z",
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "unknown"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "normal",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "low"
+  },
+  "Provenance": {
+   "Source": "sample_logs",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-65145aaaa7ad"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:lucida_logs_local:71bf7e79-5bbe-4a29-855d-26e1465ab1d6:2026-08-03 02:44:53.569235813:13230356731152704257"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": true,
+   "OmittedN": 11985
+  }
+ },
+ {
+  "EID": "EIX-0026",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "log",
+  "RecordKind": "finding",
+  "FindingClass": "sample_logs/grep",
+  "EntityKey": "2026-08-03 02:44:53.569292390|5242113385782184223",
+  "Headline": "grep 매치 1줄 at 2026-08-03 02:44:53.569292390(INFO, 귀속 target_id)",
+  "RawExcerpt": "Sending dispatch notification: {\"dispatchId\":1123054,\"orderId\":1124091,\"status\":\"ASSIGNED\",\"eventType\":\"DISPATCH_ASSIGNED\"}",
+  "Effect": {
+   "Kind": "count",
+   "Metric": "",
+   "Observed": 1,
+   "Baseline": null,
+   "Magnitude": 1,
+   "Direction": "n/a"
+  },
+  "Window": {
+   "From": "2026-08-03T02:00:00Z",
+   "To": "2026-08-03T03:00:00Z",
+   "ChangeFrom": "2026-08-03T02:44:53.56929239Z",
+   "ChangeTo": "2026-08-03T02:44:53.56929239Z",
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "unknown"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "normal",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "low"
+  },
+  "Provenance": {
+   "Source": "sample_logs",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-65145aaaa7ad"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:lucida_logs_local:71bf7e79-5bbe-4a29-855d-26e1465ab1d6:2026-08-03 02:44:53.569292390:5242113385782184223"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": true,
+   "OmittedN": 11985
+  }
+ },
+ {
+  "EID": "EIX-0027",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "log",
+  "RecordKind": "finding",
+  "FindingClass": "sample_logs/grep",
+  "EntityKey": "2026-08-03 02:44:53.569300102|7533030251353138528",
+  "Headline": "grep 매치 1줄 at 2026-08-03 02:44:53.569300102(INFO, 귀속 target_id)",
+  "RawExcerpt": "Notification sent successfully for dispatch event",
+  "Effect": {
+   "Kind": "count",
+   "Metric": "",
+   "Observed": 1,
+   "Baseline": null,
+   "Magnitude": 1,
+   "Direction": "n/a"
+  },
+  "Window": {
+   "From": "2026-08-03T02:00:00Z",
+   "To": "2026-08-03T03:00:00Z",
+   "ChangeFrom": "2026-08-03T02:44:53.569300102Z",
+   "ChangeTo": "2026-08-03T02:44:53.569300102Z",
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "unknown"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "normal",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "low"
+  },
+  "Provenance": {
+   "Source": "sample_logs",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-65145aaaa7ad"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:lucida_logs_local:71bf7e79-5bbe-4a29-855d-26e1465ab1d6:2026-08-03 02:44:53.569300102:7533030251353138528"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": true,
+   "OmittedN": 11985
+  }
+ },
+ {
+  "EID": "EIX-0028",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "log",
+  "RecordKind": "finding",
+  "FindingClass": "sample_logs/grep",
+  "EntityKey": "2026-08-03 02:44:53.778222893|7061984382442517663",
+  "Headline": "grep 매치 1줄 at 2026-08-03 02:44:53.778222893(INFO, 귀속 target_id)",
+  "RawExcerpt": "Received order event: {\"orderId\":1124091,\"customerId\":\"cust-223\",\"restaurantId\":34,\"totalAmount\":37794,\"status\":\"PENDING\"}",
+  "Effect": {
+   "Kind": "count",
+   "Metric": "",
+   "Observed": 1,
+   "Baseline": null,
+   "Magnitude": 1,
+   "Direction": "n/a"
+  },
+  "Window": {
+   "From": "2026-08-03T02:00:00Z",
+   "To": "2026-08-03T03:00:00Z",
+   "ChangeFrom": "2026-08-03T02:44:53.778222893Z",
+   "ChangeTo": "2026-08-03T02:44:53.778222893Z",
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "unknown"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "normal",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "low"
+  },
+  "Provenance": {
+   "Source": "sample_logs",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-65145aaaa7ad"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:lucida_logs_local:71bf7e79-5bbe-4a29-855d-26e1465ab1d6:2026-08-03 02:44:53.778222893:7061984382442517663"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": true,
+   "OmittedN": 11985
+  }
+ },
+ {
+  "EID": "EIX-0029",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "log",
+  "RecordKind": "finding",
+  "FindingClass": "sample_logs/grep",
+  "EntityKey": "2026-08-03 02:44:53.778279757|17714265039190710010",
+  "Headline": "grep 매치 1줄 at 2026-08-03 02:44:53.778279757(INFO, 귀속 target_id)",
+  "RawExcerpt": "Sending order notification: {\"orderId\":1124091,\"customerId\":\"cust-223\",\"restaurantId\":34,\"totalAmount\":37794,\"status\":\"PENDING\"}",
+  "Effect": {
+   "Kind": "count",
+   "Metric": "",
+   "Observed": 1,
+   "Baseline": null,
+   "Magnitude": 1,
+   "Direction": "n/a"
+  },
+  "Window": {
+   "From": "2026-08-03T02:00:00Z",
+   "To": "2026-08-03T03:00:00Z",
+   "ChangeFrom": "2026-08-03T02:44:53.778279757Z",
+   "ChangeTo": "2026-08-03T02:44:53.778279757Z",
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "unknown"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "normal",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "low"
+  },
+  "Provenance": {
+   "Source": "sample_logs",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-65145aaaa7ad"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:lucida_logs_local:71bf7e79-5bbe-4a29-855d-26e1465ab1d6:2026-08-03 02:44:53.778279757:17714265039190710010"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": true,
+   "OmittedN": 11985
+  }
+ },
+ {
+  "EID": "EIX-0030",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "log",
+  "RecordKind": "finding",
+  "FindingClass": "sample_logs/grep",
+  "EntityKey": "2026-08-03 02:44:53.778284301|15483116791988301106",
+  "Headline": "grep 매치 1줄 at 2026-08-03 02:44:53.778284301(INFO, 귀속 target_id)",
+  "RawExcerpt": "Notification sent successfully for order event",
+  "Effect": {
+   "Kind": "count",
+   "Metric": "",
+   "Observed": 1,
+   "Baseline": null,
+   "Magnitude": 1,
+   "Direction": "n/a"
+  },
+  "Window": {
+   "From": "2026-08-03T02:00:00Z",
+   "To": "2026-08-03T03:00:00Z",
+   "ChangeFrom": "2026-08-03T02:44:53.778284301Z",
+   "ChangeTo": "2026-08-03T02:44:53.778284301Z",
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "unknown"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "normal",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "low"
+  },
+  "Provenance": {
+   "Source": "sample_logs",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-65145aaaa7ad"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:lucida_logs_local:71bf7e79-5bbe-4a29-855d-26e1465ab1d6:2026-08-03 02:44:53.778284301:15483116791988301106"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": true,
+   "OmittedN": 11985
+  }
+ },
+ {
+  "EID": "EIX-0031",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "log",
+  "RecordKind": "query_scope",
+  "FindingClass": "sample_logs/grep",
+  "EntityKey": "*",
+  "Headline": "조회 범위 sample_logs/grep(grep): 총 12015건 중 30건 반환, 11985건 미확인",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "count",
+   "Metric": "*",
+   "Observed": null,
+   "Baseline": null,
+   "Magnitude": null,
+   "Direction": "n/a"
+  },
+  "Window": {
+   "From": "2026-08-03T02:00:00Z",
+   "To": "2026-08-03T03:00:00Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "unknown"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "normal",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "low"
+  },
+  "Provenance": {
+   "Source": "sample_logs",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-433ac6b548fc"
+  },
+  "Scope": {
+   "Selector": {
+    "Source": "sample_logs",
+    "TargetID": "11111111-2222-3333-4444-555555555555",
+    "Aspect": "log",
+    "Metric": "*",
+    "EntityKey": "*",
+    "Window": "full"
+   },
+   "Total": 12015,
+   "Returned": 30,
+   "Omitted": 11985
+  },
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": null,
+  "Masked": null,
+  "Truncation": {
+   "Truncated": true,
+   "OmittedN": 11985
+  }
+ }
+]

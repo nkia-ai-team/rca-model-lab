@@ -1,0 +1,381 @@
+{
+ "status": "anomalous",
+ "assessment_basis": "감지 에피소드·활성 단건·K8s Warning 존재 여부. 감지는 화이트리스트×감도 통과분의 push 기록이라 0건=정상 아님(§2.3 실측 — 감시 사각지대 존재). 에피소드 경계는 창 기준 4값(complete/opened_before_window/closed_after_window)",
+ "summary": "사건 — 감지 에피소드 32건(반환 20, 창 안 미해소 12), 단건 0건, K8s 기록 0그룹(Warning 0). 감지(detection)는 2차 신호다 — 단서로 쓰고 원본 확인은 scan_metrics·sample_logs로.",
+ "findings": [
+  {
+   "boundary": "complete",
+   "close_at": "2026-08-03 03:14:29.649344000",
+   "detector": "log-anomaly",
+   "duration_ms": 0,
+   "episode_id": "3934145e-725f-53ce-a40f-6c0153fcc516",
+   "label": "detection",
+   "open_at": "2026-08-03 03:14:29.649344000",
+   "peak_severity": "critical",
+   "reason": "new_template",
+   "refs": [
+    "ch:lucida_events_local:ec51d04f-88c6-5cba-aef4-3ba40da1b422"
+   ],
+   "section": "episode"
+  },
+  {
+   "boundary": "closed_after_window",
+   "detector": "log-anomaly",
+   "duration_ms": "미상",
+   "episode_id": "1919fabb-b450-5e76-a830-47efcfa3f8fd",
+   "label": "detection",
+   "note": "창 안에서 해소 기록 없음 — 진행 중 단정 아님, 창을 뒤로 넓혀 확인 가능",
+   "open_at": "2026-08-03 03:14:07.635953623",
+   "peak_basis": "잠정 — 미해소라 open 시점 심각도(확정 peak는 해소 후 기록됨)",
+   "peak_severity": "critical",
+   "reason": "unknown_anomaly",
+   "refs": [
+    "ch:lucida_events_local:24dc9a2d-c860-5147-a236-fd9956fa43f6"
+   ],
+   "section": "episode"
+  },
+  {
+   "boundary": "complete",
+   "close_at": "2026-08-03 03:14:02.576452963",
+   "detector": "log-anomaly",
+   "duration_ms": 0,
+   "episode_id": "2c19ba02-877c-5902-a462-246ec54f63b4",
+   "label": "detection",
+   "open_at": "2026-08-03 03:14:02.576452963",
+   "peak_severity": "caution",
+   "reason": "new_template",
+   "refs": [
+    "ch:lucida_events_local:24dc9a2d-c860-5147-a236-fd9956fa43f6"
+   ],
+   "section": "episode"
+  },
+  {
+   "boundary": "closed_after_window",
+   "detector": "trace-anomaly",
+   "duration_ms": "미상",
+   "episode_id": "f2de42d3-98fd-54f1-9dc2-188aa70e249d",
+   "label": "detection",
+   "note": "창 안에서 해소 기록 없음 — 진행 중 단정 아님, 창을 뒤로 넓혀 확인 가능",
+   "open_at": "2026-08-03 03:11:50.495257520",
+   "peak_basis": "잠정 — 미해소라 open 시점 심각도(확정 peak는 해소 후 기록됨)",
+   "peak_severity": "caution",
+   "reason": "distribution_shift",
+   "refs": [
+    "ch:lucida_events_local:4da1530e-3631-5161-957e-8a6594ce76b8"
+   ],
+   "section": "episode"
+  },
+  {
+   "boundary": "closed_after_window",
+   "detector": "trace-anomaly",
+   "duration_ms": "미상",
+   "episode_id": "813b8667-37ae-5933-ab09-75df359d2c94",
+   "label": "detection",
+   "note": "창 안에서 해소 기록 없음 — 진행 중 단정 아님, 창을 뒤로 넓혀 확인 가능",
+   "open_at": "2026-08-03 03:11:50.495257520",
+   "peak_basis": "잠정 — 미해소라 open 시점 심각도(확정 peak는 해소 후 기록됨)",
+   "peak_severity": "warning",
+   "reason": "distribution_shift",
+   "refs": [
+    "ch:lucida_events_local:34beb38d-910b-576a-8a73-b6210a801119"
+   ],
+   "section": "episode"
+  },
+  {
+   "boundary": "closed_after_window",
+   "detector": "trace-anomaly",
+   "duration_ms": "미상",
+   "episode_id": "411bf59d-d0a3-5aa2-b9b8-bf206062de7f",
+   "label": "detection",
+   "note": "창 안에서 해소 기록 없음 — 진행 중 단정 아님, 창을 뒤로 넓혀 확인 가능",
+   "open_at": "2026-08-03 03:11:50.495257520",
+   "peak_basis": "잠정 — 미해소라 open 시점 심각도(확정 peak는 해소 후 기록됨)",
+   "peak_severity": "caution",
+   "reason": "distribution_shift",
+   "refs": [
+    "ch:lucida_events_local:8d036fc6-4dd0-5179-9b11-84b91f367825"
+   ],
+   "section": "episode"
+  },
+  {
+   "boundary": "closed_after_window",
+   "detector": "trace-anomaly",
+   "duration_ms": "미상",
+   "episode_id": "128615f9-bd8f-5999-83f0-125aaa67af2d",
+   "label": "detection",
+   "note": "창 안에서 해소 기록 없음 — 진행 중 단정 아님, 창을 뒤로 넓혀 확인 가능",
+   "open_at": "2026-08-03 03:11:50.495257520",
+   "peak_basis": "잠정 — 미해소라 open 시점 심각도(확정 peak는 해소 후 기록됨)",
+   "peak_severity": "caution",
+   "reason": "distribution_shift",
+   "refs": [
+    "ch:lucida_events_local:61ebbd21-af65-5367-bdd7-bf39cf5d9e70"
+   ],
+   "section": "episode"
+  },
+  {
+   "boundary": "closed_after_window",
+   "detector": "trace-anomaly",
+   "duration_ms": "미상",
+   "episode_id": "46cc31f3-0e1e-537a-88b2-e178cfc00bac",
+   "label": "detection",
+   "note": "창 안에서 해소 기록 없음 — 진행 중 단정 아님, 창을 뒤로 넓혀 확인 가능",
+   "open_at": "2026-08-03 03:11:50.495257520",
+   "peak_basis": "잠정 — 미해소라 open 시점 심각도(확정 peak는 해소 후 기록됨)",
+   "peak_severity": "warning",
+   "reason": "distribution_shift",
+   "refs": [
+    "ch:lucida_events_local:66683060-b263-5dfe-9767-b9c063684066"
+   ],
+   "section": "episode"
+  },
+  {
+   "boundary": "closed_after_window",
+   "detector": "trace-anomaly",
+   "duration_ms": "미상",
+   "episode_id": "ff5263dc-cacb-51f9-a102-916db7574efb",
+   "label": "detection",
+   "note": "창 안에서 해소 기록 없음 — 진행 중 단정 아님, 창을 뒤로 넓혀 확인 가능",
+   "open_at": "2026-08-03 03:11:50.495257520",
+   "peak_basis": "잠정 — 미해소라 open 시점 심각도(확정 peak는 해소 후 기록됨)",
+   "peak_severity": "caution",
+   "reason": "distribution_shift",
+   "refs": [
+    "ch:lucida_events_local:4202af92-66f2-5072-99a3-e87d0192fb6c"
+   ],
+   "section": "episode"
+  },
+  {
+   "boundary": "closed_after_window",
+   "detector": "log-anomaly",
+   "duration_ms": "미상",
+   "episode_id": "8186038c-853e-5760-907b-80b2b0b83aa3",
+   "label": "detection",
+   "note": "창 안에서 해소 기록 없음 — 진행 중 단정 아님, 창을 뒤로 넓혀 확인 가능",
+   "open_at": "2026-08-03 03:10:00.254725706",
+   "peak_basis": "잠정 — 미해소라 open 시점 심각도(확정 peak는 해소 후 기록됨)",
+   "peak_severity": "critical",
+   "reason": "unknown_anomaly",
+   "refs": [
+    "ch:lucida_events_local:501eee18-33d9-5fa6-810f-ec4106523476"
+   ],
+   "section": "episode"
+  },
+  {
+   "boundary": "complete",
+   "close_at": "2026-08-03 03:09:26.946826000",
+   "detector": "log-anomaly",
+   "duration_ms": 0,
+   "episode_id": "60df0c15-dba9-5a87-a043-4999849ec031",
+   "label": "detection",
+   "open_at": "2026-08-03 03:09:26.946826000",
+   "peak_severity": "critical",
+   "reason": "new_template",
+   "refs": [
+    "ch:lucida_events_local:71b184ed-d038-5269-a446-db67c99efb43"
+   ],
+   "section": "episode"
+  },
+  {
+   "boundary": "complete",
+   "close_at": "2026-08-03 03:10:51.300519795",
+   "detector": "log-anomaly",
+   "duration_ms": 180000,
+   "episode_id": "b58dcd0c-dc02-5762-90b4-5de07a543852",
+   "label": "detection",
+   "open_at": "2026-08-03 03:07:47.124735590",
+   "peak_severity": "warning",
+   "reason": "surge",
+   "refs": [
+    "ch:lucida_events_local:f5dd5f5e-8fce-552f-ac4c-ac96e5fd33fb"
+   ],
+   "section": "episode"
+  },
+  {
+   "boundary": "closed_after_window",
+   "detector": "log-anomaly",
+   "duration_ms": "미상",
+   "episode_id": "bf4c3daa-1b17-54b8-9912-c866f41fa63e",
+   "label": "detection",
+   "note": "창 안에서 해소 기록 없음 — 진행 중 단정 아님, 창을 뒤로 넓혀 확인 가능",
+   "open_at": "2026-08-03 03:07:46.124425490",
+   "peak_basis": "잠정 — 미해소라 open 시점 심각도(확정 peak는 해소 후 기록됨)",
+   "peak_severity": "critical",
+   "reason": "unknown_anomaly",
+   "refs": [
+    "ch:lucida_events_local:2afb2a4c-16e6-54dd-b044-533a616a5e7a"
+   ],
+   "section": "episode"
+  },
+  {
+   "boundary": "opened_before_window",
+   "close_at": "2026-08-03 03:07:45.128172566",
+   "derived_open_at": "2026-08-03 03:07:45",
+   "detector": "log-anomaly",
+   "duration_ms": 0,
+   "episode_id": "d1a59cf3-1842-5d73-a7eb-83c47ec460d2",
+   "label": "detection",
+   "note": "발단이 창 밖(해소 시각 − 지속시간으로 역산)",
+   "peak_severity": "caution",
+   "reason": "new_template",
+   "refs": [
+    "ch:lucida_events_local:707c2ce2-1dbe-53bc-b618-2289957d3396"
+   ],
+   "section": "episode"
+  },
+  {
+   "boundary": "closed_after_window",
+   "detector": "log-anomaly",
+   "duration_ms": "미상",
+   "episode_id": "f0efe82a-30a8-5cda-8540-34e78b999442",
+   "label": "detection",
+   "note": "창 안에서 해소 기록 없음 — 진행 중 단정 아님, 창을 뒤로 넓혀 확인 가능",
+   "open_at": "2026-08-03 03:07:31.115744506",
+   "peak_basis": "잠정 — 미해소라 open 시점 심각도(확정 peak는 해소 후 기록됨)",
+   "peak_severity": "critical",
+   "reason": "unknown_anomaly",
+   "refs": [
+    "ch:lucida_events_local:40b623b0-a9d6-5727-aa4f-bfc963489796"
+   ],
+   "section": "episode"
+  },
+  {
+   "boundary": "opened_before_window",
+   "close_at": "2026-08-03 03:07:30.118245237",
+   "derived_open_at": "2026-08-03 03:07:30",
+   "detector": "log-anomaly",
+   "duration_ms": 0,
+   "episode_id": "11eafaf7-cd24-5c35-9f59-3096d88a7781",
+   "label": "detection",
+   "note": "발단이 창 밖(해소 시각 − 지속시간으로 역산)",
+   "peak_severity": "caution",
+   "reason": "new_template",
+   "refs": [
+    "ch:lucida_events_local:17b4351f-54a6-593b-8a65-f910732af04d"
+   ],
+   "section": "episode"
+  },
+  {
+   "boundary": "closed_after_window",
+   "detector": "log-anomaly",
+   "duration_ms": "미상",
+   "episode_id": "ef03ac02-0969-5431-8837-e9005eae86e1",
+   "label": "detection",
+   "note": "창 안에서 해소 기록 없음 — 진행 중 단정 아님, 창을 뒤로 넓혀 확인 가능",
+   "open_at": "2026-08-03 03:07:17.100565010",
+   "peak_basis": "잠정 — 미해소라 open 시점 심각도(확정 peak는 해소 후 기록됨)",
+   "peak_severity": "critical",
+   "reason": "unknown_anomaly",
+   "refs": [
+    "ch:lucida_events_local:bee38600-1916-5e48-af9f-4a59ef702586"
+   ],
+   "section": "episode"
+  },
+  {
+   "boundary": "closed_after_window",
+   "detector": "log-anomaly",
+   "duration_ms": "미상",
+   "episode_id": "10aeaafa-6753-5f82-a7b7-aade7aa4e751",
+   "label": "detection",
+   "note": "창 안에서 해소 기록 없음 — 진행 중 단정 아님, 창을 뒤로 넓혀 확인 가능",
+   "open_at": "2026-08-03 03:07:15.110184456",
+   "peak_basis": "잠정 — 미해소라 open 시점 심각도(확정 peak는 해소 후 기록됨)",
+   "peak_severity": "warning",
+   "reason": "unknown_anomaly",
+   "refs": [
+    "ch:lucida_events_local:a7817b09-993b-514f-8b45-74899a6da33e"
+   ],
+   "section": "episode"
+  },
+  {
+   "boundary": "opened_before_window",
+   "close_at": "2026-08-03 03:07:15.759566000",
+   "derived_open_at": "2026-08-03 03:07:15",
+   "detector": "log-anomaly",
+   "duration_ms": 0,
+   "episode_id": "1c824c26-f684-5586-a881-5a311ae9ed44",
+   "label": "detection",
+   "note": "발단이 창 밖(해소 시각 − 지속시간으로 역산)",
+   "peak_severity": "critical",
+   "reason": "new_template",
+   "refs": [
+    "ch:lucida_events_local:1c9a9d9a-024d-510c-b141-0faa9010ea5b"
+   ],
+   "section": "episode"
+  },
+  {
+   "boundary": "complete",
+   "close_at": "2026-08-03 03:07:14.105960305",
+   "detector": "log-anomaly",
+   "duration_ms": 0,
+   "episode_id": "fc66108c-8f67-5e9b-827c-bbb6e8dc05d7",
+   "label": "detection",
+   "open_at": "2026-08-03 03:07:14.105960305",
+   "peak_severity": "caution",
+   "reason": "new_template",
+   "refs": [
+    "ch:lucida_events_local:9109c6f0-2941-527e-8f86-bff106958aa9"
+   ],
+   "section": "episode"
+  },
+  {
+   "counts": {
+    "episodes_returned": 20,
+    "episodes_total": 32,
+    "k8s_groups_returned": 0,
+    "k8s_groups_total": 0,
+    "unpaired_returned": 0,
+    "unpaired_total": 0
+   },
+   "kcm_skip_reason": "대상 유형 application — K8s 아님, kcm 조회 안 함",
+   "section": "summary_meta",
+   "sources": {
+    "kcm_events": "조회 안 함",
+    "lucida_events": "조회함"
+   }
+  }
+ ],
+ "truncated": true,
+ "refs": [
+  "ch:lucida_events_local:ec51d04f-88c6-5cba-aef4-3ba40da1b422",
+  "ch:lucida_events_local:24dc9a2d-c860-5147-a236-fd9956fa43f6",
+  "ch:lucida_events_local:24dc9a2d-c860-5147-a236-fd9956fa43f6",
+  "ch:lucida_events_local:4da1530e-3631-5161-957e-8a6594ce76b8",
+  "ch:lucida_events_local:34beb38d-910b-576a-8a73-b6210a801119",
+  "ch:lucida_events_local:8d036fc6-4dd0-5179-9b11-84b91f367825",
+  "ch:lucida_events_local:61ebbd21-af65-5367-bdd7-bf39cf5d9e70",
+  "ch:lucida_events_local:66683060-b263-5dfe-9767-b9c063684066",
+  "ch:lucida_events_local:4202af92-66f2-5072-99a3-e87d0192fb6c",
+  "ch:lucida_events_local:501eee18-33d9-5fa6-810f-ec4106523476",
+  "ch:lucida_events_local:71b184ed-d038-5269-a446-db67c99efb43",
+  "ch:lucida_events_local:f5dd5f5e-8fce-552f-ac4c-ac96e5fd33fb",
+  "ch:lucida_events_local:2afb2a4c-16e6-54dd-b044-533a616a5e7a",
+  "ch:lucida_events_local:707c2ce2-1dbe-53bc-b618-2289957d3396",
+  "ch:lucida_events_local:40b623b0-a9d6-5727-aa4f-bfc963489796",
+  "ch:lucida_events_local:17b4351f-54a6-593b-8a65-f910732af04d",
+  "ch:lucida_events_local:bee38600-1916-5e48-af9f-4a59ef702586",
+  "ch:lucida_events_local:a7817b09-993b-514f-8b45-74899a6da33e",
+  "ch:lucida_events_local:1c9a9d9a-024d-510c-b141-0faa9010ea5b",
+  "ch:lucida_events_local:9109c6f0-2941-527e-8f86-bff106958aa9"
+ ],
+ "scopes": [
+  {
+   "class": "episode",
+   "total": 32,
+   "returned": 20,
+   "omitted": 12
+  },
+  {
+   "class": "unpaired",
+   "total": 0,
+   "returned": 0,
+   "omitted": 0
+  },
+  {
+   "class": "k8s",
+   "total": 0,
+   "returned": 0,
+   "omitted": 0
+  }
+ ]
+}

@@ -1,0 +1,1446 @@
+[
+ {
+  "EID": "EIX-0001",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "event",
+  "RecordKind": "finding",
+  "FindingClass": "list_events/episode",
+  "EntityKey": "3934145e-725f-53ce-a40f-6c0153fcc516",
+  "Headline": "에피소드 log-anomaly/new_template 지속 0ms, 경계 complete, peak critical",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "duration",
+   "Metric": "",
+   "Observed": 0,
+   "Baseline": null,
+   "Magnitude": 0,
+   "Direction": "n/a"
+  },
+  "Window": {
+   "From": "2026-08-03T02:00:00Z",
+   "To": "2026-08-03T03:00:00Z",
+   "ChangeFrom": "2026-08-03T03:14:29.649344Z",
+   "ChangeTo": "2026-08-03T03:14:29.649344Z",
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "unknown"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "anomalous",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "ok"
+  },
+  "Provenance": {
+   "Source": "list_events",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-f71c6eb95e9e"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:lucida_events_local:ec51d04f-88c6-5cba-aef4-3ba40da1b422"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": true,
+   "OmittedN": 12
+  }
+ },
+ {
+  "EID": "EIX-0002",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "event",
+  "RecordKind": "finding",
+  "FindingClass": "list_events/episode",
+  "EntityKey": "1919fabb-b450-5e76-a830-47efcfa3f8fd",
+  "Headline": "에피소드 log-anomaly/unknown_anomaly 지속 미상ms, 경계 closed_after_window, peak critical",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "duration",
+   "Metric": "",
+   "Observed": null,
+   "Baseline": null,
+   "Magnitude": null,
+   "Direction": "n/a"
+  },
+  "Window": {
+   "From": "2026-08-03T02:00:00Z",
+   "To": "2026-08-03T03:00:00Z",
+   "ChangeFrom": "2026-08-03T03:14:07.635953623Z",
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "unknown"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "anomalous",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "low"
+  },
+  "Provenance": {
+   "Source": "list_events",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-f71c6eb95e9e"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:lucida_events_local:24dc9a2d-c860-5147-a236-fd9956fa43f6"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": true,
+   "OmittedN": 12
+  }
+ },
+ {
+  "EID": "EIX-0003",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "event",
+  "RecordKind": "finding",
+  "FindingClass": "list_events/episode",
+  "EntityKey": "2c19ba02-877c-5902-a462-246ec54f63b4",
+  "Headline": "에피소드 log-anomaly/new_template 지속 0ms, 경계 complete, peak caution",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "duration",
+   "Metric": "",
+   "Observed": 0,
+   "Baseline": null,
+   "Magnitude": 0,
+   "Direction": "n/a"
+  },
+  "Window": {
+   "From": "2026-08-03T02:00:00Z",
+   "To": "2026-08-03T03:00:00Z",
+   "ChangeFrom": "2026-08-03T03:14:02.576452963Z",
+   "ChangeTo": "2026-08-03T03:14:02.576452963Z",
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "unknown"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "anomalous",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "ok"
+  },
+  "Provenance": {
+   "Source": "list_events",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-f71c6eb95e9e"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:lucida_events_local:24dc9a2d-c860-5147-a236-fd9956fa43f6"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": true,
+   "OmittedN": 12
+  }
+ },
+ {
+  "EID": "EIX-0004",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "event",
+  "RecordKind": "finding",
+  "FindingClass": "list_events/episode",
+  "EntityKey": "f2de42d3-98fd-54f1-9dc2-188aa70e249d",
+  "Headline": "에피소드 trace-anomaly/distribution_shift 지속 미상ms, 경계 closed_after_window, peak caution",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "duration",
+   "Metric": "",
+   "Observed": null,
+   "Baseline": null,
+   "Magnitude": null,
+   "Direction": "n/a"
+  },
+  "Window": {
+   "From": "2026-08-03T02:00:00Z",
+   "To": "2026-08-03T03:00:00Z",
+   "ChangeFrom": "2026-08-03T03:11:50.49525752Z",
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "unknown"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "anomalous",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "low"
+  },
+  "Provenance": {
+   "Source": "list_events",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-f71c6eb95e9e"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:lucida_events_local:4da1530e-3631-5161-957e-8a6594ce76b8"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": true,
+   "OmittedN": 12
+  }
+ },
+ {
+  "EID": "EIX-0005",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "event",
+  "RecordKind": "finding",
+  "FindingClass": "list_events/episode",
+  "EntityKey": "813b8667-37ae-5933-ab09-75df359d2c94",
+  "Headline": "에피소드 trace-anomaly/distribution_shift 지속 미상ms, 경계 closed_after_window, peak warning",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "duration",
+   "Metric": "",
+   "Observed": null,
+   "Baseline": null,
+   "Magnitude": null,
+   "Direction": "n/a"
+  },
+  "Window": {
+   "From": "2026-08-03T02:00:00Z",
+   "To": "2026-08-03T03:00:00Z",
+   "ChangeFrom": "2026-08-03T03:11:50.49525752Z",
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "unknown"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "anomalous",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "low"
+  },
+  "Provenance": {
+   "Source": "list_events",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-f71c6eb95e9e"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:lucida_events_local:34beb38d-910b-576a-8a73-b6210a801119"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": true,
+   "OmittedN": 12
+  }
+ },
+ {
+  "EID": "EIX-0006",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "event",
+  "RecordKind": "finding",
+  "FindingClass": "list_events/episode",
+  "EntityKey": "411bf59d-d0a3-5aa2-b9b8-bf206062de7f",
+  "Headline": "에피소드 trace-anomaly/distribution_shift 지속 미상ms, 경계 closed_after_window, peak caution",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "duration",
+   "Metric": "",
+   "Observed": null,
+   "Baseline": null,
+   "Magnitude": null,
+   "Direction": "n/a"
+  },
+  "Window": {
+   "From": "2026-08-03T02:00:00Z",
+   "To": "2026-08-03T03:00:00Z",
+   "ChangeFrom": "2026-08-03T03:11:50.49525752Z",
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "unknown"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "anomalous",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "low"
+  },
+  "Provenance": {
+   "Source": "list_events",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-f71c6eb95e9e"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:lucida_events_local:8d036fc6-4dd0-5179-9b11-84b91f367825"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": true,
+   "OmittedN": 12
+  }
+ },
+ {
+  "EID": "EIX-0007",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "event",
+  "RecordKind": "finding",
+  "FindingClass": "list_events/episode",
+  "EntityKey": "128615f9-bd8f-5999-83f0-125aaa67af2d",
+  "Headline": "에피소드 trace-anomaly/distribution_shift 지속 미상ms, 경계 closed_after_window, peak caution",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "duration",
+   "Metric": "",
+   "Observed": null,
+   "Baseline": null,
+   "Magnitude": null,
+   "Direction": "n/a"
+  },
+  "Window": {
+   "From": "2026-08-03T02:00:00Z",
+   "To": "2026-08-03T03:00:00Z",
+   "ChangeFrom": "2026-08-03T03:11:50.49525752Z",
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "unknown"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "anomalous",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "low"
+  },
+  "Provenance": {
+   "Source": "list_events",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-f71c6eb95e9e"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:lucida_events_local:61ebbd21-af65-5367-bdd7-bf39cf5d9e70"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": true,
+   "OmittedN": 12
+  }
+ },
+ {
+  "EID": "EIX-0008",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "event",
+  "RecordKind": "finding",
+  "FindingClass": "list_events/episode",
+  "EntityKey": "46cc31f3-0e1e-537a-88b2-e178cfc00bac",
+  "Headline": "에피소드 trace-anomaly/distribution_shift 지속 미상ms, 경계 closed_after_window, peak warning",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "duration",
+   "Metric": "",
+   "Observed": null,
+   "Baseline": null,
+   "Magnitude": null,
+   "Direction": "n/a"
+  },
+  "Window": {
+   "From": "2026-08-03T02:00:00Z",
+   "To": "2026-08-03T03:00:00Z",
+   "ChangeFrom": "2026-08-03T03:11:50.49525752Z",
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "unknown"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "anomalous",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "low"
+  },
+  "Provenance": {
+   "Source": "list_events",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-f71c6eb95e9e"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:lucida_events_local:66683060-b263-5dfe-9767-b9c063684066"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": true,
+   "OmittedN": 12
+  }
+ },
+ {
+  "EID": "EIX-0009",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "event",
+  "RecordKind": "finding",
+  "FindingClass": "list_events/episode",
+  "EntityKey": "ff5263dc-cacb-51f9-a102-916db7574efb",
+  "Headline": "에피소드 trace-anomaly/distribution_shift 지속 미상ms, 경계 closed_after_window, peak caution",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "duration",
+   "Metric": "",
+   "Observed": null,
+   "Baseline": null,
+   "Magnitude": null,
+   "Direction": "n/a"
+  },
+  "Window": {
+   "From": "2026-08-03T02:00:00Z",
+   "To": "2026-08-03T03:00:00Z",
+   "ChangeFrom": "2026-08-03T03:11:50.49525752Z",
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "unknown"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "anomalous",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "low"
+  },
+  "Provenance": {
+   "Source": "list_events",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-f71c6eb95e9e"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:lucida_events_local:4202af92-66f2-5072-99a3-e87d0192fb6c"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": true,
+   "OmittedN": 12
+  }
+ },
+ {
+  "EID": "EIX-0010",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "event",
+  "RecordKind": "finding",
+  "FindingClass": "list_events/episode",
+  "EntityKey": "8186038c-853e-5760-907b-80b2b0b83aa3",
+  "Headline": "에피소드 log-anomaly/unknown_anomaly 지속 미상ms, 경계 closed_after_window, peak critical",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "duration",
+   "Metric": "",
+   "Observed": null,
+   "Baseline": null,
+   "Magnitude": null,
+   "Direction": "n/a"
+  },
+  "Window": {
+   "From": "2026-08-03T02:00:00Z",
+   "To": "2026-08-03T03:00:00Z",
+   "ChangeFrom": "2026-08-03T03:10:00.254725706Z",
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "unknown"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "anomalous",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "low"
+  },
+  "Provenance": {
+   "Source": "list_events",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-f71c6eb95e9e"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:lucida_events_local:501eee18-33d9-5fa6-810f-ec4106523476"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": true,
+   "OmittedN": 12
+  }
+ },
+ {
+  "EID": "EIX-0011",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "event",
+  "RecordKind": "finding",
+  "FindingClass": "list_events/episode",
+  "EntityKey": "60df0c15-dba9-5a87-a043-4999849ec031",
+  "Headline": "에피소드 log-anomaly/new_template 지속 0ms, 경계 complete, peak critical",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "duration",
+   "Metric": "",
+   "Observed": 0,
+   "Baseline": null,
+   "Magnitude": 0,
+   "Direction": "n/a"
+  },
+  "Window": {
+   "From": "2026-08-03T02:00:00Z",
+   "To": "2026-08-03T03:00:00Z",
+   "ChangeFrom": "2026-08-03T03:09:26.946826Z",
+   "ChangeTo": "2026-08-03T03:09:26.946826Z",
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "unknown"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "anomalous",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "ok"
+  },
+  "Provenance": {
+   "Source": "list_events",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-f71c6eb95e9e"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:lucida_events_local:71b184ed-d038-5269-a446-db67c99efb43"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": true,
+   "OmittedN": 12
+  }
+ },
+ {
+  "EID": "EIX-0012",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "event",
+  "RecordKind": "finding",
+  "FindingClass": "list_events/episode",
+  "EntityKey": "b58dcd0c-dc02-5762-90b4-5de07a543852",
+  "Headline": "에피소드 log-anomaly/surge 지속 180000ms, 경계 complete, peak warning",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "duration",
+   "Metric": "",
+   "Observed": 180000,
+   "Baseline": null,
+   "Magnitude": 180000,
+   "Direction": "n/a"
+  },
+  "Window": {
+   "From": "2026-08-03T02:00:00Z",
+   "To": "2026-08-03T03:00:00Z",
+   "ChangeFrom": "2026-08-03T03:07:47.12473559Z",
+   "ChangeTo": "2026-08-03T03:10:51.300519795Z",
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "unknown"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "anomalous",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "ok"
+  },
+  "Provenance": {
+   "Source": "list_events",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-f71c6eb95e9e"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:lucida_events_local:f5dd5f5e-8fce-552f-ac4c-ac96e5fd33fb"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": true,
+   "OmittedN": 12
+  }
+ },
+ {
+  "EID": "EIX-0013",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "event",
+  "RecordKind": "finding",
+  "FindingClass": "list_events/episode",
+  "EntityKey": "bf4c3daa-1b17-54b8-9912-c866f41fa63e",
+  "Headline": "에피소드 log-anomaly/unknown_anomaly 지속 미상ms, 경계 closed_after_window, peak critical",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "duration",
+   "Metric": "",
+   "Observed": null,
+   "Baseline": null,
+   "Magnitude": null,
+   "Direction": "n/a"
+  },
+  "Window": {
+   "From": "2026-08-03T02:00:00Z",
+   "To": "2026-08-03T03:00:00Z",
+   "ChangeFrom": "2026-08-03T03:07:46.12442549Z",
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "unknown"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "anomalous",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "low"
+  },
+  "Provenance": {
+   "Source": "list_events",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-f71c6eb95e9e"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:lucida_events_local:2afb2a4c-16e6-54dd-b044-533a616a5e7a"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": true,
+   "OmittedN": 12
+  }
+ },
+ {
+  "EID": "EIX-0014",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "event",
+  "RecordKind": "finding",
+  "FindingClass": "list_events/episode",
+  "EntityKey": "d1a59cf3-1842-5d73-a7eb-83c47ec460d2",
+  "Headline": "에피소드 log-anomaly/new_template 지속 0ms, 경계 opened_before_window, peak caution",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "duration",
+   "Metric": "",
+   "Observed": 0,
+   "Baseline": null,
+   "Magnitude": 0,
+   "Direction": "n/a"
+  },
+  "Window": {
+   "From": "2026-08-03T02:00:00Z",
+   "To": "2026-08-03T03:00:00Z",
+   "ChangeFrom": "2026-08-03T03:07:45Z",
+   "ChangeTo": "2026-08-03T03:07:45.128172566Z",
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "unknown"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "anomalous",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "low"
+  },
+  "Provenance": {
+   "Source": "list_events",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-f71c6eb95e9e"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:lucida_events_local:707c2ce2-1dbe-53bc-b618-2289957d3396"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": true,
+   "OmittedN": 12
+  }
+ },
+ {
+  "EID": "EIX-0015",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "event",
+  "RecordKind": "finding",
+  "FindingClass": "list_events/episode",
+  "EntityKey": "f0efe82a-30a8-5cda-8540-34e78b999442",
+  "Headline": "에피소드 log-anomaly/unknown_anomaly 지속 미상ms, 경계 closed_after_window, peak critical",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "duration",
+   "Metric": "",
+   "Observed": null,
+   "Baseline": null,
+   "Magnitude": null,
+   "Direction": "n/a"
+  },
+  "Window": {
+   "From": "2026-08-03T02:00:00Z",
+   "To": "2026-08-03T03:00:00Z",
+   "ChangeFrom": "2026-08-03T03:07:31.115744506Z",
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "unknown"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "anomalous",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "low"
+  },
+  "Provenance": {
+   "Source": "list_events",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-f71c6eb95e9e"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:lucida_events_local:40b623b0-a9d6-5727-aa4f-bfc963489796"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": true,
+   "OmittedN": 12
+  }
+ },
+ {
+  "EID": "EIX-0016",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "event",
+  "RecordKind": "finding",
+  "FindingClass": "list_events/episode",
+  "EntityKey": "11eafaf7-cd24-5c35-9f59-3096d88a7781",
+  "Headline": "에피소드 log-anomaly/new_template 지속 0ms, 경계 opened_before_window, peak caution",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "duration",
+   "Metric": "",
+   "Observed": 0,
+   "Baseline": null,
+   "Magnitude": 0,
+   "Direction": "n/a"
+  },
+  "Window": {
+   "From": "2026-08-03T02:00:00Z",
+   "To": "2026-08-03T03:00:00Z",
+   "ChangeFrom": "2026-08-03T03:07:30Z",
+   "ChangeTo": "2026-08-03T03:07:30.118245237Z",
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "unknown"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "anomalous",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "low"
+  },
+  "Provenance": {
+   "Source": "list_events",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-f71c6eb95e9e"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:lucida_events_local:17b4351f-54a6-593b-8a65-f910732af04d"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": true,
+   "OmittedN": 12
+  }
+ },
+ {
+  "EID": "EIX-0017",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "event",
+  "RecordKind": "finding",
+  "FindingClass": "list_events/episode",
+  "EntityKey": "ef03ac02-0969-5431-8837-e9005eae86e1",
+  "Headline": "에피소드 log-anomaly/unknown_anomaly 지속 미상ms, 경계 closed_after_window, peak critical",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "duration",
+   "Metric": "",
+   "Observed": null,
+   "Baseline": null,
+   "Magnitude": null,
+   "Direction": "n/a"
+  },
+  "Window": {
+   "From": "2026-08-03T02:00:00Z",
+   "To": "2026-08-03T03:00:00Z",
+   "ChangeFrom": "2026-08-03T03:07:17.10056501Z",
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "unknown"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "anomalous",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "low"
+  },
+  "Provenance": {
+   "Source": "list_events",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-f71c6eb95e9e"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:lucida_events_local:bee38600-1916-5e48-af9f-4a59ef702586"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": true,
+   "OmittedN": 12
+  }
+ },
+ {
+  "EID": "EIX-0018",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "event",
+  "RecordKind": "finding",
+  "FindingClass": "list_events/episode",
+  "EntityKey": "10aeaafa-6753-5f82-a7b7-aade7aa4e751",
+  "Headline": "에피소드 log-anomaly/unknown_anomaly 지속 미상ms, 경계 closed_after_window, peak warning",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "duration",
+   "Metric": "",
+   "Observed": null,
+   "Baseline": null,
+   "Magnitude": null,
+   "Direction": "n/a"
+  },
+  "Window": {
+   "From": "2026-08-03T02:00:00Z",
+   "To": "2026-08-03T03:00:00Z",
+   "ChangeFrom": "2026-08-03T03:07:15.110184456Z",
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "unknown"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "anomalous",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "low"
+  },
+  "Provenance": {
+   "Source": "list_events",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-f71c6eb95e9e"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:lucida_events_local:a7817b09-993b-514f-8b45-74899a6da33e"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": true,
+   "OmittedN": 12
+  }
+ },
+ {
+  "EID": "EIX-0019",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "event",
+  "RecordKind": "finding",
+  "FindingClass": "list_events/episode",
+  "EntityKey": "1c824c26-f684-5586-a881-5a311ae9ed44",
+  "Headline": "에피소드 log-anomaly/new_template 지속 0ms, 경계 opened_before_window, peak critical",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "duration",
+   "Metric": "",
+   "Observed": 0,
+   "Baseline": null,
+   "Magnitude": 0,
+   "Direction": "n/a"
+  },
+  "Window": {
+   "From": "2026-08-03T02:00:00Z",
+   "To": "2026-08-03T03:00:00Z",
+   "ChangeFrom": "2026-08-03T03:07:15Z",
+   "ChangeTo": "2026-08-03T03:07:15.759566Z",
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "unknown"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "anomalous",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "low"
+  },
+  "Provenance": {
+   "Source": "list_events",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-f71c6eb95e9e"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:lucida_events_local:1c9a9d9a-024d-510c-b141-0faa9010ea5b"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": true,
+   "OmittedN": 12
+  }
+ },
+ {
+  "EID": "EIX-0020",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "event",
+  "RecordKind": "finding",
+  "FindingClass": "list_events/episode",
+  "EntityKey": "fc66108c-8f67-5e9b-827c-bbb6e8dc05d7",
+  "Headline": "에피소드 log-anomaly/new_template 지속 0ms, 경계 complete, peak caution",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "duration",
+   "Metric": "",
+   "Observed": 0,
+   "Baseline": null,
+   "Magnitude": 0,
+   "Direction": "n/a"
+  },
+  "Window": {
+   "From": "2026-08-03T02:00:00Z",
+   "To": "2026-08-03T03:00:00Z",
+   "ChangeFrom": "2026-08-03T03:07:14.105960305Z",
+   "ChangeTo": "2026-08-03T03:07:14.105960305Z",
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "unknown"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "anomalous",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "ok"
+  },
+  "Provenance": {
+   "Source": "list_events",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-f71c6eb95e9e"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:lucida_events_local:9109c6f0-2941-527e-8f86-bff106958aa9"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": true,
+   "OmittedN": 12
+  }
+ },
+ {
+  "EID": "EIX-0021",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "event",
+  "RecordKind": "meta",
+  "FindingClass": "",
+  "EntityKey": "",
+  "Headline": "list_events meta class summary_meta — 감사 재료(술어 판정 대상 아님)",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "",
+   "Metric": "",
+   "Observed": null,
+   "Baseline": null,
+   "Magnitude": null,
+   "Direction": ""
+  },
+  "Window": {
+   "From": "2026-08-03T02:00:00Z",
+   "To": "2026-08-03T03:00:00Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "unknown"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "anomalous",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "ok"
+  },
+  "Provenance": {
+   "Source": "list_events",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": ""
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": null,
+  "Masked": null,
+  "Truncation": {
+   "Truncated": false,
+   "OmittedN": 0
+  }
+ },
+ {
+  "EID": "EIX-0022",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "event",
+  "RecordKind": "query_scope",
+  "FindingClass": "list_events/episode",
+  "EntityKey": "*",
+  "Headline": "조회 범위 list_events/episode(episode): 총 32건 중 20건 반환, 12건 미확인",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "count",
+   "Metric": "*",
+   "Observed": null,
+   "Baseline": null,
+   "Magnitude": null,
+   "Direction": "n/a"
+  },
+  "Window": {
+   "From": "2026-08-03T02:00:00Z",
+   "To": "2026-08-03T03:00:00Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "unknown"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "normal",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "low"
+  },
+  "Provenance": {
+   "Source": "list_events",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-52e9e6464133"
+  },
+  "Scope": {
+   "Selector": {
+    "Source": "list_events",
+    "TargetID": "11111111-2222-3333-4444-555555555555",
+    "Aspect": "event",
+    "Metric": "*",
+    "EntityKey": "*",
+    "Window": "full"
+   },
+   "Total": 32,
+   "Returned": 20,
+   "Omitted": 12
+  },
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": null,
+  "Masked": null,
+  "Truncation": {
+   "Truncated": true,
+   "OmittedN": 12
+  }
+ },
+ {
+  "EID": "EIX-0023",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "event",
+  "RecordKind": "query_scope",
+  "FindingClass": "list_events/unpaired",
+  "EntityKey": "*",
+  "Headline": "조회 범위 list_events/unpaired(unpaired): 총 0건 중 0건 반환, 0건 미확인",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "count",
+   "Metric": "*",
+   "Observed": null,
+   "Baseline": null,
+   "Magnitude": null,
+   "Direction": "n/a"
+  },
+  "Window": {
+   "From": "2026-08-03T02:00:00Z",
+   "To": "2026-08-03T03:00:00Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "unknown"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "no_data",
+   "NoDataReason": "zero_observations",
+   "Availability": "observed_zero",
+   "Confidence": "ok"
+  },
+  "Provenance": {
+   "Source": "list_events",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-52e9e6464133"
+  },
+  "Scope": {
+   "Selector": {
+    "Source": "list_events",
+    "TargetID": "11111111-2222-3333-4444-555555555555",
+    "Aspect": "event",
+    "Metric": "*",
+    "EntityKey": "*",
+    "Window": "full"
+   },
+   "Total": 0,
+   "Returned": 0,
+   "Omitted": 0
+  },
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": null,
+  "Masked": null,
+  "Truncation": {
+   "Truncated": false,
+   "OmittedN": 0
+  }
+ },
+ {
+  "EID": "EIX-0024",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "event",
+  "RecordKind": "query_scope",
+  "FindingClass": "list_events/k8s",
+  "EntityKey": "*",
+  "Headline": "조회 범위 list_events/k8s(k8s): 총 0건 중 0건 반환, 0건 미확인",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "count",
+   "Metric": "*",
+   "Observed": null,
+   "Baseline": null,
+   "Magnitude": null,
+   "Direction": "n/a"
+  },
+  "Window": {
+   "From": "2026-08-03T02:00:00Z",
+   "To": "2026-08-03T03:00:00Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "unknown"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "no_data",
+   "NoDataReason": "zero_observations",
+   "Availability": "observed_zero",
+   "Confidence": "ok"
+  },
+  "Provenance": {
+   "Source": "list_events",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-52e9e6464133"
+  },
+  "Scope": {
+   "Selector": {
+    "Source": "list_events",
+    "TargetID": "11111111-2222-3333-4444-555555555555",
+    "Aspect": "event",
+    "Metric": "*",
+    "EntityKey": "*",
+    "Window": "full"
+   },
+   "Total": 0,
+   "Returned": 0,
+   "Omitted": 0
+  },
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": null,
+  "Masked": null,
+  "Truncation": {
+   "Truncated": false,
+   "OmittedN": 0
+  }
+ }
+]

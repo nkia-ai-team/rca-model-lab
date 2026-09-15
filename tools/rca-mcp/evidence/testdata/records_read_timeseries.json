@@ -1,0 +1,118 @@
+[
+ {
+  "EID": "EIX-0001",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "metric",
+  "RecordKind": "finding",
+  "FindingClass": "read_timeseries/series",
+  "EntityKey": "",
+  "Headline": "시계열 lucida:disks_utilization_max:max1h 중앙값 0.88 / 기준선 0.186 — onset 미산출",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "ratio",
+   "Metric": "lucida:disks_utilization_max:max1h",
+   "Observed": 0.879916210641,
+   "Baseline": 0.18593188478567,
+   "Magnitude": 4.7324653953533,
+   "Direction": "up"
+  },
+  "Window": {
+   "From": "2026-08-03T02:44:00Z",
+   "To": "2026-08-03T03:14:00Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "observed"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "normal",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "ok"
+  },
+  "Provenance": {
+   "Source": "read_timeseries",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-b5bfb07c0b46"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "vm:lucida:disks_utilization_max:max1h{target_id=00000000-0000-0000-0000-00000000aaaa}:2026-08-03T02:44:00Z/2026-08-03T03:14:00Z"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": false,
+   "OmittedN": 0
+  }
+ },
+ {
+  "EID": "EIX-0002",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "metric",
+  "RecordKind": "meta",
+  "FindingClass": "",
+  "EntityKey": "",
+  "Headline": "read_timeseries meta class read_meta — 감사 재료(술어 판정 대상 아님)",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "",
+   "Metric": "",
+   "Observed": null,
+   "Baseline": null,
+   "Magnitude": null,
+   "Direction": ""
+  },
+  "Window": {
+   "From": "2026-08-03T02:44:00Z",
+   "To": "2026-08-03T03:14:00Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "observed"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "normal",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "ok"
+  },
+  "Provenance": {
+   "Source": "read_timeseries",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": ""
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": null,
+  "Masked": null,
+  "Truncation": {
+   "Truncated": false,
+   "OmittedN": 0
+  }
+ }
+]

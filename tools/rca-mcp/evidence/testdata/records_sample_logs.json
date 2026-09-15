@@ -1,0 +1,630 @@
+[
+ {
+  "EID": "EIX-0001",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "log",
+  "RecordKind": "finding",
+  "FindingClass": "sample_logs/frequent",
+  "EntityKey": "7533030251353138528",
+  "Headline": "로그 템플릿 7533030251353138528 구획 frequent — 창 내 2075회 / 기준선 5280회(seen_in_baseline)",
+  "RawExcerpt": "Notification sent successfully for dispatch event",
+  "Effect": {
+   "Kind": "count",
+   "Metric": "",
+   "Observed": 2075,
+   "Baseline": 5280,
+   "Magnitude": 2075,
+   "Direction": "down"
+  },
+  "Window": {
+   "From": "2026-08-03T02:00:00Z",
+   "To": "2026-08-03T03:00:00Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "unknown"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "normal",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "low"
+  },
+  "Provenance": {
+   "Source": "sample_logs",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-65145aaaa7ad"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:lucida_logs_local:71bf7e79-5bbe-4a29-855d-26e1465ab1d6:tmpl:7533030251353138528"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": true,
+   "OmittedN": 6
+  }
+ },
+ {
+  "EID": "EIX-0002",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "log",
+  "RecordKind": "finding",
+  "FindingClass": "sample_logs/frequent",
+  "EntityKey": "1465478632324549186",
+  "Headline": "로그 템플릿 1465478632324549186 구획 frequent — 창 내 1092회 / 기준선 2585회(seen_in_baseline)",
+  "RawExcerpt": "Received dispatch event: {\"dispatchId\":1121444,\"orderId\":1122482,\"status\":\"DELIVERED\",\"eventType\":\"DISPATCH_DELIVERED\"}",
+  "Effect": {
+   "Kind": "count",
+   "Metric": "",
+   "Observed": 1092,
+   "Baseline": 2585,
+   "Magnitude": 1092,
+   "Direction": "down"
+  },
+  "Window": {
+   "From": "2026-08-03T02:00:00Z",
+   "To": "2026-08-03T03:00:00Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "unknown"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "normal",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "low"
+  },
+  "Provenance": {
+   "Source": "sample_logs",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-65145aaaa7ad"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:lucida_logs_local:71bf7e79-5bbe-4a29-855d-26e1465ab1d6:tmpl:1465478632324549186"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": true,
+   "OmittedN": 6
+  }
+ },
+ {
+  "EID": "EIX-0003",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "log",
+  "RecordKind": "finding",
+  "FindingClass": "sample_logs/frequent",
+  "EntityKey": "391924154378068937",
+  "Headline": "로그 템플릿 391924154378068937 구획 frequent — 창 내 1092회 / 기준선 2585회(seen_in_baseline)",
+  "RawExcerpt": "Sending dispatch notification: {\"dispatchId\":1121444,\"orderId\":1122482,\"status\":\"DELIVERED\",\"eventType\":\"DISPATCH_DELIVERED\"}",
+  "Effect": {
+   "Kind": "count",
+   "Metric": "",
+   "Observed": 1092,
+   "Baseline": 2585,
+   "Magnitude": 1092,
+   "Direction": "down"
+  },
+  "Window": {
+   "From": "2026-08-03T02:00:00Z",
+   "To": "2026-08-03T03:00:00Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "unknown"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "normal",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "low"
+  },
+  "Provenance": {
+   "Source": "sample_logs",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-65145aaaa7ad"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:lucida_logs_local:71bf7e79-5bbe-4a29-855d-26e1465ab1d6:tmpl:391924154378068937"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": true,
+   "OmittedN": 6
+  }
+ },
+ {
+  "EID": "EIX-0004",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "log",
+  "RecordKind": "finding",
+  "FindingClass": "sample_logs/frequent",
+  "EntityKey": "16864140612412208717",
+  "Headline": "로그 템플릿 16864140612412208717 구획 frequent — 창 내 983회 / 기준선 2695회(seen_in_baseline)",
+  "RawExcerpt": "Received dispatch event: {\"dispatchId\":1123052,\"orderId\":1124089,\"status\":\"ASSIGNED\",\"eventType\":\"DISPATCH_ASSIGNED\"}",
+  "Effect": {
+   "Kind": "count",
+   "Metric": "",
+   "Observed": 983,
+   "Baseline": 2695,
+   "Magnitude": 983,
+   "Direction": "down"
+  },
+  "Window": {
+   "From": "2026-08-03T02:00:00Z",
+   "To": "2026-08-03T03:00:00Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "unknown"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "normal",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "low"
+  },
+  "Provenance": {
+   "Source": "sample_logs",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-65145aaaa7ad"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:lucida_logs_local:71bf7e79-5bbe-4a29-855d-26e1465ab1d6:tmpl:16864140612412208717"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": true,
+   "OmittedN": 6
+  }
+ },
+ {
+  "EID": "EIX-0005",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "log",
+  "RecordKind": "finding",
+  "FindingClass": "sample_logs/frequent",
+  "EntityKey": "3580227596295477649",
+  "Headline": "로그 템플릿 3580227596295477649 구획 frequent — 창 내 983회 / 기준선 2695회(seen_in_baseline)",
+  "RawExcerpt": "Sending dispatch notification: {\"dispatchId\":1123052,\"orderId\":1124089,\"status\":\"ASSIGNED\",\"eventType\":\"DISPATCH_ASSIGNED\"}",
+  "Effect": {
+   "Kind": "count",
+   "Metric": "",
+   "Observed": 983,
+   "Baseline": 2695,
+   "Magnitude": 983,
+   "Direction": "down"
+  },
+  "Window": {
+   "From": "2026-08-03T02:00:00Z",
+   "To": "2026-08-03T03:00:00Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "unknown"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "normal",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "low"
+  },
+  "Provenance": {
+   "Source": "sample_logs",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-65145aaaa7ad"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:lucida_logs_local:71bf7e79-5bbe-4a29-855d-26e1465ab1d6:tmpl:3580227596295477649"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": true,
+   "OmittedN": 6
+  }
+ },
+ {
+  "EID": "EIX-0006",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "log",
+  "RecordKind": "meta",
+  "FindingClass": "",
+  "EntityKey": "",
+  "Headline": "sample_logs meta class summary_meta — 감사 재료(술어 판정 대상 아님)",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "",
+   "Metric": "",
+   "Observed": null,
+   "Baseline": null,
+   "Magnitude": null,
+   "Direction": ""
+  },
+  "Window": {
+   "From": "2026-08-03T02:00:00Z",
+   "To": "2026-08-03T03:00:00Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "unknown"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "normal",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "ok"
+  },
+  "Provenance": {
+   "Source": "sample_logs",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": ""
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": null,
+  "Masked": null,
+  "Truncation": {
+   "Truncated": false,
+   "OmittedN": 0
+  }
+ },
+ {
+  "EID": "EIX-0007",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "log",
+  "RecordKind": "query_scope",
+  "FindingClass": "sample_logs/new_in_window",
+  "EntityKey": "*",
+  "Headline": "조회 범위 sample_logs/new_in_window(new_in_window): 총 0건 중 0건 반환, 0건 미확인",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "count",
+   "Metric": "*",
+   "Observed": null,
+   "Baseline": null,
+   "Magnitude": null,
+   "Direction": "n/a"
+  },
+  "Window": {
+   "From": "2026-08-03T02:00:00Z",
+   "To": "2026-08-03T03:00:00Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "unknown"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "no_data",
+   "NoDataReason": "zero_observations",
+   "Availability": "observed_zero",
+   "Confidence": "ok"
+  },
+  "Provenance": {
+   "Source": "sample_logs",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-433ac6b548fc"
+  },
+  "Scope": {
+   "Selector": {
+    "Source": "sample_logs",
+    "TargetID": "11111111-2222-3333-4444-555555555555",
+    "Aspect": "log",
+    "Metric": "*",
+    "EntityKey": "*",
+    "Window": "full"
+   },
+   "Total": 0,
+   "Returned": 0,
+   "Omitted": 0
+  },
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": null,
+  "Masked": null,
+  "Truncation": {
+   "Truncated": false,
+   "OmittedN": 0
+  }
+ },
+ {
+  "EID": "EIX-0008",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "log",
+  "RecordKind": "query_scope",
+  "FindingClass": "sample_logs/surged",
+  "EntityKey": "*",
+  "Headline": "조회 범위 sample_logs/surged(surged): 총 0건 중 0건 반환, 0건 미확인",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "count",
+   "Metric": "*",
+   "Observed": null,
+   "Baseline": null,
+   "Magnitude": null,
+   "Direction": "n/a"
+  },
+  "Window": {
+   "From": "2026-08-03T02:00:00Z",
+   "To": "2026-08-03T03:00:00Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "unknown"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "no_data",
+   "NoDataReason": "zero_observations",
+   "Availability": "observed_zero",
+   "Confidence": "ok"
+  },
+  "Provenance": {
+   "Source": "sample_logs",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-433ac6b548fc"
+  },
+  "Scope": {
+   "Selector": {
+    "Source": "sample_logs",
+    "TargetID": "11111111-2222-3333-4444-555555555555",
+    "Aspect": "log",
+    "Metric": "*",
+    "EntityKey": "*",
+    "Window": "full"
+   },
+   "Total": 0,
+   "Returned": 0,
+   "Omitted": 0
+  },
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": null,
+  "Masked": null,
+  "Truncation": {
+   "Truncated": false,
+   "OmittedN": 0
+  }
+ },
+ {
+  "EID": "EIX-0009",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "log",
+  "RecordKind": "query_scope",
+  "FindingClass": "sample_logs/disappeared",
+  "EntityKey": "*",
+  "Headline": "조회 범위 sample_logs/disappeared(disappeared): 총 0건 중 0건 반환, 0건 미확인",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "count",
+   "Metric": "*",
+   "Observed": null,
+   "Baseline": null,
+   "Magnitude": null,
+   "Direction": "n/a"
+  },
+  "Window": {
+   "From": "2026-08-03T02:00:00Z",
+   "To": "2026-08-03T03:00:00Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "unknown"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "no_data",
+   "NoDataReason": "zero_observations",
+   "Availability": "observed_zero",
+   "Confidence": "ok"
+  },
+  "Provenance": {
+   "Source": "sample_logs",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-433ac6b548fc"
+  },
+  "Scope": {
+   "Selector": {
+    "Source": "sample_logs",
+    "TargetID": "11111111-2222-3333-4444-555555555555",
+    "Aspect": "log",
+    "Metric": "*",
+    "EntityKey": "*",
+    "Window": "full"
+   },
+   "Total": 0,
+   "Returned": 0,
+   "Omitted": 0
+  },
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": null,
+  "Masked": null,
+  "Truncation": {
+   "Truncated": false,
+   "OmittedN": 0
+  }
+ },
+ {
+  "EID": "EIX-0010",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "log",
+  "RecordKind": "query_scope",
+  "FindingClass": "sample_logs/frequent",
+  "EntityKey": "*",
+  "Headline": "조회 범위 sample_logs/frequent(frequent): 총 11건 중 5건 반환, 6건 미확인",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "count",
+   "Metric": "*",
+   "Observed": null,
+   "Baseline": null,
+   "Magnitude": null,
+   "Direction": "n/a"
+  },
+  "Window": {
+   "From": "2026-08-03T02:00:00Z",
+   "To": "2026-08-03T03:00:00Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "unknown"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "normal",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "low"
+  },
+  "Provenance": {
+   "Source": "sample_logs",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-433ac6b548fc"
+  },
+  "Scope": {
+   "Selector": {
+    "Source": "sample_logs",
+    "TargetID": "11111111-2222-3333-4444-555555555555",
+    "Aspect": "log",
+    "Metric": "*",
+    "EntityKey": "*",
+    "Window": "full"
+   },
+   "Total": 11,
+   "Returned": 5,
+   "Omitted": 6
+  },
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": null,
+  "Masked": null,
+  "Truncation": {
+   "Truncated": true,
+   "OmittedN": 6
+  }
+ }
+]
