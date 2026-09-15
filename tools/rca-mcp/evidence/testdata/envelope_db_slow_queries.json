@@ -1,0 +1,681 @@
+{
+ "status": "normal",
+ "assessment_basis": "창 폴 30개의 SQL별 통계를 직전 24시간 같은 SQL 통계와 비교(기준선 폴 1362개). 판정: 중앙값 3배 또는 최대 3배 — 라이브 배경 창쌍 1,448개에서 중앙값 비 최대 2.61배·3배 초과 0건에서 얻은 문턱. 만성(절대 소요가 큰 것)과 사건(변화가 큰 것)은 분리해 표시한다. 판정 분포: chronic 7, stable 3",
+ "summary": "수집된 top-SQL 18개 중 10개 반환(engine=oracle, 정렬 total_ms), 상한 절단. 직전 24시간 기준선 대비 회귀 없음. 만성(창 이전부터 같은 수준): 470as8m1vuxbs p50 78.3ms · bj2byjf4a2w3c p50 25.8ms · ggrfcy439k2xd p50 0.1ms · 2nfgkpu2q8jqw p50 0.1ms · dgurkh0f3amjb p50 29.5ms · gj6a6m00xmg4h p50 11.6ms · at909c9v6sqck p50 9.0ms. 창: from=인자, to=인자",
+ "findings": [
+  {
+   "baseline_latency_ms_max": 84.742,
+   "baseline_latency_ms_p50": 71.173,
+   "baseline_polls": 1362,
+   "baseline_presence": 1,
+   "engine": "oracle",
+   "execs_per_poll_p50": 58,
+   "execs_total": 1498,
+   "first_seen": "2026-08-03T02:44:56Z",
+   "id_kind": "oracle_sql_id",
+   "io": {
+    "cpu_ms": 75.994,
+    "logical_reads": 23368.086,
+    "physical_reads": 0
+   },
+   "kind": "sql",
+   "last_seen": "2026-08-03T03:14:26Z",
+   "latency_ms_last": 76.351,
+   "latency_ms_max": 86.864,
+   "latency_ms_max_at": "2026-08-03T02:55:06Z",
+   "latency_ms_p50": 78.323,
+   "latency_unit_source": "us",
+   "mode": "delta",
+   "plan_records": {
+    "count": 1,
+    "distinct_plan_hash": 1,
+    "hash_stability": "unknown_single_capture",
+    "latest_captured_at": "2026-07-13T08:14:03Z"
+   },
+   "polls_in_window": 30,
+   "polls_seen": 30,
+   "presence": 1,
+   "rank_among_collected": 1,
+   "ratio_max": 1.025,
+   "ratio_p50": 1.1,
+   "refs": [
+    "ch:dpm_topsql_local:00149c2f-8a97-43bf-8907-c25029973e51:sql:470as8m1vuxbs",
+    "pg:db_sql_text:00149c2f-8a97-43bf-8907-c25029973e51:470as8m1vuxbs",
+    "pg:db_sql_plan:00149c2f-8a97-43bf-8907-c25029973e51:470as8m1vuxbs"
+   ],
+   "scope": {
+    "modules": [
+     "JarLauncher"
+    ],
+    "schemas": [
+     "BANKING"
+    ]
+   },
+   "self_monitoring": false,
+   "sql_key": "470as8m1vuxbs",
+   "sql_text": "select oe1_0.id,oe1_0.aggregate_id,oe1_0.aggregate_type,oe1_0.created_at,oe1_0.event_type,oe1_0.payload,oe1_0.published_at,oe1_0.topic from outbox_events oe1_0 where oe1_0.published_at is null order by oe1_0.created_at fetch first :1 rows only",
+   "sql_text_full_length": 243,
+   "sql_text_kind": "dict_captured",
+   "sql_text_source": "dictionary",
+   "total_ms": 117220.3,
+   "total_ms_source": "source_key",
+   "verdict": "chronic"
+  },
+  {
+   "baseline_latency_ms_max": 133.494,
+   "baseline_latency_ms_p50": 22.93,
+   "baseline_polls": 1350,
+   "baseline_presence": 0.991,
+   "engine": "oracle",
+   "execs_per_poll_p50": 44,
+   "execs_total": 1083,
+   "first_seen": "2026-08-03T02:44:56Z",
+   "id_kind": "oracle_sql_id",
+   "io": {
+    "cpu_ms": 12.476,
+    "logical_reads": 6913.549,
+    "physical_reads": 0
+   },
+   "kind": "sql",
+   "last_seen": "2026-08-03T03:14:26Z",
+   "latency_ms_last": 25.414,
+   "latency_ms_max": 61.376,
+   "latency_ms_max_at": "2026-08-03T02:56:07Z",
+   "latency_ms_p50": 25.818,
+   "latency_unit_source": "us",
+   "mode": "delta",
+   "plan_records": {
+    "count": 1,
+    "distinct_plan_hash": 1,
+    "hash_stability": "unknown_single_capture",
+    "latest_captured_at": "2026-07-14T05:53:13Z"
+   },
+   "polls_in_window": 30,
+   "polls_seen": 27,
+   "presence": 0.9,
+   "rank_among_collected": 2,
+   "ratio_max": 0.46,
+   "ratio_p50": 1.126,
+   "refs": [
+    "ch:dpm_topsql_local:00149c2f-8a97-43bf-8907-c25029973e51:sql:bj2byjf4a2w3c",
+    "pg:db_sql_text:00149c2f-8a97-43bf-8907-c25029973e51:bj2byjf4a2w3c",
+    "pg:db_sql_plan:00149c2f-8a97-43bf-8907-c25029973e51:bj2byjf4a2w3c"
+   ],
+   "scope": {
+    "modules": [
+     "JarLauncher"
+    ],
+    "schemas": [
+     "BANKING"
+    ]
+   },
+   "self_monitoring": false,
+   "sql_key": "bj2byjf4a2w3c",
+   "sql_text": "select t1_0.id,t1_0.amount,t1_0.created_at,t1_0.from_account,t1_0.order_id,t1_0.status,t1_0.to_account,t1_0.transfer_ref from transfers t1_0 where (:1 is null or t1_0.from_account=:2 ) and (:3 is null or t1_0.to_account=:4 ) and (:5 is null or t1_0.status=:6 ) and (:7 is null or t1_0.created_at\u003e=:8 ) and (:9 is null or t1_0.created_at\u003c=:10 )",
+   "sql_text_full_length": 343,
+   "sql_text_kind": "dict_captured",
+   "sql_text_source": "dictionary",
+   "total_ms": 29733.226,
+   "total_ms_source": "source_key",
+   "verdict": "chronic"
+  },
+  {
+   "baseline_latency_ms_max": 74418.59,
+   "baseline_latency_ms_p50": 0.095,
+   "baseline_polls": 1332,
+   "baseline_presence": 0.978,
+   "engine": "oracle",
+   "execs_per_poll_p50": 116,
+   "execs_total": 2682,
+   "first_seen": "2026-08-03T02:44:56Z",
+   "id_kind": "oracle_sql_id",
+   "io": {
+    "cpu_ms": 0.062,
+    "logical_reads": 5.028,
+    "physical_reads": 0
+   },
+   "kind": "sql",
+   "last_seen": "2026-08-03T03:14:26Z",
+   "latency_ms_last": 0.103,
+   "latency_ms_max": 287.17,
+   "latency_ms_max_at": "2026-08-03T02:51:02Z",
+   "latency_ms_p50": 0.1,
+   "latency_unit_source": "us",
+   "mode": "delta",
+   "plan_records": {
+    "count": 1,
+    "distinct_plan_hash": 1,
+    "hash_stability": "unknown_single_capture",
+    "latest_captured_at": "2026-07-13T08:56:24Z"
+   },
+   "polls_in_window": 30,
+   "polls_seen": 24,
+   "presence": 0.8,
+   "rank_among_collected": 3,
+   "ratio_max": 0.004,
+   "ratio_p50": 1.046,
+   "refs": [
+    "ch:dpm_topsql_local:00149c2f-8a97-43bf-8907-c25029973e51:sql:ggrfcy439k2xd",
+    "pg:db_sql_text:00149c2f-8a97-43bf-8907-c25029973e51:ggrfcy439k2xd",
+    "pg:db_sql_plan:00149c2f-8a97-43bf-8907-c25029973e51:ggrfcy439k2xd"
+   ],
+   "scope": {
+    "modules": [
+     "JarLauncher"
+    ],
+    "schemas": [
+     "BANKING"
+    ]
+   },
+   "self_monitoring": false,
+   "sql_key": "ggrfcy439k2xd",
+   "sql_text": "select a1_0.id,a1_0.balance,a1_0.holder,a1_0.status from accounts a1_0 where a1_0.id=:1 for update",
+   "sql_text_full_length": 98,
+   "sql_text_kind": "dict_captured",
+   "sql_text_source": "dictionary",
+   "total_ms": 25878.77,
+   "total_ms_source": "source_key",
+   "verdict": "chronic"
+  },
+  {
+   "baseline_latency_ms_max": 74.317,
+   "baseline_latency_ms_p50": 74.162,
+   "baseline_polls": 5,
+   "baseline_presence": 0.004,
+   "engine": "oracle",
+   "execs_per_poll_p50": 3,
+   "execs_total": 39,
+   "first_seen": "2026-08-03T02:52:03Z",
+   "id_kind": "oracle_sql_id",
+   "io": {
+    "cpu_ms": 70.782,
+    "logical_reads": 23368,
+    "physical_reads": 0
+   },
+   "kind": "sql",
+   "last_seen": "2026-08-03T03:03:14Z",
+   "latency_ms_last": 69.221,
+   "latency_ms_max": 81.426,
+   "latency_ms_max_at": "2026-08-03T02:57:08Z",
+   "latency_ms_p50": 72.895,
+   "latency_unit_source": "us",
+   "mode": "delta",
+   "partial_presence": true,
+   "plan_records": {
+    "count": 1,
+    "distinct_plan_hash": 1,
+    "hash_stability": "unknown_single_capture",
+    "latest_captured_at": "2026-07-30T06:24:32Z"
+   },
+   "polls_in_window": 30,
+   "polls_seen": 12,
+   "presence": 0.4,
+   "rank_among_collected": 4,
+   "ratio_max": 1.096,
+   "ratio_p50": 0.983,
+   "refs": [
+    "ch:dpm_topsql_local:00149c2f-8a97-43bf-8907-c25029973e51:sql:fhtu9mbkc9gsg",
+    "pg:db_sql_text:00149c2f-8a97-43bf-8907-c25029973e51:fhtu9mbkc9gsg",
+    "pg:db_sql_plan:00149c2f-8a97-43bf-8907-c25029973e51:fhtu9mbkc9gsg"
+   ],
+   "scope": {
+    "modules": [
+     "sqlplus@testbed-oracle-0 (TNS V1-V3)"
+    ],
+    "schemas": [
+     "SYS"
+    ]
+   },
+   "self_monitoring": false,
+   "sql_key": "fhtu9mbkc9gsg",
+   "sql_text": "select count(*) from banking.outbox_events where published_at is null",
+   "sql_text_full_length": 69,
+   "sql_text_kind": "dict_captured",
+   "sql_text_source": "dictionary",
+   "total_ms": 2859.742,
+   "total_ms_source": "source_key",
+   "verdict": "stable"
+  },
+  {
+   "baseline_latency_ms_max": 0.371,
+   "baseline_latency_ms_p50": 0.072,
+   "baseline_polls": 1349,
+   "baseline_presence": 0.99,
+   "engine": "oracle",
+   "execs_per_poll_p50": 144,
+   "execs_total": 12454,
+   "first_seen": "2026-08-03T02:44:56Z",
+   "id_kind": "oracle_sql_id",
+   "io": {
+    "cpu_ms": 0.055,
+    "logical_reads": 3,
+    "physical_reads": 0
+   },
+   "kind": "sql",
+   "last_seen": "2026-08-03T03:14:26Z",
+   "latency_ms_last": 0.07,
+   "latency_ms_max": 0.095,
+   "latency_ms_max_at": "2026-08-03T02:52:03Z",
+   "latency_ms_p50": 0.073,
+   "latency_unit_source": "us",
+   "mode": "delta",
+   "plan_records": {
+    "count": 1,
+    "distinct_plan_hash": 1,
+    "hash_stability": "unknown_single_capture",
+    "latest_captured_at": "2026-07-14T05:42:01Z"
+   },
+   "polls_in_window": 30,
+   "polls_seen": 30,
+   "presence": 1,
+   "rank_among_collected": 5,
+   "ratio_max": 0.255,
+   "ratio_p50": 1.011,
+   "refs": [
+    "ch:dpm_topsql_local:00149c2f-8a97-43bf-8907-c25029973e51:sql:2nfgkpu2q8jqw",
+    "pg:db_sql_text:00149c2f-8a97-43bf-8907-c25029973e51:2nfgkpu2q8jqw",
+    "pg:db_sql_plan:00149c2f-8a97-43bf-8907-c25029973e51:2nfgkpu2q8jqw"
+   ],
+   "scope": {
+    "modules": [
+     "JarLauncher"
+    ],
+    "schemas": [
+     "BANKING"
+    ]
+   },
+   "self_monitoring": false,
+   "sql_key": "2nfgkpu2q8jqw",
+   "sql_text": "select a1_0.id,a1_0.balance,a1_0.holder,a1_0.status from accounts a1_0 where a1_0.id=:1 ",
+   "sql_text_full_length": 88,
+   "sql_text_kind": "dict_captured",
+   "sql_text_source": "dictionary",
+   "total_ms": 1031.606,
+   "total_ms_source": "source_key",
+   "verdict": "chronic"
+  },
+  {
+   "baseline_latency_ms_max": 59.763,
+   "baseline_latency_ms_p50": 28.594,
+   "baseline_polls": 1350,
+   "baseline_presence": 0.991,
+   "engine": "oracle",
+   "execs_per_poll_p50": 1,
+   "execs_total": 30,
+   "first_seen": "2026-08-03T02:44:56Z",
+   "id_kind": "oracle_sql_id",
+   "io": {
+    "cpu_ms": 28.55,
+    "logical_reads": 0,
+    "physical_reads": 0
+   },
+   "kind": "sql",
+   "last_seen": "2026-08-03T03:14:26Z",
+   "latency_ms_last": 28.015,
+   "latency_ms_max": 55.043,
+   "latency_ms_max_at": "2026-08-03T03:09:21Z",
+   "latency_ms_p50": 29.54,
+   "latency_unit_source": "us",
+   "mode": "delta",
+   "plan_records": {
+    "count": 1,
+    "distinct_plan_hash": 1,
+    "hash_stability": "unknown_single_capture",
+    "latest_captured_at": "2026-07-13T08:14:03Z"
+   },
+   "polls_in_window": 30,
+   "polls_seen": 30,
+   "presence": 1,
+   "rank_among_collected": 6,
+   "ratio_max": 0.921,
+   "ratio_p50": 1.033,
+   "refs": [
+    "ch:dpm_topsql_local:00149c2f-8a97-43bf-8907-c25029973e51:sql:dgurkh0f3amjb",
+    "pg:db_sql_text:00149c2f-8a97-43bf-8907-c25029973e51:dgurkh0f3amjb",
+    "pg:db_sql_plan:00149c2f-8a97-43bf-8907-c25029973e51:dgurkh0f3amjb"
+   ],
+   "scope": {
+    "modules": [
+     "collector-dpm"
+    ],
+    "schemas": [
+     "LUCIDA_MON"
+    ]
+   },
+   "self_monitoring": false,
+   "sql_key": "dgurkh0f3amjb",
+   "sql_text": "\nSELECT S.SID, S.USERNAME, S.PROGRAM,\n    CASE WHEN L.REQUEST = 0 THEN NVL(S.SQL_ID, S.PREV_SQL_ID) ELSE S.SQL_ID END,\n    S.SQL_CHILD_NUMBER,\n    ROUND((SYSDATE - S.SQL_EXEC_START)*24*60*60*1000, 3),\n    S.WAIT_TIME_MICRO / 1000,\n    DECODE(S.STATE,'WAITING',S.EVENT,'On CPU'),\n    DECODE(S.STATE,'WAITING',S.WAIT_CLASS,'CPU'),\n    S.TYPE, S.STATUS, S.BLOCKING_SESSION, S.MACHINE,\n    ROUND(P.PGA_USED_MEM / (1024*1024), 2),\n    Q.PLAN_HASH_VALUE\nFROM V$SESSION S\nLEFT JOIN (\n    SELECT /*+ RULE */ LO.*, H.SID AS BK_SID\n    FROM V$LOCK LO LEFT JOIN V$LOCK H ON LO.ID1=H.ID1 AND LO.ID2=H.ID2 AND H.BLOCK=1\n    WHERE LO.BLOCK=1 OR LO.REQUEST\u003e0\n) L ON L.SID = S.SID\nJOIN V$PROCESS P ON S.PADDR = P.ADDR\nLEFT JOIN V$SQL Q ON S.SQL_ID = Q.SQL_ID AND S.SQL_CHILD_NUMBER = Q.CHILD_NUMBER\nWHERE S.STATUS = ",
+   "sql_text_full_length": 831,
+   "sql_text_kind": "dict_captured",
+   "sql_text_source": "dictionary",
+   "sql_text_truncated": true,
+   "total_ms": 1005.996,
+   "total_ms_source": "source_key",
+   "verdict": "chronic"
+  },
+  {
+   "baseline_latency_ms_max": 0.674,
+   "baseline_latency_ms_p50": 0.201,
+   "baseline_polls": 512,
+   "baseline_presence": 0.376,
+   "engine": "oracle",
+   "execs_per_poll_p50": 118,
+   "execs_total": 2598,
+   "first_seen": "2026-08-03T02:44:56Z",
+   "id_kind": "oracle_sql_id",
+   "io": {
+    "cpu_ms": 0.153,
+    "logical_reads": 11.766,
+    "physical_reads": 0
+   },
+   "kind": "sql",
+   "last_seen": "2026-08-03T03:14:26Z",
+   "latency_ms_last": 0.156,
+   "latency_ms_max": 0.247,
+   "latency_ms_max_at": "2026-08-03T03:08:20Z",
+   "latency_ms_p50": 0.165,
+   "latency_unit_source": "us",
+   "mode": "delta",
+   "plan_records": {
+    "count": 1,
+    "distinct_plan_hash": 1,
+    "hash_stability": "unknown_single_capture",
+    "latest_captured_at": "2026-07-13T08:14:03Z"
+   },
+   "polls_in_window": 30,
+   "polls_seen": 22,
+   "presence": 0.733,
+   "rank_among_collected": 7,
+   "ratio_max": 0.367,
+   "ratio_p50": 0.82,
+   "refs": [
+    "ch:dpm_topsql_local:00149c2f-8a97-43bf-8907-c25029973e51:sql:3p52tpw4mmjwf",
+    "pg:db_sql_text:00149c2f-8a97-43bf-8907-c25029973e51:3p52tpw4mmjwf",
+    "pg:db_sql_plan:00149c2f-8a97-43bf-8907-c25029973e51:3p52tpw4mmjwf"
+   ],
+   "scope": {
+    "modules": [
+     "JarLauncher"
+    ],
+    "schemas": [
+     "BANKING"
+    ]
+   },
+   "self_monitoring": false,
+   "sql_key": "3p52tpw4mmjwf",
+   "sql_text": "update outbox_events set aggregate_id=:1 ,aggregate_type=:2 ,event_type=:3 ,published_at=:4 ,topic=:5 ,payload=:6 where id=:7 ",
+   "sql_text_full_length": 126,
+   "sql_text_kind": "dict_captured",
+   "sql_text_source": "dictionary",
+   "total_ms": 427.118,
+   "total_ms_source": "source_key",
+   "verdict": "stable"
+  },
+  {
+   "baseline_latency_ms_max": 26.369,
+   "baseline_latency_ms_p50": 11.514,
+   "baseline_polls": 1246,
+   "baseline_presence": 0.915,
+   "engine": "oracle",
+   "execs_per_poll_p50": 1,
+   "execs_total": 25,
+   "first_seen": "2026-08-03T02:44:56Z",
+   "id_kind": "oracle_sql_id",
+   "io": {
+    "cpu_ms": 11.127,
+    "logical_reads": 2,
+    "physical_reads": 0
+   },
+   "kind": "sql",
+   "last_seen": "2026-08-03T03:14:26Z",
+   "latency_ms_last": 11.462,
+   "latency_ms_max": 25.823,
+   "latency_ms_max_at": "2026-08-03T02:54:05Z",
+   "latency_ms_p50": 11.639,
+   "latency_unit_source": "us",
+   "mode": "delta",
+   "polls_in_window": 30,
+   "polls_seen": 25,
+   "presence": 0.833,
+   "rank_among_collected": 8,
+   "ratio_max": 0.979,
+   "ratio_p50": 1.011,
+   "refs": [
+    "ch:dpm_topsql_local:00149c2f-8a97-43bf-8907-c25029973e51:sql:gj6a6m00xmg4h",
+    "pg:db_sql_text:00149c2f-8a97-43bf-8907-c25029973e51:gj6a6m00xmg4h"
+   ],
+   "scope": {
+    "modules": [
+     "collector-dpm"
+    ],
+    "schemas": [
+     "LUCIDA_MON"
+    ]
+   },
+   "self_monitoring": false,
+   "sql_key": "gj6a6m00xmg4h",
+   "sql_text": "\nWITH enq AS (\n    SELECT SUM(CUM_WAIT_TIME) AS wait_time, SUM(TOTAL_REQ#) AS total_request, SUM(FAILED_REQ#) AS fail\n    FROM v$enqueue_statistics\n)\nSELECT stat_id, value FROM v$sys_time_model\n  WHERE stat_id IN (3649082374, 2748282437, 4157170894, 2451517896)\nUNION ALL\nSELECT stat_id, value FROM v$sysstat\n  WHERE stat_id IN (2263124246, 1480709069, 4162191256, 472183780)\nUNION ALL\nSELECT stat_id, value FROM v$sysstat\n  WHERE stat_id IN (143509059, 63887964, 2453370665)\nUNION ALL\n-- parse/CPU 시간(206905303 parse cpu·1431595225 parse elapsed·24469293 cpu used): native cs → ×10 = ms.\n-- 전구간 ms 통일(owner 2026-07-17)·avg_response_time V$SYSMETRIC VALUE*10 선례 동형(oracle_rac_current_stat.go:36).\nSELECT stat_id, value * 10 FROM v$sysstat\n  WHERE stat_id IN (206905303, 14",
+   "sql_text_full_length": 1544,
+   "sql_text_kind": "dict_captured",
+   "sql_text_source": "dictionary",
+   "sql_text_truncated": true,
+   "total_ms": 378.258,
+   "total_ms_source": "source_key",
+   "verdict": "chronic"
+  },
+  {
+   "baseline_latency_ms_max": 19.85,
+   "baseline_latency_ms_p50": 8.768,
+   "baseline_polls": 1336,
+   "baseline_presence": 0.981,
+   "engine": "oracle",
+   "execs_per_poll_p50": 1,
+   "execs_total": 30,
+   "first_seen": "2026-08-03T02:44:56Z",
+   "id_kind": "oracle_sql_id",
+   "io": {
+    "cpu_ms": 8.711,
+    "logical_reads": 1796,
+    "physical_reads": 0
+   },
+   "kind": "sql",
+   "last_seen": "2026-08-03T03:14:26Z",
+   "latency_ms_last": 9.835,
+   "latency_ms_max": 16.296,
+   "latency_ms_max_at": "2026-08-03T02:57:08Z",
+   "latency_ms_p50": 9.04,
+   "latency_unit_source": "us",
+   "mode": "delta",
+   "plan_records": {
+    "count": 4,
+    "distinct_plan_hash": 4,
+    "hash_stability": "unknown_single_capture",
+    "latest_captured_at": "2026-07-17T05:37:08Z"
+   },
+   "polls_in_window": 30,
+   "polls_seen": 30,
+   "presence": 1,
+   "rank_among_collected": 9,
+   "ratio_max": 0.821,
+   "ratio_p50": 1.031,
+   "refs": [
+    "ch:dpm_topsql_local:00149c2f-8a97-43bf-8907-c25029973e51:sql:at909c9v6sqck",
+    "pg:db_sql_text:00149c2f-8a97-43bf-8907-c25029973e51:at909c9v6sqck",
+    "pg:db_sql_plan:00149c2f-8a97-43bf-8907-c25029973e51:at909c9v6sqck"
+   ],
+   "scope": {
+    "modules": [
+     "collector-dpm"
+    ],
+    "schemas": [
+     "LUCIDA_MON"
+    ]
+   },
+   "self_monitoring": false,
+   "sql_key": "at909c9v6sqck",
+   "sql_text": "\nSELECT 33, COUNT(*) FROM DBA_OBJECTS WHERE STATUS = 'INVALID'\nUNION ALL\nSELECT 34, COUNT(*) FROM DBA_INDEXES WHERE STATUS = 'UNUSABLE'",
+   "sql_text_full_length": 135,
+   "sql_text_kind": "dict_captured",
+   "sql_text_source": "dictionary",
+   "total_ms": 324.141,
+   "total_ms_source": "source_key",
+   "verdict": "chronic"
+  },
+  {
+   "baseline_latency_ms_max": 0.789,
+   "baseline_latency_ms_p50": 0.112,
+   "baseline_polls": 341,
+   "baseline_presence": 0.25,
+   "engine": "oracle",
+   "execs_per_poll_p50": 115,
+   "execs_total": 2421,
+   "first_seen": "2026-08-03T02:44:56Z",
+   "id_kind": "oracle_sql_id",
+   "io": {
+    "cpu_ms": 0.068,
+    "logical_reads": 8.655,
+    "physical_reads": 0
+   },
+   "kind": "sql",
+   "last_seen": "2026-08-03T03:14:26Z",
+   "latency_ms_last": 0.117,
+   "latency_ms_max": 0.172,
+   "latency_ms_max_at": "2026-08-03T03:01:12Z",
+   "latency_ms_p50": 0.124,
+   "latency_unit_source": "us",
+   "mode": "delta",
+   "plan_records": {
+    "count": 1,
+    "distinct_plan_hash": 1,
+    "hash_stability": "unknown_single_capture",
+    "latest_captured_at": "2026-07-13T08:33:37Z"
+   },
+   "polls_in_window": 30,
+   "polls_seen": 21,
+   "presence": 0.7,
+   "rank_among_collected": 10,
+   "ratio_max": 0.219,
+   "ratio_p50": 1.111,
+   "refs": [
+    "ch:dpm_topsql_local:00149c2f-8a97-43bf-8907-c25029973e51:sql:7cr14m1wuup4h",
+    "pg:db_sql_text:00149c2f-8a97-43bf-8907-c25029973e51:7cr14m1wuup4h",
+    "pg:db_sql_plan:00149c2f-8a97-43bf-8907-c25029973e51:7cr14m1wuup4h"
+   ],
+   "scope": {
+    "modules": [
+     "JarLauncher"
+    ],
+    "schemas": [
+     "BANKING"
+    ]
+   },
+   "self_monitoring": false,
+   "sql_key": "7cr14m1wuup4h",
+   "sql_text": "insert into outbox_events (aggregate_id,aggregate_type,created_at,event_type,published_at,topic,id,payload) values (:1 ,:2 ,:3 ,:4 ,:5 ,:6 ,default,:7 ) RETURNING id INTO :8 ",
+   "sql_text_full_length": 174,
+   "sql_text_kind": "dict_captured",
+   "sql_text_source": "dictionary",
+   "total_ms": 304.93,
+   "total_ms_source": "source_key",
+   "verdict": "stable"
+  },
+  {
+   "baseline_polls_in_window": 1362,
+   "baseline_window": {
+    "from": "2026-08-02T02:44:26Z",
+    "to": "2026-08-03T02:44:26Z"
+   },
+   "engine": "oracle",
+   "engine_contract": "verified",
+   "engine_source": "pg:collector_dpm_engine_version",
+   "engine_version": "23.0.0.0.0",
+   "kind": "coverage",
+   "limits": {
+    "min_polls": 3,
+    "notes": [
+     "모집단은 폴별 다축 top-5 합집합이다 — 창의 모든 SQL이 아니다. 어느 축이 각 행을 뽑았는지는 원천에 없다.",
+     "presence \u003c 1은 미실행일 수도, 축에서 밀린 것일 수도, 지연 사건 중 Δ실행수\u003c=0으로 버려진 것일 수도 있다 — presence 하락은 미실행의 증거가 아니다.",
+     "first_seen·last_seen은 폴 시각이며 쿼리 실행 시각이 아니다.",
+     "본문은 정규화·마스킹된 텍스트다 — 어느 파라미터 값에서 느렸는지는 이 도구로 답할 수 없다. 사전 본문은 write-once로 최초 관측본이다.",
+     "판정 문턱 3배는 라이브 배경(창쌍 1,448개·중앙값 비 최대 2.61배)에서 얻었다. 절대 하한이 없어 서브밀리초 쿼리의 배수 발화가 가능하다 — 크기는 latency_ms_*로 확인하라.",
+     "최대 팔의 기준선은 24시간 중 한 번의 급등으로 정해진다 — 긴 사건에서는 자기 사건이 기준선을 채워 최대 팔이 침묵한다(중앙값 팔이 받는다).",
+     "기준선도 같은 절단 원천으로 계산된다. 회귀는 인시던트 원인의 증명이 아니다."
+    ],
+    "ratio_threshold": 3,
+    "text_truncate": 800,
+    "top_n": 10
+   },
+   "mode_polls": {
+    "delta": 251
+   },
+   "partial_presence_rows": 1,
+   "polls_in_window": 30,
+   "population": "top_n_union_per_poll",
+   "selection_axes": [
+    "avgElapsedTime",
+    "totalElapsedTime",
+    "executions",
+    "avgCpuTime",
+    "avgLogicalReads"
+   ],
+   "selection_axis_per_row": "unavailable",
+   "self_monitoring_patterns": [
+    "innodb_lock_waits",
+    "x$processlist",
+    "events_statements_summary",
+    "pg_stat_statements",
+    "pg_locks",
+    "pg_blocking_pids"
+   ],
+   "sort": "total_ms",
+   "source_rows": 372,
+   "sql_total": 18,
+   "truncated_to": 10,
+   "window_basis": "from=인자, to=인자"
+  }
+ ],
+ "observed_range": {
+  "from": "2026-08-03T02:44:26Z",
+  "to": "2026-08-03T03:15:26Z"
+ },
+ "truncated": true,
+ "refs": [
+  "ch:dpm_topsql_local:00149c2f-8a97-43bf-8907-c25029973e51:sql:470as8m1vuxbs",
+  "pg:db_sql_text:00149c2f-8a97-43bf-8907-c25029973e51:470as8m1vuxbs",
+  "pg:db_sql_plan:00149c2f-8a97-43bf-8907-c25029973e51:470as8m1vuxbs",
+  "ch:dpm_topsql_local:00149c2f-8a97-43bf-8907-c25029973e51:sql:bj2byjf4a2w3c",
+  "pg:db_sql_text:00149c2f-8a97-43bf-8907-c25029973e51:bj2byjf4a2w3c",
+  "pg:db_sql_plan:00149c2f-8a97-43bf-8907-c25029973e51:bj2byjf4a2w3c",
+  "ch:dpm_topsql_local:00149c2f-8a97-43bf-8907-c25029973e51:sql:ggrfcy439k2xd",
+  "pg:db_sql_text:00149c2f-8a97-43bf-8907-c25029973e51:ggrfcy439k2xd",
+  "pg:db_sql_plan:00149c2f-8a97-43bf-8907-c25029973e51:ggrfcy439k2xd",
+  "ch:dpm_topsql_local:00149c2f-8a97-43bf-8907-c25029973e51:sql:fhtu9mbkc9gsg",
+  "pg:db_sql_text:00149c2f-8a97-43bf-8907-c25029973e51:fhtu9mbkc9gsg",
+  "pg:db_sql_plan:00149c2f-8a97-43bf-8907-c25029973e51:fhtu9mbkc9gsg",
+  "ch:dpm_topsql_local:00149c2f-8a97-43bf-8907-c25029973e51:sql:2nfgkpu2q8jqw",
+  "pg:db_sql_text:00149c2f-8a97-43bf-8907-c25029973e51:2nfgkpu2q8jqw",
+  "pg:db_sql_plan:00149c2f-8a97-43bf-8907-c25029973e51:2nfgkpu2q8jqw",
+  "ch:dpm_topsql_local:00149c2f-8a97-43bf-8907-c25029973e51:sql:dgurkh0f3amjb",
+  "pg:db_sql_text:00149c2f-8a97-43bf-8907-c25029973e51:dgurkh0f3amjb",
+  "pg:db_sql_plan:00149c2f-8a97-43bf-8907-c25029973e51:dgurkh0f3amjb",
+  "ch:dpm_topsql_local:00149c2f-8a97-43bf-8907-c25029973e51:sql:3p52tpw4mmjwf",
+  "pg:db_sql_text:00149c2f-8a97-43bf-8907-c25029973e51:3p52tpw4mmjwf",
+  "pg:db_sql_plan:00149c2f-8a97-43bf-8907-c25029973e51:3p52tpw4mmjwf",
+  "ch:dpm_topsql_local:00149c2f-8a97-43bf-8907-c25029973e51:sql:gj6a6m00xmg4h",
+  "pg:db_sql_text:00149c2f-8a97-43bf-8907-c25029973e51:gj6a6m00xmg4h",
+  "ch:dpm_topsql_local:00149c2f-8a97-43bf-8907-c25029973e51:sql:at909c9v6sqck",
+  "pg:db_sql_text:00149c2f-8a97-43bf-8907-c25029973e51:at909c9v6sqck",
+  "pg:db_sql_plan:00149c2f-8a97-43bf-8907-c25029973e51:at909c9v6sqck",
+  "ch:dpm_topsql_local:00149c2f-8a97-43bf-8907-c25029973e51:sql:7cr14m1wuup4h",
+  "pg:db_sql_text:00149c2f-8a97-43bf-8907-c25029973e51:7cr14m1wuup4h",
+  "pg:db_sql_plan:00149c2f-8a97-43bf-8907-c25029973e51:7cr14m1wuup4h"
+ ],
+ "scopes": [
+  {
+   "class": "sql",
+   "total": 18,
+   "returned": 10,
+   "omitted": 8
+  }
+ ]
+}

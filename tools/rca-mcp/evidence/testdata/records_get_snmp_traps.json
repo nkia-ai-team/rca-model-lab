@@ -1,0 +1,71 @@
+[
+ {
+  "EID": "EIX-0001",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "event",
+  "RecordKind": "query_scope",
+  "FindingClass": "get_snmp_traps/trap",
+  "EntityKey": "*",
+  "Headline": "조회 범위 get_snmp_traps/trap(trap): 총 0건 중 0건 반환, 0건 미확인",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "count",
+   "Metric": "count",
+   "Observed": null,
+   "Baseline": null,
+   "Magnitude": null,
+   "Direction": "n/a"
+  },
+  "Window": {
+   "From": "2026-08-03T02:00:00Z",
+   "To": "2026-08-03T03:00:00Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "unknown"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "no_data",
+   "NoDataReason": "zero_observations",
+   "Availability": "observed_zero",
+   "Confidence": "ok"
+  },
+  "Provenance": {
+   "Source": "get_snmp_traps",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-a2dbcb26ffed"
+  },
+  "Scope": {
+   "Selector": {
+    "Source": "get_snmp_traps",
+    "TargetID": "11111111-2222-3333-4444-555555555555",
+    "Aspect": "event",
+    "Metric": "count",
+    "EntityKey": "*",
+    "Window": "full"
+   },
+   "Total": 0,
+   "Returned": 0,
+   "Omitted": 0
+  },
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": null,
+  "Masked": null,
+  "Truncation": {
+   "Truncated": false,
+   "OmittedN": 0
+  }
+ }
+]

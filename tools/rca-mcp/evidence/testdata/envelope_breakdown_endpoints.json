@@ -1,0 +1,1067 @@
+{
+ "status": "anomalous",
+ "assessment_basis": "기준선은 2026-08-03T02:13:50Z~2026-08-03T02:44:50Z(ok, 창 집계와 동일 SQL). 여섯 팔 OR — 지연: p50 3배(SERVER·CONSUMER 한정) · p95 3배이며 300ms 이상 · p95 3000ms(기준선 불요). 실패: 5건 이상이며 5% 이상(framework 의미 제외) · 기준선 2배이며 +10%p. 거절(4xx): 20건 이상이며 기준선 2배이며 +10%p. 문턱은 라이브 3일 배경 8,870버킷·사건 3구간 동시 대입으로 정했다(실 오탐 2건) — 다른 환경에 재측정 없이 옮길 근거는 없다.",
+ "summary": "commerce-product 처리 구간 분해(entry 6 · step 12 · egress 7). 문턱을 넘은 구간: GET /api/products/{id}(rejection_shift), http GET testbed-inventory:8082(rejection_shift).",
+ "findings": [
+  {
+   "axis": "http.route",
+   "baseline": {
+    "count": 1363,
+    "failed_rate": 0,
+    "p50_ms": 2.83,
+    "p95_ms": 3.88,
+    "rejected_rate": 0.855,
+    "state": "ok"
+   },
+   "child_share": 0.755,
+   "child_span_n": 2007,
+   "count": 1178,
+   "error_semantics": "http_server",
+   "errors": {
+    "failed": 0,
+    "http_4xx": 1172,
+    "http_5xx": 0,
+    "status_error": 0
+   },
+   "failed_rate": 0,
+   "kind": "SERVER",
+   "label": "GET /api/products/{id}",
+   "max_ms": 23.73,
+   "p50_ms": 2.89,
+   "p95_ms": 3.75,
+   "refs": [
+    "ch:otel_traces_local:commerce-product:SERVER:GET /api/products/{id}",
+    "ch:otel_traces_local:trace:046b3612b6770b7ea80b340b62c995b7#2540aaec1803638e"
+   ],
+   "rejected_n": 1172,
+   "rejected_rate": 0.995,
+   "section": "entry",
+   "self_ms_p50": 0.63,
+   "self_ms_p95": 0.79,
+   "target_id": "766ec1cd-e07e-4ee7-8fc7-55c5fb6e8379",
+   "time_share_in_section": 0.384,
+   "total_ms": 2998.85,
+   "trace_root_n": 0,
+   "verdict": "anomalous",
+   "verdict_arms": [
+    "rejection_shift"
+   ]
+  },
+  {
+   "axis": "http.route",
+   "baseline": {
+    "count": 1359,
+    "failed_rate": 0,
+    "p50_ms": 2.84,
+    "p95_ms": 4.33,
+    "rejected_rate": 0,
+    "state": "ok"
+   },
+   "child_share": 0.78,
+   "child_span_n": 1004,
+   "count": 1004,
+   "error_semantics": "none",
+   "errors": {
+    "failed": 0,
+    "http_4xx": 0,
+    "http_5xx": 0,
+    "status_error": 0
+   },
+   "failed_rate": 0,
+   "kind": "SERVER",
+   "label": "GET /api/products",
+   "max_ms": 22.36,
+   "p50_ms": 2.75,
+   "p95_ms": 4.29,
+   "refs": [
+    "ch:otel_traces_local:commerce-product:SERVER:GET /api/products",
+    "ch:otel_traces_local:trace:bc1adce6a905faf478b5fd6926a639a1#2ee7d1c809068676"
+   ],
+   "rejected_n": 0,
+   "rejected_rate": 0,
+   "section": "entry",
+   "self_ms_p50": 0.62,
+   "self_ms_p95": 0.72,
+   "target_id": "766ec1cd-e07e-4ee7-8fc7-55c5fb6e8379",
+   "time_share_in_section": 0.377,
+   "total_ms": 2942.71,
+   "trace_root_n": 0,
+   "verdict": "normal",
+   "verdict_arms": []
+  },
+  {
+   "axis": "http.route",
+   "baseline": {
+    "count": 637,
+    "failed_rate": 0,
+    "p50_ms": 6.44,
+    "p95_ms": 8.89,
+    "rejected_rate": 0,
+    "state": "ok"
+   },
+   "child_share": 0.895,
+   "child_span_n": 384,
+   "count": 192,
+   "error_semantics": "http_server",
+   "errors": {
+    "failed": 0,
+    "http_4xx": 5,
+    "http_5xx": 0,
+    "status_error": 0
+   },
+   "failed_rate": 0,
+   "kind": "SERVER",
+   "label": "POST /api/products/{id}/reserve-stock",
+   "max_ms": 29.34,
+   "p50_ms": 6.12,
+   "p95_ms": 7.3,
+   "refs": [
+    "ch:otel_traces_local:commerce-product:SERVER:POST /api/products/{id}/reserve-stock",
+    "ch:otel_traces_local:trace:24597724419e3f911487cc35b6f0e15c#86bf2991321d373d"
+   ],
+   "rejected_n": 5,
+   "rejected_rate": 0.026,
+   "section": "entry",
+   "self_ms_p50": 0.64,
+   "self_ms_p95": 0.81,
+   "target_id": "766ec1cd-e07e-4ee7-8fc7-55c5fb6e8379",
+   "time_share_in_section": 0.153,
+   "total_ms": 1197.43,
+   "trace_root_n": 0,
+   "verdict": "normal",
+   "verdict_arms": []
+  },
+  {
+   "axis": "http.route",
+   "baseline": {
+    "count": 344,
+    "failed_rate": 0,
+    "p50_ms": 1.32,
+    "p95_ms": 1.96,
+    "rejected_rate": 0.358,
+    "state": "ok"
+   },
+   "child_share": 0.682,
+   "child_span_n": 613,
+   "count": 367,
+   "error_semantics": "http_server",
+   "errors": {
+    "failed": 0,
+    "http_4xx": 121,
+    "http_5xx": 0,
+    "status_error": 0
+   },
+   "failed_rate": 0,
+   "kind": "SERVER",
+   "label": "GET /api/products/{id}/variants",
+   "max_ms": 5.96,
+   "p50_ms": 1.33,
+   "p95_ms": 1.87,
+   "refs": [
+    "ch:otel_traces_local:commerce-product:SERVER:GET /api/products/{id}/variants",
+    "ch:otel_traces_local:trace:8e39279e54b6243839f917fa4095d970#e584fb878e294405"
+   ],
+   "rejected_n": 121,
+   "rejected_rate": 0.33,
+   "section": "entry",
+   "self_ms_p50": 0.38,
+   "self_ms_p95": 0.51,
+   "target_id": "766ec1cd-e07e-4ee7-8fc7-55c5fb6e8379",
+   "time_share_in_section": 0.064,
+   "total_ms": 496.77,
+   "trace_root_n": 0,
+   "verdict": "normal",
+   "verdict_arms": []
+  },
+  {
+   "axis": "http.route",
+   "baseline": {
+    "count": 79,
+    "failed_rate": 0,
+    "p50_ms": 1.3,
+    "p95_ms": 1.69,
+    "rejected_rate": 0,
+    "state": "ok"
+   },
+   "child_share": 0.668,
+   "child_span_n": 107,
+   "count": 107,
+   "error_semantics": "none",
+   "errors": {
+    "failed": 0,
+    "http_4xx": 0,
+    "http_5xx": 0,
+    "status_error": 0
+   },
+   "failed_rate": 0,
+   "kind": "SERVER",
+   "label": "GET /api/categories",
+   "max_ms": 3.49,
+   "p50_ms": 1.31,
+   "p95_ms": 1.64,
+   "refs": [
+    "ch:otel_traces_local:commerce-product:SERVER:GET /api/categories",
+    "ch:otel_traces_local:trace:8b2180fe022c6bcbd14227fff33b06e9#289a9a2f90c65439"
+   ],
+   "rejected_n": 0,
+   "rejected_rate": 0,
+   "section": "entry",
+   "self_ms_p50": 0.44,
+   "self_ms_p95": 0.53,
+   "target_id": "766ec1cd-e07e-4ee7-8fc7-55c5fb6e8379",
+   "time_share_in_section": 0.019,
+   "total_ms": 146.33,
+   "trace_root_n": 0,
+   "verdict": "normal",
+   "verdict_arms": []
+  },
+  {
+   "axis": "http.route",
+   "baseline": {
+    "count": 32,
+    "failed_rate": 0,
+    "p50_ms": 0.91,
+    "p95_ms": 1.48,
+    "rejected_rate": 0,
+    "state": "ok"
+   },
+   "child_share": 0.378,
+   "child_span_n": 28,
+   "count": 27,
+   "error_semantics": "none",
+   "errors": {
+    "failed": 0,
+    "http_4xx": 0,
+    "http_5xx": 0,
+    "status_error": 0
+   },
+   "failed_rate": 0,
+   "kind": "SERVER",
+   "label": "GET /actuator/health",
+   "max_ms": 1.54,
+   "p50_ms": 0.91,
+   "p95_ms": 1.28,
+   "refs": [
+    "ch:otel_traces_local:commerce-product:SERVER:GET /actuator/health",
+    "ch:otel_traces_local:trace:3aa5ca45ff3ff73831775035f06fdff7#7e9d5268f36c42db"
+   ],
+   "rejected_n": 0,
+   "rejected_rate": 0,
+   "section": "entry",
+   "self_ms_p50": 0.56,
+   "self_ms_p95": 0.7,
+   "target_id": "766ec1cd-e07e-4ee7-8fc7-55c5fb6e8379",
+   "time_share_in_section": 0.003,
+   "total_ms": 25.11,
+   "trace_root_n": 27,
+   "verdict": "insufficient_sample",
+   "verdict_arms": []
+  },
+  {
+   "axis": "framework_segment",
+   "baseline": {
+    "count": 1959,
+    "failed_rate": 0,
+    "p50_ms": 1.22,
+    "p95_ms": 2.25,
+    "rejected_rate": 0,
+    "state": "ok"
+   },
+   "count": 1193,
+   "error_semantics": "none",
+   "errors": {
+    "failed": 0,
+    "http_4xx": 0,
+    "http_5xx": 0,
+    "status_error": 0
+   },
+   "failed_rate": 0,
+   "kind": "INTERNAL",
+   "label": "hibernate-6.0 :: SELECT com.commerce.product.entity.Product",
+   "max_ms": 6.31,
+   "nesting_note": "이 구간은 egress의 db 행과 같은 DB 접근을 다른 계측 층에서 본 것이다. 두 시간을 더하지 말 것.",
+   "p50_ms": 1.23,
+   "p95_ms": 2.2,
+   "refs": [
+    "ch:otel_traces_local:commerce-product:INTERNAL:hibernate-6.0 :: SELECT com.commerce.product.entity.Product",
+    "ch:otel_traces_local:trace:ac15d9b1fe3263a917b5895bcbf1228e#5e98ed1003e16d29"
+   ],
+   "section": "step",
+   "target_id": "766ec1cd-e07e-4ee7-8fc7-55c5fb6e8379",
+   "time_share_in_section": 0.201,
+   "total_ms": 1378.26,
+   "verdict": "normal",
+   "verdict_arms": []
+  },
+  {
+   "axis": "framework_segment",
+   "baseline": {
+    "count": 2344,
+    "failed_rate": 0,
+    "p50_ms": 0.64,
+    "p95_ms": 1.21,
+    "rejected_rate": 0,
+    "state": "ok"
+   },
+   "count": 1737,
+   "error_semantics": "none",
+   "errors": {
+    "failed": 0,
+    "http_4xx": 0,
+    "http_5xx": 0,
+    "status_error": 0
+   },
+   "failed_rate": 0,
+   "kind": "INTERNAL",
+   "label": "spring-data-1.8 :: ProductRepository.findById",
+   "max_ms": 23.24,
+   "nesting_note": "이 구간은 egress의 db 행과 같은 DB 접근을 다른 계측 층에서 본 것이다. 두 시간을 더하지 말 것.",
+   "p50_ms": 0.61,
+   "p95_ms": 0.91,
+   "refs": [
+    "ch:otel_traces_local:commerce-product:INTERNAL:spring-data-1.8 :: ProductRepository.findById",
+    "ch:otel_traces_local:trace:046b3612b6770b7ea80b340b62c995b7#bf51a60c466328f4"
+   ],
+   "section": "step",
+   "target_id": "766ec1cd-e07e-4ee7-8fc7-55c5fb6e8379",
+   "time_share_in_section": 0.169,
+   "total_ms": 1156.17,
+   "verdict": "normal",
+   "verdict_arms": []
+  },
+  {
+   "axis": "framework_segment",
+   "baseline": {
+    "count": 797,
+    "failed_rate": 0,
+    "p50_ms": 2.29,
+    "p95_ms": 3.7,
+    "rejected_rate": 0,
+    "state": "ok"
+   },
+   "count": 400,
+   "error_semantics": "none",
+   "errors": {
+    "failed": 0,
+    "http_4xx": 0,
+    "http_5xx": 0,
+    "status_error": 0
+   },
+   "failed_rate": 0,
+   "kind": "INTERNAL",
+   "label": "spring-data-1.8 :: ProductRepository.findAll",
+   "max_ms": 7.16,
+   "nesting_note": "이 구간은 egress의 db 행과 같은 DB 접근을 다른 계측 층에서 본 것이다. 두 시간을 더하지 말 것.",
+   "p50_ms": 2.21,
+   "p95_ms": 3.01,
+   "refs": [
+    "ch:otel_traces_local:commerce-product:INTERNAL:spring-data-1.8 :: ProductRepository.findAll",
+    "ch:otel_traces_local:trace:ac15d9b1fe3263a917b5895bcbf1228e#b3dc80da4e6cfa57"
+   ],
+   "section": "step",
+   "target_id": "766ec1cd-e07e-4ee7-8fc7-55c5fb6e8379",
+   "time_share_in_section": 0.134,
+   "total_ms": 920.11,
+   "verdict": "normal",
+   "verdict_arms": []
+  },
+  {
+   "axis": "framework_segment",
+   "baseline": {
+    "count": 366,
+    "failed_rate": 0,
+    "p50_ms": 1.74,
+    "p95_ms": 2.33,
+    "rejected_rate": 0,
+    "state": "ok"
+   },
+   "count": 397,
+   "error_semantics": "none",
+   "errors": {
+    "failed": 0,
+    "http_4xx": 0,
+    "http_5xx": 0,
+    "status_error": 0
+   },
+   "failed_rate": 0,
+   "kind": "INTERNAL",
+   "label": "spring-data-1.8 :: ProductRepository.findByCategoryId",
+   "max_ms": 21.77,
+   "nesting_note": "이 구간은 egress의 db 행과 같은 DB 접근을 다른 계측 층에서 본 것이다. 두 시간을 더하지 말 것.",
+   "p50_ms": 1.73,
+   "p95_ms": 2.26,
+   "refs": [
+    "ch:otel_traces_local:commerce-product:INTERNAL:spring-data-1.8 :: ProductRepository.findByCategoryId",
+    "ch:otel_traces_local:trace:bc1adce6a905faf478b5fd6926a639a1#9ab62c19c4f9fdb8"
+   ],
+   "section": "step",
+   "target_id": "766ec1cd-e07e-4ee7-8fc7-55c5fb6e8379",
+   "time_share_in_section": 0.106,
+   "total_ms": 724.52,
+   "verdict": "normal",
+   "verdict_arms": []
+  },
+  {
+   "axis": "framework_segment",
+   "baseline": {
+    "count": 2345,
+    "failed_rate": 0,
+    "p50_ms": 0.36,
+    "p95_ms": 0.67,
+    "rejected_rate": 0,
+    "state": "ok"
+   },
+   "count": 1737,
+   "error_semantics": "none",
+   "errors": {
+    "failed": 0,
+    "http_4xx": 0,
+    "http_5xx": 0,
+    "status_error": 0
+   },
+   "failed_rate": 0,
+   "kind": "INTERNAL",
+   "label": "hibernate-6.0 :: Session.find com.commerce.product.entity.Product",
+   "max_ms": 22.99,
+   "nesting_note": "이 구간은 egress의 db 행과 같은 DB 접근을 다른 계측 층에서 본 것이다. 두 시간을 더하지 말 것.",
+   "p50_ms": 0.35,
+   "p95_ms": 0.55,
+   "refs": [
+    "ch:otel_traces_local:commerce-product:INTERNAL:hibernate-6.0 :: Session.find com.commerce.product.entity.Product",
+    "ch:otel_traces_local:trace:046b3612b6770b7ea80b340b62c995b7#0c23596484b2f62c"
+   ],
+   "section": "step",
+   "target_id": "766ec1cd-e07e-4ee7-8fc7-55c5fb6e8379",
+   "time_share_in_section": 0.097,
+   "total_ms": 665.99,
+   "verdict": "normal",
+   "verdict_arms": []
+  },
+  {
+   "axis": "framework_segment",
+   "baseline": {
+    "count": 196,
+    "failed_rate": 0,
+    "p50_ms": 3.16,
+    "p95_ms": 3.81,
+    "rejected_rate": 0,
+    "state": "ok"
+   },
+   "count": 207,
+   "error_semantics": "none",
+   "errors": {
+    "failed": 0,
+    "http_4xx": 0,
+    "http_5xx": 0,
+    "status_error": 0
+   },
+   "failed_rate": 0,
+   "kind": "INTERNAL",
+   "label": "spring-data-1.8 :: ProductRepository.findByNameContainingIgnoreCase",
+   "max_ms": 6.8,
+   "nesting_note": "이 구간은 egress의 db 행과 같은 DB 접근을 다른 계측 층에서 본 것이다. 두 시간을 더하지 말 것.",
+   "p50_ms": 3.21,
+   "p95_ms": 3.91,
+   "refs": [
+    "ch:otel_traces_local:commerce-product:INTERNAL:spring-data-1.8 :: ProductRepository.findByNameContainingIgnoreCase",
+    "ch:otel_traces_local:trace:9f59eb46f075e4dc01814f27de328e5e#0cc44768779990b6"
+   ],
+   "section": "step",
+   "target_id": "766ec1cd-e07e-4ee7-8fc7-55c5fb6e8379",
+   "time_share_in_section": 0.095,
+   "total_ms": 651.65,
+   "verdict": "normal",
+   "verdict_arms": []
+  },
+  {
+   "axis": "framework_segment",
+   "baseline": {
+    "count": 730,
+    "failed_rate": 0,
+    "p50_ms": 0.71,
+    "p95_ms": 1.31,
+    "rejected_rate": 0,
+    "state": "ok"
+   },
+   "count": 789,
+   "error_semantics": "none",
+   "errors": {
+    "failed": 0,
+    "http_4xx": 0,
+    "http_5xx": 0,
+    "status_error": 0
+   },
+   "failed_rate": 0,
+   "kind": "INTERNAL",
+   "label": "hibernate-6.0 :: SELECT",
+   "max_ms": 20.97,
+   "nesting_note": "이 구간은 egress의 db 행과 같은 DB 접근을 다른 계측 층에서 본 것이다. 두 시간을 더하지 말 것.",
+   "p50_ms": 0.73,
+   "p95_ms": 1.29,
+   "refs": [
+    "ch:otel_traces_local:commerce-product:INTERNAL:hibernate-6.0 :: SELECT",
+    "ch:otel_traces_local:trace:bc1adce6a905faf478b5fd6926a639a1#ec348a2111ed2ae7"
+   ],
+   "section": "step",
+   "target_id": "766ec1cd-e07e-4ee7-8fc7-55c5fb6e8379",
+   "time_share_in_section": 0.088,
+   "total_ms": 605.81,
+   "verdict": "normal",
+   "verdict_arms": []
+  },
+  {
+   "axis": "framework_segment",
+   "baseline": {
+    "count": 3221,
+    "failed_rate": 0,
+    "p50_ms": 0.16,
+    "p95_ms": 0.42,
+    "rejected_rate": 0,
+    "state": "ok"
+   },
+   "count": 2244,
+   "error_semantics": "none",
+   "errors": {
+    "failed": 0,
+    "http_4xx": 0,
+    "http_5xx": 0,
+    "status_error": 0
+   },
+   "failed_rate": 0,
+   "kind": "INTERNAL",
+   "label": "hibernate-6.0 :: Transaction.commit",
+   "max_ms": 1.11,
+   "nesting_note": "이 구간은 egress의 db 행과 같은 DB 접근을 다른 계측 층에서 본 것이다. 두 시간을 더하지 말 것.",
+   "p50_ms": 0.16,
+   "p95_ms": 0.33,
+   "refs": [
+    "ch:otel_traces_local:commerce-product:INTERNAL:hibernate-6.0 :: Transaction.commit",
+    "ch:otel_traces_local:trace:6d93fa86c39aa5676f90f3d3c30bb9c5#25fe310ffd190114"
+   ],
+   "section": "step",
+   "target_id": "766ec1cd-e07e-4ee7-8fc7-55c5fb6e8379",
+   "time_share_in_section": 0.058,
+   "total_ms": 394.95,
+   "verdict": "normal",
+   "verdict_arms": []
+  },
+  {
+   "axis": "framework_segment",
+   "baseline": {
+    "count": 221,
+    "failed_rate": 0,
+    "p50_ms": 0.44,
+    "p95_ms": 0.68,
+    "rejected_rate": 0,
+    "state": "ok"
+   },
+   "count": 246,
+   "error_semantics": "none",
+   "errors": {
+    "failed": 0,
+    "http_4xx": 0,
+    "http_5xx": 0,
+    "status_error": 0
+   },
+   "failed_rate": 0,
+   "kind": "INTERNAL",
+   "label": "spring-data-1.8 :: ProductVariantRepository.findByProductId",
+   "max_ms": 2.32,
+   "nesting_note": "이 구간은 egress의 db 행과 같은 DB 접근을 다른 계측 층에서 본 것이다. 두 시간을 더하지 말 것.",
+   "p50_ms": 0.44,
+   "p95_ms": 0.63,
+   "refs": [
+    "ch:otel_traces_local:commerce-product:INTERNAL:spring-data-1.8 :: ProductVariantRepository.findByProductId",
+    "ch:otel_traces_local:trace:347e6b4c178af8d027f314bb3879db9a#0c8c737baa3ea7cd"
+   ],
+   "section": "step",
+   "target_id": "766ec1cd-e07e-4ee7-8fc7-55c5fb6e8379",
+   "time_share_in_section": 0.017,
+   "total_ms": 115.69,
+   "verdict": "normal",
+   "verdict_arms": []
+  },
+  {
+   "axis": "framework_segment",
+   "baseline": {
+    "count": 79,
+    "failed_rate": 0,
+    "p50_ms": 0.87,
+    "p95_ms": 1.21,
+    "rejected_rate": 0,
+    "state": "ok"
+   },
+   "count": 107,
+   "error_semantics": "none",
+   "errors": {
+    "failed": 0,
+    "http_4xx": 0,
+    "http_5xx": 0,
+    "status_error": 0
+   },
+   "failed_rate": 0,
+   "kind": "INTERNAL",
+   "label": "spring-data-1.8 :: CategoryRepository.findAll",
+   "max_ms": 3.03,
+   "nesting_note": "이 구간은 egress의 db 행과 같은 DB 접근을 다른 계측 층에서 본 것이다. 두 시간을 더하지 말 것.",
+   "p50_ms": 0.86,
+   "p95_ms": 1.16,
+   "refs": [
+    "ch:otel_traces_local:commerce-product:INTERNAL:spring-data-1.8 :: CategoryRepository.findAll",
+    "ch:otel_traces_local:trace:8b2180fe022c6bcbd14227fff33b06e9#aea225d45b991615"
+   ],
+   "section": "step",
+   "target_id": "766ec1cd-e07e-4ee7-8fc7-55c5fb6e8379",
+   "time_share_in_section": 0.014,
+   "total_ms": 97.76,
+   "verdict": "normal",
+   "verdict_arms": []
+  },
+  {
+   "axis": "framework_segment",
+   "baseline": {
+    "count": 221,
+    "failed_rate": 0,
+    "p50_ms": 0.34,
+    "p95_ms": 0.58,
+    "rejected_rate": 0,
+    "state": "ok"
+   },
+   "count": 246,
+   "error_semantics": "none",
+   "errors": {
+    "failed": 0,
+    "http_4xx": 0,
+    "http_5xx": 0,
+    "status_error": 0
+   },
+   "failed_rate": 0,
+   "kind": "INTERNAL",
+   "label": "hibernate-6.0 :: SELECT com.commerce.product.entity.ProductVariant",
+   "max_ms": 2.22,
+   "nesting_note": "이 구간은 egress의 db 행과 같은 DB 접근을 다른 계측 층에서 본 것이다. 두 시간을 더하지 말 것.",
+   "p50_ms": 0.34,
+   "p95_ms": 0.53,
+   "refs": [
+    "ch:otel_traces_local:commerce-product:INTERNAL:hibernate-6.0 :: SELECT com.commerce.product.entity.ProductVariant",
+    "ch:otel_traces_local:trace:347e6b4c178af8d027f314bb3879db9a#e929a2e7acdfb07a"
+   ],
+   "section": "step",
+   "target_id": "766ec1cd-e07e-4ee7-8fc7-55c5fb6e8379",
+   "time_share_in_section": 0.013,
+   "total_ms": 90.2,
+   "verdict": "normal",
+   "verdict_arms": []
+  },
+  {
+   "axis": "framework_segment",
+   "baseline": {
+    "count": 79,
+    "failed_rate": 0,
+    "p50_ms": 0.48,
+    "p95_ms": 0.73,
+    "rejected_rate": 0,
+    "state": "ok"
+   },
+   "count": 107,
+   "error_semantics": "none",
+   "errors": {
+    "failed": 0,
+    "http_4xx": 0,
+    "http_5xx": 0,
+    "status_error": 0
+   },
+   "failed_rate": 0,
+   "kind": "INTERNAL",
+   "label": "hibernate-6.0 :: SELECT com.commerce.product.entity.Category",
+   "max_ms": 2.58,
+   "nesting_note": "이 구간은 egress의 db 행과 같은 DB 접근을 다른 계측 층에서 본 것이다. 두 시간을 더하지 말 것.",
+   "p50_ms": 0.51,
+   "p95_ms": 0.71,
+   "refs": [
+    "ch:otel_traces_local:commerce-product:INTERNAL:hibernate-6.0 :: SELECT com.commerce.product.entity.Category",
+    "ch:otel_traces_local:trace:8b2180fe022c6bcbd14227fff33b06e9#71866ab3aefe35b4"
+   ],
+   "section": "step",
+   "target_id": "766ec1cd-e07e-4ee7-8fc7-55c5fb6e8379",
+   "time_share_in_section": 0.009,
+   "total_ms": 58.68,
+   "verdict": "normal",
+   "verdict_arms": []
+  },
+  {
+   "axis": "http_call",
+   "baseline": {
+    "count": 965,
+    "failed_rate": 0,
+    "p50_ms": 1.73,
+    "p95_ms": 2.35,
+    "rejected_rate": 0.795,
+    "state": "ok"
+   },
+   "count": 829,
+   "error_labels": [
+    "404"
+   ],
+   "error_semantics": "http_client",
+   "errors": {
+    "failed": 0,
+    "http_4xx": 823,
+    "http_5xx": 0,
+    "status_error": 823
+   },
+   "failed_rate": 0,
+   "kind": "CLIENT",
+   "label": "http GET testbed-inventory:8082",
+   "max_ms": 7.33,
+   "p50_ms": 1.74,
+   "p95_ms": 2.29,
+   "refs": [
+    "ch:otel_traces_local:commerce-product:CLIENT:http GET testbed-inventory:8082",
+    "ch:otel_traces_local:trace:e6113b01a4605202105e31ee12054413#215a160a5370594b"
+   ],
+   "rejected_n": 823,
+   "rejected_rate": 0.993,
+   "section": "egress",
+   "target_id": "766ec1cd-e07e-4ee7-8fc7-55c5fb6e8379",
+   "time_share_in_section": 0.314,
+   "total_ms": 1496.16,
+   "verdict": "anomalous",
+   "verdict_arms": [
+    "rejection_shift"
+   ]
+  },
+  {
+   "axis": "db_call",
+   "baseline": {
+    "count": 3076,
+    "failed_rate": 0,
+    "p50_ms": 0.34,
+    "p95_ms": 0.71,
+    "rejected_rate": 0,
+    "state": "ok"
+   },
+   "count": 2526,
+   "error_semantics": "none",
+   "errors": {
+    "failed": 0,
+    "http_4xx": 0,
+    "http_5xx": 0,
+    "status_error": 0
+   },
+   "failed_rate": 0,
+   "kind": "CLIENT",
+   "label": "db postgresql SELECT -",
+   "max_ms": 22.95,
+   "p50_ms": 0.34,
+   "p95_ms": 0.69,
+   "refs": [
+    "ch:otel_traces_local:commerce-product:CLIENT:db postgresql SELECT -",
+    "ch:otel_traces_local:trace:046b3612b6770b7ea80b340b62c995b7#b59fc3bb11792a2b"
+   ],
+   "section": "egress",
+   "target_id": "766ec1cd-e07e-4ee7-8fc7-55c5fb6e8379",
+   "time_share_in_section": 0.212,
+   "total_ms": 1008.88,
+   "verdict": "normal",
+   "verdict_arms": []
+  },
+  {
+   "axis": "http_call",
+   "baseline": {
+    "count": 637,
+    "failed_rate": 0,
+    "p50_ms": 4.93,
+    "p95_ms": 7.02,
+    "rejected_rate": 0,
+    "state": "ok"
+   },
+   "count": 192,
+   "error_labels": [
+    "409"
+   ],
+   "error_semantics": "http_client",
+   "errors": {
+    "failed": 0,
+    "http_4xx": 5,
+    "http_5xx": 0,
+    "status_error": 5
+   },
+   "failed_rate": 0,
+   "kind": "CLIENT",
+   "label": "http POST testbed-inventory:8082",
+   "max_ms": 9.76,
+   "p50_ms": 4.66,
+   "p95_ms": 5.69,
+   "refs": [
+    "ch:otel_traces_local:commerce-product:CLIENT:http POST testbed-inventory:8082",
+    "ch:otel_traces_local:trace:cc238068b6e39216a9de463445954a4a#3c3e6cd96bdd6cf9"
+   ],
+   "rejected_n": 5,
+   "rejected_rate": 0.026,
+   "section": "egress",
+   "target_id": "766ec1cd-e07e-4ee7-8fc7-55c5fb6e8379",
+   "time_share_in_section": 0.19,
+   "total_ms": 907.17,
+   "verdict": "normal",
+   "verdict_arms": []
+  },
+  {
+   "axis": "db_call",
+   "baseline": {
+    "count": 1958,
+    "failed_rate": 0,
+    "p50_ms": 0.4,
+    "p95_ms": 1.74,
+    "rejected_rate": 0,
+    "state": "ok"
+   },
+   "count": 1193,
+   "error_semantics": "none",
+   "errors": {
+    "failed": 0,
+    "http_4xx": 0,
+    "http_5xx": 0,
+    "status_error": 0
+   },
+   "failed_rate": 0,
+   "kind": "CLIENT",
+   "label": "db postgresql SELECT product_schema.products",
+   "max_ms": 3.34,
+   "p50_ms": 0.44,
+   "p95_ms": 1.92,
+   "refs": [
+    "ch:otel_traces_local:commerce-product:CLIENT:db postgresql SELECT product_schema.products",
+    "ch:otel_traces_local:trace:9f59eb46f075e4dc01814f27de328e5e#e0c297572844a84c"
+   ],
+   "section": "egress",
+   "target_id": "766ec1cd-e07e-4ee7-8fc7-55c5fb6e8379",
+   "time_share_in_section": 0.167,
+   "total_ms": 797.3,
+   "verdict": "normal",
+   "verdict_arms": []
+  },
+  {
+   "axis": "db_call",
+   "baseline": {
+    "count": 3591,
+    "failed_rate": 0,
+    "p50_ms": 0.19,
+    "p95_ms": 0.46,
+    "rejected_rate": 0,
+    "state": "ok"
+   },
+   "count": 2046,
+   "error_semantics": "none",
+   "errors": {
+    "failed": 0,
+    "http_4xx": 0,
+    "http_5xx": 0,
+    "status_error": 0
+   },
+   "failed_rate": 0,
+   "kind": "CLIENT",
+   "label": "db postgresql SELECT product_schema.categories",
+   "max_ms": 2.43,
+   "p50_ms": 0.19,
+   "p95_ms": 0.39,
+   "refs": [
+    "ch:otel_traces_local:commerce-product:CLIENT:db postgresql SELECT product_schema.categories",
+    "ch:otel_traces_local:trace:8b2180fe022c6bcbd14227fff33b06e9#7d6e33af50e5f3b5"
+   ],
+   "section": "egress",
+   "target_id": "766ec1cd-e07e-4ee7-8fc7-55c5fb6e8379",
+   "time_share_in_section": 0.094,
+   "total_ms": 447.83,
+   "verdict": "normal",
+   "verdict_arms": []
+  },
+  {
+   "axis": "db_call",
+   "baseline": {
+    "count": 221,
+    "failed_rate": 0,
+    "p50_ms": 0.2,
+    "p95_ms": 0.38,
+    "rejected_rate": 0,
+    "state": "ok"
+   },
+   "count": 246,
+   "error_semantics": "none",
+   "errors": {
+    "failed": 0,
+    "http_4xx": 0,
+    "http_5xx": 0,
+    "status_error": 0
+   },
+   "failed_rate": 0,
+   "kind": "CLIENT",
+   "label": "db postgresql SELECT product_schema.product_variants",
+   "max_ms": 2.07,
+   "p50_ms": 0.2,
+   "p95_ms": 0.37,
+   "refs": [
+    "ch:otel_traces_local:commerce-product:CLIENT:db postgresql SELECT product_schema.product_variants",
+    "ch:otel_traces_local:trace:347e6b4c178af8d027f314bb3879db9a#a2ba4308d8f700ac"
+   ],
+   "section": "egress",
+   "target_id": "766ec1cd-e07e-4ee7-8fc7-55c5fb6e8379",
+   "time_share_in_section": 0.012,
+   "total_ms": 55.24,
+   "verdict": "normal",
+   "verdict_arms": []
+  },
+  {
+   "axis": "db_call",
+   "baseline": {
+    "count": 142,
+    "failed_rate": 0,
+    "p50_ms": 0.26,
+    "p95_ms": 0.5,
+    "rejected_rate": 0,
+    "state": "ok"
+   },
+   "count": 113,
+   "error_semantics": "none",
+   "errors": {
+    "failed": 0,
+    "http_4xx": 0,
+    "http_5xx": 0,
+    "status_error": 0
+   },
+   "failed_rate": 0,
+   "kind": "CLIENT",
+   "label": "db postgresql - -",
+   "max_ms": 18.84,
+   "p50_ms": 0.26,
+   "p95_ms": 0.54,
+   "refs": [
+    "ch:otel_traces_local:commerce-product:CLIENT:db postgresql - -",
+    "ch:otel_traces_local:trace:24597724419e3f911487cc35b6f0e15c#3dfb7a9725c0645b"
+   ],
+   "section": "egress",
+   "target_id": "766ec1cd-e07e-4ee7-8fc7-55c5fb6e8379",
+   "time_share_in_section": 0.011,
+   "total_ms": 53.51,
+   "verdict": "normal",
+   "verdict_arms": []
+  },
+  {
+   "baseline_window": {
+    "from": "2026-08-03T02:13:50Z",
+    "state": "ok",
+    "to": "2026-08-03T02:44:50Z"
+   },
+   "limits": [
+    "트레이스 보존은 3일(TTL, 일 파티션 드롭)이다. 그보다 이전과의 비교는 불가능하다.",
+    "k8s_node_name·k8s_pod_name은 전 span 빈 값이다 — 인스턴스 구분은 host_name뿐이고, 레플리카 비교는 compare_peers 몫이다.",
+    "section_totals_ms의 세 값을 더하지 말 것 — 서로 부모-자식 관계이거나 별개 트레이스다.",
+    "CLIENT span_name은 HTTP 메서드뿐이라 목적지를 server.address·db.* 속성으로 복원했다. 속성이 없으면 peer \u003caddress\u003e로 뭉친다.",
+    "ORM 구간(hibernate/spring-data)과 JDBC 호출은 같은 DB 접근을 다른 계측 층에서 본 것이다. 두 시간을 더하지 말 것.",
+    "4xx는 이 환경에서 만성이다(게이트웨이 40~44% 상시). 존재가 아니라 기준선 대비 변화로만 판정했다.",
+    "self-time 계산 시 자식 스캔 창을 창 끝에서 60초 넓혔다 — 관측된 최대 진입점 duration 27.7초에 근거한 가정이며 상한이 증명된 값은 아니다."
+   ],
+   "observation": "coverage",
+   "resolved_by": "service_name",
+   "rows_emitted": {
+    "egress": 7,
+    "entry": 6,
+    "step": 12
+   },
+   "rows_total": {
+    "egress": 7,
+    "entry": 6,
+    "step": 12
+   },
+   "section_totals_ms": {
+    "egress": 4766.09,
+    "entry": 7807.2,
+    "step": 6859.78
+   },
+   "service_name": "commerce-product",
+   "spans_by_kind": {
+    "CLIENT": 7145,
+    "INTERNAL": 9410,
+    "SERVER": 2875
+   },
+   "spans_total": 19430,
+   "spans_unique": 19430
+  }
+ ],
+ "observed_range": {
+  "from": "2026-08-03T02:44:50Z",
+  "to": "2026-08-03T03:15:50Z"
+ },
+ "refs": [
+  "ch:otel_traces_local:commerce-product:SERVER:GET /api/products/{id}",
+  "ch:otel_traces_local:trace:046b3612b6770b7ea80b340b62c995b7#2540aaec1803638e",
+  "ch:otel_traces_local:commerce-product:SERVER:GET /api/products",
+  "ch:otel_traces_local:trace:bc1adce6a905faf478b5fd6926a639a1#2ee7d1c809068676",
+  "ch:otel_traces_local:commerce-product:SERVER:POST /api/products/{id}/reserve-stock",
+  "ch:otel_traces_local:trace:24597724419e3f911487cc35b6f0e15c#86bf2991321d373d",
+  "ch:otel_traces_local:commerce-product:SERVER:GET /api/products/{id}/variants",
+  "ch:otel_traces_local:trace:8e39279e54b6243839f917fa4095d970#e584fb878e294405",
+  "ch:otel_traces_local:commerce-product:SERVER:GET /api/categories",
+  "ch:otel_traces_local:trace:8b2180fe022c6bcbd14227fff33b06e9#289a9a2f90c65439",
+  "ch:otel_traces_local:commerce-product:SERVER:GET /actuator/health",
+  "ch:otel_traces_local:trace:3aa5ca45ff3ff73831775035f06fdff7#7e9d5268f36c42db",
+  "ch:otel_traces_local:commerce-product:INTERNAL:hibernate-6.0 :: SELECT com.commerce.product.entity.Product",
+  "ch:otel_traces_local:trace:ac15d9b1fe3263a917b5895bcbf1228e#5e98ed1003e16d29",
+  "ch:otel_traces_local:commerce-product:INTERNAL:spring-data-1.8 :: ProductRepository.findById",
+  "ch:otel_traces_local:trace:046b3612b6770b7ea80b340b62c995b7#bf51a60c466328f4",
+  "ch:otel_traces_local:commerce-product:INTERNAL:spring-data-1.8 :: ProductRepository.findAll",
+  "ch:otel_traces_local:trace:ac15d9b1fe3263a917b5895bcbf1228e#b3dc80da4e6cfa57",
+  "ch:otel_traces_local:commerce-product:INTERNAL:spring-data-1.8 :: ProductRepository.findByCategoryId",
+  "ch:otel_traces_local:trace:bc1adce6a905faf478b5fd6926a639a1#9ab62c19c4f9fdb8",
+  "ch:otel_traces_local:commerce-product:INTERNAL:hibernate-6.0 :: Session.find com.commerce.product.entity.Product",
+  "ch:otel_traces_local:trace:046b3612b6770b7ea80b340b62c995b7#0c23596484b2f62c",
+  "ch:otel_traces_local:commerce-product:INTERNAL:spring-data-1.8 :: ProductRepository.findByNameContainingIgnoreCase",
+  "ch:otel_traces_local:trace:9f59eb46f075e4dc01814f27de328e5e#0cc44768779990b6",
+  "ch:otel_traces_local:commerce-product:INTERNAL:hibernate-6.0 :: SELECT",
+  "ch:otel_traces_local:trace:bc1adce6a905faf478b5fd6926a639a1#ec348a2111ed2ae7",
+  "ch:otel_traces_local:commerce-product:INTERNAL:hibernate-6.0 :: Transaction.commit",
+  "ch:otel_traces_local:trace:6d93fa86c39aa5676f90f3d3c30bb9c5#25fe310ffd190114",
+  "ch:otel_traces_local:commerce-product:INTERNAL:spring-data-1.8 :: ProductVariantRepository.findByProductId",
+  "ch:otel_traces_local:trace:347e6b4c178af8d027f314bb3879db9a#0c8c737baa3ea7cd",
+  "ch:otel_traces_local:commerce-product:INTERNAL:spring-data-1.8 :: CategoryRepository.findAll",
+  "ch:otel_traces_local:trace:8b2180fe022c6bcbd14227fff33b06e9#aea225d45b991615",
+  "ch:otel_traces_local:commerce-product:INTERNAL:hibernate-6.0 :: SELECT com.commerce.product.entity.ProductVariant",
+  "ch:otel_traces_local:trace:347e6b4c178af8d027f314bb3879db9a#e929a2e7acdfb07a",
+  "ch:otel_traces_local:commerce-product:INTERNAL:hibernate-6.0 :: SELECT com.commerce.product.entity.Category",
+  "ch:otel_traces_local:trace:8b2180fe022c6bcbd14227fff33b06e9#71866ab3aefe35b4",
+  "ch:otel_traces_local:commerce-product:CLIENT:http GET testbed-inventory:8082",
+  "ch:otel_traces_local:trace:e6113b01a4605202105e31ee12054413#215a160a5370594b",
+  "ch:otel_traces_local:commerce-product:CLIENT:db postgresql SELECT -",
+  "ch:otel_traces_local:trace:046b3612b6770b7ea80b340b62c995b7#b59fc3bb11792a2b",
+  "ch:otel_traces_local:commerce-product:CLIENT:http POST testbed-inventory:8082",
+  "ch:otel_traces_local:trace:cc238068b6e39216a9de463445954a4a#3c3e6cd96bdd6cf9",
+  "ch:otel_traces_local:commerce-product:CLIENT:db postgresql SELECT product_schema.products",
+  "ch:otel_traces_local:trace:9f59eb46f075e4dc01814f27de328e5e#e0c297572844a84c",
+  "ch:otel_traces_local:commerce-product:CLIENT:db postgresql SELECT product_schema.categories",
+  "ch:otel_traces_local:trace:8b2180fe022c6bcbd14227fff33b06e9#7d6e33af50e5f3b5",
+  "ch:otel_traces_local:commerce-product:CLIENT:db postgresql SELECT product_schema.product_variants",
+  "ch:otel_traces_local:trace:347e6b4c178af8d027f314bb3879db9a#a2ba4308d8f700ac",
+  "ch:otel_traces_local:commerce-product:CLIENT:db postgresql - -",
+  "ch:otel_traces_local:trace:24597724419e3f911487cc35b6f0e15c#3dfb7a9725c0645b"
+ ],
+ "scopes": [
+  {
+   "class": "entry",
+   "total": 6,
+   "returned": 6,
+   "omitted": 0
+  },
+  {
+   "class": "step",
+   "total": 12,
+   "returned": 12,
+   "omitted": 0
+  },
+  {
+   "class": "egress",
+   "total": 7,
+   "returned": 7,
+   "omitted": 0
+  }
+ ]
+}

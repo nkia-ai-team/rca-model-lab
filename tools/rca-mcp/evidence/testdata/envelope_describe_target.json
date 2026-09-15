@@ -1,0 +1,61 @@
+{
+ "status": "normal",
+ "assessment_basis": "정체·소속·한도 카탈로그 조회 — 정상/이상 판정 없음",
+ "summary": "oracle-alertlog (custom_monitor) 신상명세 — 소속 관계 1건, 한도 카탈로그 0행. 사용률 % 정독은 read_timeseries로.",
+ "findings": [
+  {
+   "address": "",
+   "display_name": "oracle-alertlog",
+   "in_maintenance": false,
+   "name": "oracle-alertlog",
+   "refs": [
+    "pg:targets:8a0c8037-5e06-4006-96e2-d63c1c96d545"
+   ],
+   "section": "identity",
+   "status": "active",
+   "target_id": "8a0c8037-5e06-4006-96e2-d63c1c96d545",
+   "type": "custom_monitor"
+  },
+  {
+   "relations": [
+    {
+     "relation_kind": "host",
+     "target_id": "7946cf87-60e2-47de-a7be-89b1bd0977ad",
+     "name": "tb-w2",
+     "type": "server",
+     "source": "targets.meta",
+     "consistency": "confirmed"
+    }
+   ],
+   "section": "membership",
+   "snapshot": "현재 소속(당시 이력 없음)",
+   "sources_checked": {
+    "asset_tree_members": "checked",
+    "kcm_resource_targets": "not_applicable",
+    "meta_host": "checked",
+    "server_resources": "not_applicable"
+   }
+  },
+  {
+   "counts_by_kind": {},
+   "note": "하위 대상 0",
+   "section": "children",
+   "total": 0
+  },
+  {
+   "current_not_checked": true,
+   "no_data_reason": "unknown",
+   "note": "창 내 이 대상의 지표 관측 0 — 대상 정지와 수집 공백은 모양이 같아 여기서 판별하지 않는다. 사유 판별은 get_data_coverage로.",
+   "notice": "이 표는 검증된 짝 고정표(현재 7짝)만 다룬다 — 여기 없다고 한도가 없는 게 아니다. 사용률 % 정독은 read_timeseries가 부착한다.",
+   "section": "capacity",
+   "status": "no_data"
+  }
+ ],
+ "observed_range": {
+  "from": "2026-08-03T01:44:00Z",
+  "to": "2026-08-03T03:14:53.070299852Z"
+ },
+ "refs": [
+  "pg:targets:8a0c8037-5e06-4006-96e2-d63c1c96d545"
+ ]
+}

@@ -1,0 +1,35 @@
+{
+ "status": "normal",
+ "assessment_basis": "수집기 enabled·last_collect_status 기준(수집기 문제 = 관측 신뢰 저하 신호)",
+ "summary": "대상 1개의 수집기 상태·저장소 관측 대조. 수집기 문제 있는 대상 0개 — coverage_note가 no_data_reason 해석 지침이다.",
+ "findings": [
+  {
+   "collectors": null,
+   "coverage_note": "수집기 미등록 — 이 대상의 no_data는 not_collected로 해석하라",
+   "refs": [
+    "pg:collectors:target:8a0c8037-5e06-4006-96e2-d63c1c96d545"
+   ],
+   "target_id": "8a0c8037-5e06-4006-96e2-d63c1c96d545",
+   "window_observations": {
+    "ch_events": 0,
+    "ch_logs": 0,
+    "vm_series": 0
+   }
+  }
+ ],
+ "observed_range": {
+  "from": "2026-08-03T02:44:00Z",
+  "to": "2026-08-03T03:14:00Z"
+ },
+ "refs": [
+  "pg:collectors:target:8a0c8037-5e06-4006-96e2-d63c1c96d545"
+ ],
+ "scopes": [
+  {
+   "class": "target",
+   "total": 1,
+   "returned": 1,
+   "omitted": 0
+  }
+ ]
+}

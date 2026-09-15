@@ -1,0 +1,13 @@
+{
+ "status": "normal",
+ "assessment_basis": "trap 0건 = 미발생(이벤트성 데이터)",
+ "summary": "창 내 trap 없음 — 장비가 직접 원인 신호를 보내지 않았다는 관측(trap은 이벤트성이라 0건=미발생).",
+ "scopes": [
+  {
+   "class": "trap",
+   "total": 0,
+   "returned": 0,
+   "omitted": 0
+  }
+ ]
+}

@@ -1,0 +1,2038 @@
+[
+ {
+  "EID": "EIX-0001",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "metric",
+  "RecordKind": "finding",
+  "FindingClass": "scan_metrics/shifted",
+  "EntityKey": "",
+  "Headline": "지표 lucida:disks_utilization_max:max1h 중앙값 0.186→0.88, z 20(표시 캡)",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "ratio",
+   "Metric": "lucida:disks_utilization_max:max1h",
+   "Observed": 0.879916210641,
+   "Baseline": 0.18593188478567,
+   "Magnitude": 4.7324653953533,
+   "Direction": "up"
+  },
+  "Window": {
+   "From": "2026-08-03T02:44:00Z",
+   "To": "2026-08-03T03:14:00Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "observed"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "anomalous",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "ok"
+  },
+  "Provenance": {
+   "Source": "scan_metrics",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-b5bfb07c0b46"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "vm:lucida:disks_utilization_max:max1h{target_id=00000000-0000-0000-0000-00000000aaaa}:2026-08-03T02:44:00Z/2026-08-03T03:14:00Z"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": false,
+   "OmittedN": 0
+  }
+ },
+ {
+  "EID": "EIX-0002",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "metric",
+  "RecordKind": "finding",
+  "FindingClass": "scan_metrics/shifted",
+  "EntityKey": "",
+  "Headline": "지표 lucida:disks_utilization:max1h 중앙값 0.0501→0.174, z 20(표시 캡)",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "ratio",
+   "Metric": "lucida:disks_utilization:max1h",
+   "Observed": 0.174492547962,
+   "Baseline": 0.050130636879,
+   "Magnitude": 3.48075665551929,
+   "Direction": "up"
+  },
+  "Window": {
+   "From": "2026-08-03T02:44:00Z",
+   "To": "2026-08-03T03:14:00Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "observed"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "anomalous",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "ok"
+  },
+  "Provenance": {
+   "Source": "scan_metrics",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-19d79ae17698"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "vm:lucida:disks_utilization:max1h{target_id=00000000-0000-0000-0000-00000000aaaa}:2026-08-03T02:44:00Z/2026-08-03T03:14:00Z"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": false,
+   "OmittedN": 0
+  }
+ },
+ {
+  "EID": "EIX-0003",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "metric",
+  "RecordKind": "finding",
+  "FindingClass": "scan_metrics/shifted",
+  "EntityKey": "",
+  "Headline": "지표 lucida:disks_utilization_max:avg1h 중앙값 0.113→0.149, z 6.47",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "ratio",
+   "Metric": "lucida:disks_utilization_max:avg1h",
+   "Observed": 0.1491888431618,
+   "Baseline": 0.11274294646433,
+   "Magnitude": 1.3232654267112034,
+   "Direction": "up"
+  },
+  "Window": {
+   "From": "2026-08-03T02:44:00Z",
+   "To": "2026-08-03T03:14:00Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "observed"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "anomalous",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "ok"
+  },
+  "Provenance": {
+   "Source": "scan_metrics",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-1543729d406f"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "vm:lucida:disks_utilization_max:avg1h{target_id=00000000-0000-0000-0000-00000000aaaa}:2026-08-03T02:44:00Z/2026-08-03T03:14:00Z"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": false,
+   "OmittedN": 0
+  }
+ },
+ {
+  "EID": "EIX-0004",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "metric",
+  "RecordKind": "finding",
+  "FindingClass": "scan_metrics/shifted",
+  "EntityKey": "",
+  "Headline": "지표 lucida:cpus_utilization:max1h 중앙값 0.38→0.495, z 6.02",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "ratio",
+   "Metric": "lucida:cpus_utilization:max1h",
+   "Observed": 0.494721278408,
+   "Baseline": 0.380305517263,
+   "Magnitude": 1.3008522252541392,
+   "Direction": "up"
+  },
+  "Window": {
+   "From": "2026-08-03T02:44:00Z",
+   "To": "2026-08-03T03:14:00Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "observed"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "anomalous",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "ok"
+  },
+  "Provenance": {
+   "Source": "scan_metrics",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-d530726afdb2"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "vm:lucida:cpus_utilization:max1h{target_id=00000000-0000-0000-0000-00000000aaaa}:2026-08-03T02:44:00Z/2026-08-03T03:14:00Z"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": false,
+   "OmittedN": 0
+  }
+ },
+ {
+  "EID": "EIX-0005",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "metric",
+  "RecordKind": "finding",
+  "FindingClass": "scan_metrics/shifted",
+  "EntityKey": "",
+  "Headline": "지표 lucida:disks_utilization:avg1h 중앙값 0.0305→0.0393, z 5.76",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "ratio",
+   "Metric": "lucida:disks_utilization:avg1h",
+   "Observed": 0.03927329330924,
+   "Baseline": 0.03048890346512,
+   "Magnitude": 1.28811760495649,
+   "Direction": "up"
+  },
+  "Window": {
+   "From": "2026-08-03T02:44:00Z",
+   "To": "2026-08-03T03:14:00Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "observed"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "anomalous",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "ok"
+  },
+  "Provenance": {
+   "Source": "scan_metrics",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-13b291fb56e7"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "vm:lucida:disks_utilization:avg1h{target_id=00000000-0000-0000-0000-00000000aaaa}:2026-08-03T02:44:00Z/2026-08-03T03:14:00Z"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": false,
+   "OmittedN": 0
+  }
+ },
+ {
+  "EID": "EIX-0006",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "metric",
+  "RecordKind": "finding",
+  "FindingClass": "scan_metrics/shifted",
+  "EntityKey": "",
+  "Headline": "지표 lucida:cpus_utilization_min:min1h 중앙값 0.135→0.17, z 5.23",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "ratio",
+   "Metric": "lucida:cpus_utilization_min:min1h",
+   "Observed": 0.169804976458,
+   "Baseline": 0.134628044769,
+   "Magnitude": 1.2612897762079063,
+   "Direction": "up"
+  },
+  "Window": {
+   "From": "2026-08-03T02:44:00Z",
+   "To": "2026-08-03T03:14:00Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "observed"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "anomalous",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "ok"
+  },
+  "Provenance": {
+   "Source": "scan_metrics",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-d4ce01b6dfec"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "vm:lucida:cpus_utilization_min:min1h{target_id=00000000-0000-0000-0000-00000000aaaa}:2026-08-03T02:44:00Z/2026-08-03T03:14:00Z"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": false,
+   "OmittedN": 0
+  }
+ },
+ {
+  "EID": "EIX-0007",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "metric",
+  "RecordKind": "finding",
+  "FindingClass": "scan_metrics/shifted",
+  "EntityKey": "",
+  "Headline": "지표 lucida:cpus_utilization:max5m 중앙값 0.322→0.386, z 4",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "ratio",
+   "Metric": "lucida:cpus_utilization:max5m",
+   "Observed": 0.385761647497,
+   "Baseline": 0.3215002751775,
+   "Magnitude": 1.1998796806130922,
+   "Direction": "up"
+  },
+  "Window": {
+   "From": "2026-08-03T02:44:00Z",
+   "To": "2026-08-03T03:14:00Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "observed"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "anomalous",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "ok"
+  },
+  "Provenance": {
+   "Source": "scan_metrics",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-18ccb9f36c79"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "vm:lucida:cpus_utilization:max5m{target_id=00000000-0000-0000-0000-00000000aaaa}:2026-08-03T02:44:00Z/2026-08-03T03:14:00Z"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": false,
+   "OmittedN": 0
+  }
+ },
+ {
+  "EID": "EIX-0008",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "metric",
+  "RecordKind": "finding",
+  "FindingClass": "scan_metrics/shifted",
+  "EntityKey": "",
+  "Headline": "지표 lucida:cpus_utilization_min:max1h 중앙값 0.292→0.348, z 3.85",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "ratio",
+   "Metric": "lucida:cpus_utilization_min:max1h",
+   "Observed": 0.3481195757,
+   "Baseline": 0.291872326423,
+   "Magnitude": 1.1927118270043968,
+   "Direction": "up"
+  },
+  "Window": {
+   "From": "2026-08-03T02:44:00Z",
+   "To": "2026-08-03T03:14:00Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "observed"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "anomalous",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "ok"
+  },
+  "Provenance": {
+   "Source": "scan_metrics",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-ea70bfcbc4d4"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "vm:lucida:cpus_utilization_min:max1h{target_id=00000000-0000-0000-0000-00000000aaaa}:2026-08-03T02:44:00Z/2026-08-03T03:14:00Z"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": false,
+   "OmittedN": 0
+  }
+ },
+ {
+  "EID": "EIX-0009",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "metric",
+  "RecordKind": "finding",
+  "FindingClass": "scan_metrics/shifted",
+  "EntityKey": "",
+  "Headline": "지표 lucida:cpus_utilization_min:avg1h 중앙값 0.205→0.239, z 3.38",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "ratio",
+   "Metric": "lucida:cpus_utilization_min:avg1h",
+   "Observed": 0.23914495117671,
+   "Baseline": 0.20456798080164,
+   "Magnitude": 1.169024351902841,
+   "Direction": "up"
+  },
+  "Window": {
+   "From": "2026-08-03T02:44:00Z",
+   "To": "2026-08-03T03:14:00Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "observed"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "anomalous",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "ok"
+  },
+  "Provenance": {
+   "Source": "scan_metrics",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-f4675afbbfc5"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "vm:lucida:cpus_utilization_min:avg1h{target_id=00000000-0000-0000-0000-00000000aaaa}:2026-08-03T02:44:00Z/2026-08-03T03:14:00Z"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": false,
+   "OmittedN": 0
+  }
+ },
+ {
+  "EID": "EIX-0010",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "metric",
+  "RecordKind": "finding",
+  "FindingClass": "scan_metrics/shifted",
+  "EntityKey": "",
+  "Headline": "지표 lucida:cpus_utilization_min:min5m 중앙값 0.176→0.207, z 3.1",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "ratio",
+   "Metric": "lucida:cpus_utilization_min:min5m",
+   "Observed": 0.207284768219,
+   "Baseline": 0.1761301584965,
+   "Magnitude": 1.1768840157100018,
+   "Direction": "up"
+  },
+  "Window": {
+   "From": "2026-08-03T02:44:00Z",
+   "To": "2026-08-03T03:14:00Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "observed"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "anomalous",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "ok"
+  },
+  "Provenance": {
+   "Source": "scan_metrics",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-6cae95c80d8e"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "vm:lucida:cpus_utilization_min:min5m{target_id=00000000-0000-0000-0000-00000000aaaa}:2026-08-03T02:44:00Z/2026-08-03T03:14:00Z"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": false,
+   "OmittedN": 0
+  }
+ },
+ {
+  "EID": "EIX-0011",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "metric",
+  "RecordKind": "finding",
+  "FindingClass": "scan_metrics/disappeared",
+  "EntityKey": "",
+  "Headline": "지표 lucida:cpus_utilization:avg1d 소멸(partial) — 기준선 존재율 0.00833",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "share",
+   "Metric": "lucida:cpus_utilization:avg1d",
+   "Observed": 0.008333333333333333,
+   "Baseline": null,
+   "Magnitude": 0.008333333333333333,
+   "Direction": "n/a"
+  },
+  "Window": {
+   "From": "2026-08-03T02:44:00Z",
+   "To": "2026-08-03T03:14:00Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "observed"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "anomalous",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "low"
+  },
+  "Provenance": {
+   "Source": "scan_metrics",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-1a1a26a631fd"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "vm:lucida:cpus_utilization:avg1d{target_id=00000000-0000-0000-0000-00000000aaaa}:2026-08-03T01:44:00Z/2026-08-03T02:44:00Z"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": true,
+   "OmittedN": 19
+  }
+ },
+ {
+  "EID": "EIX-0012",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "metric",
+  "RecordKind": "finding",
+  "FindingClass": "scan_metrics/disappeared",
+  "EntityKey": "",
+  "Headline": "지표 lucida:cpus_utilization:max1d 소멸(partial) — 기준선 존재율 0.00833",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "share",
+   "Metric": "lucida:cpus_utilization:max1d",
+   "Observed": 0.008333333333333333,
+   "Baseline": null,
+   "Magnitude": 0.008333333333333333,
+   "Direction": "n/a"
+  },
+  "Window": {
+   "From": "2026-08-03T02:44:00Z",
+   "To": "2026-08-03T03:14:00Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "observed"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "anomalous",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "low"
+  },
+  "Provenance": {
+   "Source": "scan_metrics",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-cf3a40db96e3"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "vm:lucida:cpus_utilization:max1d{target_id=00000000-0000-0000-0000-00000000aaaa}:2026-08-03T01:44:00Z/2026-08-03T02:44:00Z"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": true,
+   "OmittedN": 19
+  }
+ },
+ {
+  "EID": "EIX-0013",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "metric",
+  "RecordKind": "finding",
+  "FindingClass": "scan_metrics/disappeared",
+  "EntityKey": "",
+  "Headline": "지표 lucida:cpus_utilization:min1d 소멸(partial) — 기준선 존재율 0.00833",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "share",
+   "Metric": "lucida:cpus_utilization:min1d",
+   "Observed": 0.008333333333333333,
+   "Baseline": null,
+   "Magnitude": 0.008333333333333333,
+   "Direction": "n/a"
+  },
+  "Window": {
+   "From": "2026-08-03T02:44:00Z",
+   "To": "2026-08-03T03:14:00Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "observed"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "anomalous",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "low"
+  },
+  "Provenance": {
+   "Source": "scan_metrics",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-e5ec49ee3e28"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "vm:lucida:cpus_utilization:min1d{target_id=00000000-0000-0000-0000-00000000aaaa}:2026-08-03T01:44:00Z/2026-08-03T02:44:00Z"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": true,
+   "OmittedN": 19
+  }
+ },
+ {
+  "EID": "EIX-0014",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "metric",
+  "RecordKind": "finding",
+  "FindingClass": "scan_metrics/disappeared",
+  "EntityKey": "",
+  "Headline": "지표 lucida:cpus_utilization_max:avg1d 소멸(partial) — 기준선 존재율 0.00833",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "share",
+   "Metric": "lucida:cpus_utilization_max:avg1d",
+   "Observed": 0.008333333333333333,
+   "Baseline": null,
+   "Magnitude": 0.008333333333333333,
+   "Direction": "n/a"
+  },
+  "Window": {
+   "From": "2026-08-03T02:44:00Z",
+   "To": "2026-08-03T03:14:00Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "observed"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "anomalous",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "low"
+  },
+  "Provenance": {
+   "Source": "scan_metrics",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-c0a343d7f85f"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "vm:lucida:cpus_utilization_max:avg1d{target_id=00000000-0000-0000-0000-00000000aaaa}:2026-08-03T01:44:00Z/2026-08-03T02:44:00Z"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": true,
+   "OmittedN": 19
+  }
+ },
+ {
+  "EID": "EIX-0015",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "metric",
+  "RecordKind": "finding",
+  "FindingClass": "scan_metrics/disappeared",
+  "EntityKey": "",
+  "Headline": "지표 lucida:cpus_utilization_max:max1d 소멸(partial) — 기준선 존재율 0.00833",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "share",
+   "Metric": "lucida:cpus_utilization_max:max1d",
+   "Observed": 0.008333333333333333,
+   "Baseline": null,
+   "Magnitude": 0.008333333333333333,
+   "Direction": "n/a"
+  },
+  "Window": {
+   "From": "2026-08-03T02:44:00Z",
+   "To": "2026-08-03T03:14:00Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "observed"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "anomalous",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "low"
+  },
+  "Provenance": {
+   "Source": "scan_metrics",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-99367fc47568"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "vm:lucida:cpus_utilization_max:max1d{target_id=00000000-0000-0000-0000-00000000aaaa}:2026-08-03T01:44:00Z/2026-08-03T02:44:00Z"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": true,
+   "OmittedN": 19
+  }
+ },
+ {
+  "EID": "EIX-0016",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "metric",
+  "RecordKind": "finding",
+  "FindingClass": "scan_metrics/disappeared",
+  "EntityKey": "",
+  "Headline": "지표 lucida:cpus_utilization_max:min1d 소멸(partial) — 기준선 존재율 0.00833",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "share",
+   "Metric": "lucida:cpus_utilization_max:min1d",
+   "Observed": 0.008333333333333333,
+   "Baseline": null,
+   "Magnitude": 0.008333333333333333,
+   "Direction": "n/a"
+  },
+  "Window": {
+   "From": "2026-08-03T02:44:00Z",
+   "To": "2026-08-03T03:14:00Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "observed"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "anomalous",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "low"
+  },
+  "Provenance": {
+   "Source": "scan_metrics",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-cba8b4a5b300"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "vm:lucida:cpus_utilization_max:min1d{target_id=00000000-0000-0000-0000-00000000aaaa}:2026-08-03T01:44:00Z/2026-08-03T02:44:00Z"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": true,
+   "OmittedN": 19
+  }
+ },
+ {
+  "EID": "EIX-0017",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "metric",
+  "RecordKind": "finding",
+  "FindingClass": "scan_metrics/disappeared",
+  "EntityKey": "",
+  "Headline": "지표 lucida:cpus_utilization_min:avg1d 소멸(partial) — 기준선 존재율 0.00833",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "share",
+   "Metric": "lucida:cpus_utilization_min:avg1d",
+   "Observed": 0.008333333333333333,
+   "Baseline": null,
+   "Magnitude": 0.008333333333333333,
+   "Direction": "n/a"
+  },
+  "Window": {
+   "From": "2026-08-03T02:44:00Z",
+   "To": "2026-08-03T03:14:00Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "observed"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "anomalous",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "low"
+  },
+  "Provenance": {
+   "Source": "scan_metrics",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-2cddf5ca23e7"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "vm:lucida:cpus_utilization_min:avg1d{target_id=00000000-0000-0000-0000-00000000aaaa}:2026-08-03T01:44:00Z/2026-08-03T02:44:00Z"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": true,
+   "OmittedN": 19
+  }
+ },
+ {
+  "EID": "EIX-0018",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "metric",
+  "RecordKind": "finding",
+  "FindingClass": "scan_metrics/disappeared",
+  "EntityKey": "",
+  "Headline": "지표 lucida:cpus_utilization_min:max1d 소멸(partial) — 기준선 존재율 0.00833",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "share",
+   "Metric": "lucida:cpus_utilization_min:max1d",
+   "Observed": 0.008333333333333333,
+   "Baseline": null,
+   "Magnitude": 0.008333333333333333,
+   "Direction": "n/a"
+  },
+  "Window": {
+   "From": "2026-08-03T02:44:00Z",
+   "To": "2026-08-03T03:14:00Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "observed"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "anomalous",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "low"
+  },
+  "Provenance": {
+   "Source": "scan_metrics",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-25b1634eff5c"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "vm:lucida:cpus_utilization_min:max1d{target_id=00000000-0000-0000-0000-00000000aaaa}:2026-08-03T01:44:00Z/2026-08-03T02:44:00Z"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": true,
+   "OmittedN": 19
+  }
+ },
+ {
+  "EID": "EIX-0019",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "metric",
+  "RecordKind": "finding",
+  "FindingClass": "scan_metrics/disappeared",
+  "EntityKey": "",
+  "Headline": "지표 lucida:cpus_utilization_min:min1d 소멸(partial) — 기준선 존재율 0.00833",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "share",
+   "Metric": "lucida:cpus_utilization_min:min1d",
+   "Observed": 0.008333333333333333,
+   "Baseline": null,
+   "Magnitude": 0.008333333333333333,
+   "Direction": "n/a"
+  },
+  "Window": {
+   "From": "2026-08-03T02:44:00Z",
+   "To": "2026-08-03T03:14:00Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "observed"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "anomalous",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "low"
+  },
+  "Provenance": {
+   "Source": "scan_metrics",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-6fbdddcc9c6e"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "vm:lucida:cpus_utilization_min:min1d{target_id=00000000-0000-0000-0000-00000000aaaa}:2026-08-03T01:44:00Z/2026-08-03T02:44:00Z"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": true,
+   "OmittedN": 19
+  }
+ },
+ {
+  "EID": "EIX-0020",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "metric",
+  "RecordKind": "finding",
+  "FindingClass": "scan_metrics/disappeared",
+  "EntityKey": "",
+  "Headline": "지표 lucida:disks_utilization:avg1d 소멸(partial) — 기준선 존재율 0.00833",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "share",
+   "Metric": "lucida:disks_utilization:avg1d",
+   "Observed": 0.008333333333333333,
+   "Baseline": null,
+   "Magnitude": 0.008333333333333333,
+   "Direction": "n/a"
+  },
+  "Window": {
+   "From": "2026-08-03T02:44:00Z",
+   "To": "2026-08-03T03:14:00Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "observed"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "anomalous",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "low"
+  },
+  "Provenance": {
+   "Source": "scan_metrics",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-56ef793eb796"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "vm:lucida:disks_utilization:avg1d{target_id=00000000-0000-0000-0000-00000000aaaa}:2026-08-03T01:44:00Z/2026-08-03T02:44:00Z"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": true,
+   "OmittedN": 19
+  }
+ },
+ {
+  "EID": "EIX-0021",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "metric",
+  "RecordKind": "finding",
+  "FindingClass": "scan_metrics/disappeared",
+  "EntityKey": "",
+  "Headline": "지표 lucida:disks_utilization:max1d 소멸(partial) — 기준선 존재율 0.00833",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "share",
+   "Metric": "lucida:disks_utilization:max1d",
+   "Observed": 0.008333333333333333,
+   "Baseline": null,
+   "Magnitude": 0.008333333333333333,
+   "Direction": "n/a"
+  },
+  "Window": {
+   "From": "2026-08-03T02:44:00Z",
+   "To": "2026-08-03T03:14:00Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "observed"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "anomalous",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "low"
+  },
+  "Provenance": {
+   "Source": "scan_metrics",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-e7162c49d286"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "vm:lucida:disks_utilization:max1d{target_id=00000000-0000-0000-0000-00000000aaaa}:2026-08-03T01:44:00Z/2026-08-03T02:44:00Z"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": true,
+   "OmittedN": 19
+  }
+ },
+ {
+  "EID": "EIX-0022",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "metric",
+  "RecordKind": "finding",
+  "FindingClass": "scan_metrics/disappeared",
+  "EntityKey": "",
+  "Headline": "지표 lucida:disks_utilization:min1d 소멸(partial) — 기준선 존재율 0.00833",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "share",
+   "Metric": "lucida:disks_utilization:min1d",
+   "Observed": 0.008333333333333333,
+   "Baseline": null,
+   "Magnitude": 0.008333333333333333,
+   "Direction": "n/a"
+  },
+  "Window": {
+   "From": "2026-08-03T02:44:00Z",
+   "To": "2026-08-03T03:14:00Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "observed"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "anomalous",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "low"
+  },
+  "Provenance": {
+   "Source": "scan_metrics",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-c905ff2becc3"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "vm:lucida:disks_utilization:min1d{target_id=00000000-0000-0000-0000-00000000aaaa}:2026-08-03T01:44:00Z/2026-08-03T02:44:00Z"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": true,
+   "OmittedN": 19
+  }
+ },
+ {
+  "EID": "EIX-0023",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "metric",
+  "RecordKind": "finding",
+  "FindingClass": "scan_metrics/disappeared",
+  "EntityKey": "",
+  "Headline": "지표 lucida:disks_utilization_max:avg1d 소멸(partial) — 기준선 존재율 0.00833",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "share",
+   "Metric": "lucida:disks_utilization_max:avg1d",
+   "Observed": 0.008333333333333333,
+   "Baseline": null,
+   "Magnitude": 0.008333333333333333,
+   "Direction": "n/a"
+  },
+  "Window": {
+   "From": "2026-08-03T02:44:00Z",
+   "To": "2026-08-03T03:14:00Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "observed"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "anomalous",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "low"
+  },
+  "Provenance": {
+   "Source": "scan_metrics",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-1473c6ed7652"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "vm:lucida:disks_utilization_max:avg1d{target_id=00000000-0000-0000-0000-00000000aaaa}:2026-08-03T01:44:00Z/2026-08-03T02:44:00Z"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": true,
+   "OmittedN": 19
+  }
+ },
+ {
+  "EID": "EIX-0024",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "metric",
+  "RecordKind": "finding",
+  "FindingClass": "scan_metrics/disappeared",
+  "EntityKey": "",
+  "Headline": "지표 lucida:disks_utilization_max:max1d 소멸(partial) — 기준선 존재율 0.00833",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "share",
+   "Metric": "lucida:disks_utilization_max:max1d",
+   "Observed": 0.008333333333333333,
+   "Baseline": null,
+   "Magnitude": 0.008333333333333333,
+   "Direction": "n/a"
+  },
+  "Window": {
+   "From": "2026-08-03T02:44:00Z",
+   "To": "2026-08-03T03:14:00Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "observed"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "anomalous",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "low"
+  },
+  "Provenance": {
+   "Source": "scan_metrics",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-bcdd1416e756"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "vm:lucida:disks_utilization_max:max1d{target_id=00000000-0000-0000-0000-00000000aaaa}:2026-08-03T01:44:00Z/2026-08-03T02:44:00Z"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": true,
+   "OmittedN": 19
+  }
+ },
+ {
+  "EID": "EIX-0025",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "metric",
+  "RecordKind": "finding",
+  "FindingClass": "scan_metrics/disappeared",
+  "EntityKey": "",
+  "Headline": "지표 lucida:disks_utilization_max:min1d 소멸(partial) — 기준선 존재율 0.00833",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "share",
+   "Metric": "lucida:disks_utilization_max:min1d",
+   "Observed": 0.008333333333333333,
+   "Baseline": null,
+   "Magnitude": 0.008333333333333333,
+   "Direction": "n/a"
+  },
+  "Window": {
+   "From": "2026-08-03T02:44:00Z",
+   "To": "2026-08-03T03:14:00Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "observed"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "anomalous",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "low"
+  },
+  "Provenance": {
+   "Source": "scan_metrics",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-a49fde7f7732"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "vm:lucida:disks_utilization_max:min1d{target_id=00000000-0000-0000-0000-00000000aaaa}:2026-08-03T01:44:00Z/2026-08-03T02:44:00Z"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": true,
+   "OmittedN": 19
+  }
+ },
+ {
+  "EID": "EIX-0026",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "metric",
+  "RecordKind": "finding",
+  "FindingClass": "scan_metrics/disappeared",
+  "EntityKey": "",
+  "Headline": "지표 lucida:disks_utilization_min:avg1d 소멸(partial) — 기준선 존재율 0.00833",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "share",
+   "Metric": "lucida:disks_utilization_min:avg1d",
+   "Observed": 0.008333333333333333,
+   "Baseline": null,
+   "Magnitude": 0.008333333333333333,
+   "Direction": "n/a"
+  },
+  "Window": {
+   "From": "2026-08-03T02:44:00Z",
+   "To": "2026-08-03T03:14:00Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "observed"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "anomalous",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "low"
+  },
+  "Provenance": {
+   "Source": "scan_metrics",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-65f9fae0e787"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "vm:lucida:disks_utilization_min:avg1d{target_id=00000000-0000-0000-0000-00000000aaaa}:2026-08-03T01:44:00Z/2026-08-03T02:44:00Z"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": true,
+   "OmittedN": 19
+  }
+ },
+ {
+  "EID": "EIX-0027",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "metric",
+  "RecordKind": "finding",
+  "FindingClass": "scan_metrics/disappeared",
+  "EntityKey": "",
+  "Headline": "지표 lucida:disks_utilization_min:max1d 소멸(partial) — 기준선 존재율 0.00833",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "share",
+   "Metric": "lucida:disks_utilization_min:max1d",
+   "Observed": 0.008333333333333333,
+   "Baseline": null,
+   "Magnitude": 0.008333333333333333,
+   "Direction": "n/a"
+  },
+  "Window": {
+   "From": "2026-08-03T02:44:00Z",
+   "To": "2026-08-03T03:14:00Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "observed"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "anomalous",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "low"
+  },
+  "Provenance": {
+   "Source": "scan_metrics",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-3d741bf35e0d"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "vm:lucida:disks_utilization_min:max1d{target_id=00000000-0000-0000-0000-00000000aaaa}:2026-08-03T01:44:00Z/2026-08-03T02:44:00Z"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": true,
+   "OmittedN": 19
+  }
+ },
+ {
+  "EID": "EIX-0028",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "metric",
+  "RecordKind": "finding",
+  "FindingClass": "scan_metrics/disappeared",
+  "EntityKey": "",
+  "Headline": "지표 lucida:disks_utilization_min:min1d 소멸(partial) — 기준선 존재율 0.00833",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "share",
+   "Metric": "lucida:disks_utilization_min:min1d",
+   "Observed": 0.008333333333333333,
+   "Baseline": null,
+   "Magnitude": 0.008333333333333333,
+   "Direction": "n/a"
+  },
+  "Window": {
+   "From": "2026-08-03T02:44:00Z",
+   "To": "2026-08-03T03:14:00Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "observed"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "anomalous",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "low"
+  },
+  "Provenance": {
+   "Source": "scan_metrics",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-d38fe7f1bd49"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "vm:lucida:disks_utilization_min:min1d{target_id=00000000-0000-0000-0000-00000000aaaa}:2026-08-03T01:44:00Z/2026-08-03T02:44:00Z"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": true,
+   "OmittedN": 19
+  }
+ },
+ {
+  "EID": "EIX-0029",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "metric",
+  "RecordKind": "finding",
+  "FindingClass": "scan_metrics/disappeared",
+  "EntityKey": "",
+  "Headline": "지표 lucida:filesystems_usage:avg1d 소멸(partial) — 기준선 존재율 0.00833",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "share",
+   "Metric": "lucida:filesystems_usage:avg1d",
+   "Observed": 0.008333333333333333,
+   "Baseline": null,
+   "Magnitude": 0.008333333333333333,
+   "Direction": "n/a"
+  },
+  "Window": {
+   "From": "2026-08-03T02:44:00Z",
+   "To": "2026-08-03T03:14:00Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "observed"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "anomalous",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "low"
+  },
+  "Provenance": {
+   "Source": "scan_metrics",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-63aa1782b4ec"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "vm:lucida:filesystems_usage:avg1d{target_id=00000000-0000-0000-0000-00000000aaaa}:2026-08-03T01:44:00Z/2026-08-03T02:44:00Z"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": true,
+   "OmittedN": 19
+  }
+ },
+ {
+  "EID": "EIX-0030",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "metric",
+  "RecordKind": "finding",
+  "FindingClass": "scan_metrics/disappeared",
+  "EntityKey": "",
+  "Headline": "지표 lucida:filesystems_usage:max1d 소멸(partial) — 기준선 존재율 0.00833",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "share",
+   "Metric": "lucida:filesystems_usage:max1d",
+   "Observed": 0.008333333333333333,
+   "Baseline": null,
+   "Magnitude": 0.008333333333333333,
+   "Direction": "n/a"
+  },
+  "Window": {
+   "From": "2026-08-03T02:44:00Z",
+   "To": "2026-08-03T03:14:00Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "observed"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "anomalous",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "low"
+  },
+  "Provenance": {
+   "Source": "scan_metrics",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-c37097d2fba9"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "vm:lucida:filesystems_usage:max1d{target_id=00000000-0000-0000-0000-00000000aaaa}:2026-08-03T01:44:00Z/2026-08-03T02:44:00Z"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": true,
+   "OmittedN": 19
+  }
+ },
+ {
+  "EID": "EIX-0031",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "metric",
+  "RecordKind": "meta",
+  "FindingClass": "",
+  "EntityKey": "",
+  "Headline": "scan_metrics meta class counts — 감사 재료(술어 판정 대상 아님)",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "",
+   "Metric": "",
+   "Observed": null,
+   "Baseline": null,
+   "Magnitude": null,
+   "Direction": ""
+  },
+  "Window": {
+   "From": "2026-08-03T02:44:00Z",
+   "To": "2026-08-03T03:14:00Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "observed"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "anomalous",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "ok"
+  },
+  "Provenance": {
+   "Source": "scan_metrics",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": ""
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "vm:scan{target_id=00000000-0000-0000-0000-00000000aaaa}:2026-08-03T02:44:00Z/2026-08-03T03:14:00Z"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": false,
+   "OmittedN": 0
+  }
+ },
+ {
+  "EID": "EIX-0032",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "metric",
+  "RecordKind": "query_scope",
+  "FindingClass": "scan_metrics/shifted",
+  "EntityKey": "*",
+  "Headline": "조회 범위 scan_metrics/shifted(shifted): 총 10건 중 10건 반환, 0건 미확인",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "count",
+   "Metric": "*",
+   "Observed": null,
+   "Baseline": null,
+   "Magnitude": null,
+   "Direction": "n/a"
+  },
+  "Window": {
+   "From": "2026-08-03T02:44:00Z",
+   "To": "2026-08-03T03:14:00Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "observed"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "normal",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "ok"
+  },
+  "Provenance": {
+   "Source": "scan_metrics",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-ac3d43cc1fc7"
+  },
+  "Scope": {
+   "Selector": {
+    "Source": "scan_metrics",
+    "TargetID": "11111111-2222-3333-4444-555555555555",
+    "Aspect": "metric",
+    "Metric": "*",
+    "EntityKey": "*",
+    "Window": "full"
+   },
+   "Total": 10,
+   "Returned": 10,
+   "Omitted": 0
+  },
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": null,
+  "Masked": null,
+  "Truncation": {
+   "Truncated": false,
+   "OmittedN": 0
+  }
+ },
+ {
+  "EID": "EIX-0033",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "metric",
+  "RecordKind": "query_scope",
+  "FindingClass": "scan_metrics/appeared",
+  "EntityKey": "*",
+  "Headline": "조회 범위 scan_metrics/appeared(appeared): 총 0건 중 0건 반환, 0건 미확인",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "count",
+   "Metric": "*",
+   "Observed": null,
+   "Baseline": null,
+   "Magnitude": null,
+   "Direction": "n/a"
+  },
+  "Window": {
+   "From": "2026-08-03T02:44:00Z",
+   "To": "2026-08-03T03:14:00Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "observed"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "no_data",
+   "NoDataReason": "zero_observations",
+   "Availability": "observed_zero",
+   "Confidence": "ok"
+  },
+  "Provenance": {
+   "Source": "scan_metrics",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-ac3d43cc1fc7"
+  },
+  "Scope": {
+   "Selector": {
+    "Source": "scan_metrics",
+    "TargetID": "11111111-2222-3333-4444-555555555555",
+    "Aspect": "metric",
+    "Metric": "*",
+    "EntityKey": "*",
+    "Window": "full"
+   },
+   "Total": 0,
+   "Returned": 0,
+   "Omitted": 0
+  },
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": null,
+  "Masked": null,
+  "Truncation": {
+   "Truncated": false,
+   "OmittedN": 0
+  }
+ },
+ {
+  "EID": "EIX-0034",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "metric",
+  "RecordKind": "query_scope",
+  "FindingClass": "scan_metrics/disappeared",
+  "EntityKey": "*",
+  "Headline": "조회 범위 scan_metrics/disappeared(disappeared): 총 39건 중 20건 반환, 19건 미확인",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "count",
+   "Metric": "*",
+   "Observed": null,
+   "Baseline": null,
+   "Magnitude": null,
+   "Direction": "n/a"
+  },
+  "Window": {
+   "From": "2026-08-03T02:44:00Z",
+   "To": "2026-08-03T03:14:00Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "observed"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "normal",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "low"
+  },
+  "Provenance": {
+   "Source": "scan_metrics",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-ac3d43cc1fc7"
+  },
+  "Scope": {
+   "Selector": {
+    "Source": "scan_metrics",
+    "TargetID": "11111111-2222-3333-4444-555555555555",
+    "Aspect": "metric",
+    "Metric": "*",
+    "EntityKey": "*",
+    "Window": "full"
+   },
+   "Total": 39,
+   "Returned": 20,
+   "Omitted": 19
+  },
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": null,
+  "Masked": null,
+  "Truncation": {
+   "Truncated": true,
+   "OmittedN": 19
+  }
+ }
+]

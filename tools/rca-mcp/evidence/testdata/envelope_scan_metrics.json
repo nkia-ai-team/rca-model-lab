@@ -1,0 +1,442 @@
+{
+ "status": "anomalous",
+ "assessment_basis": "존재 4분류 + robust z(median/MAD, 분모 바닥값, 문턱 3, 정렬 uncapped·표시 캡 20), counter는 30s 버킷 increase 비교, 기준선 = 인시던트 첫 증상 직전 60분(override 시 인자 창)",
+ "summary": "존재 4분류: disappeared 39(간헐 방출 39) / appeared 0 / shifted(z≥3) 10 / steady 93. 각 분류 표시 상한 20(truncated).",
+ "findings": [
+  {
+   "baseline_median": 0.18593188478567,
+   "class": "shifted",
+   "current_median": 0.879916210641,
+   "metric": "lucida:disks_utilization_max:max1h",
+   "rank": 1,
+   "refs": [
+    "vm:lucida:disks_utilization_max:max1h{target_id=00000000-0000-0000-0000-00000000aaaa}:2026-08-03T02:44:00Z/2026-08-03T03:14:00Z"
+   ],
+   "unit": "",
+   "z": 20,
+   "z_capped": true
+  },
+  {
+   "baseline_median": 0.050130636879,
+   "class": "shifted",
+   "current_median": 0.174492547962,
+   "metric": "lucida:disks_utilization:max1h",
+   "rank": 2,
+   "refs": [
+    "vm:lucida:disks_utilization:max1h{target_id=00000000-0000-0000-0000-00000000aaaa}:2026-08-03T02:44:00Z/2026-08-03T03:14:00Z"
+   ],
+   "unit": "",
+   "z": 20,
+   "z_capped": true
+  },
+  {
+   "baseline_median": 0.11274294646433,
+   "class": "shifted",
+   "current_median": 0.1491888431618,
+   "metric": "lucida:disks_utilization_max:avg1h",
+   "rank": 3,
+   "refs": [
+    "vm:lucida:disks_utilization_max:avg1h{target_id=00000000-0000-0000-0000-00000000aaaa}:2026-08-03T02:44:00Z/2026-08-03T03:14:00Z"
+   ],
+   "unit": "",
+   "z": 6.465308534224068
+  },
+  {
+   "baseline_median": 0.380305517263,
+   "class": "shifted",
+   "current_median": 0.494721278408,
+   "metric": "lucida:cpus_utilization:max1h",
+   "rank": 4,
+   "refs": [
+    "vm:lucida:cpus_utilization:max1h{target_id=00000000-0000-0000-0000-00000000aaaa}:2026-08-03T02:44:00Z/2026-08-03T03:14:00Z"
+   ],
+   "unit": "",
+   "z": 6.017044505082785
+  },
+  {
+   "baseline_median": 0.03048890346512,
+   "class": "shifted",
+   "current_median": 0.03927329330924,
+   "metric": "lucida:disks_utilization:avg1h",
+   "rank": 5,
+   "refs": [
+    "vm:lucida:disks_utilization:avg1h{target_id=00000000-0000-0000-0000-00000000aaaa}:2026-08-03T02:44:00Z/2026-08-03T03:14:00Z"
+   ],
+   "unit": "",
+   "z": 5.7623520991298
+  },
+  {
+   "baseline_median": 0.134628044769,
+   "class": "shifted",
+   "current_median": 0.169804976458,
+   "metric": "lucida:cpus_utilization_min:min1h",
+   "rank": 6,
+   "refs": [
+    "vm:lucida:cpus_utilization_min:min1h{target_id=00000000-0000-0000-0000-00000000aaaa}:2026-08-03T02:44:00Z/2026-08-03T03:14:00Z"
+   ],
+   "unit": "",
+   "z": 5.225795524158125
+  },
+  {
+   "baseline_median": 0.3215002751775,
+   "class": "shifted",
+   "current_median": 0.385761647497,
+   "metric": "lucida:cpus_utilization:max5m",
+   "rank": 7,
+   "refs": [
+    "vm:lucida:cpus_utilization:max5m{target_id=00000000-0000-0000-0000-00000000aaaa}:2026-08-03T02:44:00Z/2026-08-03T03:14:00Z"
+   ],
+   "unit": "",
+   "z": 3.9975936122618445
+  },
+  {
+   "baseline_median": 0.291872326423,
+   "class": "shifted",
+   "current_median": 0.3481195757,
+   "metric": "lucida:cpus_utilization_min:max1h",
+   "rank": 8,
+   "refs": [
+    "vm:lucida:cpus_utilization_min:max1h{target_id=00000000-0000-0000-0000-00000000aaaa}:2026-08-03T02:44:00Z/2026-08-03T03:14:00Z"
+   ],
+   "unit": "",
+   "z": 3.8542365400879377
+  },
+  {
+   "baseline_median": 0.20456798080164,
+   "class": "shifted",
+   "current_median": 0.23914495117671,
+   "metric": "lucida:cpus_utilization_min:avg1h",
+   "rank": 9,
+   "refs": [
+    "vm:lucida:cpus_utilization_min:avg1h{target_id=00000000-0000-0000-0000-00000000aaaa}:2026-08-03T02:44:00Z/2026-08-03T03:14:00Z"
+   ],
+   "unit": "",
+   "z": 3.3804870380568195
+  },
+  {
+   "baseline_median": 0.1761301584965,
+   "class": "shifted",
+   "current_median": 0.207284768219,
+   "metric": "lucida:cpus_utilization_min:min5m",
+   "rank": 10,
+   "refs": [
+    "vm:lucida:cpus_utilization_min:min5m{target_id=00000000-0000-0000-0000-00000000aaaa}:2026-08-03T02:44:00Z/2026-08-03T03:14:00Z"
+   ],
+   "unit": "",
+   "z": 3.1032072301485227
+  },
+  {
+   "baseline_presence_ratio": 0.008333333333333333,
+   "class": "disappeared",
+   "intermittent_baseline": true,
+   "metric": "lucida:cpus_utilization:avg1d",
+   "note": "기준선에서도 간헐 방출(주기 물질화 지표 등) — 현재 창에 없는 게 소멸 신호가 아닐 수 있음, 소멸 근거로 쓰려면 read_timeseries로 방출 주기 확인",
+   "refs": [
+    "vm:lucida:cpus_utilization:avg1d{target_id=00000000-0000-0000-0000-00000000aaaa}:2026-08-03T01:44:00Z/2026-08-03T02:44:00Z"
+   ],
+   "scope": "partial",
+   "unit": ""
+  },
+  {
+   "baseline_presence_ratio": 0.008333333333333333,
+   "class": "disappeared",
+   "intermittent_baseline": true,
+   "metric": "lucida:cpus_utilization:max1d",
+   "note": "기준선에서도 간헐 방출(주기 물질화 지표 등) — 현재 창에 없는 게 소멸 신호가 아닐 수 있음, 소멸 근거로 쓰려면 read_timeseries로 방출 주기 확인",
+   "refs": [
+    "vm:lucida:cpus_utilization:max1d{target_id=00000000-0000-0000-0000-00000000aaaa}:2026-08-03T01:44:00Z/2026-08-03T02:44:00Z"
+   ],
+   "scope": "partial",
+   "unit": ""
+  },
+  {
+   "baseline_presence_ratio": 0.008333333333333333,
+   "class": "disappeared",
+   "intermittent_baseline": true,
+   "metric": "lucida:cpus_utilization:min1d",
+   "note": "기준선에서도 간헐 방출(주기 물질화 지표 등) — 현재 창에 없는 게 소멸 신호가 아닐 수 있음, 소멸 근거로 쓰려면 read_timeseries로 방출 주기 확인",
+   "refs": [
+    "vm:lucida:cpus_utilization:min1d{target_id=00000000-0000-0000-0000-00000000aaaa}:2026-08-03T01:44:00Z/2026-08-03T02:44:00Z"
+   ],
+   "scope": "partial",
+   "unit": ""
+  },
+  {
+   "baseline_presence_ratio": 0.008333333333333333,
+   "class": "disappeared",
+   "intermittent_baseline": true,
+   "metric": "lucida:cpus_utilization_max:avg1d",
+   "note": "기준선에서도 간헐 방출(주기 물질화 지표 등) — 현재 창에 없는 게 소멸 신호가 아닐 수 있음, 소멸 근거로 쓰려면 read_timeseries로 방출 주기 확인",
+   "refs": [
+    "vm:lucida:cpus_utilization_max:avg1d{target_id=00000000-0000-0000-0000-00000000aaaa}:2026-08-03T01:44:00Z/2026-08-03T02:44:00Z"
+   ],
+   "scope": "partial",
+   "unit": ""
+  },
+  {
+   "baseline_presence_ratio": 0.008333333333333333,
+   "class": "disappeared",
+   "intermittent_baseline": true,
+   "metric": "lucida:cpus_utilization_max:max1d",
+   "note": "기준선에서도 간헐 방출(주기 물질화 지표 등) — 현재 창에 없는 게 소멸 신호가 아닐 수 있음, 소멸 근거로 쓰려면 read_timeseries로 방출 주기 확인",
+   "refs": [
+    "vm:lucida:cpus_utilization_max:max1d{target_id=00000000-0000-0000-0000-00000000aaaa}:2026-08-03T01:44:00Z/2026-08-03T02:44:00Z"
+   ],
+   "scope": "partial",
+   "unit": ""
+  },
+  {
+   "baseline_presence_ratio": 0.008333333333333333,
+   "class": "disappeared",
+   "intermittent_baseline": true,
+   "metric": "lucida:cpus_utilization_max:min1d",
+   "note": "기준선에서도 간헐 방출(주기 물질화 지표 등) — 현재 창에 없는 게 소멸 신호가 아닐 수 있음, 소멸 근거로 쓰려면 read_timeseries로 방출 주기 확인",
+   "refs": [
+    "vm:lucida:cpus_utilization_max:min1d{target_id=00000000-0000-0000-0000-00000000aaaa}:2026-08-03T01:44:00Z/2026-08-03T02:44:00Z"
+   ],
+   "scope": "partial",
+   "unit": ""
+  },
+  {
+   "baseline_presence_ratio": 0.008333333333333333,
+   "class": "disappeared",
+   "intermittent_baseline": true,
+   "metric": "lucida:cpus_utilization_min:avg1d",
+   "note": "기준선에서도 간헐 방출(주기 물질화 지표 등) — 현재 창에 없는 게 소멸 신호가 아닐 수 있음, 소멸 근거로 쓰려면 read_timeseries로 방출 주기 확인",
+   "refs": [
+    "vm:lucida:cpus_utilization_min:avg1d{target_id=00000000-0000-0000-0000-00000000aaaa}:2026-08-03T01:44:00Z/2026-08-03T02:44:00Z"
+   ],
+   "scope": "partial",
+   "unit": ""
+  },
+  {
+   "baseline_presence_ratio": 0.008333333333333333,
+   "class": "disappeared",
+   "intermittent_baseline": true,
+   "metric": "lucida:cpus_utilization_min:max1d",
+   "note": "기준선에서도 간헐 방출(주기 물질화 지표 등) — 현재 창에 없는 게 소멸 신호가 아닐 수 있음, 소멸 근거로 쓰려면 read_timeseries로 방출 주기 확인",
+   "refs": [
+    "vm:lucida:cpus_utilization_min:max1d{target_id=00000000-0000-0000-0000-00000000aaaa}:2026-08-03T01:44:00Z/2026-08-03T02:44:00Z"
+   ],
+   "scope": "partial",
+   "unit": ""
+  },
+  {
+   "baseline_presence_ratio": 0.008333333333333333,
+   "class": "disappeared",
+   "intermittent_baseline": true,
+   "metric": "lucida:cpus_utilization_min:min1d",
+   "note": "기준선에서도 간헐 방출(주기 물질화 지표 등) — 현재 창에 없는 게 소멸 신호가 아닐 수 있음, 소멸 근거로 쓰려면 read_timeseries로 방출 주기 확인",
+   "refs": [
+    "vm:lucida:cpus_utilization_min:min1d{target_id=00000000-0000-0000-0000-00000000aaaa}:2026-08-03T01:44:00Z/2026-08-03T02:44:00Z"
+   ],
+   "scope": "partial",
+   "unit": ""
+  },
+  {
+   "baseline_presence_ratio": 0.008333333333333333,
+   "class": "disappeared",
+   "intermittent_baseline": true,
+   "metric": "lucida:disks_utilization:avg1d",
+   "note": "기준선에서도 간헐 방출(주기 물질화 지표 등) — 현재 창에 없는 게 소멸 신호가 아닐 수 있음, 소멸 근거로 쓰려면 read_timeseries로 방출 주기 확인",
+   "refs": [
+    "vm:lucida:disks_utilization:avg1d{target_id=00000000-0000-0000-0000-00000000aaaa}:2026-08-03T01:44:00Z/2026-08-03T02:44:00Z"
+   ],
+   "scope": "partial",
+   "unit": ""
+  },
+  {
+   "baseline_presence_ratio": 0.008333333333333333,
+   "class": "disappeared",
+   "intermittent_baseline": true,
+   "metric": "lucida:disks_utilization:max1d",
+   "note": "기준선에서도 간헐 방출(주기 물질화 지표 등) — 현재 창에 없는 게 소멸 신호가 아닐 수 있음, 소멸 근거로 쓰려면 read_timeseries로 방출 주기 확인",
+   "refs": [
+    "vm:lucida:disks_utilization:max1d{target_id=00000000-0000-0000-0000-00000000aaaa}:2026-08-03T01:44:00Z/2026-08-03T02:44:00Z"
+   ],
+   "scope": "partial",
+   "unit": ""
+  },
+  {
+   "baseline_presence_ratio": 0.008333333333333333,
+   "class": "disappeared",
+   "intermittent_baseline": true,
+   "metric": "lucida:disks_utilization:min1d",
+   "note": "기준선에서도 간헐 방출(주기 물질화 지표 등) — 현재 창에 없는 게 소멸 신호가 아닐 수 있음, 소멸 근거로 쓰려면 read_timeseries로 방출 주기 확인",
+   "refs": [
+    "vm:lucida:disks_utilization:min1d{target_id=00000000-0000-0000-0000-00000000aaaa}:2026-08-03T01:44:00Z/2026-08-03T02:44:00Z"
+   ],
+   "scope": "partial",
+   "unit": ""
+  },
+  {
+   "baseline_presence_ratio": 0.008333333333333333,
+   "class": "disappeared",
+   "intermittent_baseline": true,
+   "metric": "lucida:disks_utilization_max:avg1d",
+   "note": "기준선에서도 간헐 방출(주기 물질화 지표 등) — 현재 창에 없는 게 소멸 신호가 아닐 수 있음, 소멸 근거로 쓰려면 read_timeseries로 방출 주기 확인",
+   "refs": [
+    "vm:lucida:disks_utilization_max:avg1d{target_id=00000000-0000-0000-0000-00000000aaaa}:2026-08-03T01:44:00Z/2026-08-03T02:44:00Z"
+   ],
+   "scope": "partial",
+   "unit": ""
+  },
+  {
+   "baseline_presence_ratio": 0.008333333333333333,
+   "class": "disappeared",
+   "intermittent_baseline": true,
+   "metric": "lucida:disks_utilization_max:max1d",
+   "note": "기준선에서도 간헐 방출(주기 물질화 지표 등) — 현재 창에 없는 게 소멸 신호가 아닐 수 있음, 소멸 근거로 쓰려면 read_timeseries로 방출 주기 확인",
+   "refs": [
+    "vm:lucida:disks_utilization_max:max1d{target_id=00000000-0000-0000-0000-00000000aaaa}:2026-08-03T01:44:00Z/2026-08-03T02:44:00Z"
+   ],
+   "scope": "partial",
+   "unit": ""
+  },
+  {
+   "baseline_presence_ratio": 0.008333333333333333,
+   "class": "disappeared",
+   "intermittent_baseline": true,
+   "metric": "lucida:disks_utilization_max:min1d",
+   "note": "기준선에서도 간헐 방출(주기 물질화 지표 등) — 현재 창에 없는 게 소멸 신호가 아닐 수 있음, 소멸 근거로 쓰려면 read_timeseries로 방출 주기 확인",
+   "refs": [
+    "vm:lucida:disks_utilization_max:min1d{target_id=00000000-0000-0000-0000-00000000aaaa}:2026-08-03T01:44:00Z/2026-08-03T02:44:00Z"
+   ],
+   "scope": "partial",
+   "unit": ""
+  },
+  {
+   "baseline_presence_ratio": 0.008333333333333333,
+   "class": "disappeared",
+   "intermittent_baseline": true,
+   "metric": "lucida:disks_utilization_min:avg1d",
+   "note": "기준선에서도 간헐 방출(주기 물질화 지표 등) — 현재 창에 없는 게 소멸 신호가 아닐 수 있음, 소멸 근거로 쓰려면 read_timeseries로 방출 주기 확인",
+   "refs": [
+    "vm:lucida:disks_utilization_min:avg1d{target_id=00000000-0000-0000-0000-00000000aaaa}:2026-08-03T01:44:00Z/2026-08-03T02:44:00Z"
+   ],
+   "scope": "partial",
+   "unit": ""
+  },
+  {
+   "baseline_presence_ratio": 0.008333333333333333,
+   "class": "disappeared",
+   "intermittent_baseline": true,
+   "metric": "lucida:disks_utilization_min:max1d",
+   "note": "기준선에서도 간헐 방출(주기 물질화 지표 등) — 현재 창에 없는 게 소멸 신호가 아닐 수 있음, 소멸 근거로 쓰려면 read_timeseries로 방출 주기 확인",
+   "refs": [
+    "vm:lucida:disks_utilization_min:max1d{target_id=00000000-0000-0000-0000-00000000aaaa}:2026-08-03T01:44:00Z/2026-08-03T02:44:00Z"
+   ],
+   "scope": "partial",
+   "unit": ""
+  },
+  {
+   "baseline_presence_ratio": 0.008333333333333333,
+   "class": "disappeared",
+   "intermittent_baseline": true,
+   "metric": "lucida:disks_utilization_min:min1d",
+   "note": "기준선에서도 간헐 방출(주기 물질화 지표 등) — 현재 창에 없는 게 소멸 신호가 아닐 수 있음, 소멸 근거로 쓰려면 read_timeseries로 방출 주기 확인",
+   "refs": [
+    "vm:lucida:disks_utilization_min:min1d{target_id=00000000-0000-0000-0000-00000000aaaa}:2026-08-03T01:44:00Z/2026-08-03T02:44:00Z"
+   ],
+   "scope": "partial",
+   "unit": ""
+  },
+  {
+   "baseline_presence_ratio": 0.008333333333333333,
+   "class": "disappeared",
+   "intermittent_baseline": true,
+   "metric": "lucida:filesystems_usage:avg1d",
+   "note": "기준선에서도 간헐 방출(주기 물질화 지표 등) — 현재 창에 없는 게 소멸 신호가 아닐 수 있음, 소멸 근거로 쓰려면 read_timeseries로 방출 주기 확인",
+   "refs": [
+    "vm:lucida:filesystems_usage:avg1d{target_id=00000000-0000-0000-0000-00000000aaaa}:2026-08-03T01:44:00Z/2026-08-03T02:44:00Z"
+   ],
+   "scope": "partial",
+   "unit": ""
+  },
+  {
+   "baseline_presence_ratio": 0.008333333333333333,
+   "class": "disappeared",
+   "intermittent_baseline": true,
+   "metric": "lucida:filesystems_usage:max1d",
+   "note": "기준선에서도 간헐 방출(주기 물질화 지표 등) — 현재 창에 없는 게 소멸 신호가 아닐 수 있음, 소멸 근거로 쓰려면 read_timeseries로 방출 주기 확인",
+   "refs": [
+    "vm:lucida:filesystems_usage:max1d{target_id=00000000-0000-0000-0000-00000000aaaa}:2026-08-03T01:44:00Z/2026-08-03T02:44:00Z"
+   ],
+   "scope": "partial",
+   "unit": ""
+  },
+  {
+   "aggregation": "grade 접기(max) 후 지표당 실차원 avg 집계 — 차원 분해는 read_timeseries의 분해 라벨로",
+   "appeared": 0,
+   "baseline_observed": "2026-08-03T01:44:00Z/2026-08-03T02:44:00Z",
+   "baseline_samples_max": 121,
+   "baseline_window": "2026-08-03T01:44:00Z/2026-08-03T02:44:00Z",
+   "class": "counts",
+   "disappeared": 39,
+   "disappeared_intermittent": 39,
+   "refs": [
+    "vm:scan{target_id=00000000-0000-0000-0000-00000000aaaa}:2026-08-03T02:44:00Z/2026-08-03T03:14:00Z"
+   ],
+   "shifted": 10,
+   "steady": 93
+  }
+ ],
+ "observed_range": {
+  "from": "2026-08-03T02:44:00Z",
+  "to": "2026-08-03T03:14:00Z"
+ },
+ "truncated": true,
+ "refs": [
+  "vm:lucida:disks_utilization_max:max1h{target_id=00000000-0000-0000-0000-00000000aaaa}:2026-08-03T02:44:00Z/2026-08-03T03:14:00Z",
+  "vm:lucida:disks_utilization:max1h{target_id=00000000-0000-0000-0000-00000000aaaa}:2026-08-03T02:44:00Z/2026-08-03T03:14:00Z",
+  "vm:lucida:disks_utilization_max:avg1h{target_id=00000000-0000-0000-0000-00000000aaaa}:2026-08-03T02:44:00Z/2026-08-03T03:14:00Z",
+  "vm:lucida:cpus_utilization:max1h{target_id=00000000-0000-0000-0000-00000000aaaa}:2026-08-03T02:44:00Z/2026-08-03T03:14:00Z",
+  "vm:lucida:disks_utilization:avg1h{target_id=00000000-0000-0000-0000-00000000aaaa}:2026-08-03T02:44:00Z/2026-08-03T03:14:00Z",
+  "vm:lucida:cpus_utilization_min:min1h{target_id=00000000-0000-0000-0000-00000000aaaa}:2026-08-03T02:44:00Z/2026-08-03T03:14:00Z",
+  "vm:lucida:cpus_utilization:max5m{target_id=00000000-0000-0000-0000-00000000aaaa}:2026-08-03T02:44:00Z/2026-08-03T03:14:00Z",
+  "vm:lucida:cpus_utilization_min:max1h{target_id=00000000-0000-0000-0000-00000000aaaa}:2026-08-03T02:44:00Z/2026-08-03T03:14:00Z",
+  "vm:lucida:cpus_utilization_min:avg1h{target_id=00000000-0000-0000-0000-00000000aaaa}:2026-08-03T02:44:00Z/2026-08-03T03:14:00Z",
+  "vm:lucida:cpus_utilization_min:min5m{target_id=00000000-0000-0000-0000-00000000aaaa}:2026-08-03T02:44:00Z/2026-08-03T03:14:00Z",
+  "vm:lucida:cpus_utilization:avg1d{target_id=00000000-0000-0000-0000-00000000aaaa}:2026-08-03T01:44:00Z/2026-08-03T02:44:00Z",
+  "vm:lucida:cpus_utilization:max1d{target_id=00000000-0000-0000-0000-00000000aaaa}:2026-08-03T01:44:00Z/2026-08-03T02:44:00Z",
+  "vm:lucida:cpus_utilization:min1d{target_id=00000000-0000-0000-0000-00000000aaaa}:2026-08-03T01:44:00Z/2026-08-03T02:44:00Z",
+  "vm:lucida:cpus_utilization_max:avg1d{target_id=00000000-0000-0000-0000-00000000aaaa}:2026-08-03T01:44:00Z/2026-08-03T02:44:00Z",
+  "vm:lucida:cpus_utilization_max:max1d{target_id=00000000-0000-0000-0000-00000000aaaa}:2026-08-03T01:44:00Z/2026-08-03T02:44:00Z",
+  "vm:lucida:cpus_utilization_max:min1d{target_id=00000000-0000-0000-0000-00000000aaaa}:2026-08-03T01:44:00Z/2026-08-03T02:44:00Z",
+  "vm:lucida:cpus_utilization_min:avg1d{target_id=00000000-0000-0000-0000-00000000aaaa}:2026-08-03T01:44:00Z/2026-08-03T02:44:00Z",
+  "vm:lucida:cpus_utilization_min:max1d{target_id=00000000-0000-0000-0000-00000000aaaa}:2026-08-03T01:44:00Z/2026-08-03T02:44:00Z",
+  "vm:lucida:cpus_utilization_min:min1d{target_id=00000000-0000-0000-0000-00000000aaaa}:2026-08-03T01:44:00Z/2026-08-03T02:44:00Z",
+  "vm:lucida:disks_utilization:avg1d{target_id=00000000-0000-0000-0000-00000000aaaa}:2026-08-03T01:44:00Z/2026-08-03T02:44:00Z",
+  "vm:lucida:disks_utilization:max1d{target_id=00000000-0000-0000-0000-00000000aaaa}:2026-08-03T01:44:00Z/2026-08-03T02:44:00Z",
+  "vm:lucida:disks_utilization:min1d{target_id=00000000-0000-0000-0000-00000000aaaa}:2026-08-03T01:44:00Z/2026-08-03T02:44:00Z",
+  "vm:lucida:disks_utilization_max:avg1d{target_id=00000000-0000-0000-0000-00000000aaaa}:2026-08-03T01:44:00Z/2026-08-03T02:44:00Z",
+  "vm:lucida:disks_utilization_max:max1d{target_id=00000000-0000-0000-0000-00000000aaaa}:2026-08-03T01:44:00Z/2026-08-03T02:44:00Z",
+  "vm:lucida:disks_utilization_max:min1d{target_id=00000000-0000-0000-0000-00000000aaaa}:2026-08-03T01:44:00Z/2026-08-03T02:44:00Z",
+  "vm:lucida:disks_utilization_min:avg1d{target_id=00000000-0000-0000-0000-00000000aaaa}:2026-08-03T01:44:00Z/2026-08-03T02:44:00Z",
+  "vm:lucida:disks_utilization_min:max1d{target_id=00000000-0000-0000-0000-00000000aaaa}:2026-08-03T01:44:00Z/2026-08-03T02:44:00Z",
+  "vm:lucida:disks_utilization_min:min1d{target_id=00000000-0000-0000-0000-00000000aaaa}:2026-08-03T01:44:00Z/2026-08-03T02:44:00Z",
+  "vm:lucida:filesystems_usage:avg1d{target_id=00000000-0000-0000-0000-00000000aaaa}:2026-08-03T01:44:00Z/2026-08-03T02:44:00Z",
+  "vm:lucida:filesystems_usage:max1d{target_id=00000000-0000-0000-0000-00000000aaaa}:2026-08-03T01:44:00Z/2026-08-03T02:44:00Z",
+  "vm:scan{target_id=00000000-0000-0000-0000-00000000aaaa}:2026-08-03T02:44:00Z/2026-08-03T03:14:00Z"
+ ],
+ "scopes": [
+  {
+   "class": "shifted",
+   "total": 10,
+   "returned": 10,
+   "omitted": 0
+  },
+  {
+   "class": "appeared",
+   "total": 0,
+   "returned": 0,
+   "omitted": 0
+  },
+  {
+   "class": "disappeared",
+   "total": 39,
+   "returned": 20,
+   "omitted": 19
+  }
+ ]
+}

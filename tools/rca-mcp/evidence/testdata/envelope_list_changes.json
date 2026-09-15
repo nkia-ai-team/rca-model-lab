@@ -1,0 +1,35 @@
+{
+ "status": "normal",
+ "assessment_basis": "변경 유무는 사실 관측 — 정상/이상 판정 없음. 귀속은 3축 표기(scope·correlation·match_basis)이며 correlation=unique_inferred는 시각 근접 추정이다",
+ "summary": "창 [2026-08-03T02:44:00Z, 2026-08-03T03:14:00Z) 내 변경 0건(원본 0행, 제외 0행). 단, policy_deployments는 현재 상태 표라 과거 배포 부재의 근거가 못 된다.",
+ "findings": [
+  {
+   "counts": {
+    "excluded": 0,
+    "returned": 0,
+    "total_folded": 0,
+    "total_raw": 0
+   },
+   "coverage_note": "발단(2026-08-03T02:44:00Z) 기준 24시간 소급까지만 확인 — 그 이전 변경은 안 봤다. 더 보려면 from을 늘려라",
+   "hint_note": "대상 미지정 — 창 전역. target을 주면 귀속분이 위로 정렬된다",
+   "section": "summary_meta",
+   "source_notes": {
+    "policy_deployments": "current_state_not_history — 현재 남아 있으며 deployed_at이 이 창에 든 링크일 뿐 당시 부착 상태가 아니다. 재배포는 기존 링크를 지우고 새로 넣으므로 이 원천의 0건으로 '과거에 배포가 없었다'를 판정하면 안 된다"
+   },
+   "sources": {
+    "change_history": "조회함",
+    "collectors": "조회함",
+    "policy_deployments": "조회함"
+   },
+   "window": {
+    "basis": "to=인자, from=인자",
+    "from": "2026-08-03T02:44:00Z",
+    "to": "2026-08-03T03:14:00Z"
+   }
+  }
+ ],
+ "observed_range": {
+  "from": "2026-08-03T02:44:00Z",
+  "to": "2026-08-03T03:14:00Z"
+ }
+}

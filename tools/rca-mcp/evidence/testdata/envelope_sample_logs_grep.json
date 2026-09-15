@@ -1,0 +1,348 @@
+{
+ "status": "normal",
+ "assessment_basis": "raw 원문 반환 — 판정 없음, 독해는 조사자 몫",
+ "summary": "매치 12015줄 중 30줄 반환(query=\"e\", 시간순).",
+ "findings": [
+  {
+   "at": "2026-08-03 02:44:48.703251575",
+   "body": "Received payment event: {\"paymentId\":1123011,\"orderId\":1124088,\"amount\":28000,\"status\":\"APPROVED\"}",
+   "matched_by": "target_id",
+   "refs": [
+    "ch:lucida_logs_local:71bf7e79-5bbe-4a29-855d-26e1465ab1d6:2026-08-03 02:44:48.703251575:15324910179957895429"
+   ],
+   "relation": "match",
+   "severity": "INFO"
+  },
+  {
+   "at": "2026-08-03 02:44:48.703304103",
+   "body": "Sending payment notification: {\"paymentId\":1123011,\"orderId\":1124088,\"amount\":28000,\"status\":\"APPROVED\"}",
+   "matched_by": "target_id",
+   "refs": [
+    "ch:lucida_logs_local:71bf7e79-5bbe-4a29-855d-26e1465ab1d6:2026-08-03 02:44:48.703304103:6397877218871452910"
+   ],
+   "relation": "match",
+   "severity": "INFO"
+  },
+  {
+   "at": "2026-08-03 02:44:48.703310823",
+   "body": "Notification sent successfully for payment event",
+   "matched_by": "target_id",
+   "refs": [
+    "ch:lucida_logs_local:71bf7e79-5bbe-4a29-855d-26e1465ab1d6:2026-08-03 02:44:48.703310823:3413264263808057815"
+   ],
+   "relation": "match",
+   "severity": "INFO"
+  },
+  {
+   "at": "2026-08-03 02:44:48.709127260",
+   "body": "Received payment event: {\"paymentId\":1123012,\"orderId\":1124087,\"amount\":21973,\"status\":\"APPROVED\"}",
+   "matched_by": "target_id",
+   "refs": [
+    "ch:lucida_logs_local:71bf7e79-5bbe-4a29-855d-26e1465ab1d6:2026-08-03 02:44:48.709127260:3720074912609059170"
+   ],
+   "relation": "match",
+   "severity": "INFO"
+  },
+  {
+   "at": "2026-08-03 02:44:48.709158412",
+   "body": "Sending payment notification: {\"paymentId\":1123012,\"orderId\":1124087,\"amount\":21973,\"status\":\"APPROVED\"}",
+   "matched_by": "target_id",
+   "refs": [
+    "ch:lucida_logs_local:71bf7e79-5bbe-4a29-855d-26e1465ab1d6:2026-08-03 02:44:48.709158412:112290365532895202"
+   ],
+   "relation": "match",
+   "severity": "INFO"
+  },
+  {
+   "at": "2026-08-03 02:44:48.709164188",
+   "body": "Notification sent successfully for payment event",
+   "matched_by": "target_id",
+   "refs": [
+    "ch:lucida_logs_local:71bf7e79-5bbe-4a29-855d-26e1465ab1d6:2026-08-03 02:44:48.709164188:3413264263808057815"
+   ],
+   "relation": "match",
+   "severity": "INFO"
+  },
+  {
+   "at": "2026-08-03 02:44:48.712587000",
+   "body": "Received payment event: {\"paymentId\":1123013,\"orderId\":1124089,\"amount\":13903,\"status\":\"APPROVED\"}",
+   "matched_by": "target_id",
+   "refs": [
+    "ch:lucida_logs_local:71bf7e79-5bbe-4a29-855d-26e1465ab1d6:2026-08-03 02:44:48.712587000:15637740265897793671"
+   ],
+   "relation": "match",
+   "severity": "INFO"
+  },
+  {
+   "at": "2026-08-03 02:44:48.712625016",
+   "body": "Sending payment notification: {\"paymentId\":1123013,\"orderId\":1124089,\"amount\":13903,\"status\":\"APPROVED\"}",
+   "matched_by": "target_id",
+   "refs": [
+    "ch:lucida_logs_local:71bf7e79-5bbe-4a29-855d-26e1465ab1d6:2026-08-03 02:44:48.712625016:7360742069775003733"
+   ],
+   "relation": "match",
+   "severity": "INFO"
+  },
+  {
+   "at": "2026-08-03 02:44:48.712631688",
+   "body": "Notification sent successfully for payment event",
+   "matched_by": "target_id",
+   "refs": [
+    "ch:lucida_logs_local:71bf7e79-5bbe-4a29-855d-26e1465ab1d6:2026-08-03 02:44:48.712631688:3413264263808057815"
+   ],
+   "relation": "match",
+   "severity": "INFO"
+  },
+  {
+   "at": "2026-08-03 02:44:48.716198341",
+   "body": "Received payment event: {\"paymentId\":1123014,\"orderId\":1124090,\"amount\":26744,\"status\":\"APPROVED\"}",
+   "matched_by": "target_id",
+   "refs": [
+    "ch:lucida_logs_local:71bf7e79-5bbe-4a29-855d-26e1465ab1d6:2026-08-03 02:44:48.716198341:15783478592377216965"
+   ],
+   "relation": "match",
+   "severity": "INFO"
+  },
+  {
+   "at": "2026-08-03 02:44:48.716225749",
+   "body": "Sending payment notification: {\"paymentId\":1123014,\"orderId\":1124090,\"amount\":26744,\"status\":\"APPROVED\"}",
+   "matched_by": "target_id",
+   "refs": [
+    "ch:lucida_logs_local:71bf7e79-5bbe-4a29-855d-26e1465ab1d6:2026-08-03 02:44:48.716225749:8860211905597656793"
+   ],
+   "relation": "match",
+   "severity": "INFO"
+  },
+  {
+   "at": "2026-08-03 02:44:48.716231141",
+   "body": "Notification sent successfully for payment event",
+   "matched_by": "target_id",
+   "refs": [
+    "ch:lucida_logs_local:71bf7e79-5bbe-4a29-855d-26e1465ab1d6:2026-08-03 02:44:48.716231141:3413264263808057815"
+   ],
+   "relation": "match",
+   "severity": "INFO"
+  },
+  {
+   "at": "2026-08-03 02:44:49.555308478",
+   "body": "Received dispatch event: {\"dispatchId\":1123052,\"orderId\":1124089,\"status\":\"ASSIGNED\",\"eventType\":\"DISPATCH_ASSIGNED\"}",
+   "matched_by": "target_id",
+   "refs": [
+    "ch:lucida_logs_local:71bf7e79-5bbe-4a29-855d-26e1465ab1d6:2026-08-03 02:44:49.555308478:18274570088409004733"
+   ],
+   "relation": "match",
+   "severity": "INFO"
+  },
+  {
+   "at": "2026-08-03 02:44:49.555693999",
+   "body": "Sending dispatch notification: {\"dispatchId\":1123052,\"orderId\":1124089,\"status\":\"ASSIGNED\",\"eventType\":\"DISPATCH_ASSIGNED\"}",
+   "matched_by": "target_id",
+   "refs": [
+    "ch:lucida_logs_local:71bf7e79-5bbe-4a29-855d-26e1465ab1d6:2026-08-03 02:44:49.555693999:18349738095961289555"
+   ],
+   "relation": "match",
+   "severity": "INFO"
+  },
+  {
+   "at": "2026-08-03 02:44:49.555703615",
+   "body": "Notification sent successfully for dispatch event",
+   "matched_by": "target_id",
+   "refs": [
+    "ch:lucida_logs_local:71bf7e79-5bbe-4a29-855d-26e1465ab1d6:2026-08-03 02:44:49.555703615:7533030251353138528"
+   ],
+   "relation": "match",
+   "severity": "INFO"
+  },
+  {
+   "at": "2026-08-03 02:44:49.560308176",
+   "body": "Received dispatch event: {\"dispatchId\":1123053,\"orderId\":1124090,\"status\":\"ASSIGNED\",\"eventType\":\"DISPATCH_ASSIGNED\"}",
+   "matched_by": "target_id",
+   "refs": [
+    "ch:lucida_logs_local:71bf7e79-5bbe-4a29-855d-26e1465ab1d6:2026-08-03 02:44:49.560308176:12460730510970432664"
+   ],
+   "relation": "match",
+   "severity": "INFO"
+  },
+  {
+   "at": "2026-08-03 02:44:49.560463024",
+   "body": "Sending dispatch notification: {\"dispatchId\":1123053,\"orderId\":1124090,\"status\":\"ASSIGNED\",\"eventType\":\"DISPATCH_ASSIGNED\"}",
+   "matched_by": "target_id",
+   "refs": [
+    "ch:lucida_logs_local:71bf7e79-5bbe-4a29-855d-26e1465ab1d6:2026-08-03 02:44:49.560463024:13009695519799716871"
+   ],
+   "relation": "match",
+   "severity": "INFO"
+  },
+  {
+   "at": "2026-08-03 02:44:49.560482016",
+   "body": "Notification sent successfully for dispatch event",
+   "matched_by": "target_id",
+   "refs": [
+    "ch:lucida_logs_local:71bf7e79-5bbe-4a29-855d-26e1465ab1d6:2026-08-03 02:44:49.560482016:7533030251353138528"
+   ],
+   "relation": "match",
+   "severity": "INFO"
+  },
+  {
+   "at": "2026-08-03 02:44:49.771156282",
+   "body": "Received order event: {\"orderId\":1124090,\"customerId\":\"cust-921\",\"restaurantId\":21,\"totalAmount\":26744,\"status\":\"PENDING\"}",
+   "matched_by": "target_id",
+   "refs": [
+    "ch:lucida_logs_local:71bf7e79-5bbe-4a29-855d-26e1465ab1d6:2026-08-03 02:44:49.771156282:5204623643446341960"
+   ],
+   "relation": "match",
+   "severity": "INFO"
+  },
+  {
+   "at": "2026-08-03 02:44:49.771215738",
+   "body": "Sending order notification: {\"orderId\":1124090,\"customerId\":\"cust-921\",\"restaurantId\":21,\"totalAmount\":26744,\"status\":\"PENDING\"}",
+   "matched_by": "target_id",
+   "refs": [
+    "ch:lucida_logs_local:71bf7e79-5bbe-4a29-855d-26e1465ab1d6:2026-08-03 02:44:49.771215738:12829717307680608448"
+   ],
+   "relation": "match",
+   "severity": "INFO"
+  },
+  {
+   "at": "2026-08-03 02:44:49.771223690",
+   "body": "Notification sent successfully for order event",
+   "matched_by": "target_id",
+   "refs": [
+    "ch:lucida_logs_local:71bf7e79-5bbe-4a29-855d-26e1465ab1d6:2026-08-03 02:44:49.771223690:15483116791988301106"
+   ],
+   "relation": "match",
+   "severity": "INFO"
+  },
+  {
+   "at": "2026-08-03 02:44:52.723249508",
+   "body": "Received payment event: {\"paymentId\":1123015,\"orderId\":1124091,\"amount\":37794,\"status\":\"APPROVED\"}",
+   "matched_by": "target_id",
+   "refs": [
+    "ch:lucida_logs_local:71bf7e79-5bbe-4a29-855d-26e1465ab1d6:2026-08-03 02:44:52.723249508:15998390090295856396"
+   ],
+   "relation": "match",
+   "severity": "INFO"
+  },
+  {
+   "at": "2026-08-03 02:44:52.723301092",
+   "body": "Sending payment notification: {\"paymentId\":1123015,\"orderId\":1124091,\"amount\":37794,\"status\":\"APPROVED\"}",
+   "matched_by": "target_id",
+   "refs": [
+    "ch:lucida_logs_local:71bf7e79-5bbe-4a29-855d-26e1465ab1d6:2026-08-03 02:44:52.723301092:17933892778214307089"
+   ],
+   "relation": "match",
+   "severity": "INFO"
+  },
+  {
+   "at": "2026-08-03 02:44:52.723310452",
+   "body": "Notification sent successfully for payment event",
+   "matched_by": "target_id",
+   "refs": [
+    "ch:lucida_logs_local:71bf7e79-5bbe-4a29-855d-26e1465ab1d6:2026-08-03 02:44:52.723310452:3413264263808057815"
+   ],
+   "relation": "match",
+   "severity": "INFO"
+  },
+  {
+   "at": "2026-08-03 02:44:53.569235813",
+   "body": "Received dispatch event: {\"dispatchId\":1123054,\"orderId\":1124091,\"status\":\"ASSIGNED\",\"eventType\":\"DISPATCH_ASSIGNED\"}",
+   "matched_by": "target_id",
+   "refs": [
+    "ch:lucida_logs_local:71bf7e79-5bbe-4a29-855d-26e1465ab1d6:2026-08-03 02:44:53.569235813:13230356731152704257"
+   ],
+   "relation": "match",
+   "severity": "INFO"
+  },
+  {
+   "at": "2026-08-03 02:44:53.569292390",
+   "body": "Sending dispatch notification: {\"dispatchId\":1123054,\"orderId\":1124091,\"status\":\"ASSIGNED\",\"eventType\":\"DISPATCH_ASSIGNED\"}",
+   "matched_by": "target_id",
+   "refs": [
+    "ch:lucida_logs_local:71bf7e79-5bbe-4a29-855d-26e1465ab1d6:2026-08-03 02:44:53.569292390:5242113385782184223"
+   ],
+   "relation": "match",
+   "severity": "INFO"
+  },
+  {
+   "at": "2026-08-03 02:44:53.569300102",
+   "body": "Notification sent successfully for dispatch event",
+   "matched_by": "target_id",
+   "refs": [
+    "ch:lucida_logs_local:71bf7e79-5bbe-4a29-855d-26e1465ab1d6:2026-08-03 02:44:53.569300102:7533030251353138528"
+   ],
+   "relation": "match",
+   "severity": "INFO"
+  },
+  {
+   "at": "2026-08-03 02:44:53.778222893",
+   "body": "Received order event: {\"orderId\":1124091,\"customerId\":\"cust-223\",\"restaurantId\":34,\"totalAmount\":37794,\"status\":\"PENDING\"}",
+   "matched_by": "target_id",
+   "refs": [
+    "ch:lucida_logs_local:71bf7e79-5bbe-4a29-855d-26e1465ab1d6:2026-08-03 02:44:53.778222893:7061984382442517663"
+   ],
+   "relation": "match",
+   "severity": "INFO"
+  },
+  {
+   "at": "2026-08-03 02:44:53.778279757",
+   "body": "Sending order notification: {\"orderId\":1124091,\"customerId\":\"cust-223\",\"restaurantId\":34,\"totalAmount\":37794,\"status\":\"PENDING\"}",
+   "matched_by": "target_id",
+   "refs": [
+    "ch:lucida_logs_local:71bf7e79-5bbe-4a29-855d-26e1465ab1d6:2026-08-03 02:44:53.778279757:17714265039190710010"
+   ],
+   "relation": "match",
+   "severity": "INFO"
+  },
+  {
+   "at": "2026-08-03 02:44:53.778284301",
+   "body": "Notification sent successfully for order event",
+   "matched_by": "target_id",
+   "refs": [
+    "ch:lucida_logs_local:71bf7e79-5bbe-4a29-855d-26e1465ab1d6:2026-08-03 02:44:53.778284301:15483116791988301106"
+   ],
+   "relation": "match",
+   "severity": "INFO"
+  }
+ ],
+ "truncated": true,
+ "refs": [
+  "ch:lucida_logs_local:71bf7e79-5bbe-4a29-855d-26e1465ab1d6:2026-08-03 02:44:48.703251575:15324910179957895429",
+  "ch:lucida_logs_local:71bf7e79-5bbe-4a29-855d-26e1465ab1d6:2026-08-03 02:44:48.703304103:6397877218871452910",
+  "ch:lucida_logs_local:71bf7e79-5bbe-4a29-855d-26e1465ab1d6:2026-08-03 02:44:48.703310823:3413264263808057815",
+  "ch:lucida_logs_local:71bf7e79-5bbe-4a29-855d-26e1465ab1d6:2026-08-03 02:44:48.709127260:3720074912609059170",
+  "ch:lucida_logs_local:71bf7e79-5bbe-4a29-855d-26e1465ab1d6:2026-08-03 02:44:48.709158412:112290365532895202",
+  "ch:lucida_logs_local:71bf7e79-5bbe-4a29-855d-26e1465ab1d6:2026-08-03 02:44:48.709164188:3413264263808057815",
+  "ch:lucida_logs_local:71bf7e79-5bbe-4a29-855d-26e1465ab1d6:2026-08-03 02:44:48.712587000:15637740265897793671",
+  "ch:lucida_logs_local:71bf7e79-5bbe-4a29-855d-26e1465ab1d6:2026-08-03 02:44:48.712625016:7360742069775003733",
+  "ch:lucida_logs_local:71bf7e79-5bbe-4a29-855d-26e1465ab1d6:2026-08-03 02:44:48.712631688:3413264263808057815",
+  "ch:lucida_logs_local:71bf7e79-5bbe-4a29-855d-26e1465ab1d6:2026-08-03 02:44:48.716198341:15783478592377216965",
+  "ch:lucida_logs_local:71bf7e79-5bbe-4a29-855d-26e1465ab1d6:2026-08-03 02:44:48.716225749:8860211905597656793",
+  "ch:lucida_logs_local:71bf7e79-5bbe-4a29-855d-26e1465ab1d6:2026-08-03 02:44:48.716231141:3413264263808057815",
+  "ch:lucida_logs_local:71bf7e79-5bbe-4a29-855d-26e1465ab1d6:2026-08-03 02:44:49.555308478:18274570088409004733",
+  "ch:lucida_logs_local:71bf7e79-5bbe-4a29-855d-26e1465ab1d6:2026-08-03 02:44:49.555693999:18349738095961289555",
+  "ch:lucida_logs_local:71bf7e79-5bbe-4a29-855d-26e1465ab1d6:2026-08-03 02:44:49.555703615:7533030251353138528",
+  "ch:lucida_logs_local:71bf7e79-5bbe-4a29-855d-26e1465ab1d6:2026-08-03 02:44:49.560308176:12460730510970432664",
+  "ch:lucida_logs_local:71bf7e79-5bbe-4a29-855d-26e1465ab1d6:2026-08-03 02:44:49.560463024:13009695519799716871",
+  "ch:lucida_logs_local:71bf7e79-5bbe-4a29-855d-26e1465ab1d6:2026-08-03 02:44:49.560482016:7533030251353138528",
+  "ch:lucida_logs_local:71bf7e79-5bbe-4a29-855d-26e1465ab1d6:2026-08-03 02:44:49.771156282:5204623643446341960",
+  "ch:lucida_logs_local:71bf7e79-5bbe-4a29-855d-26e1465ab1d6:2026-08-03 02:44:49.771215738:12829717307680608448",
+  "ch:lucida_logs_local:71bf7e79-5bbe-4a29-855d-26e1465ab1d6:2026-08-03 02:44:49.771223690:15483116791988301106",
+  "ch:lucida_logs_local:71bf7e79-5bbe-4a29-855d-26e1465ab1d6:2026-08-03 02:44:52.723249508:15998390090295856396",
+  "ch:lucida_logs_local:71bf7e79-5bbe-4a29-855d-26e1465ab1d6:2026-08-03 02:44:52.723301092:17933892778214307089",
+  "ch:lucida_logs_local:71bf7e79-5bbe-4a29-855d-26e1465ab1d6:2026-08-03 02:44:52.723310452:3413264263808057815",
+  "ch:lucida_logs_local:71bf7e79-5bbe-4a29-855d-26e1465ab1d6:2026-08-03 02:44:53.569235813:13230356731152704257",
+  "ch:lucida_logs_local:71bf7e79-5bbe-4a29-855d-26e1465ab1d6:2026-08-03 02:44:53.569292390:5242113385782184223",
+  "ch:lucida_logs_local:71bf7e79-5bbe-4a29-855d-26e1465ab1d6:2026-08-03 02:44:53.569300102:7533030251353138528",
+  "ch:lucida_logs_local:71bf7e79-5bbe-4a29-855d-26e1465ab1d6:2026-08-03 02:44:53.778222893:7061984382442517663",
+  "ch:lucida_logs_local:71bf7e79-5bbe-4a29-855d-26e1465ab1d6:2026-08-03 02:44:53.778279757:17714265039190710010",
+  "ch:lucida_logs_local:71bf7e79-5bbe-4a29-855d-26e1465ab1d6:2026-08-03 02:44:53.778284301:15483116791988301106"
+ ],
+ "scopes": [
+  {
+   "class": "grep",
+   "total": 12015,
+   "returned": 30,
+   "omitted": 11985
+  }
+ ]
+}

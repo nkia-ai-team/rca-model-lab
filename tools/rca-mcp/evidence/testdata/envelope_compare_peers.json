@@ -1,0 +1,82 @@
+{
+ "status": "no_data",
+ "no_data_reason": "unknown",
+ "assessment_basis": "각 대상 자기 기준선 대비 robust z≥3 지속 이탈(연속 3버킷 중 2, §5·§6 척도 공유) — 이탈자 수 대조. 값 크기 비교·좋고 나쁨 판정 없음. normal은 건강을 뜻하지 않는다.",
+ "summary": "lucida:disks_utilization_max:max1h: 비교 가능한 또래 없음, 제외 6개(관측 없음·간헐·기준선 없음). 또래 근거: 같은 유형 전체(약함 — 도메인 혼재), 후보 6개. → **undecidable**",
+ "findings": [
+  {
+   "class": "verdict",
+   "comparison_scope": "observed_peers_only",
+   "note": "비교 가능한 또래가 없다 — 또래 축으로는 답이 나오지 않는다. 다른 축으로 가라.",
+   "peers_compared": 0,
+   "peers_deviating": 0,
+   "peers_eligible": 6,
+   "peers_excluded": {
+    "no_observation": 6
+   },
+   "self_deviating": false,
+   "verdict": "undecidable"
+  },
+  {
+   "basis": "type_fallback",
+   "candidates_total": 6,
+   "class": "peer_set",
+   "confidence": "low",
+   "judged": 6,
+   "membership_snapshot": "current",
+   "status_filter": "미적용(생존자 편향 방지)",
+   "target_type": "server",
+   "warning": "같은 유형 전체 — 한 클러스터에 업무 도메인이 혼재한다. 다른 도메인의 대상을 또래로 세고 있을 수 있다(약한 비교)."
+  },
+  {
+   "class": "self",
+   "deviating": false,
+   "excluded": "no_observation",
+   "observed": false,
+   "refs": [
+    "vm:lucida:disks_utilization_max:max1h{target_id=0a31a65d-3920-4198-8d8c-034ed1a33bc7}:2026-08-03T02:44:00Z/2026-08-03T03:14:00Z"
+   ],
+   "samples": 0,
+   "target_id": "0a31a65d-3920-4198-8d8c-034ed1a33bc7"
+  },
+  {
+   "class": "peers_excluded",
+   "count": 6,
+   "note": "창 내 이 지표 표본 0 — 진짜 0이 아니라 미관측이다. 정상 또래로 세지 않았다. 수집 결손인지 미적용인지는 get_data_coverage로 판별하라.",
+   "reason": "no_observation",
+   "target_ids": [
+    "515fba8f-f6ab-4efc-affd-9d263fe36b6c",
+    "52008654-58c5-4083-8f8b-a9f59fd53466",
+    "7946cf87-60e2-47de-a7be-89b1bd0977ad",
+    "828413c9-5210-42b5-a6a1-68ad42d3ca78",
+    "a0a6668c-f22e-429f-8733-839766878e12"
+   ]
+  },
+  {
+   "baseline_thin": true,
+   "baseline_window": "2026-08-03T01:44:00Z/2026-08-03T02:44:00Z",
+   "bucket_seconds": 30,
+   "class": "compare_meta",
+   "metric": "lucida:disks_utilization_max:max1h",
+   "next_step": "선후(누가 먼저 이탈했나)는 read_timeseries가 계산한다 — 이 도구는 하지 않는다.",
+   "time_basis": "metric_source_time",
+   "value_kind": "gauge"
+  }
+ ],
+ "observed_range": {
+  "from": "2026-08-03T02:44:00Z",
+  "to": "2026-08-03T03:14:00Z"
+ },
+ "refs": [
+  "vm:lucida:disks_utilization_max:max1h{target_id=0a31a65d-3920-4198-8d8c-034ed1a33bc7}:2026-08-03T02:44:00Z/2026-08-03T03:14:00Z"
+ ],
+ "scopes": [
+  {
+   "class": "peer",
+   "metric": "lucida:disks_utilization_max:max1h",
+   "total": 6,
+   "returned": 6,
+   "omitted": 0
+  }
+ ]
+}

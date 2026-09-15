@@ -1,0 +1,30 @@
+# 평가 케이스 복원용 격리 DB 세트 — 정본 절차는
+# /data/eval-cases/runbook-eval-case-restore.md (§1).
+#
+# ⚠ lucida-next의 docker-compose.yml 재사용 금지 — ingest·워커가 복원본에
+#   되써서 평가 입력이 오염된다. 여기는 DB 3개뿐이다.
+# 포트는 기본 0(Docker가 빈 포트를 배정), loopback 전용이다.
+# 필요시 RCA_VM_PORT/RCA_CH_PORT/RCA_PG_PORT로 명시 지정한다.
+# 실제 주소는 compose port로 확인하고 connections.json으로 전달한다.
+# 이미지 버전은 운영과 동일(runbook 2026-07-14 기준 lucida-next 실값).
+services:
+  victoriametrics:
+    image: victoriametrics/victoria-metrics:v1.97.1
+    # ⚠ 필수 — 기본 보존기간(1개월)보다 오래된 타임스탬프는 import 시
+    #   조용히 버려진다(무증상 유실). runbook §1 함정.
+    command: ["-retentionPeriod=100y"]
+    ports: ["127.0.0.1:${RCA_VM_PORT:-0}:8428"]
+  clickhouse:
+    image: clickhouse/clickhouse-server:24.3
+    environment:
+      CLICKHOUSE_DB: lucida
+      CLICKHOUSE_USER: lucida
+      CLICKHOUSE_PASSWORD: lucida123
+    ports: ["127.0.0.1:${RCA_CH_PORT:-0}:8123"]
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: lucida
+      POSTGRES_USER: lucida
+      POSTGRES_PASSWORD: lucida123
+    ports: ["127.0.0.1:${RCA_PG_PORT:-0}:5432"]

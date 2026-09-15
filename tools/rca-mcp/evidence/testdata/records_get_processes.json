@@ -1,0 +1,248 @@
+[
+ {
+  "EID": "EIX-0001",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "process",
+  "RecordKind": "finding",
+  "FindingClass": "get_processes/process",
+  "EntityKey": "mongod|1258372",
+  "Headline": "프로세스 mongod(pid 1258372) 점유 0.156, 평균값 142",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "share",
+   "Metric": "share",
+   "Observed": 0.15649019623649124,
+   "Baseline": null,
+   "Magnitude": 0.15649019623649124,
+   "Direction": "n/a"
+  },
+  "Window": {
+   "From": "2026-08-03T02:44:00Z",
+   "To": "2026-08-03T03:14:00Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "observed"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "normal",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "low"
+  },
+  "Provenance": {
+   "Source": "get_processes",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-0e83de7b5d89"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "vm:sms.process.cpu_utilization{target_id=515fba8f-f6ab-4efc-affd-9d263fe36b6c,name=mongod,pid=1258372}:2026-08-03T02:44:00Z/2026-08-03T03:14:00Z"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": true,
+   "OmittedN": 52
+  }
+ },
+ {
+  "EID": "EIX-0002",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "process",
+  "RecordKind": "finding",
+  "FindingClass": "get_processes/process",
+  "EntityKey": "java|1257629",
+  "Headline": "프로세스 java(pid 1257629) 점유 0.146, 평균값 132",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "share",
+   "Metric": "share",
+   "Observed": 0.14583845397149472,
+   "Baseline": null,
+   "Magnitude": 0.14583845397149472,
+   "Direction": "n/a"
+  },
+  "Window": {
+   "From": "2026-08-03T02:44:00Z",
+   "To": "2026-08-03T03:14:00Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "observed"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "normal",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "low"
+  },
+  "Provenance": {
+   "Source": "get_processes",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-edf89cf31c90"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "vm:sms.process.cpu_utilization{target_id=515fba8f-f6ab-4efc-affd-9d263fe36b6c,name=java,pid=1257629}:2026-08-03T02:44:00Z/2026-08-03T03:14:00Z"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": true,
+   "OmittedN": 52
+  }
+ },
+ {
+  "EID": "EIX-0003",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "process",
+  "RecordKind": "finding",
+  "FindingClass": "get_processes/process",
+  "EntityKey": "java|1300565",
+  "Headline": "프로세스 java(pid 1300565) 점유 0.124, 평균값 112",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "share",
+   "Metric": "share",
+   "Observed": 0.12413677762800462,
+   "Baseline": null,
+   "Magnitude": 0.12413677762800462,
+   "Direction": "n/a"
+  },
+  "Window": {
+   "From": "2026-08-03T02:44:00Z",
+   "To": "2026-08-03T03:14:00Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "observed"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "normal",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "low"
+  },
+  "Provenance": {
+   "Source": "get_processes",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-2d938f81701e"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "vm:sms.process.cpu_utilization{target_id=515fba8f-f6ab-4efc-affd-9d263fe36b6c,name=java,pid=1300565}:2026-08-03T02:44:00Z/2026-08-03T03:14:00Z"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": true,
+   "OmittedN": 52
+  }
+ },
+ {
+  "EID": "EIX-0004",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "process",
+  "RecordKind": "query_scope",
+  "FindingClass": "get_processes/process",
+  "EntityKey": "*",
+  "Headline": "조회 범위 get_processes/process(process): 총 55건 중 3건 반환, 52건 미확인",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "count",
+   "Metric": "share",
+   "Observed": null,
+   "Baseline": null,
+   "Magnitude": null,
+   "Direction": "n/a"
+  },
+  "Window": {
+   "From": "2026-08-03T02:44:00Z",
+   "To": "2026-08-03T03:14:00Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "observed"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "normal",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "low"
+  },
+  "Provenance": {
+   "Source": "get_processes",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-2adfc26f7968"
+  },
+  "Scope": {
+   "Selector": {
+    "Source": "get_processes",
+    "TargetID": "11111111-2222-3333-4444-555555555555",
+    "Aspect": "process",
+    "Metric": "share",
+    "EntityKey": "*",
+    "Window": "full"
+   },
+   "Total": 55,
+   "Returned": 3,
+   "Omitted": 52
+  },
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": null,
+  "Masked": null,
+  "Truncation": {
+   "Truncated": true,
+   "OmittedN": 52
+  }
+ }
+]

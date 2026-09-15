@@ -1,0 +1,737 @@
+[
+ {
+  "EID": "EIX-0001",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "db",
+  "RecordKind": "finding",
+  "FindingClass": "db_slow_queries/sql",
+  "EntityKey": "470as8m1vuxbs",
+  "Headline": "느린 쿼리 470as8m1vuxbs(oracle) p50 78.3ms / 기준선 71.2ms, 판정 chronic",
+  "RawExcerpt": "select oe1_0.id,oe1_0.aggregate_id,oe1_0.aggregate_type,oe1_0.created_at,oe1_0.event_type,oe1_0.payload,oe1_0.published_at,oe1_0.topic from outbox_events oe1_0 where oe1_0.published_at is null order …",
+  "Effect": {
+   "Kind": "ratio",
+   "Metric": "latency_ms_p50",
+   "Observed": 78.323,
+   "Baseline": 71.173,
+   "Magnitude": 1.1,
+   "Direction": "up"
+  },
+  "Window": {
+   "From": "2026-08-03T02:44:26Z",
+   "To": "2026-08-03T03:15:26Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "observed"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": 30,
+   "Status": "normal",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "low"
+  },
+  "Provenance": {
+   "Source": "db_slow_queries",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-0e12ce911cf9"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:dpm_topsql_local:00149c2f-8a97-43bf-8907-c25029973e51:sql:470as8m1vuxbs",
+   "pg:db_sql_text:00149c2f-8a97-43bf-8907-c25029973e51:470as8m1vuxbs",
+   "pg:db_sql_plan:00149c2f-8a97-43bf-8907-c25029973e51:470as8m1vuxbs"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": true,
+   "OmittedN": 8
+  }
+ },
+ {
+  "EID": "EIX-0002",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "db",
+  "RecordKind": "finding",
+  "FindingClass": "db_slow_queries/sql",
+  "EntityKey": "bj2byjf4a2w3c",
+  "Headline": "느린 쿼리 bj2byjf4a2w3c(oracle) p50 25.8ms / 기준선 22.9ms, 판정 chronic",
+  "RawExcerpt": "select t1_0.id,t1_0.amount,t1_0.created_at,t1_0.from_account,t1_0.order_id,t1_0.status,t1_0.to_account,t1_0.transfer_ref from transfers t1_0 where (:1 is null or t1_0.from_account=:2 ) and (:3 is nul…",
+  "Effect": {
+   "Kind": "ratio",
+   "Metric": "latency_ms_p50",
+   "Observed": 25.818,
+   "Baseline": 22.93,
+   "Magnitude": 1.126,
+   "Direction": "up"
+  },
+  "Window": {
+   "From": "2026-08-03T02:44:26Z",
+   "To": "2026-08-03T03:15:26Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "observed"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": 30,
+   "Status": "normal",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "low"
+  },
+  "Provenance": {
+   "Source": "db_slow_queries",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-0e12ce911cf9"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:dpm_topsql_local:00149c2f-8a97-43bf-8907-c25029973e51:sql:bj2byjf4a2w3c",
+   "pg:db_sql_text:00149c2f-8a97-43bf-8907-c25029973e51:bj2byjf4a2w3c",
+   "pg:db_sql_plan:00149c2f-8a97-43bf-8907-c25029973e51:bj2byjf4a2w3c"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": true,
+   "OmittedN": 8
+  }
+ },
+ {
+  "EID": "EIX-0003",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "db",
+  "RecordKind": "finding",
+  "FindingClass": "db_slow_queries/sql",
+  "EntityKey": "ggrfcy439k2xd",
+  "Headline": "느린 쿼리 ggrfcy439k2xd(oracle) p50 0.1ms / 기준선 0.095ms, 판정 chronic",
+  "RawExcerpt": "select a1_0.id,a1_0.balance,a1_0.holder,a1_0.status from accounts a1_0 where a1_0.id=:1 for update",
+  "Effect": {
+   "Kind": "ratio",
+   "Metric": "latency_ms_p50",
+   "Observed": 0.1,
+   "Baseline": 0.095,
+   "Magnitude": 1.046,
+   "Direction": "up"
+  },
+  "Window": {
+   "From": "2026-08-03T02:44:26Z",
+   "To": "2026-08-03T03:15:26Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "observed"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": 30,
+   "Status": "normal",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "low"
+  },
+  "Provenance": {
+   "Source": "db_slow_queries",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-0e12ce911cf9"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:dpm_topsql_local:00149c2f-8a97-43bf-8907-c25029973e51:sql:ggrfcy439k2xd",
+   "pg:db_sql_text:00149c2f-8a97-43bf-8907-c25029973e51:ggrfcy439k2xd",
+   "pg:db_sql_plan:00149c2f-8a97-43bf-8907-c25029973e51:ggrfcy439k2xd"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": true,
+   "OmittedN": 8
+  }
+ },
+ {
+  "EID": "EIX-0004",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "db",
+  "RecordKind": "finding",
+  "FindingClass": "db_slow_queries/sql",
+  "EntityKey": "fhtu9mbkc9gsg",
+  "Headline": "느린 쿼리 fhtu9mbkc9gsg(oracle) p50 72.9ms / 기준선 74.2ms, 판정 stable",
+  "RawExcerpt": "select count(*) from banking.outbox_events where published_at is null",
+  "Effect": {
+   "Kind": "ratio",
+   "Metric": "latency_ms_p50",
+   "Observed": 72.895,
+   "Baseline": 74.162,
+   "Magnitude": 0.983,
+   "Direction": "down"
+  },
+  "Window": {
+   "From": "2026-08-03T02:44:26Z",
+   "To": "2026-08-03T03:15:26Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "observed"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": 30,
+   "Status": "normal",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "low"
+  },
+  "Provenance": {
+   "Source": "db_slow_queries",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-0e12ce911cf9"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:dpm_topsql_local:00149c2f-8a97-43bf-8907-c25029973e51:sql:fhtu9mbkc9gsg",
+   "pg:db_sql_text:00149c2f-8a97-43bf-8907-c25029973e51:fhtu9mbkc9gsg",
+   "pg:db_sql_plan:00149c2f-8a97-43bf-8907-c25029973e51:fhtu9mbkc9gsg"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": true,
+   "OmittedN": 8
+  }
+ },
+ {
+  "EID": "EIX-0005",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "db",
+  "RecordKind": "finding",
+  "FindingClass": "db_slow_queries/sql",
+  "EntityKey": "2nfgkpu2q8jqw",
+  "Headline": "느린 쿼리 2nfgkpu2q8jqw(oracle) p50 0.073ms / 기준선 0.072ms, 판정 chronic",
+  "RawExcerpt": "select a1_0.id,a1_0.balance,a1_0.holder,a1_0.status from accounts a1_0 where a1_0.id=:1",
+  "Effect": {
+   "Kind": "ratio",
+   "Metric": "latency_ms_p50",
+   "Observed": 0.073,
+   "Baseline": 0.072,
+   "Magnitude": 1.011,
+   "Direction": "up"
+  },
+  "Window": {
+   "From": "2026-08-03T02:44:26Z",
+   "To": "2026-08-03T03:15:26Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "observed"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": 30,
+   "Status": "normal",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "low"
+  },
+  "Provenance": {
+   "Source": "db_slow_queries",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-0e12ce911cf9"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:dpm_topsql_local:00149c2f-8a97-43bf-8907-c25029973e51:sql:2nfgkpu2q8jqw",
+   "pg:db_sql_text:00149c2f-8a97-43bf-8907-c25029973e51:2nfgkpu2q8jqw",
+   "pg:db_sql_plan:00149c2f-8a97-43bf-8907-c25029973e51:2nfgkpu2q8jqw"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": true,
+   "OmittedN": 8
+  }
+ },
+ {
+  "EID": "EIX-0006",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "db",
+  "RecordKind": "finding",
+  "FindingClass": "db_slow_queries/sql",
+  "EntityKey": "dgurkh0f3amjb",
+  "Headline": "느린 쿼리 dgurkh0f3amjb(oracle) p50 29.5ms / 기준선 28.6ms, 판정 chronic",
+  "RawExcerpt": "SELECT S.SID, S.USERNAME, S.PROGRAM, CASE WHEN L.REQUEST = 0 THEN NVL(S.SQL_ID, S.PREV_SQL_ID) ELSE S.SQL_ID END, S.SQL_CHILD_NUMBER, ROUND((SYSDATE - S.SQL_EXEC_START)*24*60*60*1000, 3), S.WAIT_TIME…",
+  "Effect": {
+   "Kind": "ratio",
+   "Metric": "latency_ms_p50",
+   "Observed": 29.54,
+   "Baseline": 28.594,
+   "Magnitude": 1.033,
+   "Direction": "up"
+  },
+  "Window": {
+   "From": "2026-08-03T02:44:26Z",
+   "To": "2026-08-03T03:15:26Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "observed"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": 30,
+   "Status": "normal",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "low"
+  },
+  "Provenance": {
+   "Source": "db_slow_queries",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-0e12ce911cf9"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:dpm_topsql_local:00149c2f-8a97-43bf-8907-c25029973e51:sql:dgurkh0f3amjb",
+   "pg:db_sql_text:00149c2f-8a97-43bf-8907-c25029973e51:dgurkh0f3amjb",
+   "pg:db_sql_plan:00149c2f-8a97-43bf-8907-c25029973e51:dgurkh0f3amjb"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": true,
+   "OmittedN": 8
+  }
+ },
+ {
+  "EID": "EIX-0007",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "db",
+  "RecordKind": "finding",
+  "FindingClass": "db_slow_queries/sql",
+  "EntityKey": "3p52tpw4mmjwf",
+  "Headline": "느린 쿼리 3p52tpw4mmjwf(oracle) p50 0.165ms / 기준선 0.201ms, 판정 stable",
+  "RawExcerpt": "update outbox_events set aggregate_id=:1 ,aggregate_type=:2 ,event_type=:3 ,published_at=:4 ,topic=:5 ,payload=:6 where id=:7",
+  "Effect": {
+   "Kind": "ratio",
+   "Metric": "latency_ms_p50",
+   "Observed": 0.165,
+   "Baseline": 0.201,
+   "Magnitude": 0.82,
+   "Direction": "down"
+  },
+  "Window": {
+   "From": "2026-08-03T02:44:26Z",
+   "To": "2026-08-03T03:15:26Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "observed"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": 30,
+   "Status": "normal",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "low"
+  },
+  "Provenance": {
+   "Source": "db_slow_queries",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-0e12ce911cf9"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:dpm_topsql_local:00149c2f-8a97-43bf-8907-c25029973e51:sql:3p52tpw4mmjwf",
+   "pg:db_sql_text:00149c2f-8a97-43bf-8907-c25029973e51:3p52tpw4mmjwf",
+   "pg:db_sql_plan:00149c2f-8a97-43bf-8907-c25029973e51:3p52tpw4mmjwf"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": true,
+   "OmittedN": 8
+  }
+ },
+ {
+  "EID": "EIX-0008",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "db",
+  "RecordKind": "finding",
+  "FindingClass": "db_slow_queries/sql",
+  "EntityKey": "gj6a6m00xmg4h",
+  "Headline": "느린 쿼리 gj6a6m00xmg4h(oracle) p50 11.6ms / 기준선 11.5ms, 판정 chronic",
+  "RawExcerpt": "WITH enq AS ( SELECT SUM(CUM_WAIT_TIME) AS wait_time, SUM(TOTAL_REQ#) AS total_request, SUM(FAILED_REQ#) AS fail FROM v$enqueue_statistics ) SELECT stat_id, value FROM v$sys_time_model WHERE stat_id …",
+  "Effect": {
+   "Kind": "ratio",
+   "Metric": "latency_ms_p50",
+   "Observed": 11.639,
+   "Baseline": 11.514,
+   "Magnitude": 1.011,
+   "Direction": "up"
+  },
+  "Window": {
+   "From": "2026-08-03T02:44:26Z",
+   "To": "2026-08-03T03:15:26Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "observed"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": 30,
+   "Status": "normal",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "low"
+  },
+  "Provenance": {
+   "Source": "db_slow_queries",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-0e12ce911cf9"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:dpm_topsql_local:00149c2f-8a97-43bf-8907-c25029973e51:sql:gj6a6m00xmg4h",
+   "pg:db_sql_text:00149c2f-8a97-43bf-8907-c25029973e51:gj6a6m00xmg4h"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": true,
+   "OmittedN": 8
+  }
+ },
+ {
+  "EID": "EIX-0009",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "db",
+  "RecordKind": "finding",
+  "FindingClass": "db_slow_queries/sql",
+  "EntityKey": "at909c9v6sqck",
+  "Headline": "느린 쿼리 at909c9v6sqck(oracle) p50 9.04ms / 기준선 8.77ms, 판정 chronic",
+  "RawExcerpt": "SELECT 33, COUNT(*) FROM DBA_OBJECTS WHERE STATUS = 'INVALID' UNION ALL SELECT 34, COUNT(*) FROM DBA_INDEXES WHERE STATUS = 'UNUSABLE'",
+  "Effect": {
+   "Kind": "ratio",
+   "Metric": "latency_ms_p50",
+   "Observed": 9.04,
+   "Baseline": 8.768,
+   "Magnitude": 1.031,
+   "Direction": "up"
+  },
+  "Window": {
+   "From": "2026-08-03T02:44:26Z",
+   "To": "2026-08-03T03:15:26Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "observed"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": 30,
+   "Status": "normal",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "low"
+  },
+  "Provenance": {
+   "Source": "db_slow_queries",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-0e12ce911cf9"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:dpm_topsql_local:00149c2f-8a97-43bf-8907-c25029973e51:sql:at909c9v6sqck",
+   "pg:db_sql_text:00149c2f-8a97-43bf-8907-c25029973e51:at909c9v6sqck",
+   "pg:db_sql_plan:00149c2f-8a97-43bf-8907-c25029973e51:at909c9v6sqck"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": true,
+   "OmittedN": 8
+  }
+ },
+ {
+  "EID": "EIX-0010",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "db",
+  "RecordKind": "finding",
+  "FindingClass": "db_slow_queries/sql",
+  "EntityKey": "7cr14m1wuup4h",
+  "Headline": "느린 쿼리 7cr14m1wuup4h(oracle) p50 0.124ms / 기준선 0.112ms, 판정 stable",
+  "RawExcerpt": "insert into outbox_events (aggregate_id,aggregate_type,created_at,event_type,published_at,topic,id,payload) values (:1 ,:2 ,:3 ,:4 ,:5 ,:6 ,default,:7 ) RETURNING id INTO :8",
+  "Effect": {
+   "Kind": "ratio",
+   "Metric": "latency_ms_p50",
+   "Observed": 0.124,
+   "Baseline": 0.112,
+   "Magnitude": 1.111,
+   "Direction": "up"
+  },
+  "Window": {
+   "From": "2026-08-03T02:44:26Z",
+   "To": "2026-08-03T03:15:26Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "observed"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": 30,
+   "Status": "normal",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "low"
+  },
+  "Provenance": {
+   "Source": "db_slow_queries",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-0e12ce911cf9"
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": [
+   "ch:dpm_topsql_local:00149c2f-8a97-43bf-8907-c25029973e51:sql:7cr14m1wuup4h",
+   "pg:db_sql_text:00149c2f-8a97-43bf-8907-c25029973e51:7cr14m1wuup4h",
+   "pg:db_sql_plan:00149c2f-8a97-43bf-8907-c25029973e51:7cr14m1wuup4h"
+  ],
+  "Masked": null,
+  "Truncation": {
+   "Truncated": true,
+   "OmittedN": 8
+  }
+ },
+ {
+  "EID": "EIX-0011",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "db",
+  "RecordKind": "meta",
+  "FindingClass": "",
+  "EntityKey": "",
+  "Headline": "db_slow_queries meta class coverage — 감사 재료(술어 판정 대상 아님)",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "",
+   "Metric": "",
+   "Observed": null,
+   "Baseline": null,
+   "Magnitude": null,
+   "Direction": ""
+  },
+  "Window": {
+   "From": "2026-08-03T02:44:26Z",
+   "To": "2026-08-03T03:15:26Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "observed"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "normal",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "ok"
+  },
+  "Provenance": {
+   "Source": "db_slow_queries",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": ""
+  },
+  "Scope": null,
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": null,
+  "Masked": null,
+  "Truncation": {
+   "Truncated": false,
+   "OmittedN": 0
+  }
+ },
+ {
+  "EID": "EIX-0012",
+  "TargetID": "11111111-2222-3333-4444-555555555555",
+  "Domain": "commerce",
+  "Aspect": "db",
+  "RecordKind": "query_scope",
+  "FindingClass": "db_slow_queries/sql",
+  "EntityKey": "*",
+  "Headline": "조회 범위 db_slow_queries/sql(sql): 총 18건 중 10건 반환, 8건 미확인",
+  "RawExcerpt": "",
+  "Effect": {
+   "Kind": "count",
+   "Metric": "latency_ms_p50",
+   "Observed": null,
+   "Baseline": null,
+   "Magnitude": null,
+   "Direction": "n/a"
+  },
+  "Window": {
+   "From": "2026-08-03T02:44:26Z",
+   "To": "2026-08-03T03:15:26Z",
+   "ChangeFrom": null,
+   "ChangeTo": null,
+   "ResolutionS": 30,
+   "Class": "full",
+   "CollectLag": {
+    "ValueS": 0,
+    "Status": "observed"
+   },
+   "ClockSkew": {
+    "BoundS": 0,
+    "Status": "unknown"
+   }
+  },
+  "Quality": {
+   "SampleN": null,
+   "Status": "normal",
+   "NoDataReason": "",
+   "Availability": "observed",
+   "Confidence": "low"
+  },
+  "Provenance": {
+   "Source": "db_slow_queries",
+   "ParamsDigest": "PD-fixture",
+   "EnvelopeRef": "EST-0001:fixture",
+   "LineageID": "LIN-23dbea96fc6c"
+  },
+  "Scope": {
+   "Selector": {
+    "Source": "db_slow_queries",
+    "TargetID": "11111111-2222-3333-4444-555555555555",
+    "Aspect": "db",
+    "Metric": "latency_ms_p50",
+    "EntityKey": "*",
+    "Window": "full"
+   },
+   "Total": 18,
+   "Returned": 10,
+   "Omitted": 8
+  },
+  "Supersedes": "",
+  "Refines": "",
+  "DrilldownRefs": null,
+  "Masked": null,
+  "Truncation": {
+   "Truncated": true,
+   "OmittedN": 8
+  }
+ }
+]

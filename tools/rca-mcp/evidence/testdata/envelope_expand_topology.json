@@ -1,0 +1,52 @@
+{
+ "status": "no_data",
+ "no_data_reason": "zero_observations",
+ "assessment_basis": "연결은 사실 관측 — 정상/이상 판정 없음. 간선마다 호출자·피호출자 관측을 병치하며 observation_mismatch는 '피호출자가 실패를 자기 기록에 안 남김'이라는 사실이지 원인 지목이 아니다. 끝점 미해소는 확신도 4축(resolution_status·match_basis·confidence·scope)으로 표기",
+ "summary": "oracle-alertlog 주변에 이 창의 관측 간선 0건 — 의존 없음이 아니라 계측이 없을 수 있다.",
+ "findings": [
+  {
+   "kind": "node",
+   "node": {
+    "node_id": "target:8a0c8037-5e06-4006-96e2-d63c1c96d545",
+    "target_id": "8a0c8037-5e06-4006-96e2-d63c1c96d545",
+    "name": "oracle-alertlog",
+    "type": "custom_monitor",
+    "hop": 0,
+    "resolution_status": "resolved",
+    "match_basis": "resource_attr_uuid",
+    "confidence": "producer_contract",
+    "scope": "managed_target"
+   }
+  },
+  {
+   "identity_coverage": {
+    "missing_services": [
+     "ingest-selfsystem"
+    ],
+    "multi_uuid_services": null,
+    "note": "lucida.target_id는 배포 시 env 주입 의존 — 계약이 아니다. 미주입 서비스는 service_name 폴백",
+    "spans": 116731,
+    "with_target_id": 116388
+   },
+   "kind": "coverage",
+   "limits": {
+    "max_edges": 400,
+    "max_fanout": 20,
+    "max_nodes": 200,
+    "note": "상한은 실측 도출이 아니라 현 규모의 여유폭이다 — 이 환경에서는 발동하지 않으므로 잘림 표기는 미검증"
+   },
+   "retries_collapsed": false,
+   "sources": {
+    "apm": "checked",
+    "hosted_on": "not_applicable",
+    "network": "not_applicable(앱 대상 — 스위치 간선이 앱 지도에 섞이는 것을 막는다)",
+    "socket": "checked_unusable_for_app_ownership(앱 프로세스 0건 — 이 원천의 0건은 무의존을 뜻하지 않는다. §2.9-2 청구)"
+   },
+   "window_basis": "from=인자, to=인자"
+  }
+ ],
+ "observed_range": {
+  "from": "2026-08-03T02:44:00Z",
+  "to": "2026-08-03T03:14:00Z"
+ }
+}
