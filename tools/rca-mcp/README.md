@@ -102,5 +102,5 @@ claude -p --model 'claude-opus-5[1m]' \
 
 - 시간창은 사후에 t1/t2를 주는 방식이라, 자동 탐지 시점 평가와는 다르다.
 - 도구가 테이블에 접근했다는 것과 데이터를 충실히 읽었다는 것은 다르다. 경화 v3에서
-  고친 항목(UInt64 정밀도, 결측과 관측 0 구분, 페이지네이션 하한 등)은 원본 저장소의
-  `docs/spec-tool-hardening-v3.md`에 있으며 이 스냅샷에는 문서를 싣지 않았다.
+  고친 항목(UInt64 정밀도, 결측과 관측 0 구분, 페이지네이션 하한 등)은
+  [docs/spec-tool-hardening-v3.md](docs/spec-tool-hardening-v3.md)에 있다. 문서 색인은 [docs/README.md](docs/README.md).
