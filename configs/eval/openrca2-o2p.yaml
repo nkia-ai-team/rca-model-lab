@@ -1,0 +1,60 @@
+# OpenRCA 2.0 o2p converted captures (scripts/openrca2_convert.py). Source: huggingface anon-ops/ops-lite@581eba39, Apache-2.0.
+# public_compare: deterministic ~20% hold-out per system (hash of the case name) for comparison with published OpenRCA 2.0 results; never train on it.
+version: 1
+cases:
+  case-openrca2-o2p-v3-171a00ae:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 14404e79-a42f-506c-8546-32c0bb2c365b
+      - 8960b266-1bfd-5ccf-b135-f7c87288e1f6
+      - 4f1794fc-aa1b-56cc-9665-7b728b116cdb
+      - 2f68aa29-4261-58e6-94f9-7c065779596d
+      - 8d05aa67-215e-5adf-9f62-7c199e049c3c
+      - b486d340-94a1-5e09-8c79-27911e1c50b4
+      target_aliases:
+      - ts-travel-service
+  case-openrca2-o2p-v3-1308e6cc:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 05d0a64f-96a5-503d-844d-ef527d969b84
+      - d48338fc-24d0-5881-8407-f6a6e96ef2ec
+      - f70fd170-5db0-536e-be2e-99cc7f5b3b27
+      - aac9df92-12ad-5b7b-a352-eed4756b1856
+      - 521ddde0-776c-5e75-a588-d4dfe4317c31
+      - 4251d0f9-ccd5-5de3-be11-cc22611a085f
+      target_aliases:
+      - search
+    allowed_target_ids:
+    - dd3e32d5-0106-5878-8733-df44362f37d7
+    - 169b970c-6c65-5abe-86ad-57769fbec3d4
+    - 6a8739e8-de79-5933-a41d-1dc8227c60b4
+    - d2361db2-c8c0-55f0-96f6-9a94b56773d7
+    - 42555e42-10bb-5a4f-8d9c-802492695561
+    - ffe39f99-3c17-5330-ad59-30dcc4fd2468
+    allowed_note: 'optional faults: effect confined to their own resources or masked
+      by a co-injected fault (naming them is not penalised)'
+  case-openrca2-o2p-v3-1b4bf042:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - dad6199d-fdc4-5dbd-8f37-04757a7b873c
+      - d80dfbd7-25c6-5cd3-a434-d9b872eeb814
+      - b7852409-35de-5a0d-bad7-84aa1dd8b158
+      - f5fd7af3-8d6b-5ccb-adc1-3b9182e9affe
+      - 42687e5a-dd33-508b-8113-e9959d1ef752
+      - f3637a9d-f854-53a6-83b7-aca870333446
+      target_aliases:
+      - checkout
+    allowed_target_ids:
+    - bc986486-888e-5dc9-a610-0b2809b21165
+    - 6c45f9db-2ff3-5b57-b9cc-6771d5177d37
+    - 22f44873-fc4e-5380-b8ff-0c58f47f4aa1
+    - dcda7d26-1afd-5f82-90e9-ceb5c852ff84
+    - 314c66ae-e672-5543-bbdb-f489884bb23e
+    - f0f17a95-36dd-50fb-92f0-b244159a5284
+    - 94891382-df51-5a00-bec3-f72555a5cf86
+    - 775c4bc1-3c8f-5c58-9794-f191f7583708
+    allowed_note: 'optional faults: effect confined to their own resources or masked
+      by a co-injected fault (naming them is not penalised)'

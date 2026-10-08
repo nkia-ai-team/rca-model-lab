@@ -52,7 +52,7 @@ func TestDBToolsSmoke(t *testing.T) {
 
 		args, _ := json.Marshal(map[string]string{"db": target, "from": from, "to": to})
 
-		blk := NewDBBlockingTool(ch, time.Time{}, time.Time{}, nil)
+		blk := NewDBBlockingTool(ch, nil, time.Time{}, time.Time{}, nil)
 		out, err := blk.Call(context.Background(), args)
 		if err != nil {
 			t.Fatalf("[%s] db_blocking: %v", eng, err)
@@ -272,7 +272,7 @@ func TestDBBlockingRealEventSmoke(t *testing.T) {
 		t.Skip("이 환경의 원천에 블로킹 관측이 없다 — 사건 경로 스모크 불가")
 	}
 
-	blk := NewDBBlockingTool(ch, time.Time{}, time.Time{}, nil)
+	blk := NewDBBlockingTool(ch, nil, time.Time{}, time.Time{}, nil)
 	seen := map[string]bool{}
 	events := 0
 	for _, h := range hot {

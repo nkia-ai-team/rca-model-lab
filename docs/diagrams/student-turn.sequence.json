@@ -1,0 +1,262 @@
+{
+  "schema_version": 1,
+  "diagram_type": "sequence",
+  "meta": {
+    "title": "학생 루프 한 턴",
+    "locale": "ko",
+    "viewBox": [
+      1000,
+      600
+    ],
+    "column_fit": "spread",
+    "quality_profile": "showcase",
+    "views": [
+      {
+        "id": "prompt",
+        "label": "프롬프트 구성",
+        "focus": [
+          "loop",
+          "ctx",
+          "vllm"
+        ],
+        "note": "저장 궤적이 아니라 롤링 뷰가 서버로 간다. 문법이 추론 1개 → 호출 1개를 강제한다."
+      },
+      {
+        "id": "call",
+        "label": "도구 호출",
+        "focus": [
+          "loop",
+          "alias",
+          "mcp",
+          "store"
+        ],
+        "note": "핸들을 UUID 로 풀어 호출하고, 응답은 6000자에서 잘라 refs 를 모은 뒤 궤적에 남긴다."
+      },
+      {
+        "id": "end",
+        "label": "예산과 강제 답변",
+        "focus": [
+          "loop",
+          "vllm",
+          "alias",
+          "store"
+        ],
+        "note": "예산이 끝나면 tool_choice 를 submit_rca 로 고정하고 결론을 검증해 기록한다."
+      }
+    ],
+    "legend": {
+      "mode": "hidden"
+    }
+  },
+  "participants": [
+    {
+      "id": "loop",
+      "type": "backend",
+      "label": "학생 루프",
+      "sublabel": "student.py"
+    },
+    {
+      "id": "ctx",
+      "type": "backend",
+      "label": "롤링 뷰",
+      "sublabel": "context.py"
+    },
+    {
+      "id": "vllm",
+      "type": "cloud",
+      "label": "vLLM · Muse 30B",
+      "sublabel": "KT GPU0 :8002"
+    },
+    {
+      "id": "alias",
+      "type": "security",
+      "label": "핸들 치환",
+      "sublabel": "alias.py T<n>"
+    },
+    {
+      "id": "mcp",
+      "type": "external",
+      "label": "rca-mcp",
+      "sublabel": "23 도구 · -blind"
+    },
+    {
+      "id": "store",
+      "type": "database",
+      "label": "궤적 기록",
+      "sublabel": "trajectory · result · score"
+    }
+  ],
+  "segments": [
+    {
+      "from": 150,
+      "to": 258,
+      "label": "프롬프트"
+    },
+    {
+      "from": 268,
+      "to": 410,
+      "label": "도구 호출"
+    },
+    {
+      "from": 420,
+      "to": 530,
+      "label": "예산 · 강제 답변"
+    }
+  ],
+  "messages": [
+    {
+      "id": "view",
+      "from": "loop",
+      "to": "ctx",
+      "y": 160,
+      "label": "rolling_view(messages)",
+      "variant": "default"
+    },
+    {
+      "id": "view-back",
+      "from": "ctx",
+      "to": "loop",
+      "y": 188,
+      "label": "최근 8 전문 · 이전 1200자 · 이전 추론 제거",
+      "variant": "return"
+    },
+    {
+      "id": "chat",
+      "from": "loop",
+      "to": "vllm",
+      "y": 216,
+      "label": "chat/completions + structural tag (추론→호출 1개)",
+      "variant": "emphasis"
+    },
+    {
+      "id": "chat-back",
+      "from": "vllm",
+      "to": "loop",
+      "y": 244,
+      "label": "to=self 추론 + ATEM 호출 1개",
+      "variant": "return"
+    },
+    {
+      "id": "resolve",
+      "from": "loop",
+      "to": "alias",
+      "y": 276,
+      "label": "인자의 T<n> → UUID",
+      "variant": "security"
+    },
+    {
+      "id": "resolve-back",
+      "from": "alias",
+      "to": "loop",
+      "y": 304,
+      "label": "resolve 인자 (모르는 핸들은 오류 응답)",
+      "variant": "return"
+    },
+    {
+      "id": "call",
+      "from": "loop",
+      "to": "mcp",
+      "y": 332,
+      "label": "tools/call name(args)",
+      "variant": "emphasis"
+    },
+    {
+      "id": "call-back",
+      "from": "mcp",
+      "to": "loop",
+      "y": 360,
+      "label": "봉투 JSON: status · findings · refs · truncated",
+      "variant": "return"
+    },
+    {
+      "id": "record",
+      "from": "loop",
+      "to": "store",
+      "y": 392,
+      "label": "tool 메시지 추가 (6000자 절단 · refs 수집)",
+      "variant": "dashed"
+    },
+    {
+      "id": "guard",
+      "from": "loop",
+      "to": "vllm",
+      "y": 428,
+      "label": "예산 소진(턴 ≥50 또는 40k 토큰) → tool_choice=submit_rca",
+      "variant": "security"
+    },
+    {
+      "id": "guard-back",
+      "from": "vllm",
+      "to": "loop",
+      "y": 456,
+      "label": "submit_rca(status, causes, refs)",
+      "variant": "return"
+    },
+    {
+      "id": "validate",
+      "from": "loop",
+      "to": "alias",
+      "y": 484,
+      "label": "target 핸들 resolve · validate_result",
+      "variant": "security"
+    },
+    {
+      "id": "final",
+      "from": "loop",
+      "to": "store",
+      "y": 512,
+      "label": "result.json · score.json (골든 대조)",
+      "variant": "emphasis"
+    }
+  ],
+  "activations": [
+    {
+      "participant": "loop",
+      "from": 155,
+      "to": 518,
+      "type": "backend"
+    },
+    {
+      "participant": "ctx",
+      "from": 156,
+      "to": 194,
+      "type": "backend"
+    },
+    {
+      "participant": "vllm",
+      "from": 212,
+      "to": 250,
+      "type": "cloud"
+    },
+    {
+      "participant": "alias",
+      "from": 272,
+      "to": 310,
+      "type": "security"
+    },
+    {
+      "participant": "mcp",
+      "from": 328,
+      "to": 366,
+      "type": "external"
+    },
+    {
+      "participant": "vllm",
+      "from": 424,
+      "to": 462,
+      "type": "cloud"
+    },
+    {
+      "participant": "alias",
+      "from": 480,
+      "to": 500,
+      "type": "security"
+    },
+    {
+      "participant": "store",
+      "from": 388,
+      "to": 518,
+      "type": "database"
+    }
+  ]
+}

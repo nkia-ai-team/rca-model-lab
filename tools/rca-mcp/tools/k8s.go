@@ -174,6 +174,15 @@ func queryK8sState(ctx context.Context, vm *VM, pg *sql.DB, target string, from,
 		}
 	}
 
+	// pod 신호 → 승격 대상 핸들. 종전엔 pod 이름만 실려 조사자가 그 pod 로 넘어갈 target_id 가 없었다
+	// (클러스터 57 pod 중 재시작 1건을 보고도 멈춘 실측, 2026-09-22). 이름→UUID 해석은 PG 사실이지 판정이 아니다.
+	var podResolveTok string
+	if len(findings) > 0 {
+		var lookup map[string]podTarget
+		lookup, podResolveTok = loadPodTargets(ctx, pg, cluster, podKeys(findings))
+		attachPodTargets(findings, lookup)
+	}
+
 	// 커버리지 확인 — 신호가 0이어도 클러스터가 관측되고 있었는지.
 	alive, err := vm.InstantQuery(ctx,
 		fmt.Sprintf(`count(sum by(namespace,pod)(count_over_time({__name__="kcm.pod.container_state_running",%s}[%s])))`, podSel, w),
@@ -219,6 +228,10 @@ func queryK8sState(ctx context.Context, vm *VM, pg *sql.DB, target string, from,
 	}
 	positiveFindings := len(findings)
 	findings = append(findings, signalCoverage...)
+	if podResolveTok != "" {
+		findings = append(findings, Finding{"section": "resolution", "source_errors": map[string]string{"pg": podResolveTok},
+			"note": "pod 이름 → target_id 해석 실패(PG). pod finding 의 target_id 가 비어 있으면 search_targets 로 이름을 찾아라."})
+	}
 
 	scope := fmt.Sprintf("클러스터 %s", cluster)
 	if podFilter != "" {
@@ -238,7 +251,7 @@ func queryK8sState(ctx context.Context, vm *VM, pg *sql.DB, target string, from,
 	}
 	return degrade(Envelope{
 		Status: "anomalous",
-		Summary: fmt.Sprintf("%s: 관측 pod %d개 중 문제 신호 %d건 — 신호·pod는 findings 참조.",
+		Summary: fmt.Sprintf("%s: 관측 pod %d개 중 문제 신호 %d건 — 신호·pod는 findings 참조(pod 의 target_id 로 describe_target/expand_topology 추적 가능).",
 			scope, observedPods, positiveFindings),
 		AssessmentBasis: "문제 신호 4종 중 1개 이상 발생",
 		Findings:        findings,
@@ -248,4 +261,150 @@ func queryK8sState(ctx context.Context, vm *VM, pg *sql.DB, target string, from,
 		Scopes:          scopes,
 		DegradedSources: degradedSources,
 	}), nil
+}
+
+// podTarget 은 pod 이름(namespace/pod)에 대응하는 승격 대상이다. 재시작 중인 pod 자체가 미등록인
+// 경우가 실측됐으므로(F05-H: pod 없음, replicaset·deployment 만 등록) 이름에서 소유자 키를 결정적으로
+// 도출해(Deployment pod = <deploy>-<rs hash>-<pod id>, StatefulSet pod = <sts>-<서수>) 가장 구체적인
+// 등록 리소스를 owner 로 준다. 판정이 아니라 명명 규약에 따른 사실 해석이다.
+type podTarget struct {
+	TargetID  string // pod 자체가 등록돼 있을 때만
+	OwnerID   string // replicaset > deployment/statefulset 순으로 가장 구체적인 등록 소유자
+	OwnerKind string
+	OwnerKey  string
+}
+
+// podKeys 는 pod 단위 finding 들의 "namespace/pod" 키를 중복 없이 모은다.
+func podKeys(findings []Finding) []string {
+	seen := map[string]bool{}
+	var keys []string
+	for _, f := range findings {
+		ns, _ := f["namespace"].(string)
+		pod, _ := f["pod"].(string)
+		if pod == "" {
+			continue
+		}
+		k := ns + "/" + pod
+		if !seen[k] {
+			seen[k] = true
+			keys = append(keys, k)
+		}
+	}
+	return keys
+}
+
+// podOwnerCandidates 는 pod 키에서 소유자 후보 키를 구체적인 순서로 만든다(pod 자신 제외).
+func podOwnerCandidates(podKey string) []string {
+	ns, name, ok := strings.Cut(podKey, "/")
+	if !ok {
+		return nil
+	}
+	segs := strings.Split(name, "-")
+	if len(segs) < 2 {
+		return nil
+	}
+	last := segs[len(segs)-1]
+	if isDigits(last) { // StatefulSet: <sts>-<ordinal>
+		return []string{ns + "/" + strings.Join(segs[:len(segs)-1], "-")}
+	}
+	var out []string
+	if len(segs) >= 3 {
+		out = append(out, ns+"/"+strings.Join(segs[:len(segs)-1], "-")) // replicaset
+		out = append(out, ns+"/"+strings.Join(segs[:len(segs)-2], "-")) // deployment
+	} else {
+		out = append(out, ns+"/"+segs[0]) // <workload>-<pod id> (daemonset 류)
+	}
+	return out
+}
+
+func isDigits(s string) bool {
+	if s == "" {
+		return false
+	}
+	for _, c := range s {
+		if c < '0' || c > '9' {
+			return false
+		}
+	}
+	return true
+}
+
+// loadPodTargets 는 kcm_resource_targets 에서 pod 키와 소유자 후보 키의 등록 리소스를 읽는다. pg 가
+// 없거나 실패하면 빈 표와 분류 토큰을 돌려준다 — 해석 실패는 결손이지 오류가 아니다(pg=optional).
+func loadPodTargets(ctx context.Context, pg *sql.DB, cluster string, keys []string) (map[string]podTarget, string) {
+	out := map[string]podTarget{}
+	if pg == nil || len(keys) == 0 {
+		return out, ""
+	}
+	want := map[string]bool{}
+	var all []string
+	for _, k := range keys {
+		for _, c := range append([]string{k}, podOwnerCandidates(k)...) {
+			if !want[c] {
+				want[c] = true
+				all = append(all, c)
+			}
+		}
+	}
+	rows, err := pg.QueryContext(ctx, `SELECT resource_key, resource_kind, target_id::text
+		FROM kcm_resource_targets
+		WHERE cluster_target_id = $1::uuid AND resource_key = ANY($2::text[])`, cluster, all)
+	if err != nil {
+		return out, beDetail(pgErr(err))
+	}
+	defer rows.Close()
+	type reg struct{ kind, id string }
+	found := map[string]reg{}
+	for rows.Next() {
+		var key, kind, id string
+		if err := rows.Scan(&key, &kind, &id); err != nil {
+			return out, beDetail(pgErr(err))
+		}
+		found[key] = reg{kind, id}
+	}
+	for _, k := range keys {
+		var t podTarget
+		if r, ok := found[k]; ok && r.kind == "pod" {
+			t.TargetID = r.id
+		}
+		for _, c := range podOwnerCandidates(k) {
+			if r, ok := found[c]; ok && r.kind != "pod" {
+				t.OwnerID, t.OwnerKind, t.OwnerKey = r.id, r.kind, c
+				break
+			}
+		}
+		if t.TargetID != "" || t.OwnerID != "" {
+			out[k] = t
+		}
+	}
+	return out, ""
+}
+
+// attachPodTargets 는 pod finding 에 target_id 와 소유자 핸들을 붙인다. 아무것도 못 찾으면 비워 두고
+// 다음 행동을 적는다.
+func attachPodTargets(findings []Finding, lookup map[string]podTarget) {
+	for _, f := range findings {
+		ns, _ := f["namespace"].(string)
+		pod, _ := f["pod"].(string)
+		if pod == "" {
+			continue
+		}
+		t, ok := lookup[ns+"/"+pod]
+		if !ok {
+			f["target_id"] = nil
+			f["note"] = "승격 대상 미등록 pod — search_targets 로 이름(workload 부분)을 검색해 소속을 확인"
+			continue
+		}
+		if t.TargetID != "" {
+			f["target_id"] = t.TargetID
+		} else {
+			f["target_id"] = nil
+		}
+		if t.OwnerID != "" {
+			f["owner_target_id"] = t.OwnerID
+			f["owner_kind"] = t.OwnerKind
+			f["owner_key"] = t.OwnerKey
+			f["note"] = "pod 소유 워크로드의 target_id — describe_target/expand_topology 로 소속 서비스 추적"
+		}
+	}
 }

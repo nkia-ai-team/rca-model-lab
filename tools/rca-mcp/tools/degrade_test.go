@@ -67,10 +67,10 @@ var dgCtors = map[string]func(s Stores) llm.Tool{
 	"sample_logs":             func(s Stores) llm.Tool { return NewSampleLogsTool(s.CH, dgFirst) },
 	"list_events":             func(s Stores) llm.Tool { return NewListEventsTool(s.CH, s.PG, dgNow) },
 	"describe_target":         func(s Stores) llm.Tool { return NewDescribeTargetTool(s.PG, s.VM, dgFirst) },
-	"list_changes":            func(s Stores) llm.Tool { return NewListChangesTool(s.PG, dgFirst, dgLast, dgNow) },
+	"list_changes":            func(s Stores) llm.Tool { return NewListChangesTool(s.PG, s.CH, s.VM, dgFirst, dgLast, dgNow) },
 	"compare_peers":           func(s Stores) llm.Tool { return NewComparePeersTool(s.PG, s.VM, dgFirst, dgNow) },
 	"expand_topology":         func(s Stores) llm.Tool { return NewExpandTopologyTool(s.PG, s.CH, dgFirst, dgLast, dgNow) },
-	"db_blocking":             func(s Stores) llm.Tool { return NewDBBlockingTool(s.CH, dgFirst, dgLast, dgNow) },
+	"db_blocking":             func(s Stores) llm.Tool { return NewDBBlockingTool(s.CH, s.PG, dgFirst, dgLast, dgNow) },
 	"db_slow_queries":         func(s Stores) llm.Tool { return NewDBSlowQueriesTool(s.CH, s.PG, dgFirst, dgLast, dgNow) },
 	"breakdown_endpoints":     func(s Stores) llm.Tool { return NewBreakdownEndpointsTool(s.CH, dgFirst, dgLast) },
 	"get_data_coverage":       func(s Stores) llm.Tool { return NewDataCoverageTool(s.PG, s.CH, s.VM) },
@@ -180,6 +180,28 @@ func dgCH(t *testing.T, scripts []dgCHScript) *CH {
 // dgCHScripts — 산 CH가 답해야 하는 조회 전부(도구별 최소 성공 대본).
 func dgCHScripts() []dgCHScript {
 	return []dgCHScript{
+		// db_blocking — 폴 인벤토리(블로킹 없음) + 세션 상태 구획(집계·배경 수·경과 상위).
+		// 경과 상위 조회는 uniqExact(timestamp)를 포함하므로 db_slow_queries 대본보다 앞서야 한다.
+		{"AS blocking_n", []map[string]any{{"ts": "2026-08-01 10:05:00", "engine": "postgresql", "rows": 2,
+			"blocking_n": 0, "blocked_n": 0, "axis_n": 2}}},
+		{"AS sess_n", []map[string]any{{"ts": "2026-08-01 10:05:00", "client": "10.0.0.5", "state": "idle in transaction",
+			"stype": "idle in transaction", "wait_class": "Client", "wait": "ClientRead", "sess_n": 2, "max_age": 1500.0,
+			"users": []string{"app"}}}},
+		{"AS bg FROM", []map[string]any{{"bg": 0}}},
+		{"AS first_ts", []map[string]any{{"sid": "101", "client": "10.0.0.5", "max_age": 1500.0,
+			"max_at": "2026-08-01 10:05:00", "state": "idle in transaction", "stype": "idle in transaction",
+			"wait_class": "Client", "wait": "ClientRead", "sql_key": "77", "usr": "app",
+			"first_ts": "2026-08-01 10:05:00", "last_ts": "2026-08-01 10:05:00", "polls": 1}}},
+		// list_changes — 롤아웃 1건(새 RS 업·이전 RS 다운). 템플릿의 memory limit 차이가
+		// 롤아웃 후 사용량 관측(VM)을 부른다 — list_changes/vm/optional 조합의 재료.
+		{"WHERE reason IN", []map[string]any{
+			{"at": "2026-08-01 10:05:00.000", "cluster": dgPeerUUID, "obj_target": dgPeerUUID, "namespace": "ns",
+				"object_kind": "Deployment", "object_name": "web", "reason": "ScalingReplicaSet",
+				"body": "Scaled up replica set web-new to 1 from 0"},
+			{"at": "2026-08-01 10:06:00.000", "cluster": dgPeerUUID, "obj_target": dgPeerUUID, "namespace": "ns",
+				"object_kind": "Deployment", "object_name": "web", "reason": "ScalingReplicaSet",
+				"body": "Scaled down replica set web-old to 0 from 1"},
+		}},
 		// db_slow_queries — 기준선·폴 수·engine 폴백은 창 조회보다 먼저
 		// 매칭돼야 한다(전부 dpm_topsql_local을 포함).
 		{"quantileExact", []map[string]any{{"sql_key": "q1", "mode": "delta", "p50": 9.0, "mx": 12.0, "polls": 10}}},
@@ -220,6 +242,12 @@ func dgPGScripts(p *dgFakePG) {
 	// describe_target 정체.
 	p.script("in_maintenance", []string{"type", "name", "display_name", "address", "status", "in_maintenance", "meta_host"},
 		[][]string{{"server", "host1", "disp1", "10.0.0.1", "active", "f", ""}})
+	// list_changes ReplicaSet 형제(Deployment 키 조회) — memory limit 1Gi → 640Mi.
+	p.script("|| '|' || namespace", []string{"target_id", "namespace", "name", "owner_kind", "owner_name", "created", "yaml"},
+		[][]string{
+			{dgPeerUUID, "ns", "web-new", "Deployment", "web", "2026-08-01T10:05:00Z", rsJSON("2", "", `{"name":"A","value":"1"}`, "/h", "640Mi")},
+			{dgPeerUUID, "ns", "web-old", "Deployment", "web", "2026-07-01T00:00:00Z", rsJSON("1", "", `{"name":"A","value":"1"}`, "/h", "1Gi")},
+		})
 	// db_slow_queries engine 레지스트리(ch 죽은 조합에서 engine 확정용).
 	p.script("collector_dpm_engine_version", []string{"engine", "version"}, [][]string{{"postgresql", "16.0"}})
 }

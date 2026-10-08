@@ -1,0 +1,1059 @@
+# RCAEval ob4 converted captures (scripts/rcaeval_convert.py). Source: Pham et al., RCAEval, WWW'25 companion; Zenodo 14590730, CC BY 4.0.
+version: 1
+cases:
+  case-rcaeval-ob4-v3-9bd15111:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 6b996f85-25e0-5ee7-b46f-255c56b5adcf
+      - ce1071b7-8dfb-5e40-8a2c-af2b2b399558
+      - aa192d65-d50d-5fb7-9e0f-1864538189dc
+      - 9211d743-7f05-5f0b-817b-0ec193118bfc
+      - 3e283504-0796-568a-9960-43618b486d13
+      - 91fbaebe-7278-57e7-a21c-0dfe0b5bc449
+      target_aliases:
+      - checkoutservice
+  case-rcaeval-ob4-v3-eb16f140:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - d5f54ec0-f629-5389-97f6-f73753636a6a
+      - e5e06b19-5573-548f-b6a6-2b0ddc052033
+      - 21f4a325-5691-5f0e-8599-49991ab2b862
+      - bd3b826f-dcb7-5a4f-ad81-6dfac4e63a52
+      - f7e17165-b270-5d54-ba8a-b425df1ba854
+      - 9e147dff-b78e-5a3b-9f7c-6422fae37518
+      target_aliases:
+      - checkoutservice
+  case-rcaeval-ob4-v3-72f4ad20:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - ccad4195-3d44-5354-945a-272d9848b499
+      - 5117b051-02f8-53f5-bdd2-6861bd70fad4
+      - 8b159f4b-a680-5e94-baca-20f1ecfff12f
+      - db7aa5e8-9606-5ad0-8be6-e08d3d807597
+      - 80e02a37-2d96-5cc2-b288-42c21543f4d1
+      - 314f2961-6c39-5e88-98cf-1f129060051c
+      target_aliases:
+      - checkoutservice
+  case-rcaeval-ob4-v3-549aac93:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 54178708-16fc-54f1-8e4e-ff141cdab8ad
+      - 587170b6-b22b-510d-9af3-2383edf4be28
+      - 5fc89b37-8ee7-5cb4-98de-a0b5c32d653e
+      - 41138d31-8200-5d44-b007-d066f6e6f8d0
+      - 61326fc5-5629-5021-bb66-1c9c41e88d5e
+      - ac05e6cf-d257-556d-9050-b7284049f8f9
+      target_aliases:
+      - checkoutservice
+  case-rcaeval-ob4-v3-23106e47:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 60c28fb8-4d9c-5300-9806-4c9084abe6df
+      - ce30a91f-65aa-5b18-8f07-7c3b9d8665cb
+      - 09b22adc-9ab7-5e79-9868-1b5a7bf5507f
+      - 9b6bcd6a-4099-5924-a41c-ea80c6ef17d5
+      - 18c144c0-19cb-5c2a-b153-851a1887a7c3
+      - cf90bde3-394f-5214-9fad-467a6828d68d
+      target_aliases:
+      - checkoutservice
+  case-rcaeval-ob4-v3-299bd729:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 3b49b2fe-ff66-5b8d-976a-9cc0370bb50e
+      - 763f6f14-7773-5e3e-8bfd-20b4f484202c
+      - 3bdad70e-3a62-5f90-9fc0-eba8a0d2c41c
+      - d6acaf98-1933-5c9f-a483-7d1e498df3ad
+      - 1219209a-0486-5576-a6d1-585836882833
+      - adfecae3-469e-527a-8489-76264aa52809
+      target_aliases:
+      - checkoutservice
+  case-rcaeval-ob4-v3-c3865b80:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - b3599483-3045-5cf6-b789-d191808f50bd
+      - bfd4e1e5-1c81-51b0-b9b8-ec84199024eb
+      - 9181b2a9-e8a6-575a-a5b2-6fa376ced6dc
+      - 59c2e2a5-4343-5423-b954-404d41252616
+      - e3a95df3-0898-5295-846f-fd42b715a8e1
+      - 9706b609-3ab5-5d82-9c2f-6f8cb54d2dbc
+      target_aliases:
+      - checkoutservice
+  case-rcaeval-ob4-v3-25b51ad1:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 8df6cbd7-f141-5ac1-802e-94ff0d04577c
+      - df2886e4-e035-5006-b51d-7f0cf0154035
+      - a9147668-57bb-54bc-b7f0-671e34cd8154
+      - c8630d4b-7f84-522a-bb7a-d99fbbc60b16
+      - 2b52b899-6b42-5827-b37d-fed52b06c380
+      - 55809a13-b9f2-5ade-80f7-77e6143a860c
+      target_aliases:
+      - checkoutservice
+  case-rcaeval-ob4-v3-aaa43751:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 3f2d48a5-c427-5a5d-8d5d-53cf16fa0151
+      - df5baeff-5547-5128-96d2-056a94c4a75b
+      - d5d08926-5512-549a-9047-e483e60013e6
+      - 6ae114c5-c01d-5b92-9e62-85d03f71cdd0
+      - 382a4203-7918-5579-9782-735425c7b72d
+      - 835efee5-c9a3-5d49-8c79-2bec2827bda5
+      target_aliases:
+      - checkoutservice
+  case-rcaeval-ob4-v3-a8d8d3c6:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - db943253-d9cc-57d8-b244-59a03e4e08ef
+      - 2b66d43f-00b8-5b9f-8840-29fd5b1417ad
+      - f7cf47fc-fbeb-5cca-889d-4eb99ee312fb
+      - 31d8b64f-0856-51be-80eb-43036af8d826
+      - 564fc74a-7c38-5d22-aa60-2c8bfdf6a4fa
+      - 83a2c667-0c22-5351-8a90-520326c467c7
+      target_aliases:
+      - checkoutservice
+  case-rcaeval-ob4-v3-aa1afc57:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 9897d837-ec55-5fe8-8d13-fc71da5af690
+      - 27ac59b4-dc07-5bec-89bc-d4654651d97a
+      - 6b1f6a50-0b19-541c-be8a-e0054b0d0e34
+      - 3e1752d4-cf36-5c93-8841-37e94c18cbfe
+      - 8ad21085-527c-5b50-9be1-f404b81ac33f
+      - e994d068-34f2-5af5-8fad-eed229fe9aaa
+      target_aliases:
+      - checkoutservice
+  case-rcaeval-ob4-v3-0cf37d8f:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 156b7b71-a261-58df-af17-7abc646773cd
+      - bae4f48a-8c33-50b2-8eb2-339475adb516
+      - ab294d8c-966b-5205-829c-39b1849cc016
+      - 81870a68-919b-5102-a676-44d7a43a374a
+      - 5a1e9c29-7dfb-5e34-bfe6-7fa6309a4112
+      - dff0ea99-7625-55c7-8bcc-c0790dd60991
+      target_aliases:
+      - checkoutservice
+  case-rcaeval-ob4-v3-afc02137:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 5106b0cb-8f6d-54e4-a786-137dbaf6acba
+      - 18e40fd8-ad63-5d42-b97f-3280f2719a5e
+      - 65e5b56b-8d5f-5acd-b826-83c21c291617
+      - 47c5c217-400a-593e-9cd5-b7e3b445345c
+      - 48fd07d7-45c4-5d39-ab5f-7c2db8f3ac0d
+      - 70f5b4d1-1e67-52a7-8bf9-38e6b37dade0
+      target_aliases:
+      - checkoutservice
+  case-rcaeval-ob4-v3-5bb81acd:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - c6f22de8-10a3-5d3a-85b8-c0749cc88e3e
+      - a43f30a8-3992-53a9-876b-4e4f56a63d69
+      - 1fa54e20-92ac-5ce6-9b36-533de628c826
+      - d24378a1-644d-5936-9b22-61010a34f920
+      - 3dd162c3-2707-5508-954e-8f0495dd57df
+      - 78d9bef2-6211-51a9-b376-e9f8b0ee0116
+      target_aliases:
+      - checkoutservice
+  case-rcaeval-ob4-v3-8b2adba9:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - a9cec93b-bad3-56d2-ae43-0f73290b68ef
+      - fe3f8b72-c7b3-5461-8b95-4c003da7b8f2
+      - 6e0e4391-a7c7-5397-a3db-7340636f0532
+      - 6744bdd5-223e-572b-a85f-ca12e45abb96
+      - c03f6f42-bed9-5ade-8e8f-12e8de8e61da
+      - ee41d6c6-ea7f-5f53-8b75-5853770237f3
+      target_aliases:
+      - checkoutservice
+  case-rcaeval-ob4-v3-b6e857a0:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - baa25dfe-b2c4-5a78-ba7f-2f3302448b46
+      - b76b0818-2828-524f-bb56-de3fa59ee4fa
+      - 2f64a1fb-593d-5cdd-90a4-bb36c8db9007
+      - 5477c31d-5fd8-5fc1-8f99-f381ed002149
+      - feba7d02-afff-5c90-a7b3-8f89687a8708
+      - 8d819ea3-9550-55c3-ada2-11db7ab9a8c0
+      target_aliases:
+      - checkoutservice
+  case-rcaeval-ob4-v3-ace8111f:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 67a1184e-615f-5368-ada6-d93a3a0f96b9
+      - 9e1357be-a2c6-5c18-a6ce-630556d0e7d0
+      - d267bb07-f6d7-5153-b6c4-5c514e6f7d42
+      - bd32078f-6ff2-5075-ae0b-a9b6b4716a38
+      - 31fe3f3a-b65e-5e74-b69a-98db08746231
+      - 48e6bbe4-3863-59af-a33b-8286dfb06013
+      target_aliases:
+      - currencyservice
+  case-rcaeval-ob4-v3-7b5856f2:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 08548ae4-7cb3-58fa-922c-ceef80b78e12
+      - 1e76db44-6f41-5d4e-902d-e99759db4dd0
+      - 4d6c0786-95ca-532a-90eb-dceac4482b98
+      - d5c02dec-96c4-55a1-b661-77593ba8df19
+      - caf99ffe-8498-5cc9-b646-25f9abc86f44
+      - 5f7290d5-fa66-55a0-b9f0-90e814bb27c1
+      target_aliases:
+      - currencyservice
+  case-rcaeval-ob4-v3-b9df4768:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - eddf6225-d410-5bb7-8a4f-f1fa96fd4b34
+      - b7cfeaae-a42a-540e-a625-2035d9783079
+      - 276e8a13-98a2-5496-a7a3-db888e3ae35e
+      - 2718a5df-93f8-5dc8-b777-aa55185bfd2a
+      - 811fd03e-cf84-5269-9926-99d1a6e67e85
+      - b08e891b-8adc-5368-b271-7e4b43c23bec
+      target_aliases:
+      - currencyservice
+  case-rcaeval-ob4-v3-3fdad440:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 6e572d4a-f6eb-5f57-b0c5-54683c742770
+      - 5b20fd45-f608-59b2-af77-7cdbb2cddd66
+      - f5de07d4-e8db-5c29-a450-988fdb72c1f0
+      - 786d71eb-d977-5a7e-9c3c-9dae33c27e1a
+      - 4d4facd7-114b-59a5-8a25-de8b0aaa797e
+      - 022f1d72-8487-597b-82b0-53df377b1e6c
+      target_aliases:
+      - currencyservice
+  case-rcaeval-ob4-v3-2a6d1a97:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 242863c5-11db-59e0-94f1-8bd9c9ccf190
+      - 91b5f4cc-8e52-5dd4-a34a-c6c3f41ca5e7
+      - eb8fcd49-ac1f-572b-9e71-61e796a1c128
+      - 6e883952-c1ed-5c91-8d9f-916da3228803
+      - 4b83b13b-ea39-5745-8d06-89714eb1d8d0
+      - ca1908a3-146e-504f-a1f7-0d0a6f4e571e
+      target_aliases:
+      - currencyservice
+  case-rcaeval-ob4-v3-4c9d8e3c:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - b3c091ab-15a7-5325-a7dc-c68df9ce2430
+      - 9bc3c5c8-0aa9-5926-8b56-e80a600d3a44
+      - b0b3cf6f-3cb5-51ab-95b8-c995bdf1dcc5
+      - 3ff6b4cf-e2b8-59b7-ac30-985760fa11ae
+      - cf3f2dd0-c658-5bfd-bc08-ab43b162f84c
+      - 387bd850-037a-569b-9018-797052358cc1
+      target_aliases:
+      - currencyservice
+  case-rcaeval-ob4-v3-8ce07b8a:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 8bcfede2-6a3f-561a-9c89-cf13f79276ba
+      - 2cd1ebdc-17a5-5b86-bad8-d204bc486db8
+      - 6a88549e-ed78-5e37-b605-cdb719a928e4
+      - 3abccbc3-682a-57d4-af66-99e95b1b1bcf
+      - 401b24aa-e79c-51ac-b055-b7ebd9d8e808
+      - 7566c95a-1d98-586c-b439-a42190e8b02d
+      target_aliases:
+      - currencyservice
+  case-rcaeval-ob4-v3-7ee8be17:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 0f8b1a32-408f-52ad-93a7-d69cd6bef6e9
+      - b1b50036-49c2-5501-9da4-f712a2afa7a3
+      - cc058b60-2e18-5cee-a91b-6f432ea4c9c4
+      - be295880-f80b-5ae0-be33-1290714439b5
+      - 91e417e1-883e-59f4-a8ea-28b241c703bf
+      - 70209241-9ec0-58e2-a7f3-202c67c8d427
+      target_aliases:
+      - currencyservice
+  case-rcaeval-ob4-v3-dd64e453:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - e3b6855d-e4ce-5dd8-bf2e-2b5fb70297c4
+      - bccd0d75-7fac-5d54-83d4-44e128dd0c78
+      - 98cf7f9c-da8a-5c3e-bcff-dd9ddf7d5936
+      - 5418b6fb-de59-5837-8c25-7260ccc2e178
+      - b73cd01b-c9ea-52c7-963e-0bbf36416c93
+      - ce456d5c-dc28-5182-a98f-34ecb31f49d9
+      target_aliases:
+      - currencyservice
+  case-rcaeval-ob4-v3-ba213629:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 9b42ac42-e67b-59bf-8354-d71802afab61
+      - 1484fdea-8dba-529c-8878-9546e635319d
+      - c54b34ed-e0f2-5582-8c47-e13336b55f84
+      - f1b3446b-2f12-5287-977a-c1c19aaedbce
+      - 05aee4ac-5ecf-59b9-8255-fca05d0260c3
+      - 9fafb36e-168b-56ce-945a-ef5aad2c52aa
+      target_aliases:
+      - currencyservice
+  case-rcaeval-ob4-v3-6d3835ab:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 0997a487-c172-59b9-be03-e474f9dfd6ca
+      - 52022c49-949c-5dbf-be64-8d2dd836210e
+      - 48827c9d-055b-5fc9-8fce-9eb3566a0e09
+      - 954fe441-6c08-51aa-9504-14baefabba44
+      - 1224dfd4-7522-57d8-a52f-fd541badb245
+      - 51a81477-4707-5eec-8c21-d52b04050477
+      target_aliases:
+      - currencyservice
+  case-rcaeval-ob4-v3-a2d889c3:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 444b4ade-df37-51f5-9ba0-265045a63c91
+      - 34c12d33-fe32-5542-9373-d97b16a93e93
+      - 50722214-924b-55fa-9a2f-68fb6da50972
+      - 69466557-f508-50da-8efb-c37230b54f9d
+      - 76da6925-72d1-5a78-b248-a406b23908f1
+      - 9bca7f97-3055-581c-b316-05f5ab47f6b5
+      target_aliases:
+      - currencyservice
+  case-rcaeval-ob4-v3-387095ad:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - a4b461ba-0d50-5b5b-8bf9-cc2ddd8622c6
+      - 6ee4a339-52a3-57f6-81b6-319d8e0bb1c9
+      - d4231949-311e-52cd-a2d2-d8484f3a0477
+      - f6123b56-9cad-5af1-b252-d3a02893e605
+      - 70a8b247-82ba-5b23-9db1-0821e42c63c1
+      - 58c6296b-98fe-5418-a52b-f1280582e1fe
+      target_aliases:
+      - currencyservice
+  case-rcaeval-ob4-v3-f9efedd9:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 6ad298c5-077d-5392-899a-1c955820b3b7
+      - 68ccc61e-f141-581a-bbf4-9b81355c2259
+      - 550c1d23-57c2-5bfa-82a6-94492f0c322c
+      - 11c9f7ce-361f-55a1-b15e-048d42c659ac
+      - 29ba3e45-fd2a-5394-845a-5c2e8251f762
+      - 542fe0da-67f7-52dc-a2b2-1dbef4ae5668
+      target_aliases:
+      - currencyservice
+  case-rcaeval-ob4-v3-792fab70:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 892299e6-b993-5600-a34e-91c4d796f51b
+      - 6bc578ae-4427-5887-8226-5418bc41ad47
+      - 9d5d3838-82e3-5718-b33b-d37b1a0a9163
+      - b3690ed7-9e79-5b66-835e-b3b071dc09f4
+      - ae52368f-54a2-573e-97f2-8ee20be5018b
+      - a8442232-5d4d-57b0-9d07-47152b7106e8
+      target_aliases:
+      - currencyservice
+  case-rcaeval-ob4-v3-ee2a86bf:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 6a449bc2-0172-564e-8b34-1a3980286fdf
+      - 367125c1-2276-505e-9d64-13022ccc2830
+      - 6500008f-ec01-58d1-8db8-446fb1512b42
+      - 3d772161-3da7-5a29-a0d7-46b32529f44c
+      - 1f9e6c04-7ca3-5ff3-a156-f98817fbeaad
+      - 33b304bb-7018-5dc2-9a8a-2510280739b4
+      target_aliases:
+      - currencyservice
+  case-rcaeval-ob4-v3-46183fff:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 3f90a7b0-76c7-53d2-a6b7-187b9901a4c4
+      - cbaa861d-eaa6-5f12-8890-05d15709a8fd
+      - 7025fe58-567b-5420-80fe-cad730a41f7c
+      - 81fece15-1d3a-59e8-9ac8-d260021a5313
+      - 1a6d70cc-410e-5ab1-bd3b-e59bf884b6ee
+      - 7ed03041-18ec-50c2-b6ce-246163589732
+      target_aliases:
+      - currencyservice
+  case-rcaeval-ob4-v3-fcce13e9:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 73551e35-928f-586b-82c4-25d2d6021636
+      - 9838cbc4-15cc-5df7-8f10-9b2550de1fee
+      - e1123caf-b3ac-5d68-a51a-0a3b5704fc2f
+      - 36552221-a61c-53f3-b6f0-4f4c0725788a
+      - 83af3bc6-bdcb-5314-940e-e94129841c5c
+      - 62cc9304-1c86-5b12-8bb9-5d6c73c8c10d
+      target_aliases:
+      - currencyservice
+  case-rcaeval-ob4-v3-9a3cdc6d:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 09c57058-e1f6-5669-ac1c-81172543ec12
+      - ec34f3b0-1f69-5a8d-8984-4f90cdd00ff7
+      - 983df28f-0d58-5ac2-80ec-345a009285b2
+      - 4fe53977-d476-58e1-b3db-dd44846872c6
+      - edfe8e2f-89e0-58af-a797-a81116aa099f
+      - 6e33b171-097a-5d08-a513-3e009a298dba
+      target_aliases:
+      - emailservice
+  case-rcaeval-ob4-v3-dfe35510:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - bfe23fcf-5d31-59a7-b673-222875f3be6e
+      - af3d5b71-f3af-57ae-ab2f-7ea86f8a6108
+      - 587d8a1f-6e6e-59eb-9c00-45e1808f07b2
+      - 93d6c061-2a07-53e5-b4e9-8d39c6666631
+      - ce9e704a-fbc7-5beb-b5f5-b565df5659ea
+      - 19f68472-c1b9-5ed2-ae5c-a4f323ce82b0
+      target_aliases:
+      - emailservice
+  case-rcaeval-ob4-v3-eb4e1778:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - d0d388ca-44c9-5c10-a362-87f57c19c64d
+      - 819dfdda-2fbd-5243-845f-32d17b239bb0
+      - cd67b46b-f7b6-5207-b05c-f62174a15252
+      - 1b60ea47-9478-5c1d-ad5f-02bfec63caad
+      - 441a3330-e03f-50e9-810a-23cd8f622305
+      - 81b66f83-d2a6-5876-843e-32003d673a68
+      target_aliases:
+      - emailservice
+  case-rcaeval-ob4-v3-acb42a42:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - ad6f3a2f-c064-5737-af5b-34dd2e2699cd
+      - 9126a4c0-7d23-5183-b780-4920eafbd275
+      - 36c04ae8-7dd6-5fc5-a652-10cab556316e
+      - 841b2522-a9ee-5c00-aa16-e676b3f6a9e3
+      - 76be14f1-11cb-56cf-b103-1f2aad39a34f
+      - 3607027d-0d6b-5a50-ace4-7e0ce931a53d
+      target_aliases:
+      - emailservice
+  case-rcaeval-ob4-v3-95e4f4ea:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 0819dbaa-605d-5567-94c6-040784c49300
+      - f80f1455-56d3-51b9-bc25-920fd78ea386
+      - cc56c122-8449-5afe-80ff-40ff2cd93983
+      - e0941f41-af4f-5422-98ab-0e7acd4e5628
+      - 38c460c6-a508-544f-983d-cce5d97ac25c
+      - 5adc472c-1419-57a3-aa94-d0cf94c88826
+      target_aliases:
+      - emailservice
+  case-rcaeval-ob4-v3-93b0f4fa:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - ee123e98-782c-5c96-ac19-005450b165af
+      - 4d2d2816-3e4f-5722-a215-f996f45d10dc
+      - 814dd9d5-692f-51c3-a515-39f81fd740ca
+      - b4745a8d-6645-53c1-af61-79821337f681
+      - 4d26ead8-55ca-590a-b2f9-fce50ac989ba
+      - 1958a65a-7227-57fb-a0c4-eca4fd6ee01d
+      target_aliases:
+      - emailservice
+  case-rcaeval-ob4-v3-d0f77684:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 1594408f-97c7-5f4d-9766-5140d98e668a
+      - 5675a897-75e2-5cef-889c-00aa09feca44
+      - fd06c930-ec7b-55fa-9de6-75f954d13aa0
+      - 44b0bf33-ad81-5c82-b7b3-2814f9fa576e
+      - 3942fe47-56be-57bd-8e4b-6a7428280551
+      - 2c889663-15a7-5c28-aa7a-42aa5ec486c4
+      target_aliases:
+      - emailservice
+  case-rcaeval-ob4-v3-50e54490:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - fefac97a-8296-5126-8b3e-56cf68aedfee
+      - f54ac281-e083-5194-8b71-af32eeeb8dea
+      - 537fe783-7ef6-540c-93fa-286787c72a64
+      - ca7914bf-e9ab-5f98-8853-5aaca258f05e
+      - e49c3769-ed64-5907-8172-a0a1de2407e3
+      - a7d07a80-33c3-55ac-a7ee-8970731f502e
+      target_aliases:
+      - emailservice
+  case-rcaeval-ob4-v3-1ac8b46a:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 420d60ae-e25c-5f8f-9ffd-0e1ef82c5b43
+      - 997edf8d-1dd0-5ec4-9214-86cb0ceff282
+      - d80e598f-7f99-5b65-9adf-8cb22dee97ae
+      - 29955c15-4667-559a-8edf-170490241cb8
+      - 82b12e78-681d-5afc-991a-1d66b96841a9
+      - 5e9580e0-e25c-5895-b9b4-e5855df5ca2a
+      target_aliases:
+      - emailservice
+  case-rcaeval-ob4-v3-69e8fd7e:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - ebe046f4-c7db-576f-b132-e066a67ded7b
+      - f0050925-3f3a-54f4-873f-34cd6ef8f730
+      - c9e87e90-5609-5c9c-9c9f-4b16127dc4bf
+      - 9fc41ca2-8fcb-5909-ae3a-017eeac68b7c
+      - 7fe4a9e6-38dd-5897-9c70-f6a9c612a771
+      - 1743a4e3-66cf-56f9-a1c1-bae3115b1d7b
+      target_aliases:
+      - emailservice
+  case-rcaeval-ob4-v3-5b9fb769:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 0f73937c-c1f8-5b23-ab57-304b16e11e9b
+      - 87b0bb77-9e3d-57c4-b10a-ee73891b63b3
+      - 9d0b77e3-dfb3-54a3-881a-8612485d29ae
+      - 49472f60-a679-56bf-b75c-5d6a652f0bf4
+      - b57f3ee1-4a3c-5f9a-bf7e-d3d9ffac439f
+      - cb15045f-746a-5472-8a71-7f837b672d8c
+      target_aliases:
+      - emailservice
+  case-rcaeval-ob4-v3-5ceb3edf:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - b205d60c-2962-52b5-b352-220551b08930
+      - 3b0f38d9-0071-530c-b957-89804c942581
+      - 96256f0e-d9c9-5755-bfc1-efe799cec16d
+      - 79418bb0-9b34-5055-aeb8-d7b19e353758
+      - 9776487a-509e-5996-bdd9-651aac33c4f7
+      - d99f7416-a113-5d02-b3c0-0e3595043fdf
+      target_aliases:
+      - emailservice
+  case-rcaeval-ob4-v3-062e48d0:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 2147513f-493f-5afe-bb21-cfdc022fc917
+      - 06db4162-9dc7-5b8b-b673-29297a915b89
+      - 48d6ba6c-0468-5f9b-9e54-c38934829775
+      - b1245ad8-873e-53be-ae66-b6eb850db8b7
+      - 62ecf0ad-21fe-57a5-9d21-f4e54837f3f5
+      - 2815a2b5-0279-5135-9fa6-1742b930479a
+      target_aliases:
+      - emailservice
+  case-rcaeval-ob4-v3-1f34cc28:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 3b3f8fae-448c-5270-87e2-ef3ab5639cbc
+      - 26ab34a3-655e-5c97-8cd1-5feacb7038ba
+      - f84ca95a-66f5-537f-bdee-90833f9b9dc3
+      - d89d0b7c-9ea7-56f8-988c-90b1cadfd02e
+      - 4df63c56-7ace-5165-9ad6-02999ec99923
+      - ac6e810d-2d38-5f78-9046-651dad0213e4
+      target_aliases:
+      - emailservice
+  case-rcaeval-ob4-v3-6c3d2b6b:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - c655ca9c-c367-5a91-b194-232a83128b5a
+      - 140bd65c-99c1-5670-b8b2-75a090ff4c9f
+      - 11a18597-466a-572e-a4d8-9704dd609f1e
+      - fcd54e30-f8f4-5ad6-a209-19e834fb1f7e
+      - 7f28bd06-3f5b-597b-9788-c5ead98b94dd
+      - b8f4b48d-4817-5b33-b5ff-77c31801743a
+      target_aliases:
+      - emailservice
+  case-rcaeval-ob4-v3-38c197c6:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - b517bd21-4353-5b9d-af74-786aab6a6ce3
+      - d8616db8-c2b7-566e-a428-abb7fa275333
+      - f95605c3-6145-5e34-b463-44732c456661
+      - 8cdc5561-049c-5268-a882-83b32fe0e728
+      - 64d3fb4d-ada1-566a-871e-ada45e0af3aa
+      - 092bc6ad-c5c3-565e-92c1-4aa751859dec
+      target_aliases:
+      - emailservice
+  case-rcaeval-ob4-v3-39c430c9:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 9e46bcc4-512c-543c-a1ea-17da8a683f2d
+      - ee40d690-a7b1-50a8-83e5-b45a9fcb6411
+      - a0475d56-ffe5-54d6-9536-f4eef30de887
+      - 67857625-5df9-50ec-8689-230af982f649
+      - cf7fa8a7-b043-5251-87f1-cbabead3b0dc
+      - f45a07fd-64d6-5d55-bbab-750fdd088e95
+      target_aliases:
+      - emailservice
+  case-rcaeval-ob4-v3-44dfd1a0:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 4d6146f6-8cc9-50fb-9f09-f2c7d84b7569
+      - a9086148-7599-5b9e-8581-7eaf77565ba1
+      - ab621da0-efe4-5a8f-9952-34c63de6f18b
+      - e557c861-a471-558f-b4f5-82425ec808ef
+      - 161a6307-6772-523e-88ec-e235b9e16728
+      - 8195134f-7522-55c0-bf62-12f69d0f2296
+      target_aliases:
+      - emailservice
+  case-rcaeval-ob4-v3-0849215f:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 0cda6c9e-109b-5925-a75e-d0b073a5b1ec
+      - 13e2fdb8-0725-5ebb-afe8-e84210454953
+      - 1e3e943f-c252-5143-b8fa-e71debf0ff66
+      - e8ab8642-a402-541f-9d71-fbd9d4ac3d1c
+      - 60b67f7c-5265-507d-9c2f-f84295ff597a
+      - 32cb4adf-bbbb-5115-bd73-1558fce30ab4
+      target_aliases:
+      - productcatalogservice
+  case-rcaeval-ob4-v3-1e6d405f:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 0a9ec134-34bd-55a9-a2ed-a90c960b4378
+      - e3bcef31-d727-54d6-977e-34d486e0dbdd
+      - ae45cda2-ac93-500d-b302-2eff13cf553c
+      - b3866573-9f66-5469-baf8-b49a32739453
+      - dbae962a-86b7-5bcd-a515-5c4cf78ed38c
+      - 0139ee60-fff5-500f-9760-447622c1ef24
+      target_aliases:
+      - productcatalogservice
+  case-rcaeval-ob4-v3-a022f192:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - c37eedde-0760-50a5-81f0-74a97937b4db
+      - 2bdc2d94-b862-565f-ba0b-8b998e9d5900
+      - 24d644e4-2229-5195-9be7-428807dfc8ca
+      - eda7c454-796c-5b02-a0b9-8a5a6b8b5578
+      - b5f2a47a-23d5-5a1b-b3d2-9b596967b520
+      - fb05c415-29b8-5d35-bbea-0649c60dccc6
+      target_aliases:
+      - productcatalogservice
+  case-rcaeval-ob4-v3-11686791:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - c8b1cf5e-3623-53a5-ba28-2391236e41e1
+      - 682d80a1-73ba-53a3-aa46-fdfc9cd8ee3e
+      - ebe465f7-e9d3-59ec-9f38-98bc63d7e699
+      - 13561b24-33f5-5cd3-8193-e2d2d3141013
+      - 63a9d01f-a07d-5e9f-adf3-b42edef1f3bf
+      - 06cc7bdd-4442-5861-b374-145e7bc14ed2
+      target_aliases:
+      - productcatalogservice
+  case-rcaeval-ob4-v3-5218976c:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - bcc1b77e-3b2f-54ba-ab4e-196f54b92bd9
+      - c415dbb4-72e5-5652-bb41-6c2d040f772b
+      - 049fa511-4273-5813-aa84-94375f4ef3f2
+      - 1059fa18-33ac-5b11-aebf-8f3728bfba4c
+      - a53aa58f-52d8-5b01-b81f-8440aa4ca755
+      - 16a0d5ed-d53a-59d6-abaf-119fd598e57f
+      target_aliases:
+      - productcatalogservice
+  case-rcaeval-ob4-v3-fb5d096d:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - e1a0df3c-50c8-5438-b534-29c9adb6b24f
+      - 27e3cf17-51db-5cb1-8938-3c384e8a9cf5
+      - aecb0d9b-a151-553e-aec5-11cdbe7fbe0f
+      - 713cf107-daba-5fc7-bb11-cda2a55e890c
+      - 1fb9c686-6f63-5c70-8623-1ef5a48f955d
+      - bfa4ae2e-97e8-5a4d-a8da-d17c719ad496
+      target_aliases:
+      - productcatalogservice
+  case-rcaeval-ob4-v3-511aecce:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 90825f28-6e74-59a9-8a90-02a9f5f03706
+      - 672ba20f-6f04-5755-9bc0-d3dd6f5e3efd
+      - 9ce9b88f-a72f-50f0-af3f-8b551763cd48
+      - 79e5843c-784c-512f-a6d5-8a351c0b8fd5
+      - e8af2883-4875-5acd-a31e-2eca81fa8a7a
+      - 3fc401d8-3a5d-5601-b68f-4f1ea5ddd532
+      target_aliases:
+      - productcatalogservice
+  case-rcaeval-ob4-v3-5a47d9c4:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 03254f66-2f92-547b-893c-ef7984735fbe
+      - b657b217-0980-503d-b0c8-7dadaf1c549a
+      - 245968aa-8d46-58c9-8ca5-10eb57bc84ad
+      - 01e52be9-a42a-5ad2-bdfa-359064bd1d3d
+      - f1d225f6-9ad7-5089-a5a5-48153ca20dbf
+      - 98114127-14fc-5892-987b-d609d1686f2c
+      target_aliases:
+      - productcatalogservice
+  case-rcaeval-ob4-v3-c9ed3934:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 89b2da61-34f2-56ee-b86e-9a874362d085
+      - d1b0ff41-cff3-5601-b5ac-ca9531c26945
+      - 72b2c5e2-d895-5302-8baa-65b11db2522a
+      - 7d592ac7-9d24-53fc-b4a2-aa3481c5ce12
+      - 8eeb1104-dd2e-5e15-889a-517d312642b4
+      - 17268344-33f3-5d57-bb21-22453df5e9b1
+      target_aliases:
+      - productcatalogservice
+  case-rcaeval-ob4-v3-419afedd:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 524abf77-0802-53f4-9f6d-742e269dedf7
+      - 6d04dbba-c209-5478-8096-f1c6097b6430
+      - 2e6167ca-e129-5a00-8a1a-b454e9285167
+      - a5215fed-b6bf-5b18-8ba9-517730137121
+      - d0ccef20-3713-58ad-80af-6d58fb1823ee
+      - baaf5be7-edbf-50c6-8448-4a2b2268ff16
+      target_aliases:
+      - productcatalogservice
+  case-rcaeval-ob4-v3-028849aa:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - f6a37217-6528-57a5-96f9-95c6b17784a0
+      - 6bc62579-7616-51a0-8307-57658b1d70e3
+      - 2ffb92a9-8a59-5282-9f8e-1a04e0514133
+      - eb953a7a-d8db-5645-bbc8-045bc347691e
+      - b320e3a6-94a8-5d3c-a4cb-cf04b02e3e2d
+      - 2f5bcd42-2653-511c-8713-f2fc6a790caf
+      target_aliases:
+      - productcatalogservice
+  case-rcaeval-ob4-v3-83bdd5f6:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 3a46da20-fa2f-50de-bc33-69fec71c6d60
+      - 20c68ad9-43ec-54b4-9f55-22090853e7c6
+      - 91ba4ea9-a8a6-583f-87b9-915ea9ed20c4
+      - 97047098-ba1e-53dc-bdda-11aad79e179c
+      - a7db0b45-fc29-53de-98a1-19d71932e516
+      - 2bc8bb60-2604-5c3f-be8b-a4bc94956f3d
+      target_aliases:
+      - productcatalogservice
+  case-rcaeval-ob4-v3-218e2bcf:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 0c6ef23f-4c9e-5a9d-9c52-14f8221f7c03
+      - 0d7d1409-ae57-52de-85a6-8a2bda7491f3
+      - 18993650-91a9-58ae-92fa-5ec7597776ef
+      - 65119b53-1eb3-52e7-9331-4d6bf5aa83cc
+      - 34848d8f-0c05-5fc8-9d9e-c97296bbe1a4
+      - 1ee06d0a-b6d9-5e8c-b243-d3c0d2bf7241
+      target_aliases:
+      - productcatalogservice
+  case-rcaeval-ob4-v3-19968d47:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - c6e764bd-bf29-518e-bbe6-e3dcb0582e88
+      - 6c54bd00-f837-51b1-b1a8-ae7908719b21
+      - e272c297-4e42-51b5-96ca-1a2e260cac43
+      - eb660eb1-45e6-5647-8095-2f6dec21f045
+      - 807a8e4e-3b8f-5ca4-bff9-506bf303f02c
+      - 34bada44-d73a-5286-b629-e2565c19d5f7
+      target_aliases:
+      - productcatalogservice
+  case-rcaeval-ob4-v3-5cb886dd:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 20b22d40-d80c-5cb3-a47e-1ac91b55d5f2
+      - 02dbbbc6-7593-5678-824f-efef4d15b16c
+      - 7535d0d4-9b8f-5247-ab2b-ed373f3e1d79
+      - 5a4f9802-1bae-542a-8fed-40e8d3716b51
+      - 4a099777-9c6b-50b0-8ea5-82d742d6d98f
+      - 4f3a264c-159d-5672-9a4a-4d9f61c1cf16
+      target_aliases:
+      - productcatalogservice
+  case-rcaeval-ob4-v3-d81c46f0:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - f06a05ad-6327-5e71-a99f-e5aedafdb2fe
+      - 286fd105-3ac8-5154-bc62-378a39998a4c
+      - 5ada97be-c648-5566-b66d-553a9c974a7f
+      - 233a527c-82c9-5087-a3b3-33afaf09456e
+      - 804c1a17-355b-5772-ab49-8cf411684dc7
+      - 97b5ba60-be2d-5adf-98bb-609bc82f28f2
+      target_aliases:
+      - productcatalogservice
+  case-rcaeval-ob4-v3-a276c99b:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - ffa3c23e-7e2a-55d1-8b0c-9424b48b86f0
+      - 020bc10c-ccd6-56cc-beb0-7360361d1e65
+      - cc5ec7cd-d0a5-5e34-bb2f-84b9779f9397
+      - 9a7111fc-ef7b-51bb-bd80-3579f0968b3e
+      - 0c4197b4-ac34-5a59-a2a5-1ac45a43fd2b
+      - 29ed00bb-a9dc-5571-b439-9c666e676b2a
+      target_aliases:
+      - productcatalogservice
+  case-rcaeval-ob4-v3-bbe477b5:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - c0264bd9-2c3e-5bad-a2c9-05920e932a99
+      - 94e544a6-e8ed-5ed1-b883-cde1bf53166e
+      - 21df8120-1fb3-5344-b478-c5f0e68c2f46
+      - 23089e5c-b18b-5c91-8803-6df4d27d380d
+      - 2ca6ac71-1281-5a6f-8316-1399de97999e
+      - 0dc00132-4303-5f60-9d8c-b4afba336423
+      target_aliases:
+      - productcatalogservice
+  case-rcaeval-ob4-v3-a6f67b17:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 85199836-7922-55a6-86a0-b77444c862cc
+      - 566b08c7-bf18-57e6-9e7c-c8cf769d448b
+      - fc5eb80c-dafa-529b-a01b-678d70df7ca6
+      - ce513f07-68cf-5b00-b457-bc57af03866d
+      - a3c90fea-e94e-5821-a30f-19598bb8108b
+      - a552aad8-d967-5045-9f94-9e75900688c9
+      target_aliases:
+      - recommendationservice
+  case-rcaeval-ob4-v3-5a6de628:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 59895e06-1417-570f-b55f-06f3712cf8dd
+      - a616af09-6dd0-575c-b375-2dcf423a695b
+      - 29bfba64-aa5a-5829-b744-bb17a46ba96f
+      - 2208a235-2106-5f17-8b5f-85cc56114534
+      - c7779e87-50b5-5659-987c-1b83444209ca
+      - a2439af0-be6e-5b4a-85c9-f3046e2fd002
+      target_aliases:
+      - recommendationservice
+  case-rcaeval-ob4-v3-dc18e540:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 9d42a3d7-0fe1-5673-898d-c85fd95f9b74
+      - 783ab285-2704-5d06-80f3-020445d39526
+      - 3a324bff-c7ed-5de4-948f-04010c1ca2ee
+      - 06819690-cdae-52f7-bba7-04a7064b2c7d
+      - 23c8d798-8c7e-52d1-8cf5-74bfb3855cfd
+      - 4adf3bc1-4b5b-54eb-8b54-329491582179
+      target_aliases:
+      - recommendationservice
+  case-rcaeval-ob4-v3-f539cf39:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 1f339bfb-7341-505f-82ed-791bec7ca8ef
+      - da53a000-f88d-5dfc-a4fc-57fa5e96275a
+      - a31759ef-aec5-5251-aa05-b35a67495ebb
+      - 50fd946e-2017-5aca-928b-95758d2d42b1
+      - be50d2ef-79a2-5301-a21f-b7d6feca8e74
+      - 542e07e4-b424-5d0a-a3e2-e6fd9c405cc9
+      target_aliases:
+      - recommendationservice
+  case-rcaeval-ob4-v3-038a3fc4:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 64669049-38c1-5bfd-a94a-0a5133abf62d
+      - 0ad648d9-460c-5b95-bc3c-2ef7cbb81c69
+      - b4096bc6-ebb8-5b77-9c63-6bfcca5bddcc
+      - ec9e0a71-8472-5eae-a779-8fb9bc9263a2
+      - 65398782-d1fb-5dad-8455-5047add5c06f
+      - 32f0ce5c-bea8-599f-bbfd-60b6a46aad88
+      target_aliases:
+      - recommendationservice
+  case-rcaeval-ob4-v3-47cffeb3:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 40684fb9-ed2b-57ed-aa5c-6e6f25739ad8
+      - e1f3f4d2-0e07-5332-9b45-9fb3f57440e3
+      - 33cc13d2-d57a-5531-a5cc-ce47398f7d38
+      - dc8671bf-5d89-514e-9543-5986db0b49fb
+      - 2eb5e3ac-6d5f-5db7-931c-d9ca2310bc84
+      - 47e165aa-a098-58f0-b53a-a87cd70c71ef
+      target_aliases:
+      - recommendationservice
+  case-rcaeval-ob4-v3-6d090d94:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 8c6c99b8-0320-5a71-95d3-c22c83317436
+      - 20dd5423-04bb-5de0-b6ec-502b375d0e55
+      - 86f481b3-3b36-5157-ba58-0c5f14a30c2c
+      - 7e45d6a9-0836-564e-bc98-651e3507ac71
+      - cc909f4c-28d2-51bd-98f8-6f5f194d663b
+      - db11493e-3630-522d-9edb-ec86e0cf676b
+      target_aliases:
+      - recommendationservice
+  case-rcaeval-ob4-v3-2ad3be24:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 0a320b38-a8b4-55f8-82e1-7c68fb372bbd
+      - 091b5e29-3d3d-5108-b54d-8c707c313794
+      - 44337120-ffc4-52be-8552-9ba61f87480c
+      - 295814d7-8fc9-595e-9212-c7ab74a52dfe
+      - 8fd9dc82-ea97-5314-851a-0bd4a26268e8
+      - aeb2b525-cbdb-582b-aebd-0457654bc280
+      target_aliases:
+      - recommendationservice
+  case-rcaeval-ob4-v3-0f39625b:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 81908ce7-1475-547f-8320-2c88b9d9b309
+      - 51d2d049-16f7-5258-96e6-9ec674db16b2
+      - 0ea36f5c-00cf-5f5c-8b9c-e5edf20c91e8
+      - e3886914-b68a-5855-918d-4785e441a34b
+      - 181a1bc9-8e50-52a3-a7f0-801381a4135a
+      - 8ba18c0d-a74e-5861-9ebc-760e762f0a18
+      target_aliases:
+      - recommendationservice
+  case-rcaeval-ob4-v3-fe4d2a5b:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 5ddb0357-5e3d-570c-9dee-f01c45c09229
+      - 41031e2f-bb1d-52ee-949c-0e2dde1d655f
+      - 4b54257f-cdae-5575-ae5c-a04b8218cb4f
+      - 0f97070d-f693-5a20-8a61-83445a4b007b
+      - b636130a-996f-5e9d-ac49-59f6bbef19bd
+      - 4d23d00f-9b13-595d-bd30-92defb68c8d7
+      target_aliases:
+      - recommendationservice
+  case-rcaeval-ob4-v3-5e3c7904:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 3fa31420-026d-579e-9e2f-47fa26ed76b0
+      - 26e7e7cb-8d85-5147-9640-86fea13c854c
+      - 3682c28a-6e20-5a1c-9bb5-e00ae1879559
+      - 1d2a0935-4f93-5eff-a255-4dc66b7b950c
+      - 3ffb95f1-78b6-525d-a97d-0c0c1c3ab2bc
+      - 7651beb0-31a2-555f-8362-f2711f1c6615
+      target_aliases:
+      - recommendationservice
+  case-rcaeval-ob4-v3-89ecffb1:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - cccd5c37-4f37-5eec-bd1d-15ad8fc7612c
+      - 256ee0c6-d2aa-54c2-b054-aaaf5f628323
+      - d210e07a-a4d9-572f-9dce-6fd56a0f4ff3
+      - f52fa796-2fc3-54ab-a242-251072a12cb2
+      - dff6f6c7-7d49-5188-bbdf-34ef31f23297
+      - 8c6d0255-1e74-58ee-99d3-d2912461994a
+      target_aliases:
+      - recommendationservice
+  case-rcaeval-ob4-v3-5728f215:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 5436f6b4-d784-5acf-b79e-a399c4d884f2
+      - 9df9a3c4-ca62-5485-bd92-88f7d51d09dc
+      - 388ffdee-2258-5f3c-8484-24e8b01327b8
+      - e51322fe-0f84-58b2-9ae6-b3017d90fa52
+      - 4d41d7fc-9135-5203-a045-df72e9819e89
+      - ef4a263c-82f7-5b8f-902f-27392be60f37
+      target_aliases:
+      - recommendationservice
+  case-rcaeval-ob4-v3-b5efdb15:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 3bff714a-85b6-5c50-b1f0-0f8cbd7f01e0
+      - 25a6ba5d-82da-5c88-9b85-e4ee9f68c4c9
+      - bfd48580-7898-5414-8870-59f97f4fa569
+      - 4460545b-eb01-52b9-ac63-efc509f737c1
+      - d515ff16-15a3-5f21-93fc-c15ec2a932b2
+      - 9d0cae01-40ca-5092-81c2-ab53f094687c
+      target_aliases:
+      - recommendationservice
+  case-rcaeval-ob4-v3-d60e0015:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - ad92ca85-4cdb-56b1-9f23-610e93ee99cd
+      - 7310d74d-91ee-5b4a-9f7f-153e5eb391e9
+      - a3f892c5-d195-580e-b103-96f55ec3314e
+      - 9588c0b8-03ae-513a-8c59-203c31c99fa7
+      - f78308c3-b5fc-5423-a886-b731eab3589a
+      - 33bea2f1-0d71-598a-9ff0-1787ad1b0d9b
+      target_aliases:
+      - recommendationservice
+  case-rcaeval-ob4-v3-849a8920:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 294359a3-9126-5dc5-a95a-39a03b4f495c
+      - a1f89c20-2d1f-5434-b0ab-b141665b2559
+      - a0a39a54-37a6-5e1a-94cc-44e7f2e13bcd
+      - 7eada1de-6cc2-5513-a7d7-0abe4d52568e
+      - ea6065a1-1715-5bfd-bfc8-b639a2396d1e
+      - 452ed18d-368f-5956-8ca5-e23bac208d1b
+      target_aliases:
+      - recommendationservice
+  case-rcaeval-ob4-v3-d272970b:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 10106af0-fe3b-5726-a0aa-89381d50d38b
+      - 965d877f-f4e8-5fbf-947e-73bfb063febb
+      - 7c530a27-377e-5219-86cf-d1f9a08e00c5
+      - f4a04e71-aa4c-55ab-9bc8-3ffcedf4ee1f
+      - a880cac9-ffe9-5064-bacb-806514584555
+      - 7f169906-bf18-53d7-817f-d6e8434de3e4
+      target_aliases:
+      - recommendationservice
+  case-rcaeval-ob4-v3-f879d011:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - e2257172-4e70-5792-aa99-ba96c190b864
+      - b569e011-3ad5-5f07-a21d-d2840fe3481d
+      - c4813e4b-96d6-5ffe-a41b-0059448396c0
+      - 58e90e8a-69a6-5b76-aa09-73c2d1e46f91
+      - abf7de28-8473-5b52-91b5-17f57fa3c692
+      - c9e5f6ad-5877-5db6-9328-957de1723ca4
+      target_aliases:
+      - recommendationservice

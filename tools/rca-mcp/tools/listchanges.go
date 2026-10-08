@@ -15,6 +15,12 @@
 //     정책 사건은 ch 연결이 추정이어도 그 안의 target_ref는 exact_id다.
 //   - 기본 창은 [firstEvent-24h, lastEvent]: 변경은 원인 선행사건이라
 //     인시던트 창 안에 없는 것이 일반형이다(§10.6).
+//   - K8s 워크로드 변경(k8schanges.go, 2026-10-06): 롤아웃(새/이전
+//     ReplicaSet + 파드 템플릿 구조 비교)과 레플리카 변경(스케일 이벤트)을
+//     같은 창 전역으로 싣는다. CH(kcm 이벤트)는 optional 원천 — 실패해도
+//     본체 관측은 유지하고 source_errors로 결손을 밝힌다.
+//   - 롤아웃 후 자원 사용량(2026-10-06): resources.limits가 바뀐 롤아웃에는 새
+//     ReplicaSet pod의 사용량 피크 대 새 한도(VM, optional)를 수치로만 붙인다.
 package tools
 
 import (
@@ -125,7 +131,9 @@ func (inv lcInventory) resolve(id, basis string) (lcTarget, bool) {
 // NewListChangesTool은 list_changes 도구를 만든다. firstEvent·lastEvent는
 // seed의 인시던트 창 — 기본 창 [firstEvent-24h, lastEvent]의 재료다
 // (§10.6). lastEvent가 zero면 now를 쓰고 window_basis로 밝힌다.
-func NewListChangesTool(pg *sql.DB, firstEvent, lastEvent time.Time, nowFn func() time.Time) llm.Tool {
+// ch는 K8s 스케일 이벤트 원천(optional — nil이면 그 부분만 미조회로 표기).
+// vm은 한도 변경 롤아웃의 사용량 피크 원천(optional — nil이면 미조회로 표기).
+func NewListChangesTool(pg *sql.DB, ch *CH, vm *VM, firstEvent, lastEvent time.Time, nowFn func() time.Time) llm.Tool {
 	if nowFn == nil {
 		nowFn = time.Now
 	}
@@ -146,7 +154,10 @@ func NewListChangesTool(pg *sql.DB, firstEvent, lastEvent time.Time, nowFn func(
 	})
 	return llm.Tool{
 		Name: "list_changes",
-		Description: "시간창 안에 일어난 변경 전부 — 정책 배포·수집기 등록·구성 변경·자산 트리 편집·계정 변경. " +
+		Description: "시간창 안에 일어난 변경 전부 — 정책 배포·수집기 등록·구성 변경·자산 트리 편집·계정 변경, " +
+			"그리고 쿠버네티스 워크로드 변경: 롤아웃(새·이전 ReplicaSet과 파드 템플릿 구조 차이 — 이미지·env·리소스 requests/limits·프로브·command/args·포트)과 " +
+			"레플리카 수 변경(스케일 업/다운의 이전→이후 개수). 각 항목에 deployment·replicaset target_id가 붙는다. " +
+			"리소스 limits(memory·cpu)가 바뀐 롤아웃에는 새 ReplicaSet pod의 그 자원 사용량 피크(절대값·새 한도 대비 %·피크 시각)를 붙인다. " +
 			"대상은 선택이며 필터가 아니라 정렬 힌트다(이웃 대상 변경이 원인인 경우가 흔해 창 전역을 반환한다). " +
 			"기본 창은 발단 기준 24시간 소급 — 배포는 새벽, 발현은 오전인 축적형 원인을 잡기 위해서다.",
 		Parameters: params,
@@ -203,7 +214,7 @@ func NewListChangesTool(pg *sql.DB, firstEvent, lastEvent time.Time, nowFn func(
 			if limit <= 0 {
 				limit = lcDefaultLimit
 			}
-			return listChanges(ctx, pg, in.Target, fromT, toT, in.IncludeAuditActivity, limit,
+			return listChanges(ctx, pg, ch, vm, in.Target, fromT, toT, in.IncludeAuditActivity, limit,
 				strings.Join(basis, ", "), firstEvent)
 		},
 	}
@@ -222,7 +233,7 @@ type lcRawCH struct {
 	TargetID  string // detail->>'target_id' (없으면 "")
 }
 
-func listChanges(ctx context.Context, pg *sql.DB, hint string, from, to time.Time, includeAudit bool,
+func listChanges(ctx context.Context, pg *sql.DB, ch *CH, vm *VM, hint string, from, to time.Time, includeAudit bool,
 	limit int, windowBasis string, firstEvent time.Time) (any, error) {
 	if pg == nil {
 		return nil, fmt.Errorf("list_changes: PG 미연결")
@@ -289,10 +300,18 @@ func listChanges(ctx context.Context, pg *sql.DB, hint string, from, to time.Tim
 		events = events[:limit]
 	}
 
-	// ── 7. 봉투 조립.
-	findings := make([]Finding, 0, len(events)+1)
-	var refs []string
-	hintHits := 0
+	// ── 7. K8s 워크로드 변경(롤아웃·레플리카) — 창 전역, 힌트는 정렬만.
+	k8s := k8sWorkloadChanges(ctx, ch, pg, vm, inv, from, to, hint)
+	for k, v := range k8s.SourceStatus {
+		sourceStatus[k] = v
+	}
+
+	// ── 8. 봉투 조립. K8s 구획을 앞에 둔다 — 항목 상한이 작고, 응답 앞부분만
+	// 보는 소비자(절단 뷰)에게도 롤아웃·스케일 사실이 닿아야 한다.
+	findings := make([]Finding, 0, len(k8s.Findings)+len(events)+1)
+	findings = append(findings, k8s.Findings...)
+	refs := append([]string{}, k8s.Refs...)
+	hintHits := k8s.HintHits
 	for _, e := range events {
 		f, hit := lcFinding(e, hint, inv)
 		if hit {
@@ -308,6 +327,10 @@ func listChanges(ctx context.Context, pg *sql.DB, hint string, from, to time.Tim
 		"counts":       map[string]any{"total_raw": rawTotal, "total_folded": foldedTotal, "returned": len(events), "excluded": excluded},
 		"sources":      sourceStatus,
 		"source_notes": map[string]any{"policy_deployments": "current_state_not_history — 현재 남아 있으며 deployed_at이 이 창에 든 링크일 뿐 당시 부착 상태가 아니다. 재배포는 기존 링크를 지우고 새로 넣으므로 이 원천의 0건으로 '과거에 배포가 없었다'를 판정하면 안 된다"},
+	}
+	meta["k8s_workload"] = k8s.Meta
+	if len(k8s.SourceErrors) > 0 {
+		meta["source_errors"] = k8s.SourceErrors // 부분 강등의 결손 명시(§15.2-3) — 분류 토큰만
 	}
 	if len(exMeta) > 0 {
 		meta["excluded_detail"] = exMeta
@@ -325,8 +348,9 @@ func listChanges(ctx context.Context, pg *sql.DB, hint string, from, to time.Tim
 	findings = append(findings, meta)
 
 	var sb strings.Builder
+	sb.WriteString(k8sSummaryLine(k8s))
 	if foldedTotal == 0 {
-		fmt.Fprintf(&sb, "창 [%s, %s) 내 변경 0건(원본 %d행, 제외 %d행).",
+		fmt.Fprintf(&sb, "창 [%s, %s) 내 정책·수집기·감사 변경 0건(원본 %d행, 제외 %d행).",
 			from.Format(time.RFC3339), to.Format(time.RFC3339), rawTotal, excluded)
 		sb.WriteString(" 단, policy_deployments는 현재 상태 표라 과거 배포 부재의 근거가 못 된다.")
 	} else {
@@ -342,14 +366,40 @@ func listChanges(ctx context.Context, pg *sql.DB, hint string, from, to time.Tim
 	}
 
 	return Envelope{
-		Status:          "normal",
-		AssessmentBasis: "변경 유무는 사실 관측 — 정상/이상 판정 없음. 귀속은 3축 표기(scope·correlation·match_basis)이며 correlation=unique_inferred는 시각 근접 추정이다",
-		Summary:         sb.String(),
-		Findings:        findings,
-		ObservedRange:   &TimeRange{From: from, To: to},
-		Truncated:       truncated,
-		Refs:            refs,
+		Status: "normal",
+		AssessmentBasis: "변경 유무는 사실 관측 — 정상/이상 판정 없음. 귀속은 3축 표기(scope·correlation·match_basis)이며 correlation=unique_inferred는 시각 근접 추정이다. " +
+			"K8s 롤아웃 차이는 ReplicaSet 파드 템플릿의 구조 비교(값 판정 없음)",
+		Summary:        sb.String(),
+		Findings:       findings,
+		ObservedRange:  &TimeRange{From: from, To: to},
+		Truncated:      truncated || k8s.Truncated,
+		QueryTruncated: k8s.CHTruncated,
+		Refs:           refs,
 	}, nil
+}
+
+// k8sSummaryLine은 요약 첫머리의 K8s 워크로드 한 줄이다 — 절단 뷰에서도
+// 롤아웃·스케일이 보이도록 상위 3건을 이름·시각과 함께 싣는다.
+func k8sSummaryLine(k k8sChangeResult) string {
+	if st := k.SourceStatus["kcm_events"]; strings.HasPrefix(st, "조회 실패") && k.Rollouts == 0 {
+		return "K8s 워크로드 변경: 스케일 이벤트 " + st + " — 결손이지 무변경이 아니다. "
+	}
+	if k.Rollouts == 0 && k.Replica == 0 {
+		return "K8s 워크로드 변경 0건(롤아웃·레플리카). "
+	}
+	var sb strings.Builder
+	fmt.Fprintf(&sb, "K8s 워크로드 변경: 롤아웃 %d건·레플리카 변경 %d건", k.Rollouts, k.Replica)
+	if k.Truncated {
+		fmt.Fprintf(&sb, "(반환 %d, 잘림)", k.Returned)
+	}
+	if len(k.SummaryDigest) > 0 {
+		sb.WriteString(" — " + strings.Join(k.SummaryDigest, "; "))
+	}
+	if st := k.SourceStatus["kcm_events"]; strings.HasPrefix(st, "조회 실패") {
+		sb.WriteString(" (스케일 이벤트 " + st + " — 레플리카 변경·이벤트 기반 롤아웃은 결손)")
+	}
+	sb.WriteString(". ")
+	return sb.String()
 }
 
 // lcSplitAgg는 string_agg(',') 결과를 쪼갠다 — pgx v5 단독 의존이라

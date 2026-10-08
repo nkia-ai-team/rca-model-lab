@@ -80,3 +80,84 @@ func TestSanitizePreservesOrdinaryCommands(t *testing.T) {
 		t.Fatalf("ordinary telemetry changed %s %+v", out, stats)
 	}
 }
+
+func TestPseudonymsLookOrdinaryAndAreStable(t *testing.T) {
+	raw := []byte(`{"path":"/actuator/health/f05-h-fail","pod":"scenario-f03-h-order-thread-pool-4jcn9","code":"F05-P","msg":"sudo COMMAND=/bin/sh memhog F05-P"}`)
+	out, _, err := SanitizeJSON(raw)
+	if err != nil {
+		t.Fatal(err)
+	}
+	s := string(out)
+	for _, marker := range []string{"opaque", "experiment", "withheld", "f05-h", "F05-P", "scenario-", "order-thread-pool"} {
+		if strings.Contains(s, marker) {
+			t.Errorf("marker or leak %q in %s", marker, s)
+		}
+	}
+	var clean map[string]string
+	if err := json.Unmarshal(out, &clean); err != nil {
+		t.Fatal(err)
+	}
+	if !strings.HasPrefix(clean["path"], "/actuator/health/") || !strings.HasSuffix(clean["path"], "-fail") {
+		t.Errorf("path shape changed: %s", clean["path"])
+	}
+	if clean["code"] != strings.ToUpper(clean["code"]) || len(clean["code"]) != 5 {
+		t.Errorf("code pseudonym should keep case and be 5 letters: %s", clean["code"])
+	}
+	if parts := strings.Split(clean["pod"], "-"); len(parts) != 3 || len(parts[2]) != 5 {
+		t.Errorf("resource pseudonym should look like word-word-hash: %s", clean["pod"])
+	}
+	if clean["msg"] != "[redacted]" {
+		t.Errorf("experiment command should be redacted neutrally: %s", clean["msg"])
+	}
+	again, _, _ := SanitizeJSON(out)
+	if string(again) != s {
+		t.Fatal("not idempotent")
+	}
+	other, _, _ := SanitizeJSON([]byte(`{"p":"F05-H fail on f05-h"}`))
+	var o map[string]string
+	_ = json.Unmarshal(other, &o)
+	if w := strings.Fields(o["p"]); len(w) != 4 || strings.ToLower(w[0]) != w[3] {
+		t.Errorf("same code in different case should map to the same word (case kept): %s", o["p"])
+	}
+}
+
+func TestOrdinaryCaseWordsSurvive(t *testing.T) {
+	raw := []byte(`{"d":"Case-insensitive literal substring; case-sensitive match","id":"case-f03-h-v3-123 ran"}`)
+	out, _, err := SanitizeJSON(raw)
+	if err != nil {
+		t.Fatal(err)
+	}
+	s := string(out)
+	for _, kept := range []string{"Case-insensitive", "case-sensitive"} {
+		if !strings.Contains(s, kept) {
+			t.Errorf("ordinary word %q changed: %s", kept, s)
+		}
+	}
+	if strings.Contains(s, "case-f03-h") {
+		t.Errorf("case id leaked: %s", s)
+	}
+}
+
+func TestKeyOrderPreserved(t *testing.T) {
+	raw := []byte(`{"status":"anomalous","summary":"first","findings":[{"z":1,"a":{"y":2,"b":3}}],"refs":["r"],"text":"{\"status\":\"normal\",\"summary\":\"inner\",\"findings\":[]}"}`)
+	out, _, err := SanitizeJSON(raw)
+	if err != nil {
+		t.Fatal(err)
+	}
+	s := string(out)
+	order := []string{`"status"`, `"summary"`, `"findings"`, `"refs"`, `"text"`}
+	last := -1
+	for _, k := range order {
+		i := strings.Index(s, k)
+		if i <= last {
+			t.Fatalf("top-level order lost at %s: %s", k, s)
+		}
+		last = i
+	}
+	if !strings.Contains(s, `{"z":1,"a":{"y":2,"b":3}}`) {
+		t.Fatalf("nested order lost: %s", s)
+	}
+	if !strings.Contains(s, `\"status\":\"normal\",\"summary\":\"inner\"`) {
+		t.Fatalf("embedded JSON order lost: %s", s)
+	}
+}

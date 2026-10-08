@@ -1,0 +1,525 @@
+# Grader-side corrections to a capture's reference cause (the meta.json text the mechanism judge and the
+# hint writer compare against). /data/eval-cases is read-only, so corrections live here. Each entry keeps the
+# evidence that justified it; `version` is stored in every judge cache entry so a corrected reference is never
+# graded with a verdict made against the old text. Golden root target ids are NOT changed here
+# (see configs/eval/train-family-v2.yaml for allowed_target_ids / expected_status).
+# 2026-10-01: f20-r (two passes) + 18 training captures from the reference audit (scratchpad ref-audit/report_[A-E].md).
+cases:
+  case-f20-r-v3-caf04820:
+    version: override-2026-10-01b
+    decided: 2026-10-01 user — (a) adopt the capture-observed OOM path ("응 진행해"); (b) first required both queries, then, after the capture showed the search requests
+      were mostly rejected (42P18), the stats query is the required trigger and the search is a minor, mostly-failed contributor ("응 B로 가자").
+    title: commerce order daily-stats full scans push the shared PostgreSQL over its memory limit (OOM restarts) — commerce-wide DB disconnects and stalls
+    cause: 'Repeated GET /api/orders/stats/daily?days=90 (OrderRepository.dailyStats, FUNCTION(''DATE'') GROUP BY over order_schema.orders) is the trigger that must
+      be named: these full scans run long under load → the single shared PostgreSQL instance, already near its 512Mi memory limit (~88% used before the load), exceeds
+      the limit within ~20 s (parallel full scans / aggregation) → postgres is OOM-killed three times and restarts with CrashLoopBackOff → every commerce service
+      loses its DB connections (SQLSTATE 08006) and order / payment / inventory requests stall or time out (gateway read timeouts on /api/orders/stats/daily) → PostgreSQL
+      CPU rises only after the restarts, during recovery. The unbounded GET /api/orders search was part of the load, but most of its executions were rejected at once
+      with SQLSTATE 42P18 (could not determine data type of parameter), so it is at most a minor contributor: mentioning it as failed or minor is fine, but a conclusion
+      that blames the search alone and leaves out the daily-stats query misses the key element.'
+    evidence: 'Load start 03:25:19Z. syslog "postgres invoked oom-killer" at +20 s, +44 s, +96 s; k8s events: container started
+
+      +22 s, BackOff +45 s, started +56 s, BackOff +96/+108 s, started +120 s. Postgres container memory 449 MB / 512 MiB
+
+      limit in the 10 min before the load. Container CPU (60 s points): 24 m at +41 s, 932-984 m from +101 s to +281 s
+
+      (after the load ended at +96 s), 28 m at +401 s. ~300 DB-disconnect log lines (commerce-order, gateway, product,
+
+      user) between +0 s and +180 s; 65 gateway read timeouts on /api/orders/stats/daily between +30 s and +90 s.
+
+      Search: commerce-order logs 66 x "SQLState: 42P18", postgres log 22 x "could not determine data type of parameter
+
+      $5"; the two search traces before the first OOM ended in 20 ms and 81 ms with errors, one later search ran 14.5 s;
+
+      32 gateway read timeouts on GET /api/orders. The meta.json text ("CPU rise → payment/inventory latency only, no
+
+      5xx") does not mention the OOM restarts.
+
+      '
+  case-f03-h-v3-d4192a3b:
+    version: override-2026-10-01-audit
+    decided: 2026-10-01 user approved the training-case reference audit recommendations ("응 추천대로 진행해")
+    title: order servlet thread pool exhaustion — a serialized report renderer sets the throughput ceiling
+    cause: 'Repeated long-range report requests (GET /api/orders/reports/render with a large days range, from a load generator) reach commerce-order, where report
+      rendering runs on the request thread and is serialized on one lock (render() is synchronized) and each long-range render is expensive → renders complete one
+      at a time at a fixed ceiling (~2/s) while arriving requests queue on the lock: ~199 Tomcat worker threads sit BLOCKED (none at baseline) while RUNNABLE threads
+      stay at baseline, so the 200-thread servlet worker pool is exhausted → every request sharing the pool starves: the /actuator/health probes time out and the
+      kubelet restarts the order container on failed liveness probes (two restarts, each followed by ~1 min of startup with no service), and checkout requests wait
+      or are refused, the gateway''s circuit breaker for order opens and most POST /api/orders/** return 502 (some 15 s read timeouts). The DB connection pool (at
+      most 5 of 10 used, none pending), PostgreSQL locks (0 blocked), downstream pricing/inventory/payment latency and node CPU stay healthy; the order JVM''s single
+      CPU (container limit 500m) is pinned near 100% throughout, which is expected because one render is always running. Required for mechanism 1: (a) the long-range
+      report render requests on commerce-order as the trigger; (b) rendering serialized on one lock/monitor — equivalently requests waiting BLOCKED on a shared monitor
+      rather than running; (c) servlet worker-pool exhaustion that starves checkout (and health checks). The liveness restarts and the gateway circuit breaker may
+      be named but are not required. Naming CPU saturation or many threads time-sharing a CPU quota as the failure mode instead of the serialization contradicts the
+      BLOCKED-vs-RUNNABLE thread data and misses the key element (mentioning CPU at its limit alongside the serialization is fine). The quadratic render cost and
+      the reused-buffer reason are not observable and not required.'
+    evidence: '289 render SERVER spans on commerce-order, 0 before t1; completions capped ~60-63 per 30 s; jvm.thread.count{state=blocked} 199 from +12 s (no series
+      at
+
+      baseline), RUNNABLE 10-16; liveness kills at +79 s and later (startups 62 s); gateway POST /api/orders/** 527/562 = 502; Hikari used <=5/10; 0 PG blocked.
+
+      '
+  case-f05-r-v3-527f3692:
+    version: override-2026-10-01-audit
+    decided: 2026-10-01 user approved the training-case reference audit recommendations ("응 추천대로 진행해")
+    title: payment memory limit reduction — memcg OOM kills and restarts under payment load
+    cause: 'The commerce-payment deployment is rolled out with the JVM heap pinned (JAVA_TOOL_OPTIONS adds -Xms384m -Xmx384m -XX:+AlwaysPreTouch; heap max 384 MiB
+      vs 256 MiB at baseline) and its container memory limit lowered from 1Gi to 640Mi → with the pinned, pre-touched heap plus non-heap memory the JVM''s resident
+      memory sits just below 640Mi and reaches the limit under checkout load → the kernel memcg OOM killer kills the payment java process twice (anon-rss ~651 MB,
+      memcg usage = the 640Mi limit, visible in node syslog; the Kubernetes OOMKilled termination reason is not recorded in this capture) → the single payment replica
+      restarts and needs ~45 s to boot, so no payment endpoint is ready → commerce-order''s payment calls get Connection refused, @CircuitBreaker(paymentClient) opens
+      and checkout returns 502 → the cleanup rollouts (limit back to 1Gi, then flags removed) end the kills. Required for mechanism 1: the reduced container memory
+      limit on commerce-payment, and memory reaching that limit → OOM kills → restarts. The heap pinning may be named but is not required. Naming the repeated rollouts,
+      slow boots, startup-probe failures or CPU at the 500m limit during boot as the failure mode instead of the memory limit / OOM kill misses the key element (these
+      occur in every pod generation, including pods that never died); seeing the OOM kills while saying the limit was unchanged misses the trigger.'
+    evidence: 'RS 58c445c67 (rev 218) memory limit 640Mi (kcm.container.mem_limit 671088640 vs 1073741824 elsewhere); node syslog memcg OOM kills of the payment java
+
+      process at +166-173 s and +265-272 s (anon-rss ~651 MB); no OOMKilled/BackOff in kcm_events; restart_count 0->1; order ''paymentClient'' OPEN 1,320x;
+
+      checkout 502 = 133 in the window.
+
+      '
+  case-f01-p-v3-d691440c:
+    version: override-2026-10-01-audit
+    decided: 2026-10-01 user approved the training-case reference audit recommendations ("응 추천대로 진행해")
+    title: banking Oracle settlement-account lock — a single row in another namespace blocks all commerce payments
+    cause: 'A long-held transaction in the banking Oracle keeps the BANKING.accounts row ''commerce-settlement'' locked (every commerce payment shares this settlement
+      account) → core-banking-transfer''s SELECT ... FOR UPDATE on that row (TransferService.execute / findByIdForUpdate) blocks on row-lock contention → the first
+      payment→transfer calls hang until payment''s 10 s banking read timeout; within ~20 s the lock waiters hold every connection of transfer''s DB pool, transfer''s
+      DB health check times out, its readiness probe fails and the transfer pod drops out of the Service endpoints, after which payment→transfer calls fail immediately
+      with Connection refused → payment returns 502 (the external PG approval has already succeeded), order''s PaymentClient counts the 5xx, @CircuitBreaker(paymentClient)
+      opens and every checkout fails with 502 until the lock is released. Commerce PostgreSQL has no blocked sessions. The transfer pod is never deleted, scaled down
+      or crash-restarted; it goes NotReady only because its DB health check times out. Required for mechanism 1: the long-held row lock on the shared settlement account
+      in the banking Oracle as the trigger, transfer''s FOR UPDATE blocking on it as the failure mode, and propagation to payment/checkout failures. Whether the payment-side
+      failures are described as 10 s timeouts or as connection refusals after transfer''s pool exhaustion / NotReady is not decisive.'
+    evidence: 'Oracle ''enq: TX - row lock contention'' sessions from the transfer pod (128 rows, +58..+492 s); 2 payment→transfer 10 s timeouts at +7 s, then transfer
+
+      Hikari exhausted at +24 s (148 lines), readiness failures from +24 s, available_replicas 1->0 from +52 s to +412 s, 33 Connection refused calls in 0-3 ms;
+
+      checkout ~759 x 502.
+
+      '
+  case-f01-p-v3-20bfac59:
+    version: override-2026-10-01-audit
+    decided: 2026-10-01 user approved the training-case reference audit recommendations ("응 추천대로 진행해")
+    title: banking Oracle settlement-account lock — a single row in another namespace blocks all commerce payments
+    cause: 'A long-held transaction in the banking Oracle keeps the BANKING.accounts row ''commerce-settlement'' locked (every commerce payment shares this settlement
+      account) → core-banking-transfer''s SELECT ... FOR UPDATE on that row (TransferService.execute / findByIdForUpdate) blocks on row-lock contention → the first
+      payment→transfer calls hang until payment''s 10 s banking read timeout; within ~20 s the lock waiters hold every connection of transfer''s DB pool, transfer''s
+      DB health check times out, its readiness probe fails and the transfer pod drops out of the Service endpoints, after which payment→transfer calls fail immediately
+      with Connection refused → payment returns 502 (the external PG approval has already succeeded), order''s PaymentClient counts the 5xx, @CircuitBreaker(paymentClient)
+      opens and every checkout fails with 502 until the lock is released. Commerce PostgreSQL has no blocked sessions. The transfer pod is never deleted, scaled down
+      or crash-restarted; it goes NotReady only because its DB health check times out. Required for mechanism 1: the long-held row lock on the shared settlement account
+      in the banking Oracle as the trigger, transfer''s FOR UPDATE blocking on it as the failure mode, and propagation to payment/checkout failures. Whether the payment-side
+      failures are described as 10 s timeouts or as connection refusals after transfer''s pool exhaustion / NotReady is not decisive.'
+    evidence: '203 blocked Oracle sessions (+10..+753 s); 1 payment→transfer 10 s timeout at +8 s, transfer Hikari exhausted at +24 s (222 lines), readiness
+
+      failures from +24 s, 28 Connection refused calls from +45 s; checkout ~1,205 x 502.
+
+      '
+  case-f04-r-v3-c508c52d:
+    version: override-2026-10-01-audit
+    decided: 2026-10-01 user approved the training-case reference audit recommendations ("응 추천대로 진행해")
+    title: shipping consumer scaled to zero — orders keep being accepted but no shipments are created (concurrent load rejects some checkouts for stock)
+    cause: 'The testbed-shipping Deployment is scaled from 1 to 0 replicas at injection start (ScalingReplicaSet 1→0; the only pod receives a graceful SIGTERM stop,
+      not a crash or OOM) and is scaled back to 1 about 8 minutes later → for those ~8 minutes the shipping-service consumer group on commerce.orders has no member,
+      so OrderEventConsumer receives no PAID events, ShippingService.createShipmentForOrder is never called, no shipment rows are inserted and the shipping outbox
+      stops publishing, while commerce-order keeps publishing to commerce.orders and the other consumer group on the same topic (notification-service) keeps consuming
+      normally → when the consumer returns it reports the accumulated backlog (lag ~1.3-1.7k per partition) and drains it in a burst of late shipment inserts. The
+      observable signature during the gap is the absence of the consumer (no consumer spans, logs or metrics) plus desired_replicas = 0, not a rising lag series.
+      Required for mechanism 1: commerce-shipping''s consumer is absent because the deployment was scaled to zero or the pod was deliberately stopped and not replaced
+      (a deliberate/graceful stop with crash and OOM ruled out is equivalent), so orders stop turning into shipments while the order path keeps accepting orders.
+      A conclusion that leaves the disappearance unexplained, or calls it a crash, misses the trigger. Not part of this mechanism: during the window a load surge
+      runs against the commerce gateway; inventory stock is exhausted faster than the per-minute restock, so about 40% of checkouts are rejected with 409, and commerce-cart
+      returns a handful of optimistic-lock 500s. Describing these as concurrent load effects is fine; blaming them as the root misses the case.'
+    evidence: 'kcm_events ''Scaled down replica set testbed-shipping-68f6c6f697 to 0 from 1'' at +7 s, scaled up at +486 s; desired_replicas 0 from +3 s to +423 s;
+
+      shipping consumer spans 0 for +1..+8 min, INSERT shipments burst 414/982 at +9/+10 min; reserve 409 x414 (39%), ''Restocked ... +60 -> 60'' every minute.
+
+      '
+  case-f07-h-v3-7de1a36f:
+    version: override-2026-10-01-audit
+    decided: 2026-10-01 user approved the training-case reference audit recommendations ("응 추천대로 진행해")
+    title: ingress surge exceeds commerce-order's pool-10 checkout knee (and, in parallel, commerce-cart's CPU/pool limit)
+    cause: 'The only change is a north-south ingress surge at the commerce gateway (about 11x) → commerce-order''s checkout runs its synchronous saga (cart read,
+      pricing quote, product/inventory reserve, payment, cart delete) inside one transaction, so each request holds a pooled DB connection for the sum of those calls
+      → order''s default Hikari pool (max 10) reaches used=10/idle=0 within ~1.5-2.5 min with 100-180 requests pending (PostgreSQL idle-in-transaction sessions rise
+      from 0 to ~16-29) → checkout requests wait 2-8 s for a connection before their first downstream call, so checkout and gateway POST /api/orders p95 rise to ~4-4.8
+      s; the order path itself returns no 5xx and no pool timeouts (its error responses are business 4xx: 409 when inventory stock is exhausted, 400 for empty carts).
+      Under the same surge commerce-cart reaches its own capacity limit in parallel: its JVM CPU pegs near 100%, its Hikari pool (max 20) is exhausted ~20 s after
+      order''s, and ~2k 3-second connection-acquisition timeouts plus optimistic-lock and duplicate-key conflicts (writes concentrated on a few carts) return HTTP
+      500 on POST/DELETE /api/carts — all of the 5xx. Cart''s write traffic comes mostly straight from the gateway, so it is a parallel, load-induced bottleneck,
+      not a propagation hop of order. No configuration, deployment or resource change; DB blocking is ~0; everything recovers when the load stops. Required for mechanism
+      1: the load surge as trigger, and order''s pool-10 exhaustion because checkout holds its connection across the downstream calls, with connection waits driving
+      checkout latency. Describing commerce-cart''s parallel CPU/pool saturation and its 500s is correct and is not penalized (commerce-cart is an allowed extra target
+      in the golden); a conclusion that names only cart misses the injected root.'
+    evidence: 'order pool used=10 sustained from +138 s (pending 149-180), checkout start→first child gap p50 1.6-3.2 s; cart CPU ~1.0 from +167 s, pool 20 exhausted
+      at
+
+      +157 s, 1,989 Hikari timeouts, cart 500 x449 = all 5xx; order 0 5xx; checkout 409 x791, 400 x603.
+
+      '
+  case-f07-h-v3-4ab16f7a:
+    version: override-2026-10-01-audit
+    decided: 2026-10-01 user approved the training-case reference audit recommendations ("응 추천대로 진행해")
+    title: ingress surge exceeds commerce-order's pool-10 checkout knee (and, in parallel, commerce-cart's CPU/pool limit)
+    cause: 'The only change is a north-south ingress surge at the commerce gateway (about 11x) → commerce-order''s checkout runs its synchronous saga (cart read,
+      pricing quote, product/inventory reserve, payment, cart delete) inside one transaction, so each request holds a pooled DB connection for the sum of those calls
+      → order''s default Hikari pool (max 10) reaches used=10/idle=0 within ~1.5-2.5 min with 100-180 requests pending (PostgreSQL idle-in-transaction sessions rise
+      from 0 to ~16-29) → checkout requests wait 2-8 s for a connection before their first downstream call, so checkout and gateway POST /api/orders p95 rise to ~4-4.8
+      s; the order path itself returns no 5xx and no pool timeouts (its error responses are business 4xx: 409 when inventory stock is exhausted, 400 for empty carts).
+      Under the same surge commerce-cart reaches its own capacity limit in parallel: its JVM CPU pegs near 100%, its Hikari pool (max 20) is exhausted ~20 s after
+      order''s, and ~2k 3-second connection-acquisition timeouts plus optimistic-lock and duplicate-key conflicts (writes concentrated on a few carts) return HTTP
+      500 on POST/DELETE /api/carts — all of the 5xx. Cart''s write traffic comes mostly straight from the gateway, so it is a parallel, load-induced bottleneck,
+      not a propagation hop of order. No configuration, deployment or resource change; DB blocking is ~0; everything recovers when the load stops. Required for mechanism
+      1: the load surge as trigger, and order''s pool-10 exhaustion because checkout holds its connection across the downstream calls, with connection waits driving
+      checkout latency. Describing commerce-cart''s parallel CPU/pool saturation and its 500s is correct and is not penalized (commerce-cart is an allowed extra target
+      in the golden); a conclusion that names only cart misses the injected root.'
+    evidence: 'order pool used=10 sustained from +118 s (pending 102-176); cart CPU ~1.0 from +142 s, pool 20 at +122 s, 2,320 timeouts, cart 500 x482 = all 5xx;
+
+      order 0 5xx; checkout 409 x767, 400 x656; cart DELETE p95 165 ms while order already waited seconds (+90..+120 s).
+
+      '
+  case-f05-p-v3-6fe331ef:
+    version: override-2026-10-01-audit
+    decided: 2026-10-01 user approved the training-case reference audit recommendations ("응 추천대로 진행해")
+    title: tb-w1 node memory exhaustion — host OOM kills and a node stall take down the commerce pods co-located on that node
+    cause: 'A memory-hog process on worker node tb-w1 allocates ~6.25 GiB of anonymous memory within seconds → node memory is exhausted (used ~6.9 → 12.4 GB, free
+      → <0.1 GB, page cache 3.2 → 0.25 GB; no swap) faster than kubelet eviction reacts → the kernel global OOM killer fires (SystemOOM) and kills co-located container
+      processes — the commerce-cart JVM and the payment-provider mock — which restart in place → gateway calls to cart are refused and the cart circuit breaker opens,
+      so cart and checkout requests fail with 5xx → continued memory pressure (page-cache reclaim thrash, host CPU ~100% mostly kernel, load ~150) stalls the node:
+      probes of all tb-w1 pods time out, the PostgreSQL instance on tb-w1 slows so commerce services'' DB pools time out, a second OOM kill hits the node agent, and
+      the node is NotReady for about a minute → everything recovers when the hog ends; no pod is evicted or rescheduled (taint-based deletions are cancelled). The
+      blast radius is the node: the commerce services and the shared infra on tb-w1; services on other nodes stay healthy. It is not a container-limit or application
+      defect (system OOM, not a cgroup limit). Required for mechanism 1: the memory hog on tb-w1 exhausting node memory (trigger), and node-level memory exhaustion
+      killing and/or stalling the co-located workloads (host OOM kills of co-located containers, node stall, shared-DB slowdown) as the failure mode. Kubelet eviction
+      did not occur in this capture and must not be required; a conclusion that names kubelet eviction as the mode is inaccurate but still identifies the node-memory
+      mechanism.'
+    evidence: 'python3 pid on tb-w1 RSS 6.56 GB from +2 s; SystemOOM (victims cart JVM, pg-mock JVM) at +6 s, in-place restarts; no Evicted/MemoryPressure events;
+
+      NodeNotReady +151..+213 s; second SystemOOM (kcm-agent) at +201 s; TaintManagerEviction cancelled at +216 s; food/banking pods not on tb-w1, 0 errors.
+
+      '
+  case-f06-h-v3-e43298a2:
+    version: override-2026-10-01-audit
+    decided: 2026-10-01 user approved the training-case reference audit recommendations ("응 추천대로 진행해")
+    title: commerce payments table EXCLUSIVE lock → all payments blocked, pods stay Ready
+    cause: 'An in-cluster client session takes LOCK TABLE payment_schema.payments IN EXCLUSIVE MODE and then sits idle in transaction for ~8 minutes → every INSERT
+      into payments from PaymentService.processPayment queues behind the lock (10-12 blocked sessions, all from the payment service) → order''s payment calls stall,
+      order''s paymentClient circuit breaker opens within ~20 s and requestPaymentFallback returns 502 for essentially all checkouts (reserved stock is released)
+      → because the blocked INSERTs hold all 10 of payment''s Hikari connections, payment''s DataSource health check cannot get a connection (30 s timeout), so its
+      readiness and liveness probes fail and the container is restarted (each restart''s startup CREATE INDEX on payments also queues behind the lock); order then
+      also gets connection-refused errors → everything recovers right after the locking session ends. Required for mechanism 1: a long-held table lock on payment_schema.payments
+      (EXCLUSIVE mode, idle-in-transaction holder) blocking the payment INSERTs, and the resulting payment failure reaching checkout through order''s circuit breaker
+      / 502. Plain SELECTs are not blocked by this lock mode, but here health checks still fail because the pool is exhausted; describing either the read-timeout/circuit-breaker
+      path or the pool-exhaustion/health-failure/restart path is consistent with the capture.'
+    evidence: 'root pid 97262 idle in transaction (tranTime 16.8 s → 443.8 s) blocking 10-12 payment sessions; order ''paymentClient'' OPEN from +22.6 s; payment
+      Hikari
+
+      ''total=10, active=10'' at +41.8 s, DataSource health check 30011 ms at +44.3 s; liveness kill at +87 s, restarts; checkout 502 98-100%.
+
+      '
+  case-f09-h-v3-0c795f2b:
+    version: override-2026-10-01-audit
+    decided: 2026-10-01 user approved the training-case reference audit recommendations ("응 추천대로 진행해")
+    title: order JVM GC pressure (heap shrink)
+    cause: 'A rollout of commerce-order restarts its JVM with the heap capped far below its previous size (about 96 MiB total versus about 256 MiB; old generation
+      about 67 MB versus about 179 MB, Eden about 27 MB versus about 72 MB; only commerce-order changes) → under the parallel checkout load the old generation fills
+      to about 93-96% of its new limit within about 90 s and stays there, young collections become more frequent, and the single-vCPU JVM runs near its 500m container
+      CPU limit → stop-the-world GC pauses stall the whole order process (this step is inferred: no GC-pause metric is collected, but the heap-limit cut, the near-full
+      old generation, a class-unloading full GC and elevated JVM CPU support it) → intermittent tail latency on every order entry point (checkout p95 about 2x baseline,
+      maxima of a few hundred ms, p50 flat; consumer spans affected alike), with no OOMKill and no restart. Required for mechanism 1: the order JVM heap cap / shrink
+      as the trigger, and GC pressure from too little heap as the failure mode. The multi-second spikes right after each new pod becomes ready (the rollback pod included)
+      are JVM cold start and are not required. The traffic increase is the test load, a condition, not the cause.'
+    evidence: 'jvm.memory.limit per pool: new pod s9wfx Tenured 67,108,864 / Eden 26,869,760 / Survivor 3,342,336 vs 178,978,816 / 71,630,848 / 8,912,896 on old and
+
+      rollback pods; Tenured used 93-96% from +84 s; no jvm.gc.* series collected; rollback pod shows the same cold-start spikes with the normal heap.
+
+      '
+  case-f10-h-v3-4fe69be0:
+    version: override-2026-10-01-audit
+    decided: 2026-10-01 user approved the training-case reference audit recommendations ("응 추천대로 진행해")
+    title: MySQL PVC backing-disk IO saturation — food orders slow down while holding connections
+    cause: 'Two stressors hit the single food-delivery MySQL (testbed-mysql-0 on tb-w3) for the same ~4.5 minutes. (1) Required trigger: a fio random-write job (4k,
+      direct I/O, iodepth 16, 20000 IOPS) writes into the local-path PVC directory of mysqldata-testbed-mysql-0 on tb-w3 and saturates the node''s disk (busy ~3%
+      → ~86-89%, iowait ~0.7% → ~17%, node disk-pressure condition) → InnoDB redo-log and data-file writes stall (redo write latency up ~50-100x), so COMMIT and write
+      statements slow down (COMMIT ~1 ms → 8-15 ms; order inserts take tens of ms). InnoDB buffer-pool misses are not observed (hit ratio ≥99.99%). (2) At the same
+      time the food entry test load multiplies calls to food-delivery-dispatch''s GET /api/deliveries, whose paging COUNT over dispatches cannot use an index ((?
+      IS NULL OR status = ?), ~2.2M rows examined, ~0.6 s even at baseline); the COUNT runs ~8x more often and, with ~5x overall query volume, drives the MySQL container
+      to its 500m CPU limit (heavy CPU throttling), so every statement stalls (the COUNT grows to ~8 s, trivial restaurant statements gain ~50 ms), the slow COUNTs
+      hold dispatch''s 10-connection Hikari pool until it is exhausted, dispatch requests fail with 500 after the 3 s connection timeout and its health probes time
+      out, and food-delivery-order order creation fails through its dispatch calls (most POST /api/orders error) while restaurant reads slow 15-25x without errors.
+      Required for mechanism 1: the fio disk saturation of the MySQL PVC on tb-w3 slowing MySQL. Describing the dispatch pool exhaustion through the full-scan COUNT
+      and the MySQL CPU limit as an additional, parallel path is consistent with the data and is not penalized (food-delivery-dispatch is an allowed extra target
+      in the golden); a conclusion that names only the dispatch query or the load, with no disk saturation, misses the required trigger.'
+    evidence: 'fio on tb-w3 writing 60-73 MB/s (+23..+203 s); vda busy 0.82-0.86, cpu.wait 17%; NodeHasDiskPressure +11..+318 s; redo write latency x50-100, COMMIT
+
+      1 → 7.6-15.5 ms; buffer-pool hit 99.99-100%; MySQL container throttled 34-62 s per sample; dispatch COUNT 67-77/min at ~8 s; dispatch Hikari timeouts 584;
+
+      POST /api/orders 65/81 errored.
+
+      '
+  case-f11-r-v3-6366db31:
+    version: override-2026-10-01-audit
+    decided: '2026-10-01 user approved the training-case reference audit recommendations ("응 추천대로 진행해"); f11-r: either cart-side DB-path failure is sufficient for
+      mechanism 1'
+    title: Redis outage — cache isolation succeeds, but fallback traffic to the DB collapses cart
+    cause: 'Redis (testbed-redis) is stopped (its deployment scaled to 0) at injection start while a surge load runs → within seconds commerce-cart logs Redis connection
+      timeouts / connection refused, its cartRedis circuit breaker opens and cart reads fall back to PostgreSQL (Redis client calls drop to ~0) → under the surge,
+      cart''s own DB path then fails in two observed ways: (a) the cache-write path is not covered by the breaker, so each cart write waits out the ~500 ms Redis
+      command timeout while its DB transaction/connection stays open (idle-in-transaction), and with all reads also on the DB cart''s Hikari pool (max 20) is fully
+      used within ~75-80 s and connection acquisition times out after 3000 ms from ~+120 s (CannotCreateTransaction / JDBC connection 500s, cart latency ~3 s); (b)
+      concurrent fallback writes to the same cart rows fail with optimistic-lock (row was updated or deleted by another transaction) 500s from the first seconds of
+      the outage → cart 5xx and multi-second latency propagate to commerce-order, whose checkout transaction holds its own DB connection while calling cart, so order''s
+      pool (max 10) is exhausted (30 s acquisition timeouts, health-check timeouts) → the gateway''s order circuit breaker opens and checkout returns 502. PostgreSQL
+      itself is not the bottleneck (queries stay fast, sessions below the limit). Required for mechanism 1: Redis loss as the trigger; cart''s circuit breaker opening
+      with fallback to the DB; and a cart-side DB-path failure under the load as the failure mode — either cart''s own connection-pool saturation / acquisition timeouts,
+      or cart''s fallback-write contention (optimistic-lock 500s); either one is sufficient. Blaming only commerce-order''s pool or PostgreSQL capacity, without a
+      failure inside cart, misses the key element. An order-side circuit breaker on cart is not required (it is not observed).'
+    evidence: 'Redis scaled to 0 at +0 s; ''cartRedis'' OPEN from +5.9 s; optimistic-lock 500s 1,251 lines from +9.0 s; cart pool used 20 at +79 s, 3000 ms
+
+      acquisition timeouts 1,158 from +120.2 s; cache-write Redis timeouts 7,508; cart idle-in-transaction tranTime up to 510.9 ms; no order cartClient breaker
+
+      log; order pool 10/10 from +82 s; gateway ''order'' OPEN from +113.5 s.
+
+      '
+  case-f11-r-v3-85b9a489:
+    version: override-2026-10-01-audit
+    decided: '2026-10-01 user approved the training-case reference audit recommendations ("응 추천대로 진행해"); f11-r: either cart-side DB-path failure is sufficient for
+      mechanism 1'
+    title: Redis outage — cache isolation succeeds, but fallback traffic to the DB collapses cart
+    cause: 'Redis (testbed-redis) is stopped (its deployment scaled to 0) at injection start while a surge load runs → within seconds commerce-cart logs Redis connection
+      timeouts / connection refused, its cartRedis circuit breaker opens and cart reads fall back to PostgreSQL (Redis client calls drop to ~0) → under the surge,
+      cart''s own DB path then fails in two observed ways: (a) the cache-write path is not covered by the breaker, so each cart write waits out the ~500 ms Redis
+      command timeout while its DB transaction/connection stays open (idle-in-transaction), and with all reads also on the DB cart''s Hikari pool (max 20) is fully
+      used within ~75-80 s and connection acquisition times out after 3000 ms from ~+120 s (CannotCreateTransaction / JDBC connection 500s, cart latency ~3 s); (b)
+      concurrent fallback writes to the same cart rows fail with optimistic-lock (row was updated or deleted by another transaction) 500s from the first seconds of
+      the outage → cart 5xx and multi-second latency propagate to commerce-order, whose checkout transaction holds its own DB connection while calling cart, so order''s
+      pool (max 10) is exhausted (30 s acquisition timeouts, health-check timeouts) → the gateway''s order circuit breaker opens and checkout returns 502. PostgreSQL
+      itself is not the bottleneck (queries stay fast, sessions below the limit). Required for mechanism 1: Redis loss as the trigger; cart''s circuit breaker opening
+      with fallback to the DB; and a cart-side DB-path failure under the load as the failure mode — either cart''s own connection-pool saturation / acquisition timeouts,
+      or cart''s fallback-write contention (optimistic-lock 500s); either one is sufficient. Blaming only commerce-order''s pool or PostgreSQL capacity, without a
+      failure inside cart, misses the key element. An order-side circuit breaker on cart is not required (it is not observed).'
+    evidence: 'Redis scaled to 0 at +0 s; ''cartRedis'' OPEN at +4.7 s; optimistic-lock 500s 695 from +7.0 s; cart pool 20 at +74 s, 3000 ms timeouts from
+
+      +124.5 s; order pool 10/10 from +85 s; gateway ''order'' OPEN from +117 s; no order cartClient breaker log.
+
+      '
+  case-f16-h-v3-2f0555c7:
+    version: override-2026-10-01-audit
+    decided: 2026-10-01 user approved the training-case reference audit recommendations ("응 추천대로 진행해")
+    title: user-service readiness failure → gateway auth fail-close, writes-only 401 (reads normal)
+    cause: 'The testbed-user Deployment''s readinessProbe is patched to a path the application does not serve; with a single replica and maxSurge 0 the old pod is
+      removed first, the new pod needs ~55 s to start, and once the application is up its readiness probe keeps failing with HTTP 404, so the pod never becomes Ready
+      and the testbed-user Service has no endpoints → every gateway call to user-service gets connection refused and the gateway''s user circuit breaker opens → login/signup
+      proxied through the gateway (POST /api/users/**) fail with 502, and write requests that need token verification fail — mostly 401 returned by the gateway without
+      reaching user-service, with some verify-token attempts surfacing as 500 (connection refused) — while reads (product/cart GETs) stay normal and downstream domain
+      services receive almost no writes. The cleanup rollout back to the original probe adds another start-up gap before recovery. Required for mechanism 1: the failing
+      readiness probe (pointed at a non-existent path / 404) as the trigger, and the resulting loss of ready endpoints / user-service unreachability as the failure
+      mode, with gateway auth/login failures as impact. A conclusion that blames only a rollout start-up gap (slow JVM start, missing surge capacity) without the
+      failing readiness probe misses the key element. Describing the gateway symptom as 502 (login) or 401/500 (writes) is acceptable; whether the 401s come from
+      fail-close or from clients without a token is not required (the capture does not distinguish them).'
+    evidence: '''Readiness probe failed: HTTP probe failed with statuscode: 404'' x11 at +62..+152 s after ''Started UserServiceApplication'' at +55 s; gateway
+
+      POST /api/users/** 324/328 = 502, ''user'' OPEN 8,585; POST carts 87 x 401 with no verify call; 24 verify-token Connection refused → 500.
+
+      '
+  case-f16-h-v3-f069f7c9:
+    version: override-2026-10-01-audit
+    decided: 2026-10-01 user approved the training-case reference audit recommendations ("응 추천대로 진행해")
+    title: user-service readiness failure → gateway auth fail-close, writes-only 401 (reads normal)
+    cause: 'The testbed-user Deployment''s readinessProbe is patched to a path the application does not serve; with a single replica and maxSurge 0 the old pod is
+      removed first, the new pod needs ~55 s to start, and once the application is up its readiness probe keeps failing with HTTP 404, so the pod never becomes Ready
+      and the testbed-user Service has no endpoints → every gateway call to user-service gets connection refused and the gateway''s user circuit breaker opens → login/signup
+      proxied through the gateway (POST /api/users/**) fail with 502, and write requests that need token verification fail — mostly 401 returned by the gateway without
+      reaching user-service, with some verify-token attempts surfacing as 500 (connection refused) — while reads (product/cart GETs) stay normal and downstream domain
+      services receive almost no writes. The cleanup rollout back to the original probe adds another start-up gap before recovery. Required for mechanism 1: the failing
+      readiness probe (pointed at a non-existent path / 404) as the trigger, and the resulting loss of ready endpoints / user-service unreachability as the failure
+      mode, with gateway auth/login failures as impact. A conclusion that blames only a rollout start-up gap (slow JVM start, missing surge capacity) without the
+      failing readiness probe misses the key element. Describing the gateway symptom as 502 (login) or 401/500 (writes) is acceptable; whether the 401s come from
+      fail-close or from clients without a token is not required (the capture does not distinguish them).'
+    evidence: 'readiness 404 x10 at +62..+152 s; gateway POST /api/users/** ~293/294 = 502; POST carts 75 x 401; 13 sampled writes 500 after verify-token.
+
+      '
+  case-f19-p-v3-5a350c0a:
+    version: override-2026-10-01-audit
+    decided: 2026-10-01 user approved the training-case reference audit recommendations ("응 추천대로 진행해")
+    title: food external PG ~8 s delay (below timeout) briefly drains order's pool, while a load-induced dispatch pool collapse dominates the order failures
+    cause: 'Two concurrent failures under the food surge load. (1) Injected: the external PG mock (testbed-external-pg-mock /pay) answers after ~8 s with HTTP 200,
+      below payment''s 10 s read-timeout; food-delivery-payment passes the delay through as slow 200s with no errors (POST /api/payments ~8.1 s); food-delivery-order
+      waits on the payment call while holding a DB connection inside its order transaction, so its Hikari pool (15) is exhausted for ~30 s at the start (3 s acquisition
+      timeouts, at least one order 500) and the first orders succeed only after 8-19 s. (2) Load-induced, concurrent: the surge load drives GET /api/deliveries on
+      food-delivery-dispatch, whose page COUNT query fully scans dispatches (~2.3M rows, ~0.7 s at baseline → ~8 s under load); dispatch''s Hikari pool (10) is saturated
+      for the rest of the window (3 s acquisition timeouts, HTTP 500, health-check failures, restarts), order''s dispatch capacity check fails (500 / connection refused
+      / CircuitBreaker ''dispatch'' OPEN), and almost all order requests return 503 "Dispatch service unavailable"; because those orders fail before the payment step,
+      the PG delay is no longer exercised after the first minute. Required for mechanism 1: the external PG delay passed through payment as slow successful (non-error)
+      responses, which held order''s connections/transactions and exhausted order''s pool. Naming the dispatch pool collapse as a concurrent load-induced cause of
+      most order failures is correct and is not penalized (food-delivery-dispatch is an allowed extra target in the golden). A conclusion that names only the dispatch
+      collapse and omits the PG delay misses the injected root; a conclusion that claims payment returned 5xx is wrong.'
+    evidence: '8 traced /pay calls 8,002-8,007 ms with 200 (+19..+47 s), payment 0 errors; order pool 15/15 only +0/+30 s buckets, 31 Hikari lines +29..+60 s, one
+
+      order 500 at +48 s; dispatch COUNT 7.6-8.0 s, pool 10/10 +30..+480 s, 2,110 Hikari timeouts from +41 s, restarts 3→5; orders 255 x 503 dispatch-unavailable.
+
+      '
+  case-f19-s-v3-5daa9c97:
+    version: override-2026-10-01-audit
+    decided: 2026-10-01 user approved the training-case reference audit recommendations ("응 추천대로 진행해")
+    title: food external PG delay beyond the read-timeout — payment 502s and circuit opening reject orders, alongside a load-induced dispatch pool collapse
+    cause: 'The external PG mock delays /pay far beyond payment''s 10 s read-timeout: each call ends with a ~10 s read timeout (SocketTimeoutException; the client
+      logs it as a response-extraction / octet-stream error), with retries → payment returns 502, CircuitBreaker ''pg'' opens and later calls fail fast with 502 →
+      food-delivery-order receives the 502s, opens its ''payment'' circuit and rejects orders with 502 (the first failure, from ~10 s after injection). Concurrently,
+      the food surge load drives GET /api/deliveries on food-delivery-dispatch, whose page COUNT query fully scans dispatches (~2.3M rows, up to ~8-16 s); dispatch''s
+      Hikari pool (10) saturates from ~45 s onward (3 s acquisition timeouts, 500s, health-check failures), and for the rest of the window most order requests fail
+      with 503 "Dispatch service unavailable" (capacity-check failures / CircuitBreaker ''dispatch'' OPEN) while order''s own pool also times out sporadically. Required
+      for mechanism 1: PG calls exceeding the read-timeout, converted by payment into 502 with the pg circuit opening, which caused order rejections. Naming the dispatch
+      pool collapse as a concurrent load-induced cause of most later order failures is correct and is not penalized (food-delivery-dispatch is an allowed extra target
+      in the golden). Describing the PG failure as timeouts and/or unparseable responses is acceptable.'
+    evidence: 'every traced /pay 10,011 ms SocketTimeoutException; ''PG mock unavailable: CircuitBreaker pg is OPEN'' from +17 s; order ''payment'' OPEN 50x; 8 x
+      502 orders
+
+      mostly +10..+55 s; dispatch Hikari timeouts 2,270 from +46 s; orders 214 x 503 dispatch.
+
+      '
+  case-f18-p-v3-d2c566ad:
+    version: override-2026-10-01-audit
+    decided: 2026-10-01 user approved the training-case reference audit recommendations ("응 추천대로 진행해")
+    title: transfer outbox relay switched off by its runtime control flag — transfers return 200 while ledger publishing silently stalls
+    cause: 'The transfer service''s outbox relay is disabled at runtime through its control row (BANKING.outbox_relay_control, service_id=''transfer'', enabled=0),
+      with no restart, rollout or env change → the @Scheduled relay keeps firing each cycle, reads the control row and returns without polling outbox_events, so polling,
+      markPublished and Kafka publishing to banking.transfers / banking.ledger drop to zero (transfer producer send rate → 0) → transfers keep committing and inserting
+      outbox rows with published_at null, so the unpublished backlog grows monotonically → the ledger consumer (ledger-service) receives nothing, ledger_entries inserts
+      stop, and consumer lag stays at 0 (a starved consumer, not a stuck one), while the synchronous transfer API keeps returning 200 with normal latency → when the
+      flag is re-enabled the backlog is published in a burst and the ledger catches up. Required for mechanism 1: the transfer-side outbox relay/publisher stopped
+      publishing (relay disabled/gated by its control flag or configuration) while the synchronous path stays healthy, unpublished outbox rows accumulate, and the
+      ledger is starved. Naming the DB control row/flag is correct; an env-var or bean-not-created explanation is not required. Notifications are not observable in
+      this capture and are not required.'
+    evidence: 'relay run → findById → SELECT outbox_relay_control every minute, polling/markPublished/publish spans 0 in +0..+8 min; producer send rate 1.5/s → 0,
+      then
+
+      backlog burst 24-27/s; ledger ''Received transfer event'' 0 for +1..+7 min; records_lag 0 throughout; POST /api/transfers 156 OK; meta injection_summary
+
+      itself says the control-row UPDATE was used and the env toggle was not.
+
+      '
+  # 2026-10-02: RCAEval tt4 packet-loss captures — the converter template said "failed requests / error responses rise", but the raw
+  # RE2-TT data shows only intermittent tail latency (p99 up, p50 flat, istio errors 0, CPU/sockets flat). Title/cause unchanged.
+  case-rcaeval-tt4-v3-1320b986:
+    version: override-2026-10-02-rcae-loss
+    decided: 2026-10-02 user — packet-loss distinguishing evidence corrected to the raw data ("응 그렇게 고쳐서 진행해")
+    title: ts-auth-service packet loss
+    cause: tc packet drop injected on the ts-auth-service container's traffic
+    evidence: 'Raw RE2-TT/ts-auth-service_loss/3 metrics for ts-auth-service, 5 min before vs 30 s–5 min after the injection (medians): istio latency p99 0.969s→1.757s (max 2.314s), p50
+      0.237s→0.301s (tail only); no istio error samples recorded; container CPU 14.706→14.644 and sockets 16.0→17.0 essentially unchanged. Packet loss shows here as intermittent tail-latency
+      spikes (retransmission) on requests involving ts-auth-service, not as error responses or resource change.'
+  case-rcaeval-tt4-v3-1624ea06:
+    version: override-2026-10-02-rcae-loss
+    decided: 2026-10-02 user — packet-loss distinguishing evidence corrected to the raw data ("응 그렇게 고쳐서 진행해")
+    title: ts-order-service packet loss
+    cause: tc packet drop injected on the ts-order-service container's traffic
+    evidence: 'Raw RE2-TT/ts-order-service_loss/1 metrics for ts-order-service, 5 min before vs 30 s–5 min after the injection (medians): istio latency p99 2.167s→2.254s (max 2.414s),
+      p50 0.009s→0.01s (tail only); istio error total 0.0→0.0 (max 0.0); container CPU 3.161→3.319 and sockets 14.0→14.0 essentially unchanged. Packet loss shows here as intermittent tail-latency
+      spikes (retransmission) on requests involving ts-order-service, not as error responses or resource change.'
+  case-rcaeval-tt4-v3-20feaef5:
+    version: override-2026-10-02-rcae-loss
+    decided: 2026-10-02 user — packet-loss distinguishing evidence corrected to the raw data ("응 그렇게 고쳐서 진행해")
+    title: ts-train-service packet loss
+    cause: tc packet drop injected on the ts-train-service container's traffic
+    evidence: 'Raw RE2-TT/ts-train-service_loss/1 metrics for ts-train-service, 5 min before vs 30 s–5 min after the injection (medians): istio latency p99 0.017s→0.65s (max 0.857s), p50
+      0.006s→0.008s (tail only); istio error total None→0.0 (max 0.0); container CPU 3.175→4.43 and sockets 13.0→15.0 essentially unchanged. Packet loss shows here as intermittent tail-latency
+      spikes (retransmission) on requests involving ts-train-service, not as error responses or resource change.'
+  case-rcaeval-tt4-v3-27b67a1c:
+    version: override-2026-10-02-rcae-loss
+    decided: 2026-10-02 user — packet-loss distinguishing evidence corrected to the raw data ("응 그렇게 고쳐서 진행해")
+    title: ts-route-service packet loss
+    cause: tc packet drop injected on the ts-route-service container's traffic
+    evidence: 'Raw RE2-TT/ts-route-service_loss/1 metrics for ts-route-service, 5 min before vs 30 s–5 min after the injection (medians): istio latency p99 0.016s→0.399s (max 0.467s),
+      p50 0.004s→0.005s (tail only); istio error total 0.0→0.0 (max 0.0); container CPU 4.865→4.554 and sockets 16.0→17.0 essentially unchanged. Packet loss shows here as intermittent
+      tail-latency spikes (retransmission) on requests involving ts-route-service, not as error responses or resource change.'
+  case-rcaeval-tt4-v3-28a6eb28:
+    version: override-2026-10-02-rcae-loss
+    decided: 2026-10-02 user — packet-loss distinguishing evidence corrected to the raw data ("응 그렇게 고쳐서 진행해")
+    title: ts-train-service packet loss
+    cause: tc packet drop injected on the ts-train-service container's traffic
+    evidence: 'Raw RE2-TT/ts-train-service_loss/2 metrics for ts-train-service, 5 min before vs 30 s–5 min after the injection (medians): istio latency p99 0.018s→0.493s (max 0.898s),
+      p50 0.006s→0.007s (tail only); no istio error samples recorded; container CPU 3.143→3.031 and sockets 18.0→20.0 essentially unchanged. Packet loss shows here as intermittent tail-latency
+      spikes (retransmission) on requests involving ts-train-service, not as error responses or resource change.'
+  case-rcaeval-tt4-v3-29dafa39:
+    version: override-2026-10-02-rcae-loss
+    decided: 2026-10-02 user — packet-loss distinguishing evidence corrected to the raw data ("응 그렇게 고쳐서 진행해")
+    title: ts-route-service packet loss
+    cause: tc packet drop injected on the ts-route-service container's traffic
+    evidence: 'Raw RE2-TT/ts-route-service_loss/3 metrics for ts-route-service, 5 min before vs 30 s–5 min after the injection (medians): istio latency p99 0.024s→0.413s (max 0.64s), p50
+      0.004s→0.004s (tail only); no istio error samples recorded; container CPU 6.059→4.894 and sockets 13.0→14.0 essentially unchanged. Packet loss shows here as intermittent tail-latency
+      spikes (retransmission) on requests involving ts-route-service, not as error responses or resource change.'
+  case-rcaeval-tt4-v3-39d0db03:
+    version: override-2026-10-02-rcae-loss
+    decided: 2026-10-02 user — packet-loss distinguishing evidence corrected to the raw data ("응 그렇게 고쳐서 진행해")
+    title: ts-auth-service packet loss
+    cause: tc packet drop injected on the ts-auth-service container's traffic
+    evidence: 'Raw RE2-TT/ts-auth-service_loss/1 metrics for ts-auth-service, 5 min before vs 30 s–5 min after the injection (medians): istio latency p99 0.978s→1.585s (max 2.374s), p50
+      0.237s→0.304s (tail only); istio error total 0.0→0.0 (max 0.0); container CPU 14.645→14.586 and sockets 13.0→13.0 essentially unchanged. Packet loss shows here as intermittent tail-latency
+      spikes (retransmission) on requests involving ts-auth-service, not as error responses or resource change.'
+  case-rcaeval-tt4-v3-43d10ed2:
+    version: override-2026-10-02-rcae-loss
+    decided: 2026-10-02 user — packet-loss distinguishing evidence corrected to the raw data ("응 그렇게 고쳐서 진행해")
+    title: ts-train-service packet loss
+    cause: tc packet drop injected on the ts-train-service container's traffic
+    evidence: 'Raw RE2-TT/ts-train-service_loss/3 metrics for ts-train-service, 5 min before vs 30 s–5 min after the injection (medians): istio latency p99 0.018s→0.467s (max 0.571s),
+      p50 0.005s→0.007s (tail only); no istio error samples recorded; container CPU 3.048→3.164 and sockets 18.0→20.0 essentially unchanged. Packet loss shows here as intermittent tail-latency
+      spikes (retransmission) on requests involving ts-train-service, not as error responses or resource change.'
+  case-rcaeval-tt4-v3-49b82ee0:
+    version: override-2026-10-02-rcae-loss
+    decided: 2026-10-02 user — packet-loss distinguishing evidence corrected to the raw data ("응 그렇게 고쳐서 진행해")
+    title: ts-travel-service packet loss
+    cause: tc packet drop injected on the ts-travel-service container's traffic
+    evidence: 'Raw RE2-TT/ts-travel-service_loss/2 metrics for ts-travel-service, 5 min before vs 30 s–5 min after the injection (medians): istio latency p99 0.903s→3.206s (max 4.58s),
+      p50 0.018s→0.021s (tail only); istio error total 0.0→0.0 (max 0.0); container CPU 3.008→3.335 and sockets 20.0→22.5 essentially unchanged. Packet loss shows here as intermittent
+      tail-latency spikes (retransmission) on requests involving ts-travel-service, not as error responses or resource change.'
+  case-rcaeval-tt4-v3-69972843:
+    version: override-2026-10-02-rcae-loss
+    decided: 2026-10-02 user — packet-loss distinguishing evidence corrected to the raw data ("응 그렇게 고쳐서 진행해")
+    title: ts-order-service packet loss
+    cause: tc packet drop injected on the ts-order-service container's traffic
+    evidence: 'Raw RE2-TT/ts-order-service_loss/3 metrics for ts-order-service, 5 min before vs 30 s–5 min after the injection (medians): istio latency p99 0.025s→0.244s (max 4.875s),
+      p50 0.013s→0.016s (tail only); istio error total 0.0→0.0 (max 0.0); container CPU 0.274→0.268 and sockets 9.0→9.0 essentially unchanged. Packet loss shows here as intermittent tail-latency
+      spikes (retransmission) on requests involving ts-order-service, not as error responses or resource change.'
+  case-rcaeval-tt4-v3-75f19789:
+    version: override-2026-10-02-rcae-loss
+    decided: 2026-10-02 user — packet-loss distinguishing evidence corrected to the raw data ("응 그렇게 고쳐서 진행해")
+    title: ts-order-service packet loss
+    cause: tc packet drop injected on the ts-order-service container's traffic
+    evidence: 'Raw RE2-TT/ts-order-service_loss/2 metrics for ts-order-service, 5 min before vs 30 s–5 min after the injection (medians): istio latency p99 0.025s→0.239s (max 4.762s),
+      p50 0.014s→0.015s (tail only); istio error total 0.0→0.0 (max 0.0); container CPU 0.455→0.385 and sockets 10.0→9.0 essentially unchanged. Packet loss shows here as intermittent tail-latency
+      spikes (retransmission) on requests involving ts-order-service, not as error responses or resource change.'
+  case-rcaeval-tt4-v3-7c0c3826:
+    version: override-2026-10-02-rcae-loss
+    decided: 2026-10-02 user — packet-loss distinguishing evidence corrected to the raw data ("응 그렇게 고쳐서 진행해")
+    title: ts-travel-service packet loss
+    cause: tc packet drop injected on the ts-travel-service container's traffic
+    evidence: 'Raw RE2-TT/ts-travel-service_loss/3 metrics for ts-travel-service, 5 min before vs 30 s–5 min after the injection (medians): istio latency p99 0.89s→4.61s (max 7.981s),
+      p50 0.018s→0.021s (tail only); istio error total 0.0→0.0 (max 0.8); container CPU 3.335→3.388 and sockets 18.0→21.0 essentially unchanged. Packet loss shows here as intermittent
+      tail-latency spikes (retransmission) on requests involving ts-travel-service, not as error responses or resource change.'
+  case-rcaeval-tt4-v3-ab34b3df:
+    version: override-2026-10-02-rcae-loss
+    decided: 2026-10-02 user — packet-loss distinguishing evidence corrected to the raw data ("응 그렇게 고쳐서 진행해")
+    title: ts-travel-service packet loss
+    cause: tc packet drop injected on the ts-travel-service container's traffic
+    evidence: 'Raw RE2-TT/ts-travel-service_loss/1 metrics for ts-travel-service, 5 min before vs 30 s–5 min after the injection (medians): istio latency p99 0.887s→4.669s (max 6.9s),
+      p50 0.018s→0.021s (tail only); no istio error samples recorded; container CPU 3.608→3.46 and sockets 17.0→21.0 essentially unchanged. Packet loss shows here as intermittent tail-latency
+      spikes (retransmission) on requests involving ts-travel-service, not as error responses or resource change.'
+  case-rcaeval-tt4-v3-e47cf4d2:
+    version: override-2026-10-02-rcae-loss
+    decided: 2026-10-02 user — packet-loss distinguishing evidence corrected to the raw data ("응 그렇게 고쳐서 진행해")
+    title: ts-route-service packet loss
+    cause: tc packet drop injected on the ts-route-service container's traffic
+    evidence: 'Raw RE2-TT/ts-route-service_loss/2 metrics for ts-route-service, 5 min before vs 30 s–5 min after the injection (medians): istio latency p99 0.011s→0.431s (max 0.511s),
+      p50 0.003s→0.004s (tail only); no istio error samples recorded; container CPU 4.384→4.149 and sockets 18.0→19.0 essentially unchanged. Packet loss shows here as intermittent tail-latency
+      spikes (retransmission) on requests involving ts-route-service, not as error responses or resource change.'
+  case-rcaeval-tt4-v3-e84d9651:
+    version: override-2026-10-02-rcae-loss
+    decided: 2026-10-02 user — packet-loss distinguishing evidence corrected to the raw data ("응 그렇게 고쳐서 진행해")
+    title: ts-auth-service packet loss
+    cause: tc packet drop injected on the ts-auth-service container's traffic
+    evidence: 'Raw RE2-TT/ts-auth-service_loss/2 metrics for ts-auth-service, 5 min before vs 30 s–5 min after the injection (medians): istio latency p99 0.966s→1.268s (max 2.374s), p50
+      0.23s→0.304s (tail only); no istio error samples recorded; container CPU 14.321→14.308 and sockets 16.0→17.0 essentially unchanged. Packet loss shows here as intermittent tail-latency
+      spikes (retransmission) on requests involving ts-auth-service, not as error responses or resource change.'

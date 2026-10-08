@@ -1377,7 +1377,14 @@ func etEnvelope(res *etResult, seed *etNode, from, to time.Time, wbasis string,
 			nodes = append(nodes, res.nodes[id])
 		}
 	}
-	sort.SliceStable(nodes, func(i, j int) bool { return nodes[i].Hop < nodes[j].Hop })
+	// Hop, then node id: discovery order (res.order) follows map iteration in places, so equal-hop nodes came out
+	// in a different order on every call — and the student only reads the first 6000 chars (2026-10-06 replay check).
+	sort.SliceStable(nodes, func(i, j int) bool {
+		if nodes[i].Hop != nodes[j].Hop {
+			return nodes[i].Hop < nodes[j].Hop
+		}
+		return nodes[i].ID < nodes[j].ID
+	})
 
 	findings := make([]Finding, 0, len(nodes)+len(edges)+2)
 	for _, n := range nodes {
