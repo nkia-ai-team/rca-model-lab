@@ -6,6 +6,7 @@ package tools
 import (
 	"encoding/json"
 	"math"
+	"strings"
 	"testing"
 	"time"
 )
@@ -243,5 +244,21 @@ func TestScanBaselineThin(t *testing.T) {
 	counts := env.Findings[len(env.Findings)-1]
 	if _, thin := counts["baseline_thin"]; !thin {
 		t.Fatal("기준선 3표본인데 빈약 표식 없음")
+	}
+}
+
+func TestKcmNavHintText(t *testing.T) {
+	const res, cl = "11111111-1111-1111-1111-111111111111", "22222222-2222-2222-2222-222222222222"
+	got := kcmNavHintText(res, cl, "pod", "ns/web-0")
+	for _, want := range []string{cl, "pod ns/web-0", "scan_metrics(target=" + cl + ")", `group_by="pod"`} {
+		if !strings.Contains(got, want) {
+			t.Fatalf("hint missing %q: %s", want, got)
+		}
+	}
+	if kcmNavHintText(cl, cl, "cluster", "c") != "" {
+		t.Fatal("cluster target itself must get no hint")
+	}
+	if kcmNavHintText(res, "", "pod", "ns/web-0") != "" {
+		t.Fatal("unknown cluster must get no hint")
 	}
 }

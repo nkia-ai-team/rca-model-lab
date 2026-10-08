@@ -1,0 +1,425 @@
+# OpenRCA 2.0 o2ot converted captures (scripts/openrca2_convert.py). Source: huggingface anon-ops/ops-lite@581eba39, Apache-2.0.
+# public_compare: deterministic ~20% hold-out per system (hash of the case name) for comparison with published OpenRCA 2.0 results; never train on it.
+version: 1
+cases:
+  case-openrca2-o2ot-v3-bcd963d6:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 2c33fad5-6f80-5a9d-bf62-c965e9af8e15
+      - 0a665d20-c3c2-5efe-86d4-08b410e68dbc
+      - 4f5a349f-6ffa-51fe-acc2-4c73d3e9ef13
+      - 333e75be-4866-53ab-9d7f-5c4c1cc8a209
+      - f7163b19-dc53-5bad-84f9-f66b10ab979f
+      - 9e35db06-3f51-5a6f-a14a-3b933b3859c3
+      target_aliases:
+      - payment
+    allowed_target_ids:
+    - 6e6da578-18ff-5fbc-b62d-f9fa8743680e
+    - 9a93eff7-f58c-5e67-9a00-298e83d40428
+    - 52bd6fa0-5ae6-513b-88e9-c5f4b03cbf8d
+    - 30c82b97-4988-5e59-9956-f08e74e3ff92
+    - 1660e659-5e68-545f-b3bd-7f4bc5a9cb36
+    - d9dcb3dc-4355-5e98-8af8-d9060db68e59
+    allowed_note: 'optional faults: effect confined to their own resources or masked
+      by a co-injected fault (naming them is not penalised)'
+  case-openrca2-o2ot-v3-d0f67950:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 19f6aa3c-1f4d-504e-b63f-f22b20e198ae
+      - 5d815341-4de0-5045-b1ff-b5edad7aa315
+      - 748452b6-c3e9-5cff-b13c-9b19139cfba0
+      - c284ab42-973c-571b-9ed1-3104fbf7de12
+      - 24bba2d5-8579-5368-b6c6-3b24c270e892
+      - eaf574c8-2fbc-5ef8-91c3-60a33b10096d
+      target_aliases:
+      - quote
+    allowed_target_ids:
+    - 5fab12f9-e12e-50dd-9bd8-875c81a585bd
+    - 50d66f28-b883-5b0b-a9ee-14cbbcaba1da
+    - f3ac7145-342e-5557-8b71-6301c0c3d1f5
+    - af6fc8f2-6b99-5399-adfd-8c031668dee4
+    - 19aead55-ed91-58e8-b645-ae94e70ece02
+    - 6199a34b-09f8-5967-8da7-855adba64b93
+    allowed_note: 'optional faults: effect confined to their own resources or masked
+      by a co-injected fault (naming them is not penalised)'
+  case-openrca2-o2ot-v3-fad722e3:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - bb035431-3329-5290-ba3a-c7c63634125b
+      - 412f3ca2-aefd-5b1f-aa0f-ecdf7b064761
+      - 3168ad23-5853-5653-9dfb-33dc9f507ee4
+      - bd3c4ff3-03b2-5779-85f2-b400753dd3f3
+      - 9dca99c6-86c1-5e12-9423-3891adf56342
+      - 3df774fb-8ec2-5ae2-9540-22511b7932b3
+      target_aliases:
+      - shipping
+    allowed_target_ids:
+    - 594b44f6-56b1-59d4-8c25-fbade1cb8303
+    - 159b113f-6c0a-5928-b4af-14ab398b937b
+    - 69507dc3-e74b-5642-aa31-fcf7c18ae776
+    - cd57b82c-9b13-5634-94be-e02e9169b6e4
+    - 9d188b93-c0db-5bc7-afb2-3e5065bcce18
+    - fb705a81-15f9-5e47-aec6-3d70222bbe4f
+    allowed_note: 'optional faults: effect confined to their own resources or masked
+      by a co-injected fault (naming them is not penalised)'
+  case-openrca2-o2ot-v3-1b4bf042:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 104380a2-1f9e-525c-a04f-64d32d44ad67
+      - eaef99de-551a-54cf-972d-03735743adc5
+      - 1f654517-ab4f-508c-9179-18d749813d69
+      - 0180055e-23ac-5a45-8490-43f08a5ca408
+      - 41e4167b-f5bb-5a40-b2b4-a70498726a18
+      - e5063071-4f92-5886-9ab4-a662a470a2de
+      target_aliases:
+      - checkout
+    allowed_target_ids:
+    - 7536ce53-41a5-5ef7-956b-f23fa3706526
+    - 37470be1-74a3-5a6f-94ec-87e4d9749521
+    - fa707164-889e-5d36-8315-5d2cf15b4171
+    - f88c2e2c-4c51-5669-a626-ac47fb87284d
+    - 29321c52-357f-58de-b7f6-0db96fb1fd6a
+    - 2894541a-047a-5aa3-a010-09c7407fc0bf
+    - 2be0b28c-7552-5aa5-a7b6-0c71a6ef1ff2
+    - 8b7c1059-9114-56a0-bd4e-fc33d6a9a86b
+    allowed_note: 'optional faults: effect confined to their own resources or masked
+      by a co-injected fault (naming them is not penalised)'
+  case-openrca2-o2ot-v3-9da60ec2:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - d71cab12-fd49-5de4-b8bc-418bad88d177
+      - d123e1fb-8a77-59fe-a835-eabafef0db80
+      - 7e40c3cb-21fd-5dc4-97f9-3333af188bbc
+      - fce3b7a5-ac04-55a6-835e-9d0b41225ddb
+      - 48e70043-f9e0-53d4-b393-2ca07c9c70ab
+      - 630d5714-69ef-503a-acde-2ad55973ca43
+      target_aliases:
+      - checkout
+    allowed_target_ids:
+    - 787611de-f8ab-51f4-bc77-c00558b00289
+    - 5494b4d4-b7a7-5b52-b5d9-a7c72556622f
+    - 52656b2c-00ec-5fba-8adc-2d38eccb1626
+    - faa80ea1-6cfc-57cc-91e6-6df59ea34645
+    - a5f2fa13-36aa-550b-8925-b388d7381a33
+    - 0ab6e2af-4dc2-5818-82b9-baa26179ae25
+    allowed_note: 'optional faults: effect confined to their own resources or masked
+      by a co-injected fault (naming them is not penalised)'
+  case-openrca2-o2ot-v3-d28ae74b:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 01e28b49-639b-5bbc-9f8c-6bb73a34c70f
+      - 0a29ace7-7f21-54d5-82a8-95b31bf629f1
+      - 379d439f-e0fb-565c-8e30-66e7885ae5ac
+      - d819d81b-cdf7-5e78-85b7-97b47ee70390
+      - c661ac11-454a-5747-bb78-61e06c67f9a4
+      - 483dba1c-a581-5742-9f8f-565c6216b78d
+      target_aliases:
+      - shipping
+  case-openrca2-o2ot-v3-3dfba6e3:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 24ce1628-6395-5662-a454-e49c83f28a90
+      - 12bafba0-5096-5a8e-ab37-0d592beaf6f5
+      - f810ddda-426b-5318-a93f-6b2021109753
+      - ae1a2b4f-c3b6-53e0-9b4d-30fd0a297c48
+      - a48ca5a5-118b-5103-9358-834cdf416d9c
+      - 7ec307f7-9514-510a-bb06-7c2ef8867f3a
+      target_aliases:
+      - cart
+    allowed_target_ids:
+    - a654a56f-b801-58de-9815-0b6b1dee9cd9
+    - 1d9e1d57-7f1b-5e28-9dfa-8f21c82989af
+    - 902a446e-db46-5d7f-a0b1-6d91e261b007
+    - 589d7e49-9840-5f9f-b7dc-7648fb9ca975
+    - 16db3535-8364-54e9-a95d-0345a487fdc9
+    - 806857ab-341e-539b-b0e7-8acbd6542917
+    allowed_note: 'optional faults: effect confined to their own resources or masked
+      by a co-injected fault (naming them is not penalised)'
+  case-openrca2-o2ot-v3-83ba3833:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 65fa982e-e354-5956-bcce-afb8608c1880
+      - 9f2fb428-4661-5b5a-9aa3-6b22c7d8a67a
+      - 078a3f6e-1bda-509e-b123-da1b5bc84961
+      - 1276f70d-a419-55f9-b30d-cf9f9b5ead6a
+      - db683f32-22a4-5613-b48c-67f3d0c33246
+      - f937ec95-6416-5529-aafc-cef4eece0a18
+      target_aliases:
+      - cart
+  case-openrca2-o2ot-v3-5573a482:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 48121809-2f22-5e09-8778-2e1af97eff3f
+      - f4be4d0c-49b6-5e2f-b2c1-bd4f7e5a85f3
+      - 02a0e39e-8ae2-53e5-af03-fab714594a0d
+      - 54de049b-7104-5f49-b07d-8f000ae8488d
+      - 84ec264b-94f6-5da8-bfa4-a72998bc1de0
+      - bd984492-7d09-5269-8c0d-e289657bea55
+      target_aliases:
+      - recommendation
+    allowed_target_ids:
+    - 30ceaf43-bd20-5a35-b6ee-19134add1c87
+    - a13171d0-f63d-5c9d-88aa-73a5e5b807df
+    - 6d8fc210-9bb1-51c9-ae24-3b325e5f8b29
+    - e9602f5d-e29a-5939-b145-689d2042a44d
+    - 541a7f91-ff57-5862-af3a-3e01b50a6b1b
+    - ed2a4f8a-9ed1-5f24-af27-bcb80dd7926a
+    allowed_note: 'optional faults: effect confined to their own resources or masked
+      by a co-injected fault (naming them is not penalised)'
+  case-openrca2-o2ot-v3-2d489060:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - b6fd8326-d537-5a23-9f20-5cf02661fd66
+      - 4f704bb0-fb52-571a-b52b-ed835a2d04cc
+      - 9c938f58-550a-5af0-b439-3a240821dbf5
+      - b4957326-c36c-583b-bf41-684cd5a37d5d
+      - febf4649-6ab5-5892-89c6-76949e11f10d
+      - 7f844ae3-9b09-5123-9b8a-d5e0b5dd3679
+      target_aliases:
+      - checkout
+    allowed_target_ids:
+    - cc49dc9a-2f35-50cc-a8b1-40df5845ecc7
+    - 6a0c78a4-ee77-5bb8-bc38-46ad6c7198b0
+    - 0134adf2-b560-5066-a72b-d48abf036304
+    - e9f0ea19-39f7-5d3b-8cb1-d5d955a3abbd
+    - 657adcc7-b2b6-559d-9e96-a23e59882796
+    - 6366aabb-5fac-5dbe-b7f1-57e43597db38
+    allowed_note: 'optional faults: effect confined to their own resources or masked
+      by a co-injected fault (naming them is not penalised)'
+  case-openrca2-o2ot-v3-a5d46cbe:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 94784814-a230-59ba-85c2-5ff90de7a2b4
+      - 7f1670e6-3396-549e-ac40-1912c2b8aa99
+      - 95d496d3-4be5-5697-aa56-f93894f7de7e
+      - 84ded409-e352-507e-99e5-c16294d8bebf
+      - bcdf99db-1237-5b7e-9d12-dde27be57c71
+      - 32d10666-a1be-58a0-b14f-f9b6953a3e72
+      target_aliases:
+      - payment
+    allowed_target_ids:
+    - 24bd1458-5a0e-5e4a-bb71-b8900255f6db
+    - f4becfaf-641d-51e0-b546-b28f3c29cc0f
+    - 3462ab54-8925-5fb8-bb30-fdf1ba6a92ca
+    - 433067d2-530a-56ef-87d5-7aa6d5be6c97
+    - 91e009ad-8543-5c8c-95ba-c6514c2eac02
+    - d718559f-6dea-540e-a8d7-5cab6773d245
+    allowed_note: 'optional faults: effect confined to their own resources or masked
+      by a co-injected fault (naming them is not penalised)'
+  case-openrca2-o2ot-v3-63aee688:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 2515ee78-df9d-541b-bea9-861e7ea94e45
+      - e040384c-09ad-55bf-a5d7-ae89c2b6ef8c
+      - 399c4d27-a325-5558-8995-23a4e994c209
+      - 48135be6-eaa8-567d-8488-ac0b49f1dcba
+      - 1b10d9f3-3422-59ed-9f7e-4953999e8844
+      - 8997d551-f690-5319-95a2-f9e877e9aa1c
+      target_aliases:
+      - product-catalog
+    allowed_target_ids:
+    - fc4ec776-5510-5ce3-b6b8-b71fa5b1fff2
+    - 9bd5a870-75ac-5183-82e9-885bb708687b
+    - cf858fb6-26ad-5826-934c-d685f4466f07
+    - a1b272e3-c36b-5777-999d-572b5014c858
+    - 3f83f767-00b3-51ee-8ee4-c95256307640
+    - 1e6d5519-0330-5406-991e-80aacdd029d1
+    allowed_note: 'optional faults: effect confined to their own resources or masked
+      by a co-injected fault (naming them is not penalised)'
+  case-openrca2-o2ot-v3-fab7ae7f:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - d875acb2-0d23-58c9-9997-9f4030cfd138
+      - b693e958-233e-5d28-af85-7822293ae1c8
+      - 941739b4-9e89-56b6-b70f-a140039f041d
+      - 2397789f-f53d-5569-a37b-cf43fa1387c4
+      - 1461113f-349d-5fd3-aba2-62826459f31b
+      - 85d0f707-f766-52b4-8c25-e7759cb31afe
+      target_aliases:
+      - payment
+    allowed_target_ids:
+    - e6f10848-2828-543e-863f-bd3374b8b217
+    - 7b1afdd6-8b8c-5d64-a42d-47d48ec4ab25
+    - 7ffb1775-4be7-5308-8595-a427626b6b52
+    - f4956bb5-178a-54e4-af90-74ae23c42d7b
+    - a00a0942-950a-556e-823b-c67359fb4cfa
+    - 05143ed7-382d-53e1-b4e7-99a310985868
+    - abfe8a3d-1b6b-5b85-ac76-7a145298c5da
+    - a8bf5711-8c7c-5233-8555-1680070c0c3a
+    allowed_note: 'optional faults: effect confined to their own resources or masked
+      by a co-injected fault (naming them is not penalised)'
+  case-openrca2-o2ot-v3-033769dc:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 396b6ab0-1e09-58be-a763-991b6bbc1229
+      - 8fec9b83-0f76-5552-9f14-9689aa42c753
+      - 2d52f54e-ffab-5831-9ffa-896f22e5bf13
+      - 6ac4f03c-e8f1-57d0-970e-ccc22453cf9c
+      - d770fcba-936d-5d53-a895-e824ab115f11
+      - 53221029-dc78-58cd-b7bf-cbc8a6132123
+      target_aliases:
+      - checkout
+  case-openrca2-o2ot-v3-47051b3b:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 692ced16-ea8b-5d5d-9588-e2f8c40aba09
+      - db926449-a7e8-5b02-92a7-eefbc76a4778
+      - 0813ac11-4d6f-55bd-b207-23e46c3b328a
+      - 94b179e6-6439-5dd2-aee2-1922b4b25e5a
+      - 13b4df1e-71eb-51ab-857d-4b58a47e7f95
+      - d9b056bb-7fea-5f58-9a30-f8bf72e4906d
+      target_aliases:
+      - payment
+  case-openrca2-o2ot-v3-0a32ea46:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - f95b5741-0588-54c5-83e6-6d6a77a5d0b3
+      - 879ca0b4-98a4-57f7-90f5-6a3cff02352f
+      - 273c9c26-cd8d-576c-8fc7-5d735b3cbb2c
+      - 89ce3272-2bd0-5382-904e-4968616657f8
+      - 299ca117-e759-550d-88b3-e8de3815060e
+      - 8db7f24b-514a-5a69-b52d-0352aad90216
+      - d6a653f0-377a-58df-8706-eee91bc13651
+      - af9b9575-89d4-57a3-9b14-acca4c44782c
+      target_aliases:
+      - product-catalog
+  case-openrca2-o2ot-v3-61e4c616:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - a8b3abc1-af77-55a6-875a-5f045549d80f
+      - 6ab7df45-46fa-5cf5-a083-39d1614d60c8
+      - d5316c27-dbca-570b-89fa-fd02a1368902
+      - f4592772-509f-5fa7-b249-fb6d910b1706
+      - 5b7f3623-4aa4-5320-969d-98d911f62a35
+      - fbc01221-a13e-549c-acf6-3668ffd683e6
+      target_aliases:
+      - shipping
+  case-openrca2-o2ot-v3-42067040:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - a92d8ae6-1cb3-5386-9ad6-3e0ea137c503
+      - d10b3a5c-bc11-5780-beb0-976f86d79e3b
+      - 4c48c921-9d7c-5922-81d4-eae8ef64e5da
+      - 2b260738-8384-5f00-87d7-952d29da34ca
+      - cbbf60eb-b093-530f-823d-c125ff132f21
+      - 326d0554-0c01-5f11-86cd-25d5691a956c
+      target_aliases:
+      - product-catalog
+  case-openrca2-o2ot-v3-e42952f0:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 02273920-4ada-5dd1-8794-b492001b3764
+      - 7abf9549-df0f-5789-8d01-df125edf634d
+      - cec72cb8-39da-5951-bb01-18fda3bcc362
+      - ec0f4b05-60a6-53a0-8a0a-78fae940fb60
+      - b9950b7d-4e57-5258-b3b7-27d97c6ed0ef
+      - f34801e6-68a0-5aef-8d83-b473befebd59
+      target_aliases:
+      - product-catalog
+  case-openrca2-o2ot-v3-ad2d2c1c:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - c3cd95f1-ae83-5778-beee-3d417c2f20df
+      - 3aa7f124-6f7c-5fc4-8085-34a819270a31
+      - 799bcc96-a1eb-585b-a39e-d0b57985825f
+      - dfb08be7-ba6c-5b89-bc80-70be7bc25d88
+      - 2805afa2-dfb9-5d93-a672-85b41ebb21cf
+      - 527f7b23-11c9-5114-a00a-425a114eac62
+      target_aliases:
+      - checkout
+  case-openrca2-o2ot-v3-367c0330:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - a3a9911a-2594-5aee-a9df-7671128ced10
+      - a6988cbe-19f4-592a-8851-9dbe81d2ce3a
+      - 0900540b-a0c2-5333-b4ec-d3ee240523c1
+      - 3452db1a-e879-5129-8847-87807055683e
+      - 9781dc77-c318-5fe5-a36f-8278f6dcf550
+      - 2b3db614-f9a9-5f8f-b056-08e9778de642
+      target_aliases:
+      - checkout
+  case-openrca2-o2ot-v3-7aaf8d8b:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 180f9d61-b0f4-5005-8d1b-4490a99188fe
+      - 9e5a641b-4535-5223-9103-0584acc18e3a
+      - c434f52e-3cfd-5ac9-a827-c65ea015ea97
+      - 90041e24-a1cb-531b-84f0-fa684e5ae188
+      - a2c2fedc-5537-5c39-9bff-430c0f5b79cb
+      - cdfccdf9-fa9b-5136-bc17-68e2834900d1
+      - 2d5b6a9f-b99e-5a9f-8d31-cf2ac467571e
+      - 40188621-e7c1-5cef-b1f9-d23e1b4739db
+      target_aliases:
+      - payment
+  case-openrca2-o2ot-v3-1b67e049:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - bc415ca6-1166-5e30-a1ac-d830354e7d0c
+      - 1a226c31-1157-5324-a780-a334cd7c4ce3
+      - b1efe290-6d66-544d-b73b-36b6775f31fe
+      - cc18858f-ea4e-561e-bd7a-1984f95fa2a0
+      - 27feff17-f8f3-5c39-8b99-9f2f36edbeb6
+      - 89c0a8cc-02e8-5123-92e7-cd8d25f66d95
+      target_aliases:
+      - product-catalog
+  case-openrca2-o2ot-v3-21e9f1c3:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 12b66324-5ab1-5250-8f73-6069192b1062
+      - 8f6fc7e2-032a-5718-9b88-5757c038dedd
+      - 27f10a01-0831-585a-b73e-1fc152828121
+      - c1df7604-c453-5ed1-a83d-722b03da8d63
+      - 347e41fb-3fd7-5719-8dd5-9dfd08576e51
+      - 22680fda-bcd4-529e-aba5-c7b4641b295e
+      target_aliases:
+      - currency
+  case-openrca2-o2ot-v3-e4580e35:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 823b01b3-b219-5499-a614-3cf741a79f12
+      - 37c85f56-7be8-5f23-a153-bb9800ac8986
+      - a80434f2-7cf9-53c2-ad10-b898d20c2d97
+      - 4251dcb0-4b9f-5ebb-8b4c-06e02f570f9c
+      - b77f4654-8a5c-519e-a420-30b5333b84e1
+      - 212fdaa0-16f7-5873-889d-3a5ce3f1b03c
+      target_aliases:
+      - cart
+  case-openrca2-o2ot-v3-7cd4b2eb:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - e477c761-e22e-53c9-8095-f43085535168
+      - 83b8eb72-8930-5bcf-9424-0c5e2157b199
+      - 11be9aef-85e2-5407-8da6-b05815a35ddb
+      - 7cdbb66a-5780-5ed3-8a0d-f3e777b700bb
+      - 96169a39-937f-51bd-af39-c5405fbdc3a2
+      - 946be262-a1db-55e6-a0f8-6be98cc97204
+      - 438fd057-ff83-5aa9-bdb8-628dc0efc494
+      - 65336bdd-0436-5c47-8012-490cb31b4d54
+      target_aliases:
+      - payment

@@ -1,0 +1,12 @@
+# Next-action agreement held-out pool (2026-10-06): teacher runs on the 6 validation captures from the final-harness ablation
+# (outputs/mcp-eval/ablation-harness-final). Listed under `train` only because mcp_export_sft exports that partition —
+# this pool is evaluation-only and must never be a training dataset.
+train:
+- case-f01-r-v3-34274f3e
+- case-f05-h-v3-36a247f1
+- case-f06-p-v3-100785c9
+- case-f06-p-v3-24f2e956
+- case-f06-p-v3-79c62cdb
+- case-f06-r-v3-6ace8a7d
+validation: []
+sealed_eval: []

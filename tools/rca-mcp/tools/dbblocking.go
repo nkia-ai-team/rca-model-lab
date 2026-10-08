@@ -23,10 +23,19 @@
 //   - engine은 열린 집합이다(§13.6): 미인식 engine도 degraded로 적재된다.
 //     공통 축(is_blocking)으로 발생까지 답하고 짝 연결만 등급으로 밝힌다.
 //     ClickHouse는 공통 축 자체가 없어 "없음"이 아니라 "판단 불가"다.
+//   - 세션 상태 구획(dbsessions.go, 2026-10-06): 블로킹 사건이 없어도 클라이언트별
+//     세션 상태·대기 분포의 시간 추이와 경과 시간 상위 세션(SQL 본문 포함)을 싣는다.
+//     블로킹 판정(status)은 바꾸지 않는다. PG는 optional 원천(클라이언트 → pod·
+//     워크로드 해석, db_sql_text 본문) — 실패해도 CH 관측은 유지하고 source_errors로
+//     결손을 밝힌다.
+//   - 전체 개관(dbfleet.go, 2026-10-06): db를 생략하면 database 대상 전부를 같은 창에서 훑어
+//     대상별 한 줄을 증거 강도 순으로 낸다. db를 준 호출의 응답은 바뀌지 않는다.
 package tools
 
 import (
+	"bytes"
 	"context"
+	"database/sql"
 	"encoding/json"
 	"fmt"
 	"sort"
@@ -41,6 +50,7 @@ const (
 	dbBlkDefaultEvents  = 20 // 사건 반환 상한(§13.8)
 	dbBlkTimelinePolls  = 60 // 초과 시 앞 30 + 뒤 30(§13.8)
 	dbBlkNeighborLookup = 24 * time.Hour
+	dbBlkUnsupported    = "unsupported" // 짝 연결 등급 최하(§13.6)
 )
 
 // dbBlkEngine은 engine별 body 키 계약이다(§13.1 정정 2 — 생산자 소스가
@@ -92,70 +102,59 @@ const (
 // NewDBBlockingTool은 db_blocking 도구를 만든다. firstEvent·lastEvent는
 // seed의 인시던트 창 — from·to 생략 시 기본 창이다(§13.8: 창 전역 스캔이
 // 이 도구의 핵심이므로 조사자에게 창을 좁히도록 강요하지 않는다).
-func NewDBBlockingTool(ch *CH, firstEvent, lastEvent time.Time, nowFn func() time.Time) llm.Tool {
+// pg는 세션 상태 구획의 클라이언트 해석·SQL 본문 사전용(optional — nil이면 미해석).
+func NewDBBlockingTool(ch *CH, pg *sql.DB, firstEvent, lastEvent time.Time, nowFn func() time.Time) llm.Tool {
 	if nowFn == nil {
 		nowFn = time.Now
 	}
 	params, _ := json.Marshal(map[string]any{
 		"type": "object",
 		"properties": map[string]any{
-			"db":         map[string]string{"type": "string", "description": "database 대상의 target_id(UUID)"},
+			"db": map[string]string{"type": "string", "description": "database 대상의 target_id(UUID) — search_targets(type=database)로 찾는다. db_resource 하위 대상이 아니라 부모 database 대상. " +
+				"생략하면 인벤토리의 database 대상 전부를 훑는 전체 개관(대상별 한 줄 + target_id)"},
 			"from":       map[string]string{"type": "string", "description": "UTC RFC3339 또는 now/now-2h. 생략하면 인시던트 창"},
 			"to":         map[string]string{"type": "string", "description": "UTC RFC3339 또는 now. 생략하면 인시던트 창"},
 			"max_events": map[string]any{"type": "integer", "description": "사건 반환 상한(기본 20)"},
 		},
-		"required": []string{"db"},
 	})
 	return llm.Tool{
 		Name: "db_blocking",
-		Description: "DB의 시간창에서 블로킹 사건을 찾는다 — 누가 누구를 막았나(루트 세션 포함), 몇 세션이 막혔나, 어느 객체를 두고 다퉜나. " +
-			"창 전역을 훑어 연속 관측을 한 사건으로 접는다. 세션 수·커넥션 포화는 이 도구가 아니라 read_timeseries의 몫.",
+		Description: "DB의 시간창에서 블로킹 사건과 세션 상태를 본다. ① 블로킹 사건 — 누가 누구를 막았나(루트 세션 포함), 몇 세션이 막혔나, 어느 객체를 두고 다퉜나 " +
+			"(창 전역을 훑어 연속 관측을 한 사건으로 접는다). ② 세션 상태 구획(블로킹이 없어도 실린다) — 트랜잭션 경과 시간 상위 세션(상태·대기 이벤트·SQL 본문)과 " +
+			"클라이언트(접속 IP·호스트 → pod·워크로드·애플리케이션)별 세션 상태·대기 이벤트 분포의 시간 추이. " +
+			"db는 database 대상 UUID다(search_targets type=database). db를 생략하면 database 대상 전부를 같은 창에서 훑어 대상별 개관 " +
+			"(engine, 블로킹 사건 수·최대 막힌 세션·처음/마지막 관측, 경과 시간 상위 세션)을 증거 강도 순으로 돌려준다 — 대상별 상세는 그 target_id로 다시 호출한다. " +
+			"DB 전체 세션 수 시계열·커넥션 포화 추이는 read_timeseries의 몫.",
 		Parameters: params,
 		Call: func(ctx context.Context, args json.RawMessage) (any, error) {
 			var in struct {
 				DB, From, To string
 				MaxEvents    int `json:"max_events"`
 			}
-			if err := json.Unmarshal(args, &in); err != nil {
-				return nil, fmt.Errorf(`인자 오류: {"db": "<uuid>", "from": "<RFC3339|now-2h>", "to": "<RFC3339|now>"} 필요(from·to 생략 가능)`)
-			}
-			if !uuidRe.MatchString(in.DB) {
-				return nil, fmt.Errorf("%q는 target_id가 아님 — database 대상의 순수 UUID 필요", in.DB)
-			}
-			now := nowFn().UTC()
-			var basis []string
-			fromT, toT := time.Time{}, time.Time{}
-			if in.From != "" {
-				t, err := parseFlexTime(in.From, now)
-				if err != nil {
-					return nil, fmt.Errorf("from 시간 오류: %v", err)
+			if len(bytes.TrimSpace(args)) > 0 {
+				if err := json.Unmarshal(args, &in); err != nil {
+					return nil, fmt.Errorf(`인자 오류: {"db": "<uuid>", "from": "<RFC3339|now-2h>", "to": "<RFC3339|now>"} 형태(전부 생략 가능). ` +
+						`db는 database 대상 UUID(search_targets type=database), 생략하면 database 대상 전체 개관`)
 				}
-				fromT, basis = t, append(basis, "from=인자")
-			} else if !firstEvent.IsZero() {
-				fromT, basis = firstEvent.UTC(), append(basis, "from=인시던트 창 시작(seed)")
-			} else {
-				fromT, basis = now.Add(-2*time.Hour), append(basis, "from=now-2h(seed 창 없음)")
 			}
-			if in.To != "" {
-				t, err := parseFlexTime(in.To, now)
-				if err != nil {
-					return nil, fmt.Errorf("to 시간 오류: %v", err)
-				}
-				toT, basis = t, append(basis, "to=인자")
-			} else if !lastEvent.IsZero() {
-				toT, basis = lastEvent.UTC(), append(basis, "to=인시던트 창 끝(seed)")
-			} else {
-				toT, basis = now, append(basis, "to=now(seed 창 없음)")
+			fleet := strings.TrimSpace(in.DB) == ""
+			if !fleet && !uuidRe.MatchString(in.DB) {
+				return nil, fmt.Errorf("%q는 target_id가 아님 — database 대상의 순수 UUID 필요(search_targets type=database로 찾는다). "+
+					"db를 생략하면 database 대상 전체 개관", in.DB)
 			}
-			if !fromT.Before(toT) {
-				return nil, fmt.Errorf("시간창 오류: from < to 필요 (해석된 값 from=%s to=%s)",
-					fromT.Format(time.RFC3339), toT.Format(time.RFC3339))
+			// 창 해석은 db_slow_queries와 같은 관례·같은 문구다(sqWindow 공용).
+			fromT, toT, basis, err := sqWindow(in.From, in.To, firstEvent, lastEvent, nowFn().UTC())
+			if err != nil {
+				return nil, err
+			}
+			if fleet {
+				return dbFleet(ctx, ch, pg, fromT, toT, basis)
 			}
 			maxEvents := in.MaxEvents
 			if maxEvents <= 0 {
 				maxEvents = dbBlkDefaultEvents
 			}
-			return dbBlocking(ctx, ch, in.DB, fromT, toT, maxEvents, strings.Join(basis, ", "))
+			return dbBlocking(ctx, ch, pg, in.DB, fromT, toT, maxEvents, basis)
 		},
 	}
 }
@@ -196,7 +195,7 @@ func (r dbBlkRow) role() string {
 	}
 }
 
-func dbBlocking(ctx context.Context, ch *CH, target string, from, to time.Time, maxEvents int, windowBasis string) (any, error) {
+func dbBlocking(ctx context.Context, ch *CH, pg *sql.DB, target string, from, to time.Time, maxEvents int, windowBasis string) (any, error) {
 	var acc truncAcc
 	polls, err := dbBlkPolls(ctx, ch, target, from, to, &acc)
 	if err != nil {
@@ -205,22 +204,31 @@ func dbBlocking(ctx context.Context, ch *CH, target string, from, to time.Time, 
 	obs := &TimeRange{From: from.UTC(), To: to.UTC()}
 
 	if len(polls) == 0 {
-		return dbBlkNoRows(ctx, ch, target, from, to, windowBasis, obs, &acc)
+		return dbBlkNoRows(ctx, ch, pg, target, from, to, windowBasis, obs, &acc)
+	}
+	// 세션 상태 구획 — 블로킹 판정과 독립(status 불변), 어느 갈래로 나가든 합류한다.
+	// findings 맨 앞에 둔다: 상한이 있어 크기가 유계이고, -blind 응답은 키가 알파벳순으로
+	// 재정렬돼 summary가 findings 뒤로 가므로 응답 앞부분만 보는 소비자에게는 findings 앞쪽이
+	// 먼저 닿는다. 블로킹 루트는 보유 세션 상위에도 그대로 나온다(사건 행은 그 뒤).
+	sess := dbSessCollect(ctx, ch, pg, target, from, to, dbBlkEngineList(polls), &acc)
+	withSess := func(env Envelope) Envelope {
+		env.Findings = append(append([]Finding{}, sess.Findings...), env.Findings...)
+		env.Refs = append(env.Refs, sess.Refs...)
+		if sess.Digest != "" {
+			env.Summary += " " + sess.Digest
+		}
+		if sess.Truncated {
+			env.Truncated = true
+		}
+		env.QueryTruncated = bool(acc)
+		return env
 	}
 
 	// 공통 축·짝 산출 가능성 판정(§13.6·§13.9) — 표에 없는 engine이면
 	// 짝은 unsupported, 공통 축까지 없으면 판단 불가다.
-	engines := map[string]bool{}
-	axisAny := false
-	for _, p := range polls {
-		engines[p.engine] = true
-		if p.hasAxis {
-			axisAny = true
-		}
-	}
-	pairing, engineList := dbBlkPairing(engines)
-	if !axisAny && pairing == "unsupported" {
-		return Envelope{
+	pairing, engineList, judgeable := dbBlkJudgeable(polls)
+	if !judgeable {
+		return withSess(Envelope{
 			Status:       "no_data",
 			NoDataReason: NoDataNotCollected,
 			Summary: fmt.Sprintf("이 대상(engine=%s)의 세션 스냅샷에는 블로킹 축이 없다 — 공통 축(is_blocking) 미부착이고 짝 키 계약도 없다. "+
@@ -229,24 +237,24 @@ func dbBlocking(ctx context.Context, ch *CH, target string, from, to time.Time, 
 			AssessmentBasis: "블로킹 판정 축(공통 attr·engine 짝 키) 부재 — 관측 없음이 아니라 산출 불가",
 			ObservedRange:   obs,
 			QueryTruncated:  bool(acc),
-			Refs:            []string{fmt.Sprintf("ch:dpm_session_local:%s:polls:%d", target, len(polls))},
-		}, nil
+			Refs:            []string{dbBlkPollsRef(target, len(polls))},
+		}), nil
 	}
 
 	events := dbBlkFoldEvents(polls)
 	if len(events) == 0 {
-		return Envelope{
+		return withSess(Envelope{
 			Status: "normal",
 			Summary: fmt.Sprintf("블로킹 없음 — 창 내 폴 %d개(행 %d개)를 전부 훑었고 블로킹 표식이 한 건도 없었다(engine=%s). 창: %s",
 				len(polls), dbBlkTotalRows(polls), engineList, windowBasis),
 			AssessmentBasis: dbBlkBasis(polls, nil, pairing),
 			ObservedRange:   obs,
 			QueryTruncated:  bool(acc),
-			Refs:            []string{fmt.Sprintf("ch:dpm_session_local:%s:polls:%d", target, len(polls))},
+			Refs:            []string{dbBlkPollsRef(target, len(polls))},
 			// 완전 조회 0건 — "블로킹이 없었다"는 배제 근거의 원천이다(§5.1 계약 1).
 			// 이 줄이 없으면 그 배제가 index에서 표현되지 않는다.
 			Scopes: []QueryScope{qscope("event", 0, 0)},
-		}, nil
+		}), nil
 	}
 
 	rows, err := dbBlkRows(ctx, ch, target, from, to, &acc)
@@ -259,12 +267,7 @@ func dbBlocking(ctx context.Context, ch *CH, target string, from, to time.Time, 
 		byPoll[k] = append(byPoll[k], r)
 	}
 
-	sort.SliceStable(events, func(i, j int) bool {
-		if events[i].peak != events[j].peak {
-			return events[i].peak > events[j].peak
-		}
-		return len(events[i].polls) > len(events[j].polls)
-	})
+	dbBlkSortEvents(events)
 	truncated := len(events) > maxEvents
 	total := len(events)
 	if truncated {
@@ -288,7 +291,7 @@ func dbBlocking(ctx context.Context, ch *CH, target string, from, to time.Time, 
 		status = "anomalous"
 	}
 	summary := dbBlkSummary(events, total, truncated, status, engineList, pairing, windowBasis)
-	return Envelope{
+	return withSess(Envelope{
 		Status:          status,
 		Summary:         summary,
 		AssessmentBasis: dbBlkBasis(polls, events, pairing),
@@ -299,7 +302,71 @@ func dbBlocking(ctx context.Context, ch *CH, target string, from, to time.Time, 
 		Refs:            refs,
 		// 사건(시간 구간) 축 절단(§5.1 계약 2).
 		Scopes: []QueryScope{qscope("event", total, len(events))},
-	}, nil
+	}), nil
+}
+
+// dbBlkJudgeable은 창의 폴들로 짝 연결 등급·engine 목록과 블로킹 판단 가능 여부를 낸다 —
+// 공통 축(is_blocking)도 없고 짝 키 계약도 없으면 "없음"이 아니라 판단 불가다(§13.6·§13.9).
+func dbBlkJudgeable(polls []dbBlkPoll) (pairing, engineList string, judgeable bool) {
+	engines := map[string]bool{}
+	axisAny := false
+	for _, p := range polls {
+		engines[p.engine] = true
+		if p.hasAxis {
+			axisAny = true
+		}
+	}
+	pairing, engineList = dbBlkPairing(engines)
+	return pairing, engineList, axisAny || pairing != dbBlkUnsupported
+}
+
+// dbBlkEngineList는 창에 나타난 engine 목록(정렬)이다.
+func dbBlkEngineList(polls []dbBlkPoll) []string {
+	set := map[string]bool{}
+	for _, p := range polls {
+		set[p.engine] = true
+	}
+	out := make([]string, 0, len(set))
+	for e := range set {
+		out = append(out, e)
+	}
+	sort.Strings(out)
+	return out
+}
+
+// dbBlkSortEvents는 사건을 규모(최대 막힌 세션) 내림차순, 동수면 지속(폴 수) 내림차순으로
+// 안정 정렬한다 — 단일 DB 봉투의 사건 순서와 전체 개관의 "가장 큰 사건"이 같은 기준을 쓴다.
+func dbBlkSortEvents(events []dbBlkEvent) {
+	sort.SliceStable(events, func(i, j int) bool {
+		if events[i].peak != events[j].peak {
+			return events[i].peak > events[j].peak
+		}
+		return len(events[i].polls) > len(events[j].polls)
+	})
+}
+
+// dbBlkRepPoll은 사건의 대표 폴이다 = blocked_n 최대, 동수면 가장 늦은 폴(§13.4).
+func dbBlkRepPoll(ev dbBlkEvent) dbBlkPoll {
+	rep := ev.polls[0]
+	for _, p := range ev.polls {
+		if p.blockedN >= rep.blockedN {
+			rep = p
+		}
+	}
+	return rep
+}
+
+// ref 서식 — 단일 DB 봉투와 전체 개관이 같은 좌표 문자열을 낸다(submit_rca support_refs 호환).
+func dbBlkEventRef(target string, rep dbBlkPoll) string {
+	return fmt.Sprintf("ch:dpm_session_local:%s:%s", target, rep.ts.UTC().Format(time.RFC3339))
+}
+
+func dbBlkPollsRef(target string, polls int) string {
+	return fmt.Sprintf("ch:dpm_session_local:%s:polls:%d", target, polls)
+}
+
+func dbBlkNoRowsRef(target string) string {
+	return fmt.Sprintf("ch:dpm_session_local:%s:rows:0", target)
 }
 
 // dbBlkPolls는 폴 인벤토리를 가져온다(창 전역·서버측 집계).
@@ -467,13 +534,7 @@ func dbBlkPollInterval(ps []dbBlkPoll) time.Duration {
 func dbBlkFinding(target string, ev dbBlkEvent, byPoll map[string][]dbBlkRow, pairing string) (Finding, []string) {
 	first, last := ev.polls[0].ts, ev.polls[len(ev.polls)-1].ts
 
-	// 대표 폴 = blocked_n 최대, 동수면 가장 늦은 폴.
-	rep := ev.polls[0]
-	for _, p := range ev.polls {
-		if p.blockedN >= rep.blockedN {
-			rep = p
-		}
-	}
+	rep := dbBlkRepPoll(ev)
 	repRows := byPoll[rep.ts.Format(time.RFC3339Nano)]
 
 	// 폴별 타임라인 + 역할 합집합(사건 전역).
@@ -574,7 +635,7 @@ func dbBlkFinding(target string, ev dbBlkEvent, byPoll map[string][]dbBlkRow, pa
 		f["sql_refs"] = sr
 	}
 
-	refs := []string{fmt.Sprintf("ch:dpm_session_local:%s:%s", target, rep.ts.UTC().Format(time.RFC3339))}
+	refs := []string{dbBlkEventRef(target, rep)}
 	for _, r := range repRows {
 		if r.role() == "root" {
 			refs = append(refs, fmt.Sprintf("ch:dpm_session_local:%s:%s:session:%d",
@@ -718,7 +779,7 @@ func dbBlkPairing(engines map[string]bool) (string, string) {
 	sort.Strings(names)
 	grade := ""
 	for _, e := range names {
-		g := "unsupported"
+		g := dbBlkUnsupported
 		if ks, ok := dbBlkEngines[e]; ok {
 			g = ks.pairing
 		}
@@ -727,14 +788,14 @@ func dbBlkPairing(engines map[string]bool) (string, string) {
 		}
 	}
 	if grade == "" {
-		grade = "unsupported"
+		grade = dbBlkUnsupported
 	}
 	return grade, strings.Join(names, ",")
 }
 
 func dbBlkGradeRank(g string) int {
 	switch g {
-	case "unsupported":
+	case dbBlkUnsupported:
 		return 0
 	case "unverified":
 		return 1
@@ -763,7 +824,7 @@ func dbBlkParseTS(v any) (time.Time, error) {
 
 // dbBlkNoRows는 창에 행이 0인 경우다. 인접 창을 한 번 더 조회해 "이 창만
 // 빔"과 "대상 자체 미수집"을 사유 문구로 구분한다(§13.9).
-func dbBlkNoRows(ctx context.Context, ch *CH, target string, from, to time.Time, windowBasis string, obs *TimeRange, acc *truncAcc) (any, error) {
+func dbBlkNoRows(ctx context.Context, ch *CH, pg *sql.DB, target string, from, to time.Time, windowBasis string, obs *TimeRange, acc *truncAcc) (any, error) {
 	// GROUP BY ... ORDER BY ... LIMIT 1 — 단일 행 보장, 절단 불가 표면이라 표식은 버린다.
 	near, _, err := ch.Query(ctx, `
 		SELECT count() AS n, engine FROM dpm_session_local
@@ -780,6 +841,8 @@ func dbBlkNoRows(ctx context.Context, ch *CH, target string, from, to time.Time,
 	if len(near) > 0 && asInt(near[0]["n"]) > 0 {
 		reason = fmt.Sprintf("인접 ±24h에는 스냅샷이 있다(engine=%v, %d행) — 이 창만 비었다",
 			near[0]["engine"], asInt(near[0]["n"]))
+	} else if hint := dbBlkTargetHint(ctx, pg, target); hint != "" {
+		reason += ". " + hint
 	}
 	return Envelope{
 		Status:          "no_data",
@@ -788,7 +851,7 @@ func dbBlkNoRows(ctx context.Context, ch *CH, target string, from, to time.Time,
 		AssessmentBasis: "세션 스냅샷 0행 — 블로킹 없음이 아니라 관측 없음",
 		ObservedRange:   obs,
 		QueryTruncated:  bool(*acc),
-		Refs:            []string{fmt.Sprintf("ch:dpm_session_local:%s:rows:0", target)},
+		Refs:            []string{dbBlkNoRowsRef(target)},
 	}, nil
 }
 
@@ -837,9 +900,29 @@ func dbBlkSummary(events []dbBlkEvent, total int, truncated bool, status, engine
 		" edges 계열은 representative_poll_ts 한 폴의 관측이다.")
 	if pairing == "unverified" {
 		b.WriteString(" 이 engine의 짝 연결은 생산자 계약에서 읽은 것이며 블로킹 실측으로 대조된 적이 없다 — edges가 비었거나 어긋나면 도구 결함일 수 있다.")
-	} else if pairing == "unsupported" {
+	} else if pairing == dbBlkUnsupported {
 		b.WriteString(" 이 engine은 짝 키 계약이 없어 누가 누구를 막았는지는 확인할 수 없다(발생 여부만 공통 축으로 답한 것이다).")
 	}
 	fmt.Fprintf(&b, " 창: %s", windowBasis)
 	return b.String()
+}
+
+// dbBlkTargetHint는 행 0 대상이 database 대상이 아닐 때 찾는 경로를 밝힌다(명부 사실만).
+// db_resource 하위 대상은 meta.host_target_id가 소속 database 대상이다(명부 실측).
+func dbBlkTargetHint(ctx context.Context, pg *sql.DB, target string) string {
+	if pg == nil {
+		return ""
+	}
+	var typ, host string
+	if err := pg.QueryRowContext(ctx, `SELECT type::text, coalesce(meta->>'host_target_id', '') FROM targets WHERE id::text = $1`,
+		target).Scan(&typ, &host); err != nil {
+		return ""
+	}
+	if typ == "database" {
+		return ""
+	}
+	if host != "" && host != target && uuidRe.MatchString(host) {
+		return fmt.Sprintf("이 UUID는 %s 대상(소속 대상 %s의 하위 리소스)이다 — db에는 database 대상 UUID를 준다(search_targets type=database)", typ, host)
+	}
+	return fmt.Sprintf("이 UUID는 %s 대상이다 — db에는 database 대상 UUID를 준다(search_targets type=database)", typ)
 }

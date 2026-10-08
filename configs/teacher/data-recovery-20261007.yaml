@@ -1,0 +1,33 @@
+# Recover data only. No automatic training or changes to existing datasets.
+writer_model: claude-sonnet-5
+judge_model: claude-sonnet-5
+# Models match the original stage_a3.sh rationalization defaults, not the
+# separate Opus teacher collection / final mechanism evaluator.
+stages:
+  - name: tt4
+    split: configs/teacher/rcaeval-tt4-split.yaml
+    cases_root: data/external/rcaeval/captures
+    roots:
+      - outputs/mcp-eval/rcae-tt4-teacher
+      - outputs/mcp-eval/rcae-tt4-teacher-ladder
+      - outputs/mcp-eval/rcae-tt4-teacher-ladder2
+  - name: ob4
+    split: configs/teacher/rcaeval-ob4-split.yaml
+    cases_root: data/external/rcaeval/captures
+    roots:
+      - outputs/mcp-eval/rcae-ob4-teacher
+      - outputs/mcp-eval/rcae-ob4-teacher-ladder
+  - name: o2
+    split: configs/teacher/openrca2-all-split.yaml
+    cases_root: data/external/openrca2/captures
+    roots:
+      - outputs/mcp-eval/o2-teacher
+      - outputs/mcp-eval/o2-teacher-ladder
+      - outputs/mcp-eval/o2-pilot-teacher
+  - name: polestar
+    split: configs/teacher/v45-family-split-val.yaml
+    cases_root: /data/eval-cases
+    roots:
+      - outputs/mcp-eval/teacher-v5
+      - outputs/mcp-eval/teacher-v5-ladder
+      - outputs/mcp-eval/verify-harness-final2

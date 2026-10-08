@@ -39,29 +39,14 @@ func NewSearchTargetsTool(pg *sql.DB) llm.Tool {
 			if limit < 1 || limit > 100 || in.Offset < 0 || in.Offset > 1000000 {
 				return nil, fmt.Errorf("search_targets requires limit 1..100 and offset 0..1000000")
 			}
-			rows, err := pg.QueryContext(ctx, `SELECT id::text, name, coalesce(display_name,''), type::text, coalesce(address,'')
-				FROM targets
-				WHERE ($1::text = '' OR position(lower($1::text) in lower(name)) > 0
-				 OR position(lower($1::text) in lower(coalesce(display_name,''))) > 0
-				 OR position(lower($1::text) in lower(id::text)) > 0
-				 OR position(lower($1::text) in lower(coalesce(address,''))) > 0)
-				AND ($2::text = '' OR type::text = $2::text)
-				ORDER BY id LIMIT $3 OFFSET $4`, in.Query, in.Type, limit+1, in.Offset)
+			inv, err := inventoryTargets(ctx, pg, "search_targets", in.Query, in.Type, limit+1, in.Offset)
 			if err != nil {
-				return nil, fmt.Errorf("search_targets: %w", pgErr(err))
+				return nil, err
 			}
-			defer rows.Close()
 			findings := make([]Finding, 0, limit+1)
 			refs := make([]string, 0, limit)
-			for rows.Next() {
-				var id, name, display, typ, address string
-				if err := rows.Scan(&id, &name, &display, &typ, &address); err != nil {
-					return nil, fmt.Errorf("search_targets scan: %w", pgErr(err))
-				}
-				findings = append(findings, Finding{"section": "target", "target_id": id, "name": name, "display_name": display, "type": typ, "address": address, "refs": []string{"pg:targets:" + id}})
-			}
-			if err := rows.Err(); err != nil {
-				return nil, fmt.Errorf("search_targets rows: %w", pgErr(err))
+			for _, t := range inv {
+				findings = append(findings, Finding{"section": "target", "target_id": t.ID, "name": t.Name, "display_name": t.Display, "type": t.Type, "address": t.Address, "refs": []string{inventoryRef(t.ID)}})
 			}
 			hasMore := len(findings) > limit
 			// A nonempty offset page proves at least offset+fetched matches. An
@@ -87,4 +72,40 @@ func NewSearchTargetsTool(pg *sql.DB) llm.Tool {
 			findings = append(findings, page)
 			return Envelope{Status: "normal", Summary: fmt.Sprintf("%d matching inventory targets returned; has_more=%t. Use target_id with describe_target.", returned, hasMore), Findings: findings, Refs: refs, QueryTruncated: hasMore || in.Offset > 0, AssessmentBasis: "Literal substring search and exact type filter on connected inventory; no health, historical presence, or exact global total is inferred."}, nil
 		}}
+}
+
+// inventoryTarget은 명부(targets) 한 행이다 — search_targets와 db_blocking 전체 개관이 같은 발견 경로를 쓴다.
+type inventoryTarget struct {
+	ID, Name, Display, Type, Address string
+}
+
+func inventoryRef(id string) string { return "pg:targets:" + id }
+
+// inventoryTargets는 search_targets의 발견 조회 그대로다(리터럴 부분 문자열·정확한 type·id 순).
+// label은 오류 문구 접두다(search_targets 오류 문구 보존).
+func inventoryTargets(ctx context.Context, pg *sql.DB, label, query, typ string, limit, offset int) ([]inventoryTarget, error) {
+	rows, err := pg.QueryContext(ctx, `SELECT id::text, name, coalesce(display_name,''), type::text, coalesce(address,'')
+				FROM targets
+				WHERE ($1::text = '' OR position(lower($1::text) in lower(name)) > 0
+				 OR position(lower($1::text) in lower(coalesce(display_name,''))) > 0
+				 OR position(lower($1::text) in lower(id::text)) > 0
+				 OR position(lower($1::text) in lower(coalesce(address,''))) > 0)
+				AND ($2::text = '' OR type::text = $2::text)
+				ORDER BY id LIMIT $3 OFFSET $4`, query, typ, limit, offset)
+	if err != nil {
+		return nil, fmt.Errorf("%s: %w", label, pgErr(err))
+	}
+	defer rows.Close()
+	var out []inventoryTarget
+	for rows.Next() {
+		var t inventoryTarget
+		if err := rows.Scan(&t.ID, &t.Name, &t.Display, &t.Type, &t.Address); err != nil {
+			return nil, fmt.Errorf("%s scan: %w", label, pgErr(err))
+		}
+		out = append(out, t)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("%s rows: %w", label, pgErr(err))
+	}
+	return out, nil
 }

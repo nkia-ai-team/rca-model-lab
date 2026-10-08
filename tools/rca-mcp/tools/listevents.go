@@ -15,6 +15,13 @@
 //     dedup + max(count), 클러스터 조회는 namespace 구획(§8 결정 3).
 //   - 0건 = normal이되 화이트리스트 한정 문구 + 원천별 조회 시도
 //     표시(§8 결정 5).
+//   - kcm 범위 술어(2026-10-06 실측 수리): kcm_events_local.target_id는
+//     승격 리소스면 **그 리소스 대상**이고 클러스터는 host_target_id에 있다.
+//     종전 target_id = 클러스터 조건은 승격된 Deployment·ReplicaSet·Pod의
+//     이벤트(ScalingReplicaSet·Killing 등)를 통째로 놓쳤다(f09 캡처 115행 중
+//     18행만 보임). 범위 = target_id ∈ {클러스터, 자기} ∪ host_target_id = 클러스터.
+//   - 클러스터 대상 조회는 (namespace, kind, reason) 묶음 요약을 함께 싣는다 —
+//     표시 쿼터에 밀린 Normal 사건(스케일·종료)도 Warning 옆에 보이게.
 package tools
 
 import (
@@ -33,8 +40,14 @@ const (
 	listEvQuotaEpisode  = 20 // 에피소드 반환 상한(발단 최신순)
 	listEvQuotaUnpaired = 10
 	listEvQuotaKcm      = 15
+	listEvQuotaReason   = 30 // 클러스터 조회의 (namespace, kind, reason) 묶음 요약 상한
 	listEvZeroUUID      = "00000000-0000-0000-0000-000000000000"
 )
+
+// listEvTargetHelp는 대상 인자 안내다 — 클러스터 전역 조회 경로를 모델이
+// 알 수 있게 오류 문구에도 싣는다(종전엔 어디에도 없었다).
+const listEvTargetHelp = "target은 대상 UUID다. kubernetes 클러스터 대상의 UUID를 주면 그 클러스터 전체(모든 namespace)의 " +
+	"쿠버네티스 이벤트를 창 안에서 전부 본다(클러스터 UUID는 search_targets type=kubernetes로 찾는다)"
 
 // listEvLabel은 detector×출처의 성격 딱지다(§8 결정 2 — 완전 매핑,
 // 미지 detector는 감지로 폴백하되 detector 원문이 finding에 남는다).
@@ -54,7 +67,7 @@ func NewListEventsTool(ch *CH, pg *sql.DB, nowFn func() time.Time) llm.Tool {
 	params, _ := json.Marshal(map[string]any{
 		"type": "object",
 		"properties": map[string]any{
-			"target": map[string]string{"type": "string", "description": "target_id(UUID)"},
+			"target": map[string]string{"type": "string", "description": "target_id(UUID). kubernetes 클러스터 대상 UUID면 클러스터 전체 쿠버네티스 이벤트"},
 			"from":   map[string]string{"type": "string", "description": "UTC RFC3339 또는 now/now-15m, 반개구간 시작(포함)"},
 			"to":     map[string]string{"type": "string", "description": "UTC RFC3339 또는 now, 반개구간 끝(제외)"},
 		},
@@ -62,16 +75,21 @@ func NewListEventsTool(ch *CH, pg *sql.DB, nowFn func() time.Time) llm.Tool {
 	})
 	return llm.Tool{
 		Name: "list_events",
-		Description: "대상의 시간창 내 사건 — 이상감지 에피소드(발단·해소·지속·진행 중), 외부 알람, K8s 대상이면 쿠버네티스 이벤트(Killing·Unhealthy 등)까지 합성. " +
+		Description: "대상의 시간창 내 사건 — 이상감지 에피소드(발단·해소·지속·진행 중), 외부 알람, K8s 대상이면 쿠버네티스 이벤트(Normal·Warning 모두)까지 합성. " +
+			"kubernetes 클러스터 대상 UUID를 주면 클러스터 전체(모든 namespace) 쿠버네티스 이벤트를 창 안에서 전부 보고 (namespace, kind, reason) 묶음 요약을 함께 준다 — " +
+			"승격 리소스(deployment·pod 등) UUID면 그 리소스 이름의 이벤트만. 롤아웃 전후 스펙 차이·레플리카 수 변경은 list_changes. " +
 			"과거가 궁금하면(평소에도 울리나) 창을 옮겨 재호출.",
 		Parameters: params,
 		Call: func(ctx context.Context, args json.RawMessage) (any, error) {
 			var in struct{ Target, From, To string }
 			if err := json.Unmarshal(args, &in); err != nil {
-				return nil, fmt.Errorf(`인자 오류: {"target": "<uuid>", "from": "<RFC3339|now-1h>", "to": "<RFC3339|now>"} 필요`)
+				return nil, fmt.Errorf(`인자 오류: {"target": "<uuid>", "from": "<RFC3339|now-1h>", "to": "<RFC3339|now>"} 필요 — %s`, listEvTargetHelp)
+			}
+			if in.Target == "" {
+				return nil, fmt.Errorf("target 누락 — %s", listEvTargetHelp)
 			}
 			if !uuidRe.MatchString(in.Target) {
-				return nil, fmt.Errorf("%q는 target_id가 아님 — target_id는 순수 UUID다(접두 없음)", in.Target)
+				return nil, fmt.Errorf("%q는 target_id가 아님 — target_id는 순수 UUID다(접두 없음). %s", in.Target, listEvTargetHelp)
 			}
 			now := nowFn().UTC()
 			fromT, err := parseFlexTime(in.From, now)
@@ -181,8 +199,8 @@ func listEventsHorizon(ctx context.Context, ch *CH, target string, id k8sIdentit
 		return time.Time{}, false
 	}
 	if id.branch != "none" {
-		k, kok := one(`SELECT toString(max(timestamp)) AS h FROM kcm_events_local WHERE target_id = {cluster:String}`,
-			map[string]string{"cluster": id.cluster})
+		k, kok := one(`SELECT toString(max(timestamp)) AS h FROM kcm_events_local WHERE `+listEvKcmScope,
+			map[string]string{"cluster": id.cluster, "self": target})
 		if !kok {
 			return time.Time{}, false
 		}
@@ -192,6 +210,12 @@ func listEventsHorizon(ctx context.Context, ch *CH, target string, id k8sIdentit
 	}
 	return h, true
 }
+
+// listEvKcmScope는 kcm 이벤트의 클러스터 범위 술어다(머리 주석 2026-10-06 실측).
+// 승격 리소스 이벤트는 target_id가 그 리소스·host_target_id가 클러스터이고,
+// 비승격 객체 이벤트는 target_id가 클러스터다. {self}는 조회 대상 자신 —
+// host_target_id가 비어 있는 원천에서 승격 리소스 자기 이벤트를 잃지 않게.
+const listEvKcmScope = `(target_id = {cluster:String} OR host_target_id = {cluster:String} OR target_id = {self:String})`
 
 func listEvents(ctx context.Context, ch *CH, pg *sql.DB, target string, from, to time.Time) (any, error) {
 	p := map[string]string{"target": target, "from": chTime(from), "to": chTime(to)}
@@ -244,9 +268,9 @@ func listEvents(ctx context.Context, ch *CH, pg *sql.DB, target string, from, to
 
 	// ③ K8s 합성 — 세 갈래(§8 결정 3).
 	id := resolveEventTarget(ctx, pg, target)
-	var kcmRows []map[string]any
+	var kcmRows, reasonRows []map[string]any
 	if id.branch != "none" {
-		kp := map[string]string{"cluster": id.cluster, "from": chTime(from), "to": chTime(to)}
+		kp := map[string]string{"cluster": id.cluster, "self": target, "from": chTime(from), "to": chTime(to)}
 		match := ""
 		if id.branch == "resource" {
 			// 매칭 키 고정: (cluster, lower(kind), namespace, 이름 정확 일치).
@@ -266,7 +290,7 @@ func listEvents(ctx context.Context, ch *CH, pg *sql.DB, target string, from, to
 			       argMax(severity_text, timestamp) AS sev,
 			       argMax(body, timestamp) AS body
 			FROM kcm_events_local
-			WHERE target_id = {cluster:String}`+match+`
+			WHERE `+listEvKcmScope+match+`
 			  AND timestamp >= parseDateTime64BestEffort({from:String}, 9)
 			  AND timestamp <  parseDateTime64BestEffort({to:String}, 9)
 			GROUP BY namespace, object_kind, object_name, reason, event_type
@@ -276,12 +300,96 @@ func listEvents(ctx context.Context, ch *CH, pg *sql.DB, target string, from, to
 			return nil, fmt.Errorf("list_events kcm 조회: %w", err)
 		}
 		acc.note(tr)
+		// 클러스터 조회 — (namespace, kind, reason) 묶음 요약. 표시 쿼터(15그룹)에
+		// 밀린 사건도 사유 단위로는 전부 보이게 하는 집계다(판정 없음).
+		if id.branch == "cluster" {
+			reasonRows, tr, err = ch.Query(ctx, `
+				SELECT namespace, object_kind, reason, event_type,
+				       count() AS objects, sum(mc) AS count_sum, toString(max(la)) AS last_at
+				FROM (
+					SELECT namespace, object_kind, object_name, reason, event_type,
+					       max(count) AS mc, max(timestamp) AS la
+					FROM kcm_events_local
+					WHERE `+listEvKcmScope+`
+					  AND timestamp >= parseDateTime64BestEffort({from:String}, 9)
+					  AND timestamp <  parseDateTime64BestEffort({to:String}, 9)
+					GROUP BY namespace, object_kind, object_name, reason, event_type
+				)
+				GROUP BY namespace, object_kind, reason, event_type
+				ORDER BY namespace, object_kind, reason, event_type
+				LIMIT 500`, kp)
+			if err != nil {
+				return nil, fmt.Errorf("list_events kcm 요약 조회: %w", err)
+			}
+			acc.note(tr)
+		}
 	}
 
 	// 도착 수평선(§14-5 5c 결정 ①)은 조회 주체(ctx·ch 보유)가 계산해
 	// 조립기에 값으로 넘긴다.
 	horizon, _ := listEventsHorizon(ctx, ch, target, id)
-	return assembleListEvents(target, id, epRows, unRows, kcmRows, horizonObservedRange(from, to, horizon), bool(acc))
+	out, err := assembleListEvents(target, id, epRows, unRows, kcmRows, horizonObservedRange(from, to, horizon), bool(acc))
+	if err != nil || id.branch != "cluster" {
+		return out, err
+	}
+	return attachReasonSummary(out.(Envelope), reasonRows), nil
+}
+
+// attachReasonSummary는 클러스터 조회 봉투에 (namespace, kind, reason) 묶음
+// 요약을 더한다 — summary_meta 필드 추가와 요약 문장 꼬리(사유별 개수)뿐,
+// 기존 필드·finding은 그대로다.
+func attachReasonSummary(env Envelope, rows []map[string]any) Envelope {
+	if len(rows) == 0 {
+		return env
+	}
+	list := make([]map[string]any, 0, len(rows))
+	byType := map[string]map[string]int{} // event_type → reason → objects
+	for _, r := range rows {
+		et, reason := fmt.Sprint(r["event_type"]), fmt.Sprint(r["reason"])
+		if byType[et] == nil {
+			byType[et] = map[string]int{}
+		}
+		byType[et][reason] += asInt(r["objects"])
+		if len(list) < listEvQuotaReason {
+			list = append(list, map[string]any{
+				"namespace": r["namespace"], "kind": r["object_kind"], "reason": reason, "event_type": et,
+				"objects": asInt(r["objects"]), "count_sum": asInt(r["count_sum"]), "last_at": r["last_at"],
+			})
+		}
+	}
+	for _, f := range env.Findings {
+		if f["section"] != "summary_meta" {
+			continue
+		}
+		f["k8s_reason_summary"] = list
+		f["k8s_reason_summary_total"] = len(rows)
+		if len(rows) > len(list) {
+			f["k8s_reason_summary_truncated"] = true
+		}
+		f["k8s_reason_summary_note"] = "클러스터 전 namespace의 창 내 쿠버네티스 이벤트를 (namespace, kind, reason, event_type)으로 묶은 것 — " +
+			"objects=객체 수, count_sum=객체별 이벤트 count 최댓값의 합(쿠버네티스 누적 count라 창 이전 발생분 포함 가능)"
+	}
+	var sb strings.Builder
+	sb.WriteString(" 사유별 객체 수 —")
+	for _, et := range []string{"Warning", "Normal"} {
+		m := byType[et]
+		if len(m) == 0 {
+			continue
+		}
+		ks := make([]string, 0, len(m))
+		for k := range m {
+			ks = append(ks, k)
+		}
+		sort.Strings(ks)
+		parts := make([]string, 0, len(ks))
+		for _, k := range ks {
+			parts = append(parts, fmt.Sprintf("%s %d", k, m[k]))
+		}
+		fmt.Fprintf(&sb, " %s[%s]", et, strings.Join(parts, ", "))
+	}
+	sb.WriteString(" (summary_meta.k8s_reason_summary에 namespace·kind별).")
+	env.Summary += sb.String()
+	return env
 }
 
 func assembleListEvents(target string, id k8sIdentity, epRows, unRows, kcmRows []map[string]any, observed *TimeRange, chTruncated bool) (any, error) {
@@ -462,9 +570,9 @@ func assembleListEvents(target string, id k8sIdentity, epRows, unRows, kcmRows [
 		Summary: sb.String(),
 		// 도착 수평선 기반(§14-5 5c 결정 ①) — 창 끝을 수평선이 못 넘으면
 		// 그만큼이 수집 지연으로 계산된다(CollectLagOf).
-		ObservedRange: observed,
-		Findings:      findings,
-		Refs:          refs,
+		ObservedRange:  observed,
+		Findings:       findings,
+		Refs:           refs,
 		Truncated:      len(epRows) > epShown || len(unRows) > unShown || len(kcmRows) > kcmShown,
 		QueryTruncated: chTruncated,
 		// 구획별 절단(§5.1 계약 2) — summary_meta.counts와 같은 숫자를

@@ -1,0 +1,135 @@
+# RCAEval ss3 converted captures (scripts/rcaeval_convert.py). Source: Pham et al., RCAEval, WWW'25 companion; Zenodo 14590730, CC BY 4.0.
+version: 1
+cases:
+  case-rcaeval-ss3-v3-aa317245:
+    expected_status: provisional
+    roots:
+    - target_ids:
+      - 4f787e5d-2dd2-523b-a152-1ffa5dbf1982
+      - 2d87574f-e1b4-5c61-9873-6bfd118fe3f1
+      - fe9ad4f9-4751-5bfe-a966-aa84f74d533a
+      - cb122aba-496c-5bd1-8b1e-2d19bbfa87d3
+      - 37fb782b-e405-5587-93ed-d5520cf0464c
+      - 055124e8-3ea5-55c1-85ca-139429fc9c3b
+      target_aliases:
+      - carts
+  case-rcaeval-ss3-v3-ae50c64a:
+    expected_status: provisional
+    roots:
+    - target_ids:
+      - 79077569-45d8-52cf-bb90-f1f89390f047
+      - 79abbc2e-26ff-5d90-87e4-87a40bb926cb
+      - 19a47e2f-6de5-50fe-981c-27412957a7af
+      - 42c7afa3-96cb-5228-80d2-540088fce04c
+      - bbde93c9-3ba0-5a54-8c86-3137374c105a
+      - d7dd4292-dac2-5cc9-afa7-025cdc091bbf
+      target_aliases:
+      - carts
+  case-rcaeval-ss3-v3-451f2994:
+    expected_status: provisional
+    roots:
+    - target_ids:
+      - 24387788-fbbe-5d79-aeb0-7d16f590c446
+      - 1cca3145-6578-5d05-8de0-5fe8d386d49f
+      - 613394e9-87fc-5a1b-992a-70f23cf62670
+      - 50fb71cd-abd5-530f-b60b-bb90ed878c0e
+      - 166f8e62-6682-5ca1-98d3-8c8a79f323ec
+      - 572cd6e4-f9f5-5a54-84a7-c323acdd628b
+      target_aliases:
+      - carts
+  case-rcaeval-ss3-v3-a58018c0:
+    expected_status: provisional
+    roots:
+    - target_ids:
+      - eca2f3b9-6876-53ad-80cd-5373fe95f69b
+      - 4601397a-f788-5e8a-8299-4ab6a2a07627
+      - fdec8ad3-378b-5ddb-9353-3182b692b0fa
+      - 7e7acf12-aa19-58b9-99c7-b705553348f8
+      - d02c7b7a-006c-505b-b68b-0b32e2adba23
+      - e76c32c4-1697-575c-9a10-b817d57b9b3d
+      target_aliases:
+      - carts
+  case-rcaeval-ss3-v3-5c686f99:
+    expected_status: provisional
+    roots:
+    - target_ids:
+      - 39eaa950-e7ea-5038-a2cc-3fffd9158ab1
+      - f9c84a9e-bc2e-5bc8-813e-7987aa6dc4d0
+      - fa7bf3d6-8b4f-51d3-8523-c3dd13deadc9
+      - 41502032-d0e1-5535-a462-cc3d77f54ac3
+      - a67cfe2f-ce2a-5487-bfe7-e387e969bf44
+      - c97ba149-1790-5168-9a73-41b485fd07a6
+      target_aliases:
+      - carts
+  case-rcaeval-ss3-v3-b6274c3b:
+    expected_status: provisional
+    roots:
+    - target_ids:
+      - 5950830b-a93a-515a-be6a-5c8d8f154767
+      - 78a74889-f372-5955-b558-afc7777a127c
+      - 7885b1b5-de86-540f-9bde-441cfc3a2822
+      - c58f974f-d8e0-5ef6-9f2e-bdc746c9999a
+      - 0f592e05-76df-5c47-a629-e9211ccb326e
+      - 522bc882-171a-5660-9a17-53a1796cafc3
+      target_aliases:
+      - carts
+  case-rcaeval-ss3-v3-eec9b372:
+    expected_status: provisional
+    roots:
+    - target_ids:
+      - d7c60872-dc37-5fc0-becc-af3d72c0580f
+      - 48e9702c-7cfa-5fea-8711-5769b2fd474e
+      - bd25c98c-d395-5964-9424-52ac1c2f8857
+      - 11054777-98d0-5d9e-abcf-f7d0d2ae3058
+      - 2f18e6a9-9341-53c4-9fc9-d8f714577467
+      - 2de7191b-07b5-55b2-a718-8b5c87d381da
+      target_aliases:
+      - catalogue
+  case-rcaeval-ss3-v3-e5053610:
+    expected_status: provisional
+    roots:
+    - target_ids:
+      - d647c645-1c16-593a-be70-4e5e743d30c2
+      - 59016191-c517-55e2-80e5-10da487d7454
+      - 3b4a905b-299b-5075-b04d-7b5a96369a53
+      - 1ed840ed-5123-51f4-a200-59e29dfe32f7
+      - 5b6bdd8a-cc4b-5485-9177-5b34e3023ec8
+      - 7cc77741-ef74-5ddd-a143-bcc13febb72b
+      target_aliases:
+      - catalogue
+  case-rcaeval-ss3-v3-f821ec89:
+    expected_status: provisional
+    roots:
+    - target_ids:
+      - 94eb77d6-be22-59b3-b2dd-24e3598b3d0c
+      - 658387d3-8c42-5799-bbe0-1e2e5bb2d1f1
+      - 0302df25-7763-582b-9b69-3b4b871edea6
+      - 49b528e1-438c-5876-ba1f-f1d072c4ed92
+      - ba3a0964-d54e-54f7-a722-952443905870
+      - 3bdc7cba-ba61-5f38-b98d-48b0052c4342
+      target_aliases:
+      - catalogue
+  case-rcaeval-ss3-v3-eea1ad8f:
+    expected_status: provisional
+    roots:
+    - target_ids:
+      - 22171f99-e72b-53fc-92d9-6647b8fc1451
+      - fd345558-8854-57e6-b6cd-ee48e00c4447
+      - c90ec729-034f-53da-a1bb-a547c3bf862b
+      - 77f20e1e-9cb1-5829-8029-016c01b07282
+      - 8c325d2a-4414-5d89-a7a7-b74061960aad
+      - 74b59d3e-3bf6-5b85-9340-73263b440b7b
+      target_aliases:
+      - catalogue
+  case-rcaeval-ss3-v3-c76fb43f:
+    expected_status: provisional
+    roots:
+    - target_ids:
+      - 6ef01405-23fe-5f60-adb8-1b9b7d597be6
+      - c0a52cef-1305-5868-bf4e-f33867b2d8ed
+      - ba32cb7f-0f9e-5aea-8301-000c608c717a
+      - 97043911-7b09-58be-9d7b-9f2917c1cc84
+      - c4b14874-5ec8-59f4-ba8e-0214890f5a85
+      - 7d67f734-4488-5185-a4a6-b0af13d2c67f
+      target_aliases:
+      - catalogue

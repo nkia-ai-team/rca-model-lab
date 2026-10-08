@@ -153,11 +153,15 @@ func scanMetrics(ctx context.Context, vm *VM, db *sql.DB, target string, curFrom
 		return nil, err
 	}
 	if len(cur.Series) == 0 && len(base.Series) == 0 {
+		summary := "이 대상은 현재 창·기준선 창 모두 지표가 없음 — 메트릭 미수집 대상" +
+			"(application 등 CH 원천 도메인)이거나 수집 결손. get_data_coverage로 판별하라."
+		if NavHints {
+			summary += kcmScanNavHint(ctx, db, target)
+		}
 		return Envelope{
-			Status:       "no_data",
-			NoDataReason: NoDataUnknown,
-			Summary: "이 대상은 현재 창·기준선 창 모두 지표가 없음 — 메트릭 미수집 대상" +
-				"(application 등 CH 원천 도메인)이거나 수집 결손. get_data_coverage로 판별하라.",
+			Status:        "no_data",
+			NoDataReason:  NoDataUnknown,
+			Summary:       summary,
 			ObservedRange: &TimeRange{From: curFrom.UTC(), To: curTo.UTC()},
 		}, nil
 	}
@@ -193,6 +197,36 @@ func scanMetrics(ctx context.Context, vm *VM, db *sql.DB, target string, curFrom
 	}
 
 	return scanEnvelope(target, cur, base, res, concurrency, gradeMismatch, units, vtErr), nil
+}
+
+// NavHints는 지표 없음 봉투에 다음 조회 경로(항법)를 싣는다(-nav-hints). 기본 off —
+// 켜지 않은 실행의 응답 바이트는 종전과 같다(진행 중인 학생 검증과의 비교 보존).
+var NavHints bool
+
+// kcmScanNavHint는 쿠버네티스 리소스 대상이면 그 지표가 어디 저장돼 있는지 알린다.
+// kcm 지표는 리소스 자신이 아니라 소속 클러스터 대상 아래 pod·container 라벨로
+// 적재되므로, 리소스 UUID로 scan_metrics를 부르면 늘 지표 없음이 된다. 원인
+// 판정이 아니라 조회 경로 정보만 준다. 조회 실패·비-kcm 대상이면 빈 문자열.
+func kcmScanNavHint(ctx context.Context, db *sql.DB, target string) string {
+	if db == nil {
+		return ""
+	}
+	var cluster, kind, key string
+	row := db.QueryRowContext(ctx, `SELECT cluster_target_id::text, resource_kind, resource_key
+		FROM kcm_resource_targets WHERE target_id = $1::uuid`, target)
+	if row.Scan(&cluster, &kind, &key) != nil {
+		return ""
+	}
+	return kcmNavHintText(target, cluster, kind, key)
+}
+
+func kcmNavHintText(target, cluster, kind, key string) string {
+	if cluster == "" || cluster == target {
+		return ""
+	}
+	return fmt.Sprintf(" 조회 경로: 이 대상은 쿠버네티스 리소스(%s %s)다 — 컨테이너·pod 지표는 리소스 UUID가 아니라 "+
+		"소속 클러스터 대상 %s 아래에 pod·container 라벨로 저장된다. scan_metrics(target=%s)로 지표 이름을 찾고 "+
+		"read_timeseries(targets=[%s], group_by=\"pod\")로 리소스별로 분해하라.", kind, key, cluster, cluster, cluster)
 }
 
 // ── 판정식 (§5.2) — VM 무관 순수 함수. 단위 테스트가 여기를 겨눈다. ──

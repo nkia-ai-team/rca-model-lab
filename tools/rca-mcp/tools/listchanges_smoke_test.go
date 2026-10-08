@@ -37,7 +37,7 @@ func TestListChangesSmoke(t *testing.T) {
 	}
 	from := at.Add(-time.Hour).UTC().Format(time.RFC3339)
 	to := at.Add(time.Hour).UTC().Format(time.RFC3339)
-	tool := NewListChangesTool(db, at, at, nil)
+	tool := NewListChangesTool(db, nil, nil, at, at, nil)
 
 	call := func(m map[string]any) Envelope {
 		t.Helper()

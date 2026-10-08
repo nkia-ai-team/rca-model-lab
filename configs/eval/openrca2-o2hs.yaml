@@ -1,0 +1,2464 @@
+# OpenRCA 2.0 o2hs converted captures (scripts/openrca2_convert.py). Source: huggingface anon-ops/ops-lite@581eba39, Apache-2.0.
+# public_compare: deterministic ~20% hold-out per system (hash of the case name) for comparison with published OpenRCA 2.0 results; never train on it.
+version: 1
+cases:
+  case-openrca2-o2hs-v3-c977f28b:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 47d770ee-5f37-5242-8257-a1dc5be85bdd
+      - 6fb81066-cb16-5634-8db9-2013584b97fc
+      - aefeeb2b-fc1a-5deb-9724-5e44e177abdd
+      - b3ce9f48-af98-5c0c-b4a4-1dc024aceb6c
+      - 051aecdd-504e-5515-87f1-970036809807
+      - 66534237-e254-54bd-9b93-1448e04f416b
+      target_aliases:
+      - profile
+    - target_ids:
+      - 30973946-b787-516f-9898-caa259f3c885
+      - e33c1534-94f1-5d89-9845-17440d0358bb
+      - 996d7a7f-f3ad-5384-80b9-c3ed16aad188
+      - 64a4c268-1299-5ef7-ac1d-7679126f9b9b
+      - 6a9af072-0188-5a82-8418-b2f5504f5fa1
+      - 20540f49-af3f-55c6-8130-a02939f09f18
+      target_aliases:
+      - geo
+  case-openrca2-o2hs-v3-3646623c:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 2e80438f-2550-5470-9370-6970a3cb3dbe
+      - c21d9fcf-82ca-5030-97c8-439e29edcbd9
+      - ebd6d1b7-ff2e-5825-a321-d91f11e50915
+      - 2f4897f7-6daf-5178-bd75-d210c70350f7
+      - 98875b2f-59bb-51d6-9d07-2c1991900896
+      - b4afdbde-fd62-5c22-a0ea-73fd78e5f587
+      target_aliases:
+      - profile
+    - target_ids:
+      - d424be7b-c2ba-5f16-9615-41663281f220
+      - 6a2c5b89-a6b7-5477-a4eb-e88c0e9110ad
+      - 7eafbfeb-41a0-5d19-8e17-e90987d4fecb
+      - 59caea4a-fa91-5902-9fbb-96ef19d0e7e6
+      - e238c112-cc4e-5bd7-81f3-453795c54feb
+      - 55aabec5-6c40-595e-a5df-b373f8969d63
+      target_aliases:
+      - recommendation
+  case-openrca2-o2hs-v3-c9494756:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 045ad45c-a31a-570b-bb2b-da604ff7e307
+      - 624e8a81-8491-5bf0-acd7-b9866c7ed478
+      - eaeb140b-0fde-50a0-99ea-7e74a2c9b338
+      - ae6550b1-2247-5a6b-acc0-977bf02e3666
+      - 47386aa1-d17f-5402-9ca5-e8a73dbe4c0c
+      - aa44206e-01af-567b-9eba-d2f2d7b851a1
+      target_aliases:
+      - search
+    - target_ids:
+      - 03888c61-f6dd-580d-ac77-f7c4d7b234e7
+      - e0d9d75c-650d-5510-b01a-a30295cfc3db
+      - b1dacbe0-7d03-52c9-8495-5fe7a2d02b41
+      - a55fb2fb-d941-57b4-85e6-184e9f013ef2
+      - 4231ffe1-9536-59c0-9f18-9831a4e812a4
+      - d5013d53-d380-5625-9c20-9cf2c5ac5f1f
+      target_aliases:
+      - profile
+  case-openrca2-o2hs-v3-7b8a8085:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 6597d007-59c9-5aad-92be-5324d6062158
+      - f10fdc3f-9382-58f2-ab28-6c84d0d52c96
+      - 439c0419-a3ed-58f3-affe-1ede37263210
+      - 9f29d337-1414-5818-b63b-fe469a9cb61a
+      - f068c547-419d-51e6-8c4c-a94fcf5d6326
+      - 115743b1-bfa4-50d6-8b26-3cc782d76a16
+      target_aliases:
+      - search
+    - target_ids:
+      - cab4e4c2-829f-5a45-9f17-ec308eb1712b
+      - 9131e345-25dd-5f0b-a15b-523ea1c567c3
+      - 313eeb08-40e9-5943-9ed4-4688ad2ee601
+      - 63435a71-088d-516e-ba2e-1c81c8e30a5a
+      - 3edbf7fb-c002-5705-b8f1-9d46abd1ef6a
+      - 809b43b4-5770-5800-aca5-0f0ffefaec9b
+      target_aliases:
+      - recommendation
+  case-openrca2-o2hs-v3-69053ed2:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - eae0e2d7-b118-5dbb-a5e8-fbe262c6b3b2
+      - 4af7f4c3-1e1f-5f77-babe-ae2d0b9f0632
+      - a6eaab7b-f3eb-5992-9972-1685c1268fa5
+      - 1efca818-9723-5929-a7c8-4a3619791ca8
+      - 93993ad5-7f90-552c-b386-d69a15f707f3
+      - a3e27a3e-8b4d-5363-8fc4-06d962c266fe
+      target_aliases:
+      - search
+    allowed_target_ids:
+    - 98776658-504f-55c1-b2a0-a3842ef3ba0a
+    - df9268e0-be60-55a5-9c00-fd6e4d31a53d
+    - 67dca1fb-11a9-542d-8026-7902e6b51009
+    - b2c5effd-8ed3-5ec6-a742-046ac77052dc
+    - 0e0600c4-33f4-539c-9237-8e84f67f282a
+    - ad955821-0658-5896-a0f0-ccde6286d3e2
+    allowed_note: 'optional faults: effect confined to their own resources or masked
+      by a co-injected fault (naming them is not penalised)'
+  case-openrca2-o2hs-v3-2c387692:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - e5d530e6-488e-552e-b140-56f5589e36a0
+      - 7cc3e04c-be26-55f5-a3ab-e8aad853a01e
+      - 288d9a50-edb8-57e5-969b-9fc03e1d7a5c
+      - b20286b4-92b5-57f9-b86d-d79369cd5f4d
+      - 778bfe17-d2c4-5342-9915-ac15608c9e3d
+      - b2623e75-257e-5c7a-89d4-383f2e0fb618
+      target_aliases:
+      - profile
+    - target_ids:
+      - 0d62bad2-72a7-5d30-be18-c25b6203656a
+      - f992f969-b061-569f-8681-2e6fb0b20032
+      - ad21445c-73ff-5346-a7f0-fb6645673a5d
+      - 24c2aa04-0c8f-5f06-ab79-571efce58cfe
+      - 8b2aa30d-e814-51b1-9fff-e7dcffd5b10f
+      - a4003cd6-3e20-5391-a512-f46f14da1892
+      target_aliases:
+      - rate
+  case-openrca2-o2hs-v3-a668df30:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 7619d7fe-58b1-535c-97f5-f3cafc889505
+      - 21f20054-2bf6-504c-a786-de128828270f
+      - fb158c74-00c7-5407-9300-8fc45392c999
+      - e63e3a4d-da20-5401-a320-43178e578e15
+      - a7251eff-6a4d-558b-8208-aeed16546b0e
+      - 84ed71ec-af41-532b-8a49-3a8f40b2f014
+      target_aliases:
+      - search
+  case-openrca2-o2hs-v3-3d3e91d2:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 5a96b306-b6c8-51ad-a97b-dd9d3f4b776f
+      - 6f1ca193-13cf-507f-ba2f-70baadab2053
+      - 1253dc52-a433-56a7-ac57-5b57e6a8b326
+      - ad4842af-f4e5-5e91-8182-d9c42e54dcb8
+      - c5b726d1-d5ab-5bfd-8345-44305a2b500d
+      - dfc0afa8-ce49-5ab0-86e9-e479889f6698
+      target_aliases:
+      - search
+    allowed_target_ids:
+    - 0c9fe143-3bcb-55f8-aa7b-96a6cb822569
+    - 8f2ff6a2-f5ca-5ea4-bf7f-4ad4cf275eb1
+    - 1ce675ac-bb69-5538-9627-0f4a2eb4d910
+    - d94b75c3-a2b0-5b21-b0da-2a4827a82e0f
+    - 5db1d174-e389-5c4a-abbd-598e40d3c13d
+    - b5b4492b-b329-54eb-8b38-5f4bf8a24a80
+    allowed_note: 'optional faults: effect confined to their own resources or masked
+      by a co-injected fault (naming them is not penalised)'
+  case-openrca2-o2hs-v3-f7086614:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 0b6b39e7-c86f-57d3-a93d-ac155edfbed8
+      - 22794863-710d-5003-9e33-b28e880b4829
+      - 066b570f-b984-5775-88e6-b140a86413f4
+      - bafd7ea4-03bc-54f3-bbb6-9559d59f7c18
+      - d3fab841-4d14-57a2-bc1a-f6e1d49fce54
+      - d3326172-ad42-562c-bc4f-3e2306a7b8e4
+      target_aliases:
+      - search
+    allowed_target_ids:
+    - eba5d436-f6ef-5b69-9a4e-f9d4da053f5e
+    - 682be135-2aeb-5801-a7e7-98d6c808dce0
+    - 5ae99133-9b93-59e9-ae33-9af5e831037d
+    - 6c85f67b-b3ff-539d-9296-b8db0defbd8c
+    - f4800337-3fe9-5361-a891-98a7fd008117
+    - d9884a9f-9720-5ca2-9f8a-038b8fc99c6f
+    allowed_note: 'optional faults: effect confined to their own resources or masked
+      by a co-injected fault (naming them is not penalised)'
+  case-openrca2-o2hs-v3-ba89cdd8:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 2388a13f-d0ae-5dd9-bee8-844c2eff9bf2
+      - 191781a5-2e67-527e-832a-c6b59362fcfb
+      - cc5152bf-feff-5ddd-a538-d4f372f1dab5
+      - 956b43d5-cfda-58f6-8cb3-760a2e8a23b5
+      - 3af883e8-4362-5654-81b7-a15cb378c1c6
+      - 4d03baf6-f92c-5d33-b3bf-6ce0f2d6f2ee
+      target_aliases:
+      - search
+    allowed_target_ids:
+    - 9805f16f-6cb2-515b-8582-cc83128a44ec
+    - 941aa27b-8650-5573-8ba3-817dfb5f26ab
+    - dd000ed6-56a3-5745-a7a6-d8b2abbec2cd
+    - d853167b-2f6d-5270-b29d-046b15d79c16
+    - d3118904-3dbf-5b4d-b43f-ac40c770f44c
+    - 7934ba32-0216-5882-b04f-a1bf4b5705a3
+    allowed_note: 'optional faults: effect confined to their own resources or masked
+      by a co-injected fault (naming them is not penalised)'
+  case-openrca2-o2hs-v3-23617bbf:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 5044b6d6-872c-587e-b937-e825ba788c7a
+      - 74864748-1589-5145-affd-6088add1aa63
+      - 69375bcd-1427-58e6-9cea-bc43d9b5c86e
+      - f9c162ea-cb85-5099-87a7-997801ac2e49
+      - c8fd590d-91e5-5b51-a2ed-fd6fe8f3515b
+      - 103a8ec8-218f-535d-9af0-e0f32051183e
+      target_aliases:
+      - search
+    allowed_target_ids:
+    - 553b025b-327e-54cd-bc09-5297603118fa
+    - 66344f5f-9fbb-59fb-a7d9-6377cc42d413
+    - 3c94cd04-c2a2-5cb6-86d1-1447b1724bc4
+    - dfea6501-f099-5b6d-bb8a-f1865a100af1
+    - ef69c262-456b-5080-9052-2a03db5168f7
+    - c9ba0b7b-e882-5ea2-b5d9-2e81a881dd35
+    allowed_note: 'optional faults: effect confined to their own resources or masked
+      by a co-injected fault (naming them is not penalised)'
+  case-openrca2-o2hs-v3-cfdf08c6:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 2331c832-7fea-5124-a040-cdfc4bf67901
+      - 72e6709e-0b66-5b67-b0a8-c914eb4b28f8
+      - 58b583de-4662-500d-a2e9-7fcbaa94d873
+      - 07a9f800-09f9-5868-9822-1c6151a7c842
+      - 7a3c6c6e-af50-5a32-b7cc-2b34d68244a7
+      - fd84bc35-f8c6-5a0f-9ea2-ecc1e03f8069
+      target_aliases:
+      - search
+    - target_ids:
+      - 7c7541cd-5a4b-556f-9ab4-1e26cc23ff99
+      - a1c88ab3-638d-5737-aeb0-f6ca664b3771
+      - 5cdc7769-5f4c-5b2d-938b-0b1fac325785
+      - 1f0c21be-4c43-5633-98bb-815e8c9c19e3
+      - 7017f8c1-b1cf-56bc-ae9f-e423afe2edd7
+      - f07123d4-db95-56bf-bc10-605631abb58a
+      target_aliases:
+      - recommendation
+  case-openrca2-o2hs-v3-3fe52c58:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 747f6244-5b0d-5e94-952c-5998a47f284e
+      - 5089461a-0bae-5752-8afd-bde62b429b85
+      - 8e344b7c-9256-5fce-9dc8-25f8945e3a5a
+      - d10496b4-420a-5a42-9ddb-81b7994cb25d
+      - 236471c9-02a1-558f-9243-9d487e8c8cf6
+      - 701b2031-4134-563d-95e1-dee0b6f1e188
+      target_aliases:
+      - search
+    allowed_target_ids:
+    - a9f582ae-4dba-50f5-9626-ce418b206496
+    - d3462978-a14a-53f2-8fbb-ab609700fe16
+    - 78091400-fe6b-5bc3-9620-0904001c83de
+    - 86cb8502-b7ba-5ad7-a20d-fb6254ef7e6b
+    - 78198e0b-0c0b-5339-8b59-f406fc46368b
+    - 29e7b8cb-d2b7-5957-bb86-81226a2ee9b6
+    allowed_note: 'optional faults: effect confined to their own resources or masked
+      by a co-injected fault (naming them is not penalised)'
+  case-openrca2-o2hs-v3-c79c6ffc:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 90c4a638-7f0b-5004-a37c-38f4cdc835f6
+      - 270c4ed7-f3f4-5492-a254-a981f9486223
+      - 422db633-f2ec-58a8-964c-7cabb6186301
+      - f91e619d-0b90-5fe5-a5d2-b47bf05b9f1a
+      - 190cb123-0b53-5094-ad00-ac0174566135
+      - 48c4c386-2163-5382-b7fe-1cb3ed5c0748
+      target_aliases:
+      - search
+    allowed_target_ids:
+    - fcbf8c18-b6de-5456-8631-37da962aa4d2
+    - 22de97e6-87f6-5ede-abb2-493251299a0b
+    - 94060225-cd8c-5dec-a8a7-339a12ff642a
+    - f7be006d-4713-5f35-b13b-943b0cd3392c
+    - d0c4d519-8989-524b-8579-03f6cf661961
+    - b7c06d0e-eb9e-5bb2-b1ea-b1557f1d166d
+    allowed_note: 'optional faults: effect confined to their own resources or masked
+      by a co-injected fault (naming them is not penalised)'
+  case-openrca2-o2hs-v3-a8699760:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 4f38664a-868d-5dad-9175-724b07610009
+      - ed298109-8b5f-5c11-a165-2ea20e2a4503
+      - ba02fe8f-d35a-5bbb-ac39-b9095620167b
+      - 55dc9efa-3116-5745-ac35-43523e3f459c
+      - f262819c-31fa-5fab-a5c6-aff13fc993d9
+      - 1591b8c0-1c77-5233-841d-7f1f0b1824c6
+      target_aliases:
+      - search
+    allowed_target_ids:
+    - 4a40047d-8e44-5776-a60a-689c1f52b712
+    - e56519b1-a5f8-59d4-8052-f1f34f63807a
+    - 843c2250-1c70-5303-8d37-c6621763e4a1
+    - c3ce06e2-2833-509a-9547-f98ba015598f
+    - b1955791-acfa-53f2-915c-6346197f2dfd
+    - 5ff97f92-d844-5cdb-a441-31c64d056de9
+    allowed_note: 'optional faults: effect confined to their own resources or masked
+      by a co-injected fault (naming them is not penalised)'
+  case-openrca2-o2hs-v3-1ccce9c9:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 5db3d828-025b-53e2-a4a8-022900e1e7fe
+      - e9918470-2051-50ed-aa80-14eeda555e12
+      - 55531526-1075-5804-bb6f-cfd36cf7a7aa
+      - 178a07f2-cbde-5da3-8ac8-eba8ba05610a
+      - 0a0023f1-6aea-582d-a203-505bd20cdeb7
+      - 515d36a7-cf4c-50ca-88b2-a5822a23b255
+      target_aliases:
+      - search
+    allowed_target_ids:
+    - 69988cbc-6a2d-5863-8e2d-eb10e15ef71c
+    - 8e3592ad-d1f2-5dd9-8be2-b57f7286bbe2
+    - 5ba565fe-20d3-5c69-832d-dbd4bd36fd2c
+    - 0e3b29d6-c353-5327-9bbc-fce26f233caf
+    - 60077a43-a6e1-5e5a-a8c4-6ce25faef252
+    - 4c3372a5-c519-5316-8062-22ec9517d650
+    allowed_note: 'optional faults: effect confined to their own resources or masked
+      by a co-injected fault (naming them is not penalised)'
+  case-openrca2-o2hs-v3-be0d30cc:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 6279d1f5-f984-5b33-b3aa-a3cd7e8a316e
+      - be6a898b-1848-51b3-b8a8-a0ddb3ded74f
+      - b1c3f95f-df9d-569b-afcb-f68ce01f240a
+      - 3089d820-8315-5f26-ae52-d7f3626fc5a2
+      - 323a346f-6051-52b1-b4ca-bc7a8c12696a
+      - d289f78a-4d59-5d73-9516-d6976e506d69
+      target_aliases:
+      - search
+    allowed_target_ids:
+    - 18ef9b59-cafd-574c-8051-84dccb650d5a
+    - 9ed54888-a955-5e3d-8b8f-477f42061a5b
+    - 112366c4-0fac-56b1-9185-d32bfb51f8d8
+    - 60513fb6-9d5b-5684-9b97-544d483f9cb6
+    - 3e2002cc-59a6-511a-982b-cae05b535a8c
+    - c2c77e66-f58e-5f56-ab18-06b809f6e604
+    allowed_note: 'optional faults: effect confined to their own resources or masked
+      by a co-injected fault (naming them is not penalised)'
+  case-openrca2-o2hs-v3-0966db36:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 78d70902-a243-5abd-9cbb-850edc3f0ff1
+      - c263caf9-225b-52b7-8c0a-35c8228c1c1d
+      - e4c2b633-c83c-595e-9939-ff1391e4fcab
+      - 34ba1a2c-49b8-5b1c-9005-2ac040d90512
+      - eba3e469-94ff-55db-b3d2-9881de34fe8f
+      - ecbe1a32-bf77-573f-8c73-9b9bd278a8ad
+      target_aliases:
+      - rate
+    allowed_target_ids:
+    - f3c34564-b564-51a1-a230-acc476a88561
+    - bd2033c3-e9cc-51bb-af7a-a3ec1b8d255a
+    - 06597981-6c2e-5719-934a-c15fdf546ac4
+    - bca3ba99-a619-5eda-a10f-0e286437563e
+    - 91785eb9-f74a-5cc7-bd43-55297f50baf8
+    - 9747595e-3e0b-523c-a294-709a9f088f67
+    allowed_note: 'optional faults: effect confined to their own resources or masked
+      by a co-injected fault (naming them is not penalised)'
+  case-openrca2-o2hs-v3-fd6616c5:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 777aad69-96d5-5ed7-87e8-a26455d94232
+      - 1576470e-683a-5b24-be9f-b7b91d80c40c
+      - fd152da7-7be9-554d-b669-198d5eccfe29
+      - e2c20ed0-91d1-55fb-a2c8-31aaed43e63c
+      - 4c8dd5a6-5380-5b71-bf17-55520f9d1afb
+      - ee76c736-960a-505e-88ea-841efb87dda6
+      target_aliases:
+      - search
+    allowed_target_ids:
+    - 4808f20b-51ae-52a3-ba66-a4110943599d
+    - 16a8b741-4eb2-5ebc-b4ba-848b2be52409
+    - 833dc37e-df4d-57cb-9878-b106d70714ae
+    - b05e2fde-64ee-571f-8265-fd16d2177e6e
+    - f4e0954b-919c-5bf2-a363-db27ff05c38e
+    - 20d7e658-e9ee-568a-9033-296d99bb9577
+    allowed_note: 'optional faults: effect confined to their own resources or masked
+      by a co-injected fault (naming them is not penalised)'
+  case-openrca2-o2hs-v3-7c6aaa77:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 0ba64a71-804f-5443-ac2b-6f58a9b9facf
+      - 66b141f9-3870-5912-8871-da22d01c2c43
+      - 2e3aba32-38c8-5b56-bd62-231a34210b76
+      - ab767a5f-d65d-50b6-b814-37acd7bd8e88
+      - 48fa235c-f56e-566e-9496-e7fcb4fa131d
+      - 365ecc57-3397-50ca-af4c-be2f07c58331
+      target_aliases:
+      - search
+    allowed_target_ids:
+    - 419f05e6-41a7-5893-9157-9b431c5eab6c
+    - c5be4d37-505c-5f04-a887-a7110df3160c
+    - 5bb9dde5-e902-59ae-963d-e824c7c9213e
+    - e02e35a3-27ce-595d-9a42-ce1ea5bc0808
+    - 6b2cd30f-d09d-5f17-9d81-2de850f0c62d
+    - 6b607f2c-ddd6-5f90-8837-7c05d44c9182
+    allowed_note: 'optional faults: effect confined to their own resources or masked
+      by a co-injected fault (naming them is not penalised)'
+  case-openrca2-o2hs-v3-61bf19c0:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 96e7a2c8-358a-559e-8e29-ed80c8ed3d23
+      - 14ff04f3-a36a-5f3a-aec9-e4dd0c4059af
+      - b65ae1d8-e1a7-5494-9673-5a754505bc55
+      - 48731822-f06d-5836-ae4e-da06e41614c7
+      - 9d34b9b8-d0d5-59ac-9c0a-af4b8a91dc14
+      - 74da55ce-a28a-539f-b4e9-97bba1946f41
+      target_aliases:
+      - recommendation
+    allowed_target_ids:
+    - 0ca22cfc-4710-5f14-80d2-790b933a26e8
+    - c2bfe4b4-4442-5538-831a-7fd19c313ba6
+    - 9ea6b26c-2e26-557a-b50e-aa50f6fc89e0
+    - e73a5714-f79f-5301-9821-434ebe02cc40
+    - 4a5d7029-4c14-52c9-916d-54cc85f48a8e
+    - 9e56d446-8ed8-542d-8dee-2bec760bab2b
+    allowed_note: 'optional faults: effect confined to their own resources or masked
+      by a co-injected fault (naming them is not penalised)'
+  case-openrca2-o2hs-v3-1e39160a:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 4f190f18-9d22-5802-aa6b-b34a339b2a81
+      - a40d5230-2697-5156-91b1-a949bfdc9e38
+      - 00e23431-852b-5074-8dbc-703ee29228f5
+      - 8a193014-0ee8-5f12-9acc-3982da764a32
+      - 43081aaa-058b-5abe-b8c9-82ffb56dcf47
+      - 8a9da833-b57c-5f01-82bd-88f5447ed404
+      target_aliases:
+      - search
+    allowed_target_ids:
+    - 946481d5-8d2f-58e9-b0e8-d1a540e7d35a
+    - 4089c945-9bbb-5b46-a534-0169552facb8
+    - d4505873-a2bb-55d8-b208-bc2dfb1b4985
+    - 6345d929-4fcd-5a81-a572-ba4fc2e49fee
+    - b4af79c4-368c-5c75-a6bd-2f9ae87b949d
+    - c3425614-bcac-51dc-abfc-a46dd2ddb435
+    allowed_note: 'optional faults: effect confined to their own resources or masked
+      by a co-injected fault (naming them is not penalised)'
+  case-openrca2-o2hs-v3-69f9d8e0:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 914d575e-44e5-57b3-bd2d-de6f17a9d0e8
+      - 7ff62f0a-b2f6-5406-b809-1551bfeb7b63
+      - 6c40ff6e-57d4-5e64-bfde-2e5b4c36f80d
+      - 4c1f6a28-56e9-5052-b6c0-6c8f59f65d32
+      - 686ef70b-d74e-52b9-9a62-448b3075238a
+      - 36af5949-0be1-5cbc-99dc-bc838713c8e2
+      target_aliases:
+      - search
+    allowed_target_ids:
+    - 8d3580fd-c7c1-5c86-abbd-f43f668d52ec
+    - 6bae3bd9-5370-5527-a4c3-d1d13ce5b9ed
+    - 1cad7c88-da9a-51b4-b772-83b576324b8d
+    - 3c7435a8-de15-56c7-9c09-7118175f557c
+    - 88104443-5a7b-5a55-a1e2-f03b6a653819
+    - 8f4f2e18-9fde-5e77-a75e-0963dc5c4de4
+    allowed_note: 'optional faults: effect confined to their own resources or masked
+      by a co-injected fault (naming them is not penalised)'
+  case-openrca2-o2hs-v3-dbd79c73:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 9b11ade1-b713-5108-a685-7e0ea548f7a7
+      - c732b7eb-28b8-5bed-af77-2838b863a6b6
+      - c67fe0d6-4e15-53a6-b0d6-e4687416a8cd
+      - c4f314cd-0856-5a5e-8105-7d5c4bc03269
+      - 80f74b20-5c7e-549d-ac2d-3655bc855539
+      - 35cb33ac-178e-50a0-9a7f-5223dd84d4ee
+      target_aliases:
+      - search
+    allowed_target_ids:
+    - dbac8b38-25f9-5ff3-abc9-cad8ac6e8a5c
+    - 069c6c26-b245-5e78-819f-75a1ebd6b997
+    - 5cd42918-2fea-5427-b3b0-ab99a941cedd
+    - 0b3d0904-5c80-50c3-ae1b-ab421b874001
+    - c2ed0db0-633a-502d-a9f2-2abc50924150
+    - 776cad34-f12a-5090-9d27-6c128d137ed4
+    allowed_note: 'optional faults: effect confined to their own resources or masked
+      by a co-injected fault (naming them is not penalised)'
+  case-openrca2-o2hs-v3-58908366:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - ed8184a0-a0c9-539a-9ddd-6fecf7d23fa8
+      - 120b3b6b-cd7c-5328-bd80-ab0278fa29ab
+      - 9372a5f3-cd3e-573a-84f7-99faae86ddf5
+      - 69332a35-638a-556c-a3f4-8afe28e1e417
+      - ad3f4cb6-a795-5bad-b209-2b05c99ab498
+      - f858657a-41cf-528d-987a-491c24fcb653
+      target_aliases:
+      - rate
+    allowed_target_ids:
+    - 646a8752-d020-5fe7-8adf-326e2589bec6
+    - 62c7536d-c89c-5ca0-bf15-04fdf0815fef
+    - 364c236b-965c-5e04-a6e8-d76090fec21a
+    - 9bc677f1-bb07-5a47-a2cd-c5206b672146
+    - d3928cda-c44b-5bf4-9a8c-6942ad0db556
+    - f64fd942-9f46-58b5-82cb-eb6cd3ed3972
+    allowed_note: 'optional faults: effect confined to their own resources or masked
+      by a co-injected fault (naming them is not penalised)'
+  case-openrca2-o2hs-v3-f2f9f9f5:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 21991f13-6dbb-54f6-bb0b-94afce919cd8
+      - bda848c6-c9d5-527d-a5ae-45c67bfc258b
+      - 51550c45-a97d-52ce-9148-af40d9686431
+      - 95729a3b-7674-5473-ac45-0d079d583b00
+      - e34393c3-8a54-5286-a378-da94cb8c4768
+      - 426ae136-1cc4-5aeb-97c0-df2deb49569c
+      target_aliases:
+      - geo
+    allowed_target_ids:
+    - 5b7518bd-7958-55ca-81de-fbfa025cdbd3
+    - 01ff6cf7-f131-5b69-a4e4-b04e1a854121
+    - dda73174-4b9f-509a-83bc-e8695cf44f9b
+    - a997faef-3f09-5562-aafd-b8a6e25bdef6
+    - 2ede89f6-9461-55d9-8295-2580e3c5f730
+    - 3515c8d4-c9cd-5574-80c2-f69e8121eded
+    allowed_note: 'optional faults: effect confined to their own resources or masked
+      by a co-injected fault (naming them is not penalised)'
+  case-openrca2-o2hs-v3-134b5aae:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 2b3bf3a7-dd9e-5d7a-b2da-4385e0d0ac17
+      - f41640a4-2ed1-519d-b12a-809b22904b7a
+      - 17ae3215-774a-5b6e-8d05-cc5edb494ee5
+      - cc63ebfe-09e9-5153-a9ed-cbff74a608d3
+      - 18362498-978f-5011-b5ea-5c3c68f20d2c
+      - 77794153-eb07-529e-a8f2-e0c55da6d2d3
+      target_aliases:
+      - user
+    allowed_target_ids:
+    - 0c882c83-0d4a-53c4-a4d9-85e8386503a8
+    - 858b3276-6ffb-59b4-800b-e72ca74ee6e9
+    - 12c47a1b-7d8a-5ca9-a889-11c1c88a463c
+    - 75714d2d-7c09-5400-8711-6aa2381b6b1a
+    - 106ea65f-e534-5623-9cac-ed9d4a6ced66
+    - 24a3c9ac-5620-5b75-8737-7e4e04447791
+    allowed_note: 'optional faults: effect confined to their own resources or masked
+      by a co-injected fault (naming them is not penalised)'
+  case-openrca2-o2hs-v3-bb9cb798:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 2fb08929-ed80-5e7c-b6e4-25d33763d4ed
+      - 16b82a17-00a4-57f5-a3df-e44b8ac18e80
+      - d7a2b6a6-8d91-5f94-82ac-769afa117019
+      - b2964626-8d4a-5992-980a-d3d888455434
+      - fb193bec-d34c-57b4-b437-f6a8dec0ef08
+      - 718372ef-a2d0-5626-bd18-cc5fdbd36cfc
+      target_aliases:
+      - attractions
+    allowed_target_ids:
+    - f0733fd2-9aa8-5b9e-8ee8-79f679f45b76
+    - 3afa8896-a8a8-5a37-9608-85407a7a00f6
+    - 57e37dde-3468-5b80-a8c8-39d3fb46d424
+    - 4b5f263e-4403-5177-a388-551e26a3c2b9
+    - 4ae7c729-a3f8-5ea1-8b5c-0d2b68f23165
+    - eb95de2a-74f3-58d2-97c4-9d8e0c988431
+    allowed_note: 'optional faults: effect confined to their own resources or masked
+      by a co-injected fault (naming them is not penalised)'
+  case-openrca2-o2hs-v3-797f211f:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 1f019b1a-2d93-5259-8b54-76a74e0fc7f5
+      - de9fa7fe-989d-5d39-b659-9ce94f7b2384
+      - 798f7458-837c-5747-8fc3-d496bc43cf64
+      - 15064aed-4cff-507d-8e73-3c2f1e6463b3
+      - ba2f419c-563c-5f73-9735-1ed7b4dcb002
+      - 2774be82-4196-5c4d-98a7-967e5b820031
+      target_aliases:
+      - recommendation
+    allowed_target_ids:
+    - 996775de-626f-5dbc-b785-f90fef295d0d
+    - 5e937145-53e5-5beb-bba5-696cfc8b7c0a
+    - 1e698a42-660f-5dea-91cd-754b710e3a2a
+    - 12fd56cd-f77c-5e3a-a4df-bca6f7e2e470
+    - d324843d-208b-56a1-8e7f-1efbfa185795
+    - 7240da2c-ede2-5655-952e-3f5602df41a2
+    allowed_note: 'optional faults: effect confined to their own resources or masked
+      by a co-injected fault (naming them is not penalised)'
+  case-openrca2-o2hs-v3-6b842d3c:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - d619b266-fcbe-5e37-9d34-5246f2ff9063
+      - 74c20dab-a471-5068-b559-f83849aeba5e
+      - 9ae6fdf0-5d61-56f4-988c-a39aed0441b1
+      - 95a8ceeb-ff90-59f7-a76e-6d7f41b0c703
+      - 8ab8d47b-0b6b-5279-b2f3-5aa7c2603dee
+      - 9e246212-2176-5993-bfbf-6ea9a50d166a
+      target_aliases:
+      - user
+    - target_ids:
+      - aaeb4d30-eb5d-5695-8931-5ff29cf446dc
+      - 6efd6310-139e-5c30-8afe-448931150343
+      - c84bbcae-a705-5645-ac50-51f51cf52243
+      - 6d1412ed-c2e4-5c9b-ae31-f5acb19945f2
+      - f4f9e2cc-9600-5864-bb53-f00001260b04
+      - 2305e988-ab16-5010-9f5d-c48bc43ae225
+      target_aliases:
+      - attractions
+  case-openrca2-o2hs-v3-9055b1b7:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - e5479948-7000-55bb-90e2-5ae5acf5fcee
+      - 72736905-bc4f-5585-8f50-51e63780cc7d
+      - 4fe03ffb-931b-5832-b42e-8a5e1a058cb8
+      - 0b4f4907-1ec5-570d-8fa5-58e3824edccf
+      - 66a72539-b73a-58e3-be14-c4d7947dc915
+      - eca96e52-8188-5680-9653-3de8da632890
+      target_aliases:
+      - attractions
+    allowed_target_ids:
+    - 17f6e7db-12a1-590d-b4ed-cdf14b6e1437
+    - a387130c-ac53-57f7-a41d-5541e849b5c8
+    - d3ad006a-a995-5ece-89eb-1e20c8f58369
+    - 9fdb83fc-e090-5253-a76a-44471b9b0531
+    - 14eb4f42-3902-57dd-8a91-c111384295c5
+    - f451745f-8f31-5a52-b0c4-b87ee2242d91
+    allowed_note: 'optional faults: effect confined to their own resources or masked
+      by a co-injected fault (naming them is not penalised)'
+  case-openrca2-o2hs-v3-2cf582f4:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 28fb02fb-304e-5254-b4b1-b1e9a829a3d2
+      - b835314a-1111-52e0-9273-5993cd8620b1
+      - 583e3af8-10f6-52e5-b1d0-f6edd59f98f9
+      - 8b2264b9-f71b-522a-80ab-739f1722b8dd
+      - 25d8a2ce-ab36-5436-b48c-e1283f3641f0
+      - 83c683c3-24fc-554c-9ec9-e07046d0a93f
+      target_aliases:
+      - reservation
+    allowed_target_ids:
+    - d12f732f-dab4-5fbe-b36b-2ad9c87fcbdc
+    - c203761c-eddc-5b8c-8225-70a8d674a0d8
+    - 398c356e-df70-58f4-a68e-18afe2c06e69
+    - a4530d3a-7843-5f12-8dc9-7d98e384d105
+    - 17e35041-3e24-59ff-9d24-629e2d03db70
+    - 80a0791e-7231-5169-84de-a6cc1fdd767b
+    allowed_note: 'optional faults: effect confined to their own resources or masked
+      by a co-injected fault (naming them is not penalised)'
+  case-openrca2-o2hs-v3-41e00bfb:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - bbb80542-c2a4-50e4-bf75-74e94957c9ea
+      - 9677f9b9-a08e-5202-b4f6-105038fee025
+      - a26bac68-6bd8-5bd6-8f9b-fb579b939eaf
+      - 4aa28b24-5c0c-5e0d-bfd7-7bf0d2ace992
+      - 1d4a423b-5bfc-5d75-8508-6222a071e66e
+      - 2f60ebf5-6c9f-51a6-af4e-5c5865bb7736
+      target_aliases:
+      - search
+    allowed_target_ids:
+    - ea4a2038-0711-5272-952d-27468d8e2501
+    - 6f67189d-7404-52e0-87a2-4be58f98d825
+    - 869b2da8-990f-5bb3-9435-84d777d9010d
+    - 0f18b28d-c8b8-5ffd-91dc-15141d110beb
+    - d8d5ad5f-a1a5-5ba6-9049-7e65c6ca15d3
+    - a74e1089-929c-5352-a9b7-c8cb2e55a18f
+    allowed_note: 'optional faults: effect confined to their own resources or masked
+      by a co-injected fault (naming them is not penalised)'
+  case-openrca2-o2hs-v3-d7a4fa2e:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 6728fe5d-edc3-5018-b723-48d3c82ad947
+      - 2b0943d4-37e6-5272-80e6-87075fbbd2bf
+      - 3193ad26-de71-5749-878a-5356a583f99b
+      - cf8590e8-69aa-5d13-81ce-5281cb948c52
+      - ac8c0072-26dd-59d9-a0ab-24398bccbf77
+      - 59d5e35e-9228-5d36-8586-bd651246ad39
+      target_aliases:
+      - geo
+    allowed_target_ids:
+    - 0b5cdeaf-39f9-57d8-97c6-5a8dc6750cc5
+    - 5f146417-722c-5ed4-a192-6d243ba28f5b
+    - a8220198-aafe-507e-81ea-394dc2936bd4
+    - e11ec5d5-d5a3-57c9-a060-51878dd8a7c4
+    - 812470a6-b74a-5db4-9c19-12f8c9393ed7
+    - b61ca29e-a489-5f6e-b1d6-4b634e45d639
+    allowed_note: 'optional faults: effect confined to their own resources or masked
+      by a co-injected fault (naming them is not penalised)'
+  case-openrca2-o2hs-v3-61853b54:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 9de0ea0f-e996-54fa-87af-609fb42735c9
+      - a6e543c9-a8af-54b7-a564-767d46bd3ded
+      - d0ef8b8f-22bc-5bdc-aef5-bddd5336ce35
+      - 787e92f2-b5e6-57f0-b23a-002c6f043bd8
+      - bcfa36d3-d535-5c18-8628-4a9b2255d1c5
+      - 544600c2-c278-50bc-9128-673075e41d59
+      target_aliases:
+      - search
+    allowed_target_ids:
+    - 035bf19c-65da-5317-8f59-3dd3a4bfc315
+    - 8e3afec6-ac31-595f-abd4-0f9e5672717c
+    - e4c1b571-fc09-5906-9aed-82a131e9c9b0
+    - 48a785e1-010e-5f67-af1d-5dd0ffed6f17
+    - cec62a71-e18d-58ea-9dcd-ff302ee80aa5
+    - ace69d07-154d-524e-bfe4-d8827b6b5d4b
+    allowed_note: 'optional faults: effect confined to their own resources or masked
+      by a co-injected fault (naming them is not penalised)'
+  case-openrca2-o2hs-v3-d3018771:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 0210ad95-4385-5911-940d-d8bd1a53ae57
+      - 9251f0f3-0207-5704-a21b-6802723ce94e
+      - beb8b623-bcbf-5c4f-9048-3b37eae8a69e
+      - 50044f67-6b5d-58d3-a058-87cc6c3505df
+      - 61886270-d938-51e3-95b3-4f28160275e8
+      - 47f79cb9-2e9d-5553-b94e-00a012d58a06
+      target_aliases:
+      - search
+    allowed_target_ids:
+    - b7de9fee-b26d-567b-9447-490151b40f88
+    - 56dddcf4-9442-59a6-ac84-d7f9e00045e7
+    - 85171c42-ccfb-51c8-b726-1038a8ab4515
+    - 13ef5708-0a52-522a-ad84-7414be4c8cf8
+    - 4bf179ca-6b7d-5724-b4e1-39c5faaa7191
+    - ec50462b-241b-5622-8c38-407b76136fe1
+    allowed_note: 'optional faults: effect confined to their own resources or masked
+      by a co-injected fault (naming them is not penalised)'
+  case-openrca2-o2hs-v3-bc540131:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 319dc32c-e850-58d9-86f2-467b7aeb1c08
+      - e62d8c0a-fe80-5983-b9eb-8ec3d43454c6
+      - 5d2c08a2-6758-5d66-b926-a05d039b512d
+      - a943f8d0-db0e-5358-920d-49bfc7cfb751
+      - 9af62337-2e6e-50ba-a854-80cc96b252ff
+      - 14789cfc-194a-5404-96c9-1bca9df754f6
+      target_aliases:
+      - search
+    allowed_target_ids:
+    - 65f82ef3-a276-5165-8e48-0b01f89e19b3
+    - a3242ac4-4a72-59c9-baf4-592f84202028
+    - 09c3d7f7-1e34-5020-9b61-56336a2eb78c
+    - 92c02f97-f19a-5970-b1e5-bcbd20c57e94
+    - 18483b63-8c12-562e-b52d-f86e90632e66
+    - 66ff88b3-8991-5521-b392-76dcc055e5cf
+    allowed_note: 'optional faults: effect confined to their own resources or masked
+      by a co-injected fault (naming them is not penalised)'
+  case-openrca2-o2hs-v3-4cf2df99:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - fe060976-c858-5d99-a8c7-f21e8194b009
+      - f179aa33-9d46-51b9-838a-69a3c27f0914
+      - 25bcda0e-d500-5304-be8f-23f7e963ca5b
+      - b658137c-e68b-5c4c-ad67-2f042e87690e
+      - f0a8e7ac-fa2e-5ccb-bfda-f7947bc68ff8
+      - 9ec1ee10-8a05-5581-8bff-9a7bccd8f933
+      target_aliases:
+      - rate
+    allowed_target_ids:
+    - 01844fa3-45a9-51b6-a9eb-c2255dc80da0
+    - b909c023-4ced-5298-ad1b-e1183dbce8cf
+    - a1fe7abd-352f-532d-bfff-ce86275a9411
+    - 05b7e03e-3971-552d-adc1-d232507bf4bd
+    - 6f49d5b8-9f41-575e-8923-432e3471c665
+    - c006163e-cc0b-515e-92aa-baa05e7a4481
+    allowed_note: 'optional faults: effect confined to their own resources or masked
+      by a co-injected fault (naming them is not penalised)'
+  case-openrca2-o2hs-v3-ddfdee44:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - d1e0be33-a90f-586a-b8af-3bef3f15206e
+      - b90b1bb3-02f8-5a5b-9d33-d686f87b4968
+      - 5231d640-b089-599f-9e3f-038e5a7dc1fa
+      - 2f4cf3ae-0118-5ffc-8563-3c493554a568
+      - 52efc8e8-7b9f-50b4-b88e-f26664f0382f
+      - f1025fa4-e4d1-583a-bf53-259656cb1579
+      target_aliases:
+      - reservation
+    allowed_target_ids:
+    - e1c3064d-2e73-5aa4-8037-db0ab7cdd515
+    - 47cddda5-bc60-5d2b-9846-87890efcb105
+    - 9521f006-f054-5650-949c-1ee0bc681144
+    - f87dd143-0e87-5428-ba80-a4685d84cc1b
+    - 3173092c-77d1-55db-8154-b80d15ddc971
+    - 38e78673-b2e7-59d4-95e5-0ed258d642b5
+    allowed_note: 'optional faults: effect confined to their own resources or masked
+      by a co-injected fault (naming them is not penalised)'
+  case-openrca2-o2hs-v3-c7c90bdb:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 9d1aad70-e995-5442-9bea-01612c73ef6f
+      - b82f9f85-e4c5-5747-b8bd-fa7bcb39f2fa
+      - 34f42585-34d4-5509-85c1-ff0a94b56899
+      - 0a675729-1149-5ca8-a7ea-075cb530b5b6
+      - e56ec116-e119-5267-b465-3d3b3a249f18
+      - c0d5fd7d-6f27-567f-b7fc-bd55edad0bc2
+      target_aliases:
+      - geo
+    allowed_target_ids:
+    - fd7aefd5-4d5d-5648-a48f-57377a493806
+    - 76e45e02-ac9d-5ee8-88b4-136fc595c4c4
+    - 31c29f6c-7dde-5450-8a59-f0e3c8b4d5b2
+    - 688df130-6d88-5a5a-855b-93c7072c232a
+    - 4e155932-0e90-50ba-9bd1-efc66ee93775
+    - cd558916-93f1-57aa-9a99-e8b5054558b7
+    allowed_note: 'optional faults: effect confined to their own resources or masked
+      by a co-injected fault (naming them is not penalised)'
+  case-openrca2-o2hs-v3-c9b17cb1:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - a6e85865-f601-5458-afe7-8ad37b2ce6e6
+      - 89a62a16-0646-59f9-a034-fcfdbf311744
+      - ba51e953-2be1-58bb-a076-bf7d8bbca3e6
+      - 8931ae3f-2509-5a74-8f91-5b25af826204
+      - 3d9ac616-7ccb-501e-b609-11f47f92fda8
+      - 2f043d0d-5034-573c-83a2-89601b2dc5af
+      target_aliases:
+      - search
+    allowed_target_ids:
+    - e23f0408-1a64-5b60-9747-1639185619db
+    - 0d93f13a-2dec-5487-80c3-15a6e88d6e15
+    - 057d48d4-364a-5efe-8dc9-8a3006f7272f
+    - 3fc48654-94ea-57d4-8b27-d118979ee8d4
+    - e1fd2430-334d-570d-a27f-12215cf67c57
+    - 8eae4e0c-3c82-5bfd-a376-24c8f07354cc
+    allowed_note: 'optional faults: effect confined to their own resources or masked
+      by a co-injected fault (naming them is not penalised)'
+  case-openrca2-o2hs-v3-c6b384d3:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 667f96a9-a46a-52a8-ba20-3c2f72ae56b7
+      - fc65dfcb-9d1e-5a11-861a-80d702d49425
+      - 915f00bc-93cf-57db-b620-1333ecae937e
+      - 92c070f0-2c84-50d7-8443-106ffab129f2
+      - da07001d-21e6-5fcb-9ad9-354a4d07f0e2
+      - 403f7a42-2366-5a1c-a070-32f73cd103eb
+      target_aliases:
+      - geo
+    allowed_target_ids:
+    - c215c754-a1c1-5322-a0c9-ca5f1013c371
+    - baf381a4-a6cf-5724-9e17-24f00fb275d8
+    - a1737a61-8d92-5c2c-a6d8-39df1bf33b6d
+    - b1430aa0-9bab-5bf5-973e-b82f3b0dfe7a
+    - 4613d150-077f-55bd-be49-648dc6867b12
+    - 6e2e8128-5465-50f0-a738-846c8a5ac2da
+    allowed_note: 'optional faults: effect confined to their own resources or masked
+      by a co-injected fault (naming them is not penalised)'
+  case-openrca2-o2hs-v3-2493e8f9:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - e586a8e6-f90f-58fb-9a40-3699bb1dfb46
+      - 386ac500-421d-5873-bbc8-db6d7e4f1c51
+      - 695bea73-ba1c-5eed-a51e-e63cd525ddc1
+      - 99b3b398-c144-5dfc-bfc3-e3837e0781ad
+      - d50823b0-7699-5094-a4e9-2986627890aa
+      - 5213fed1-1fcb-5092-b608-de3fa69d41ba
+      target_aliases:
+      - profile
+    allowed_target_ids:
+    - 054b228c-6b2c-5bff-9b0f-5260907dcc29
+    - 8c2d0744-3cde-5210-9b2b-aea76f62db83
+    - 6a38583e-163d-54d6-a06e-915ea94a52e7
+    - 4e1d860d-d037-5adf-9fd4-157da5a9bb88
+    - ca8a7c7b-482f-51f7-ba3b-3e7f5a8da58c
+    - 90e77e00-ac32-52f0-8eb7-edc47317506c
+    allowed_note: 'optional faults: effect confined to their own resources or masked
+      by a co-injected fault (naming them is not penalised)'
+  case-openrca2-o2hs-v3-339aedeb:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 06a55c68-bd11-5741-b349-bf395e8a972a
+      - 35c92045-04d5-5a0d-afb3-edaaaff38f19
+      - 93b225d0-95f7-5b0a-bd3a-f3166cecfa46
+      - 8076f959-6edc-58a8-b918-ecbb5a34a894
+      - 4eb8a60e-0c47-52c5-b36c-caa76a7efe85
+      - c2f375fd-c7dd-5d65-a0cb-805683293a1c
+      target_aliases:
+      - search
+    allowed_target_ids:
+    - 8595bd22-f45b-5825-b46d-0ed8409d5977
+    - 673a46dd-62b7-5a77-8477-6932996ffa5c
+    - 3532d27b-3ea8-5f6b-90e6-e035d2259f66
+    - 2521cd51-5898-5f06-972b-c7e1dfb18b56
+    - 19b75520-29c4-57f3-b108-4f01516c8ce8
+    - a6fc5337-ddaa-5441-8c1f-d84bc9da5388
+    allowed_note: 'optional faults: effect confined to their own resources or masked
+      by a co-injected fault (naming them is not penalised)'
+  case-openrca2-o2hs-v3-f26c9f71:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 24ef2beb-2363-5707-94ed-6afad88db978
+      - 30cfae79-4eca-545c-8129-cf84cbdaf887
+      - 216fa4a8-cc91-522c-ac84-4d831ddf41a4
+      - 9eaa4dbb-78fc-57fc-970b-e6db5fe8cce6
+      - 55a426f2-7107-5ad2-8f0c-b99ccfff6797
+      - a8fe1800-0d25-5459-979d-ed366ce503fb
+      target_aliases:
+      - recommendation
+    allowed_target_ids:
+    - 63b62f86-11aa-581f-b411-0133d3159876
+    - 9255be6f-f164-5a02-a30a-8ca06e708bf0
+    - 979f22c4-031d-5fd9-a50d-2ebf1144b7bb
+    - 9379209b-5c90-5069-8f3d-63decaeae030
+    - bf48b8d7-0852-5f78-ba1b-a56e4eace15f
+    - 4602d36d-92c3-5ab6-80e3-917c796b7294
+    allowed_note: 'optional faults: effect confined to their own resources or masked
+      by a co-injected fault (naming them is not penalised)'
+  case-openrca2-o2hs-v3-c91cc6aa:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 11296e65-9b58-505f-a8a4-9eaafe36b635
+      - 047fd56b-9dc0-5aa7-8f42-fc478b9c59cc
+      - 7bbe05ee-81c5-5549-a278-7844afc46209
+      - 59503f2f-731a-54c7-aa23-129ee92a792c
+      - 6205090b-21a3-5d28-a223-828681407eef
+      - d7be28b3-7b59-5751-ae3d-69277bf8d29e
+      target_aliases:
+      - search
+    allowed_target_ids:
+    - 615a4cae-9eaf-5b88-a57a-ac673143c17a
+    - 281bad41-d84d-5800-b732-8de7c1c70ae4
+    - 110d0f37-b1e9-590f-9ec5-50f723da5928
+    - 2893f75d-482b-579c-89c1-16394ef16627
+    - 71ffffdf-abbb-5384-bfe1-e716659b2c98
+    - 4541f395-fc0d-588e-b85b-11bbaeacba8d
+    allowed_note: 'optional faults: effect confined to their own resources or masked
+      by a co-injected fault (naming them is not penalised)'
+  case-openrca2-o2hs-v3-17a2d674:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 3e92241c-0816-5313-ba66-29a9582bd59a
+      - 34a36787-4dbd-5226-b02d-a27e87799d95
+      - eb37fd31-3f7f-5bed-aaeb-b92fc6ee9929
+      - 5440b105-be80-5eac-bb9e-e523b672b57f
+      - bb0afc31-680e-57cd-89f9-d348f72c505c
+      - d42f59e4-8639-5293-ad7d-6eb739316811
+      target_aliases:
+      - search
+    - target_ids:
+      - 89ea06be-2b3e-5aa1-98dd-032b2f68b9f9
+      - cc1d014a-3897-5321-9185-f758f55498de
+      - 501b03ee-cc59-5127-8367-1d6985ec629e
+      - 9107d9ea-bc33-5ad2-8bf5-3ed17de60ae8
+      - 2c311269-be53-5796-aca5-d49e6ca441e1
+      - 5fd81cb9-7139-54cf-934e-e097ebe7e4f4
+      target_aliases:
+      - profile
+  case-openrca2-o2hs-v3-03ec63d1:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 3492da5b-d4c8-5230-addd-d1a7ea4d8bd8
+      - 0f61a208-0b3a-5074-8689-68bcbd751d4d
+      - 4395ef96-18c3-5715-8a1a-e081836de510
+      - f7f70793-e8c7-5a51-bfd3-b323fbe0eaec
+      - 58cc5bc3-5872-548d-9181-b589446fc694
+      - d3b7c39e-c59e-5b09-b8f5-c8a13ee27115
+      target_aliases:
+      - user
+    - target_ids:
+      - 5311c62d-15f6-5b2d-9da1-f3161898a8e3
+      - edb47f03-56e7-57dd-820d-6979fed3e905
+      - afeb6809-2a2c-5470-b864-e6c0e5efbb80
+      - c65bfeb9-2810-58e9-a536-c534d2f5603e
+      - 3339cd49-0a29-5b3b-b814-f64483e2d965
+      - 3e5e91c3-96c8-5d1d-abf6-fa6e43f1c736
+      target_aliases:
+      - attractions
+  case-openrca2-o2hs-v3-dc01e029:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - aea0cd84-4228-5abb-be40-24703dc814c4
+      - b61285c1-dd1a-5332-ac23-eae3b21f4d39
+      - 8b84b4a2-416d-536f-bbe2-5abe1f81a2ea
+      - bcfb4355-9870-56ee-aaa8-66cd014c7a81
+      - c15ca77d-3515-57f1-9328-e1a10ad3cbde
+      - 119e63d8-53c2-5cad-a23f-9cfc3daf8c36
+      target_aliases:
+      - user
+    allowed_target_ids:
+    - 38516bde-3ced-55b9-a7ad-e92e43c736fb
+    - 33f88110-2bff-5ffc-a402-bcf5470f0784
+    - a4fdfd40-ba65-5a0e-934e-42bdf41fe7be
+    - 6633b7b8-65cf-5419-80e8-910fca744dbe
+    - 3b67e9c2-d9e5-5d91-9093-98703d769ec3
+    - 5bf748eb-1556-5ca8-9158-5b9bb26d4566
+    allowed_note: 'optional faults: effect confined to their own resources or masked
+      by a co-injected fault (naming them is not penalised)'
+  case-openrca2-o2hs-v3-9d83d205:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 4410b93d-d0de-575e-9916-7eba591d4349
+      - 0e5f6d57-ccf2-50f9-ad39-8d42081eb3f9
+      - d80b1874-5c52-5602-bfb4-bf1a88bfc92b
+      - 587da194-0f8c-522c-a82e-a8a3ac8ecc89
+      - fcf86fae-8f1b-5c0f-b3c9-3ac5fc93ebb5
+      - d137e193-37af-5750-8116-aa6fd14a640d
+      target_aliases:
+      - attractions
+  case-openrca2-o2hs-v3-93dbd1ea:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - becd982f-40ec-5a7f-bcfb-f94f8c987e8b
+      - 06792908-4cc8-5269-8010-45b2f27dd201
+      - bc2ecf42-e2cf-51de-8131-6c64a345611c
+      - 718d338f-486c-50fd-aa40-ee84cdeefae8
+      - 111dee68-aa3c-580c-8aa6-6b0ef733aa1b
+      - 2cd7626c-36cb-5c19-83fa-0731ab385d2b
+      target_aliases:
+      - profile
+    allowed_target_ids:
+    - 70278e1b-0016-5842-8f65-1420ae794298
+    - df94ea2f-c169-5964-92a1-0cba2bad90f0
+    - fa83415e-afdc-52b3-8ad6-0f575c0008d5
+    - f651066d-5054-5837-9b02-989627b7cb75
+    - d9862e68-7f37-5c00-8015-21eca132105b
+    - e8358b4c-4250-5fe0-a4d3-1d13b62259f4
+    allowed_note: 'optional faults: effect confined to their own resources or masked
+      by a co-injected fault (naming them is not penalised)'
+  case-openrca2-o2hs-v3-dc4fd538:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - f7601211-557f-5c91-b44b-2f8bfff41051
+      - beb9a39c-239a-5f96-b34e-fa69d9332b40
+      - 258f2786-bbd8-560a-b88d-782ceccea0fd
+      - 4fde2927-8744-540d-a177-01d189ea4de0
+      - 94093998-c219-5f3e-9cf0-b72f03f88855
+      - cacb776e-d9cd-5bac-b2c6-db4f0160f194
+      target_aliases:
+      - rate
+    allowed_target_ids:
+    - e2732d38-b376-56ca-9577-ad9b1992f198
+    - 2d217f19-33e4-5dd6-9ee3-3a9ab86f92ca
+    - 5da0a690-846c-5835-9ab9-d158ffe985f9
+    - 23ef0f17-4f5b-55cd-9b75-27f0be965621
+    - 22bf33cf-3ce0-5476-9f50-be7bd057945b
+    - 5bffaec0-8a51-5ca3-8fa7-a22f6dec1cf7
+    allowed_note: 'optional faults: effect confined to their own resources or masked
+      by a co-injected fault (naming them is not penalised)'
+  case-openrca2-o2hs-v3-2ea6bf16:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 820f8d9d-c3ae-56b1-993a-9cf514de2359
+      - 457d66db-1ab4-5e7f-ac42-b84d562cb97a
+      - 4bf88762-c383-5792-915d-d11e24e57a91
+      - d95be140-f16b-5f5d-9280-02b0b9083792
+      - 14b8c098-78e7-516e-9496-3a1356ff88b3
+      - ed4d0f9d-be5d-5000-b28f-1af905c02b01
+      target_aliases:
+      - geo
+    allowed_target_ids:
+    - 4c5916bc-77e7-5367-990d-50e4d317707b
+    - 4b648ddd-5c9e-520d-9435-1f08871c1452
+    - eb03c4d2-a4dd-5829-b097-11b4581ca96e
+    - 6f66d859-f203-5996-9bfe-5633ad12a37e
+    - ac345e58-b0a9-5d1b-897f-844264e635b1
+    - f19d153c-acce-5202-a62e-8e82d772095f
+    allowed_note: 'optional faults: effect confined to their own resources or masked
+      by a co-injected fault (naming them is not penalised)'
+  case-openrca2-o2hs-v3-91307d2f:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 249f355b-6c25-5f0d-a5ca-e62069080d29
+      - 6541d3dc-05c4-55df-959e-0ea1925a2b34
+      - 078f60b7-f349-5866-a65a-2db790155238
+      - d31d2fa9-f072-5cc2-8730-7c8a8c4f7a63
+      - a79d8bfa-aa48-589a-83be-817990a23c2a
+      - ed8d6da3-ebbc-578b-92b3-0af2a97f9d10
+      target_aliases:
+      - reservation
+    allowed_target_ids:
+    - 7f4ea7b7-8ff9-57de-a44a-633b7ec81517
+    - e7923728-2abc-5bcd-80e9-72e0afbb83e8
+    - 943f5307-2664-5636-a660-f84bb1f75b6f
+    - 163800c2-fd70-5ac4-ac24-7d3481a8a66b
+    - 9d6dd90e-7484-5059-96ac-55e7e56c1f6f
+    - d1531091-d03b-5081-87d3-be81adac69ed
+    allowed_note: 'optional faults: effect confined to their own resources or masked
+      by a co-injected fault (naming them is not penalised)'
+  case-openrca2-o2hs-v3-8c345053:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 4c3e2492-8ff0-58af-844a-e82323aaa094
+      - d3fbf385-3334-5337-9dce-6c7a11ba555c
+      - e5ba5100-d871-5866-9f6f-a79d0db600e4
+      - a4851b7f-39ed-53a5-93cf-346bd853a23c
+      - 4291271c-161d-5c7c-9ebd-4f3e35f5b774
+      - d7ab9733-bd7c-5722-b373-3cfad6e7c841
+      target_aliases:
+      - attractions
+    allowed_target_ids:
+    - 3216b799-edf4-5d2a-a77f-48d9a5a5a620
+    - ff15bd3e-a944-54db-89e2-2d20245c31fd
+    - 0315b94d-c7fe-5bf2-b405-fca7ed4a8b2e
+    - 27f72d99-fe18-5842-b500-04d992ff9aad
+    - b1332767-3b8e-5419-b083-2d9c2c946be8
+    - 33052a97-cdba-5b91-af25-39b6665bd56c
+    allowed_note: 'optional faults: effect confined to their own resources or masked
+      by a co-injected fault (naming them is not penalised)'
+  case-openrca2-o2hs-v3-4e441e9a:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 5aab977f-204b-582d-a31e-4a89700194b6
+      - 4bf572a7-3ad9-5401-b88b-5fd5411530e3
+      - 046bfa89-ed3e-572c-928a-f9608c96219a
+      - 53c73b38-8841-5b53-9758-50b80aa833ba
+      - 01fbb267-246d-5fb0-b229-5b9a533af276
+      - 9f8f0047-0372-5d81-9340-783b41626e00
+      target_aliases:
+      - geo
+    allowed_target_ids:
+    - 31701e6f-2e79-5ba6-b6b6-a0919c202af8
+    - e78923dc-3c5a-5931-af66-b5884fa9d46a
+    - b4230d99-8149-565d-a740-e2dc69431525
+    - bf8f3ddb-70fa-5a06-8490-4152629b7992
+    - 7a11a81f-0ef7-5cce-bcfa-7008c41a7e77
+    - da92b5e7-e112-5d7f-9285-f2af9f7e4eb7
+    allowed_note: 'optional faults: effect confined to their own resources or masked
+      by a co-injected fault (naming them is not penalised)'
+  case-openrca2-o2hs-v3-21893a66:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 5c607af4-40c7-52eb-97a1-e8b2524d2b0f
+      - b926d231-ef82-5849-b1cc-c7ca33beaa0e
+      - f18d83cb-cc87-5b39-9175-6382bb3c666b
+      - 31faa9f5-012d-5f1f-9f46-7eb284665765
+      - 8834c73f-e84e-57ff-b4cb-b359353b3d31
+      - 5d5fbe14-4d98-5b42-9494-b54de4bf1b9e
+      target_aliases:
+      - rate
+    allowed_target_ids:
+    - 5f30bd2b-d62d-5bf3-85f2-74e27f6868dd
+    - 0cb5f1ac-a9dd-58e3-84c1-058debc4f8e1
+    - 5d6f148c-eaaa-58bf-8a5e-34e3f7beb5ac
+    - 3b7fb395-88af-5ddd-86b1-0433f93ad128
+    - 0c50844b-d0cb-5e31-831f-499130c05fb9
+    - db4f9f19-6d7d-56e3-a988-e1726d0e799c
+    allowed_note: 'optional faults: effect confined to their own resources or masked
+      by a co-injected fault (naming them is not penalised)'
+  case-openrca2-o2hs-v3-ad0a4548:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 326a7b9e-2a7e-5092-bcfe-28cd3cefffda
+      - 3b2089fb-92f2-5a89-914b-9719433ee001
+      - 42a5daf0-f0f9-51fc-a691-857719d4933e
+      - adcecc42-b474-5789-baba-16ce54608c0f
+      - 9b7aedb7-dbfa-5431-8415-20d53ff69f77
+      - 8b5260da-7ce3-5b63-b700-38341eb9db22
+      target_aliases:
+      - recommendation
+    allowed_target_ids:
+    - 9dc18846-d790-55b8-91c6-79e5d97b4270
+    - c02bdc01-17b8-5c8b-92ed-39f9b7881940
+    - f411ec96-35ec-5252-91ae-491312eae403
+    - 50842c6b-a328-55b7-a9f4-79d39b9d76d2
+    - cb6c01a3-50e6-5b85-bb9f-dd7a3e3d59a8
+    - a401b89e-9375-5dc1-abf9-0611b9119f42
+    allowed_note: 'optional faults: effect confined to their own resources or masked
+      by a co-injected fault (naming them is not penalised)'
+  case-openrca2-o2hs-v3-5ab8ffd6:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - f8d0829d-552c-5435-9ebd-1b5a6b8d612e
+      - 87814622-a36f-559a-8a62-1d80093d28e0
+      - 6b1c918a-f45c-5e4f-a9d3-c117a2a4b00b
+      - 9260dcc9-b100-5078-9d44-b0492b2bdc00
+      - 7d21877c-54e8-57d7-932e-f69debcfb84b
+      - c5acbf36-662d-552d-ac30-c26517c63514
+      target_aliases:
+      - search
+    allowed_target_ids:
+    - 89f4867c-8fe8-5372-8696-9729ffa85167
+    - 099521be-2d20-54ad-8a16-b939f9bd6bdb
+    - 72773529-5ef2-52cf-92f2-d8d6ffe0f434
+    - 11536bad-0561-5e99-8f23-1286908b221a
+    - b63c7fa8-59b0-575d-bea6-56a66910aad5
+    - c51ab3a0-6b8a-5c2e-98fd-750ab4fe1fb3
+    allowed_note: 'optional faults: effect confined to their own resources or masked
+      by a co-injected fault (naming them is not penalised)'
+  case-openrca2-o2hs-v3-78816fb4:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - d0b52cc7-7092-51a0-ba89-b30609f889cc
+      - e0790e9d-a8ae-5294-83d9-3087bb062dd9
+      - 78dc8971-85b2-5767-9571-fd253ab5a0e8
+      - ffa5b595-5215-59ee-9640-54f0e095ecb5
+      - 41994204-26b4-5e27-b947-84d4c6783f92
+      - 1e4e34fd-32a2-566f-b643-688453231365
+      target_aliases:
+      - search
+    allowed_target_ids:
+    - 2f61ab4e-6fe7-545d-91b0-68702ffb7cf6
+    - 56fb9492-9d05-560c-99d9-74cb893a8656
+    - cf94aa11-aa0a-5d5a-98aa-c1a8eb1dd8f3
+    - 0b107af5-c92c-55f0-b31a-145d49de6e96
+    - a02aaaa5-c0f2-53be-93b1-7367c5dc3f23
+    - 04f9ba08-00a2-50a8-ae30-5ca9ba2b9c48
+    allowed_note: 'optional faults: effect confined to their own resources or masked
+      by a co-injected fault (naming them is not penalised)'
+  case-openrca2-o2hs-v3-d2485b11:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 1d79d6ee-a9d0-5036-af9c-391fe44d7e11
+      - 21e4eda5-3617-5b4a-b686-a923de6f4b67
+      - f531b204-0098-5ff1-a288-d5d82ec86e51
+      - 0d69f29c-7225-5c66-aefe-2462bfa68010
+      - 3c4dec51-765c-5c6b-adad-1e9493377175
+      - a74038f5-f334-5e1f-b2ba-d4234ea7dd9a
+      target_aliases:
+      - search
+    allowed_target_ids:
+    - 9037a68f-78e5-5adf-a865-30414d0bcbc8
+    - 5e9f9b3e-1028-5b74-a8c4-5022578db1c5
+    - 0bc4babd-9513-5b13-ba67-1515249464e0
+    - 37f6d896-2b7c-59ab-a666-57abf3cb6066
+    - 6ef0a46b-78fd-5001-8433-8a825b3cae22
+    - 3b80a985-9558-558e-9775-92fd38b4d0ed
+    allowed_note: 'optional faults: effect confined to their own resources or masked
+      by a co-injected fault (naming them is not penalised)'
+  case-openrca2-o2hs-v3-3af5471d:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 6fe4e962-4985-5da1-90f9-055a4dc805a0
+      - a28bd10b-6bb7-5c1e-9ae7-db5953e6c223
+      - bded3d6e-12a5-5bc3-a587-b10d688f52df
+      - 088e2d06-963b-516a-9df1-025ecffe33ac
+      - 10af0c6d-6a11-5902-b746-7d5e5c737530
+      - 33264173-2277-56c8-a8b9-8626b1436d1f
+      target_aliases:
+      - geo
+    allowed_target_ids:
+    - c14f50a0-1cfa-59b1-97d9-bb52b761895d
+    - eec0654c-a927-5cb4-bf1e-d33273c669c9
+    - ba1f4529-d150-5d56-80a8-697ba2f92501
+    - 01b58445-add4-57ea-abd1-7ffec866ec3a
+    - ee638b42-b978-5690-ab0f-64b51ef7d12b
+    - 908ea92d-5bdd-5786-b497-fff6443633e9
+    allowed_note: 'optional faults: effect confined to their own resources or masked
+      by a co-injected fault (naming them is not penalised)'
+  case-openrca2-o2hs-v3-d0dd9109:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 4ca38640-eafa-536c-acc1-0a12f2d8a38e
+      - ffc58f15-342b-599c-b0ea-4db872e3392e
+      - 72836cc8-7fac-527e-864e-d079cce98de4
+      - 6eea8a3e-7589-5d70-a262-30cd914377d9
+      - 7943abfb-97e7-5332-8903-ff0252019715
+      - 25e40350-0eb8-578a-88d9-5fb118ff4603
+      target_aliases:
+      - recommendation
+    allowed_target_ids:
+    - cc3aedea-7c36-58c3-ba5d-903e59a62269
+    - 99d2496d-6fd8-5658-9ae3-7067e5658a71
+    - b22ebe6a-fedd-5dcb-923f-ab2f61c0669f
+    - bf42ce49-49b2-5d61-89e5-9c7b2ff18b19
+    - 7147669c-42db-5aa6-b910-03d3d7127a8a
+    - 63e2a07a-4668-5b5d-8817-71d8dacd9e6c
+    allowed_note: 'optional faults: effect confined to their own resources or masked
+      by a co-injected fault (naming them is not penalised)'
+  case-openrca2-o2hs-v3-b5864356:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 46faace6-7f15-5529-8efa-737a0c49e96c
+      - 2ddef87c-39f8-5e25-aaa5-7b01a1180fa3
+      - 43819e42-e373-52fe-8a37-302e79e6aa9a
+      - d22cbc08-495f-5a15-b3eb-1187a4e00d6e
+      - c7d2293f-3660-567b-b64f-da036df501a5
+      - e0393634-9bb5-5409-9d6b-12266463ff0d
+      target_aliases:
+      - search
+    allowed_target_ids:
+    - fe8d3a0e-330d-5d72-8e43-0ae3d6bc8b0d
+    - a8fe44fd-600b-5611-988f-350d41877f2a
+    - 991d6556-0947-5067-a773-516a4c84140b
+    - e85d013d-97fc-5f8f-af0b-71db28bbe11e
+    - 3abe68f9-7cf8-5ddc-887d-0012417f8249
+    - 65f44246-0ca3-5707-9eb2-34e7d4c9d783
+    allowed_note: 'optional faults: effect confined to their own resources or masked
+      by a co-injected fault (naming them is not penalised)'
+  case-openrca2-o2hs-v3-b31cfd13:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 325a4d83-9c8c-5ff6-8c56-d20f1bec3d97
+      - 419a345c-801c-58ca-b6ae-c02bdd091bd2
+      - 74aaa2bc-69c9-52d0-b486-b6e2afec4b21
+      - 0f858afc-10ab-517b-b199-95354e4a6a84
+      - 53b30b78-d04a-5350-89f5-2d76c3fc5706
+      - 80b46cc1-b8dd-50fc-98d7-586498e64cb0
+      target_aliases:
+      - search
+    allowed_target_ids:
+    - 34831fa7-c8ab-5e08-ad2a-2efd11346049
+    - fe8a6e2c-118b-5e31-a5f2-57e15e5e52e0
+    - 51741c89-19c4-5304-906d-c381d406f3b0
+    - c7e9460c-ced7-5c31-a3bd-981c43550d5c
+    - 5eb1cf6c-21a8-5365-b1c8-587fed62295e
+    - 70effd04-1b02-5f91-9e7d-1d77559d081d
+    allowed_note: 'optional faults: effect confined to their own resources or masked
+      by a co-injected fault (naming them is not penalised)'
+  case-openrca2-o2hs-v3-1f720940:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 6d030b4d-a822-5657-a6bb-2b925ba5c028
+      - 0590ddaf-32c2-5e7c-9d68-9fcf27aabd9c
+      - 32333542-ed3f-5ab3-8284-250e821c5e93
+      - dcddd336-158f-5ef8-b682-641597064132
+      - 9db68d04-24d7-5f30-a2f9-bdb0c29f436c
+      - ed9d8f5f-8678-5983-b2b0-192498f90995
+      target_aliases:
+      - reservation
+    allowed_target_ids:
+    - 12ce7690-da01-55d6-a632-1cd07ad48683
+    - bd82a5fa-4c24-5d28-847b-eb73448e50ad
+    - 42322712-1a95-56a8-a382-ae63bc1e8da0
+    - 098374ee-69fa-5e24-bd2e-643bde1402e7
+    - 4050699f-7696-5242-aef7-f8e38d9f0cc7
+    - 4c74bcef-a43d-5a4b-befb-f48a4c8d4a1c
+    allowed_note: 'optional faults: effect confined to their own resources or masked
+      by a co-injected fault (naming them is not penalised)'
+  case-openrca2-o2hs-v3-bc07e169:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 34ffd6db-c6e7-5d79-884e-8d1986127ca6
+      - bcc92bf9-af63-5dab-ba50-9ec85a04d0af
+      - 9682d366-8815-5432-b23a-89c45c5eb330
+      - 6700e1ee-4725-50a7-88ed-4ceecba7f0d0
+      - a9d66326-17bd-597c-9340-faf873b2c46e
+      - ad8b2633-3d63-579f-9d40-4ba54d89b06a
+      target_aliases:
+      - search
+    allowed_target_ids:
+    - 838b0053-511c-5805-bda6-bf19f51c79bc
+    - 43cec70b-1f70-5a05-861a-063b75e27431
+    - 45a83949-e24c-5234-b3e1-8cfe7f7e2ecf
+    - 289513e5-36e1-56bf-abda-605bf51a9d07
+    - d4badf0a-3474-5375-9f52-43ac6a3a5e1d
+    - 67e4f5d1-c58e-5f0d-a2b5-fcb62462ab30
+    allowed_note: 'optional faults: effect confined to their own resources or masked
+      by a co-injected fault (naming them is not penalised)'
+  case-openrca2-o2hs-v3-32b4a3fd:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - ed255991-56c7-54dc-8172-04ceada94015
+      - 5c782558-8811-5080-b450-a716406299d6
+      - 289ebfb8-53bb-5fa4-abd3-6ababaae574f
+      - 5290b485-2591-5235-b560-60ad8a8a75c5
+      - f6b75652-921b-5911-81e9-c659be6a467c
+      - 88026fe2-ce76-5b0b-adef-7cf662e220cd
+      target_aliases:
+      - profile
+    allowed_target_ids:
+    - 91d56c53-a15a-55f5-8b87-4334256ed8dd
+    - 71038346-9d09-5f13-809e-9e0a7ea75d5f
+    - a6057947-a7b7-5ac2-a20c-80981fe70f43
+    - 0d981081-8ed3-596e-ab06-71acb8a13440
+    - 02ecfe4b-8f91-50d0-b3fd-82604ab208c4
+    - 038a6abc-3c3f-54de-9953-39ca38489d47
+    allowed_note: 'optional faults: effect confined to their own resources or masked
+      by a co-injected fault (naming them is not penalised)'
+  case-openrca2-o2hs-v3-41f0fc4f:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - dc8f42d3-f082-5b49-be45-22688e50d2b0
+      - 772fe64f-a9ad-5d0a-b614-a410cc8b58fb
+      - 8130e884-05a3-5725-8362-af78a29ab8f9
+      - 15808cc4-2373-5044-b2df-dbbb8ecf7514
+      - 80949faf-a5b4-5a7e-9edd-54fe96d68b42
+      - a6397669-f12f-5be4-8822-700a22ea5270
+      target_aliases:
+      - search
+    allowed_target_ids:
+    - 7ef69bc2-974f-594c-b306-15d5f34c1412
+    - 1089f8a3-a69c-5dce-baea-dd6b1e8fcdd8
+    - 201ea71a-2696-5344-a6f1-afd0e20cc59c
+    - ce9ae911-6b90-5a6e-83fb-bb48f05e32a9
+    - 59169d9b-36fa-5def-be5e-6bfe020e21cc
+    - 3530af64-b59b-5517-b286-1354c05cf079
+    allowed_note: 'optional faults: effect confined to their own resources or masked
+      by a co-injected fault (naming them is not penalised)'
+  case-openrca2-o2hs-v3-9c070bcc:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 5cda072f-b50c-5332-8b9a-b12473cb867f
+      - 3f7246b2-3478-5974-abd9-4a967095e41b
+      - 5e689cd6-8ab6-52c5-a2f9-05cae613e206
+      - 0b448e7f-02d1-5feb-b888-67984838eddf
+      - 3ba2610d-804d-5bc9-89a1-4f21edc561ba
+      - e9471383-e39b-5e96-be37-ee1f09408d1d
+      target_aliases:
+      - search
+    allowed_target_ids:
+    - 1e47ab4a-bc16-5812-93c7-ddfe6bf97a9a
+    - ac9ae709-f94c-50bb-a998-893385631019
+    - f4143d3b-fae4-58a9-b0f9-e855c8e14bf2
+    - 56de3371-c2ce-5e1c-ab4b-67b89651cb81
+    - 90456c6a-6024-5519-be5a-a3943bd52622
+    - 42cd9cf5-8224-588c-9c50-f29206542188
+    allowed_note: 'optional faults: effect confined to their own resources or masked
+      by a co-injected fault (naming them is not penalised)'
+  case-openrca2-o2hs-v3-b1a176ee:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - cee6b765-4918-5bbe-b130-bcfbd57377ef
+      - 79d3f821-a11e-5f01-9202-7919493e6352
+      - dde9f6f7-c52e-50ce-bdbc-fe042f5083f8
+      - ba2bcaac-de49-5fd3-b367-edf4a6a2397a
+      - 097fec22-1eac-58be-8c93-2a0df53a7360
+      - 9dc0fab6-014a-5c79-8ebc-4cb2d40f921d
+      target_aliases:
+      - user
+    - target_ids:
+      - 2f85e696-6a21-56a7-87bd-dde112db696b
+      - 1da607e6-6335-5a13-8fe0-e15a4adcc1ad
+      - c1d1976b-5978-5ade-95a0-c0efe3c9ecad
+      - b14478d3-d431-5e35-8a5f-5fd0069e6500
+      - 59571045-186c-5586-9a84-adaf029e6ef7
+      - 29e5a84f-4541-59fe-afdf-b4e81d4afc28
+      target_aliases:
+      - attractions
+  case-openrca2-o2hs-v3-e29cfe78:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - e45b2c39-bc86-5848-a83e-09cf0d2b6ac9
+      - 4feecb7e-2697-58d4-9e3a-e51562821b7a
+      - 5d9d53ae-a045-5b7c-93e7-1e9a2938dddb
+      - 993e7202-9431-5a5e-80f4-7fc3e01ce953
+      - 15b4e48c-f28a-5486-800c-72d0013432d3
+      - 949c43bd-9a99-501e-ab15-f25191c39492
+      target_aliases:
+      - recommendation
+    allowed_target_ids:
+    - 1b4abe65-453e-5953-9b9d-5e2f88b70569
+    - 32528842-4b2a-57b8-8587-abaa6cfa8fee
+    - 16b7a996-c532-5bbc-9a47-b8cc342b7006
+    - d4cd68ee-8857-5fe0-b58b-d41fed9a4a02
+    - ad44b796-e40c-5980-a8f0-9d78327c0e12
+    - d17cce70-e292-5e11-a6a6-955e3e1a0f46
+    allowed_note: 'optional faults: effect confined to their own resources or masked
+      by a co-injected fault (naming them is not penalised)'
+  case-openrca2-o2hs-v3-01a63b9c:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 987d026e-ce0f-567d-91cf-c2b7f0d732ae
+      - 859626e6-4ca2-5a8f-84e9-f17de08ea6eb
+      - aa3a4fb7-b212-5ffa-b1b0-9b4d547816d5
+      - 3be9c65f-a750-5f62-9454-2698aa916041
+      - 02f30d2a-3256-5016-899e-a1b4d9d4f437
+      - 0c4af006-c556-5130-a71f-9f38670a7fb0
+      target_aliases:
+      - rate
+    allowed_target_ids:
+    - 1ebca801-8de6-52b8-a380-b9defd6c8ac4
+    - 7594256f-9d38-556d-9c09-0985d0aea7a3
+    - 18a1a2e9-2ca1-5964-aa42-e04d53cd62b4
+    - bd1989e7-d27a-55fb-80f1-f48cf4e6772c
+    - f0ff753d-2dc9-5420-afd0-dce42c53db6d
+    - ce2110d3-7b29-5251-ae5f-42bf93dbb78c
+    allowed_note: 'optional faults: effect confined to their own resources or masked
+      by a co-injected fault (naming them is not penalised)'
+  case-openrca2-o2hs-v3-0bdfb7ca:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 73b619a1-8935-5b45-b5f6-dc9f34a12bb1
+      - 4bd037a8-db92-5c75-ba03-4607ffbe3a43
+      - fcd6f751-ed51-599f-9576-6259045ac842
+      - eeb8737a-4b0c-5da4-bf75-59da89a0987b
+      - 19d2379b-5cf0-5c82-a75b-f7a40a3037da
+      - 63dfefc1-39b0-504a-ade6-f0e513b53092
+      target_aliases:
+      - geo
+    - target_ids:
+      - d5adbe29-4b5d-580a-8adb-e6caa8e6fe27
+      - 3b665a0f-1a6c-56f9-a926-c8e11606a13d
+      - e148c0eb-4044-540d-9187-3fcf815cde2a
+      - 37bd6e5f-c912-5722-b5cd-f8be5fb27860
+      - fa54f094-f654-54df-b521-9d41db2a50d5
+      - 522b2d7a-ec4d-5dcf-a868-5ede254af325
+      target_aliases:
+      - reservation
+  case-openrca2-o2hs-v3-f31707bc:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 5847bdd0-9829-5f8b-803f-94e545aebdff
+      - 5dd8855a-0e32-59ca-8c8b-63e265c292af
+      - 5e403f92-1140-551a-a3f2-9b6597b90648
+      - e4cda264-765e-5274-a33a-3a1050722e6e
+      - f962aacf-ed63-5926-a664-bab2935be4fc
+      - 2954eb36-8807-5c32-ad11-d452d55f3d76
+      target_aliases:
+      - profile
+    allowed_target_ids:
+    - 91d46dd4-ca6b-55f2-851b-30bceddef5ca
+    - a2373890-e733-5c26-8dc0-43ebbd62d030
+    - 6d906d3d-df8a-5d3b-ad4f-b30ad14df91e
+    - 23704477-247a-5f9e-be67-5fa4c1ec7741
+    - 73040bcc-b03f-5527-a67f-90435781089d
+    - 601092d3-5da1-5d7a-9d00-2e9192777abd
+    allowed_note: 'optional faults: effect confined to their own resources or masked
+      by a co-injected fault (naming them is not penalised)'
+  case-openrca2-o2hs-v3-7267392d:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 3daa2fb5-1949-57e5-a71a-9e7f32243a52
+      - 87d66d2c-1f3f-543c-a2f6-e8bb310d5f72
+      - a0624a70-9fb4-5891-b4cc-913a29fe085b
+      - 2d92f5d4-b29a-560d-99ec-7fadbd705cfd
+      - 70cce3e4-4a1d-52f4-9da1-85ec328c3091
+      - c5ce2efb-631f-5775-bc30-7b36572ffbdd
+      target_aliases:
+      - user
+    allowed_target_ids:
+    - c4506e41-413f-5c80-8538-0a8764077d47
+    - 6184680f-e679-5328-bc5a-36e9698171ba
+    - 17082a3a-4b11-571c-9548-f80e4cbabb33
+    - 9e01b6bf-c2bf-52ea-a6ee-d123a250c566
+    - 48937256-ed42-50a1-a41d-7c4b8cb6f1b0
+    - 562774f8-fed0-5ce1-8cea-f224bc1388cf
+    allowed_note: 'optional faults: effect confined to their own resources or masked
+      by a co-injected fault (naming them is not penalised)'
+  case-openrca2-o2hs-v3-1c0e0a4c:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - db959843-a24e-5d81-bd14-fa1ce1ed4909
+      - 964060c5-18b8-5dbb-b9ea-d52164dfa214
+      - 03909cfc-bb71-58cf-bd06-e4f09f2bfa15
+      - 64105478-682e-5338-91fd-cab7c4a23b1f
+      - aad5a1de-a551-53b3-b8ad-78475385f1a8
+      - 0804bdad-d349-59aa-bad5-ecc509275c20
+      target_aliases:
+      - attractions
+    allowed_target_ids:
+    - 1d91e875-2d57-5ff3-b7fd-dcb0599d96df
+    - 5acbdec2-8e5a-5e57-81d4-fe5ec8d72fcf
+    - aefab3ad-c51c-55e8-86fd-3e9e1b5049e5
+    - f3a99e9e-3739-5560-8363-9f147ec2e42c
+    - c635a1f0-3484-56b3-abe5-92a9bf0b2ce1
+    - a4f3480d-82a1-5253-90c7-aec79e6f0537
+    allowed_note: 'optional faults: effect confined to their own resources or masked
+      by a co-injected fault (naming them is not penalised)'
+  case-openrca2-o2hs-v3-65021183:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 54d4c741-5e13-5d50-bc6a-fca5ff3f9237
+      - 361e9219-fb70-5d6f-86c9-9b33b63251bf
+      - 6acbbf5d-4684-54bf-b0e8-3767d50541f1
+      - f05af2ec-5a6f-52e3-9fdb-d6ae137dc955
+      - a6a82835-274c-54a2-9471-63c761bf7555
+      - c63551b6-006b-5e02-8237-c746451e7acc
+      target_aliases:
+      - search
+    allowed_target_ids:
+    - 1c689dac-13f0-5b52-83e1-55d07f2eabfd
+    - 9fcfdbdb-3c89-571e-bd4a-65f96988f73c
+    - 59865f55-1c80-50ba-b5b4-734544daa4ba
+    - d29492d4-1f0f-55be-b6b0-3922283360ba
+    - 7ee59124-e9a4-5ec3-ace8-69941743eec2
+    - 8ac5932c-ed2f-5545-8983-c9135bebb453
+    allowed_note: 'optional faults: effect confined to their own resources or masked
+      by a co-injected fault (naming them is not penalised)'
+  case-openrca2-o2hs-v3-1308e6cc:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 2c2b8e44-5dea-53a9-939d-bbcd9a231448
+      - 5e7fead4-faa9-5b66-95a0-314731cbc6e3
+      - d302e63f-a383-578b-b222-cc65a7371781
+      - 376172fc-1443-5877-a696-6f265d4c79f3
+      - 68d10eb8-a041-544a-9fce-a6ce0d937e92
+      - 54d7c77e-0812-5d9c-b0c0-9c3249a7f085
+      target_aliases:
+      - search
+    allowed_target_ids:
+    - cf690e73-f18a-54d2-a171-925a610665fd
+    - 69fa24fe-7509-55a7-baa1-da68f76ee53d
+    - 3a30434c-9ba6-5ff4-afe2-68747c42eb09
+    - 0f58fd7b-c656-580e-a180-4b06b816eca3
+    - 192c4521-b6bd-5a07-9613-7b248ee77ad2
+    - f7d641f5-bab0-5cc5-b1a4-eca1fd21afa2
+    allowed_note: 'optional faults: effect confined to their own resources or masked
+      by a co-injected fault (naming them is not penalised)'
+  case-openrca2-o2hs-v3-b87be21a:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - bcd75eb4-c14c-5da7-9c42-03856e87e2d2
+      - e8d357b3-b7a1-5914-a00a-8cab20284695
+      - 94ecdb47-8830-51ce-8874-72516016a5bf
+      - 293b3132-0a77-52be-bab4-4e9dd888c1e3
+      - 79cc12ac-ad56-5f17-981d-daa028b2a316
+      - f653fb70-1278-50d4-bf74-9b3e4b7ce55d
+      target_aliases:
+      - recommendation
+    allowed_target_ids:
+    - f2d971ac-38a5-5d49-9a8a-06ee3c591dfb
+    - 96708379-812e-504c-876c-95879e2e1c0f
+    - 94a9967d-f1b9-5cfc-82ac-51fed81897f4
+    - eab58998-81ca-50b5-ab3b-0a5180365b5b
+    - db8c4ff9-4702-5740-9edc-f34706601136
+    - 6054022e-e7bd-5d96-8427-53cf2ab15297
+    allowed_note: 'optional faults: effect confined to their own resources or masked
+      by a co-injected fault (naming them is not penalised)'
+  case-openrca2-o2hs-v3-7ba18474:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 6f6fc192-26ec-596d-95a5-feef45cc4d8e
+      - 275c1b59-b727-58e1-8b60-86327e383330
+      - 7fc444f2-12cc-598c-856e-dc1c9886895e
+      - 7abb8fbe-8e16-50da-a581-47abf3b8e480
+      - 70f41ff1-5961-5b5f-9791-ad6a750029cb
+      - fd8d4972-f589-5310-a9a0-0eea6ae5a4b3
+      target_aliases:
+      - profile
+    allowed_target_ids:
+    - 21e90df7-7f7e-548b-896e-ef4c25b6e7d0
+    - 945d000c-12b2-5730-9722-a6f644bfba29
+    - c146ef73-ecdd-5104-bdd5-dd9ef8c482cb
+    - a5a3a0f5-9ba8-5f28-a669-6488a31c96e9
+    - 19d1347b-52e0-5aba-ad6b-e4962d78934e
+    - 76dfd06e-04ae-5ce2-a6f1-9f4ae2a68e34
+    allowed_note: 'optional faults: effect confined to their own resources or masked
+      by a co-injected fault (naming them is not penalised)'
+  case-openrca2-o2hs-v3-1fb8bd0f:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 19017a0d-2d3d-5078-b303-992c4ed11edb
+      - a8cc26d5-7ad5-5f4c-858a-b6f31213ea14
+      - 46c9a87a-020a-5dac-a331-a15a0139758a
+      - 5fd75547-1b50-5030-b807-618b902dc7cf
+      - 8b2f7040-878d-5583-8176-2aff50ed2254
+      - 4d7d53f0-2b47-56ec-88f7-179f7131fc12
+      target_aliases:
+      - rate
+    - target_ids:
+      - 406c7406-ee15-5117-a992-8f1e9e04d5a6
+      - 2d006edc-4938-5087-bb0b-3ff17c7dce83
+      - 3437509c-a412-58ae-8784-ea69f82b20e6
+      - 41c03349-de0a-5acf-a2d3-b8e8d7664bd2
+      - 14490522-6140-59ce-b377-53a27cac2700
+      - 97963d3b-e759-5679-ae9a-cc2c3575103e
+      target_aliases:
+      - reservation
+  case-openrca2-o2hs-v3-667a8197:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 6a11b750-2d58-591d-a019-219419d7fa69
+      - 012e0045-e812-56ad-a68f-59dac98ab459
+      - 0cd53382-a92d-55d0-815d-73c00a4a50e9
+      - af8f5146-bc97-500f-9800-9670400ffbe4
+      - 61ca8718-35e5-5f4f-bc7f-38555e380d5e
+      - 91f32261-f894-54cd-b296-dca5c25d60d6
+      target_aliases:
+      - attractions
+  case-openrca2-o2hs-v3-a2adb854:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - a66b5746-ca09-5cb6-a61b-8e8056aaede4
+      - bdd9e771-1052-5db2-9b1a-1c262e25157f
+      - a2b97c5e-962d-5ed6-b55f-f9f7985259b3
+      - 519aba8c-d430-5622-a563-3adb0a6bf1f0
+      - 5e5840f5-f5e0-5402-a5fc-dc96dfe95456
+      - 3d9ccb2b-455f-56a6-a162-a4aecf56698d
+      target_aliases:
+      - frontend
+  case-openrca2-o2hs-v3-d8211026:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - e147a073-d546-5541-84fc-3851e7d0a217
+      - 5cc311bf-ced5-5840-baee-41355dcbda6d
+      - d04235b7-f5b7-540c-8bd2-a79004fc1819
+      - 88c1d275-b515-5f53-bca5-eb32c303124d
+      - 914f2d81-6d32-5cc9-acb0-9bdb5789bcf2
+      - 624257de-35ef-5652-8321-ba2021625469
+      target_aliases:
+      - geo
+  case-openrca2-o2hs-v3-6d20b73c:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - d20377e5-ac8c-5d73-8515-ee13af5f2818
+      - 836b4b96-e0d0-5a4b-9e66-b97ba1a1eda4
+      - a5d2c6d9-eb5e-5747-ae60-5d019ad2f7d6
+      - bfa33ea3-dfc1-5752-b472-f6237347fe64
+      - 6e36559d-68f0-5597-a4eb-d80963666c4d
+      - 678df24d-25af-5115-8cf2-9df9cf239396
+      target_aliases:
+      - profile
+  case-openrca2-o2hs-v3-e02e46b5:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 7807495c-609b-55c6-a061-eb0686710912
+      - 29d77c56-0417-5b14-bb75-9288c3f84fcf
+      - fc3c3e8e-cf0b-5544-83f3-29ea046f3d7e
+      - a7b6cf03-dfb3-51c5-8b48-20b643ff5bf0
+      - a8c67e78-201e-579f-9dca-86220450f771
+      - d9a1b282-06d3-5965-9fd9-f8b7a6323c96
+      target_aliases:
+      - search
+  case-openrca2-o2hs-v3-5b067fe4:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 4e59c4b7-1de5-594d-912e-58ff6a404822
+      - 963c11b2-a1b7-5ca3-aba4-51e2997e4348
+      - a0afdfc0-0213-53d2-9856-1cab893cb021
+      - 4b8fdd8f-ef57-5c72-a816-4aa6152f3c54
+      - 7a2c7fd7-3955-5ad0-a92c-8176e4324a93
+      - 87dc99ce-4a69-5624-b0c6-46dfdd32557c
+      target_aliases:
+      - user
+  case-openrca2-o2hs-v3-65bfd3c4:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - ec6c8c76-7a60-5b6a-95e0-901933c8208b
+      - 10533ae9-7f36-597b-89cd-0ca430b54989
+      - a0c07965-62a6-5b94-b203-5d291fe235c3
+      - a519ce3d-f3b2-5445-a88c-6ffa1a0be7ed
+      - cf1d6db3-1653-58c5-8826-f3a0bbe09ab9
+      - cc6d2245-e161-5842-a74e-666bf0689e5f
+      target_aliases:
+      - attractions
+  case-openrca2-o2hs-v3-057f597f:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 66ea0680-241d-5491-90d7-2f025c1a7ddf
+      - ac163b7c-a783-5c5c-a851-529dc997e84b
+      - 1dfafa96-24e0-5fb0-95cb-498b8b058510
+      - 039d5507-aa8b-5f5f-b1fb-e60ec33435e7
+      - 3cc5f12b-e39d-574b-be3a-7f9fba18fb0d
+      - 1b039cd7-14c2-59ec-86ee-e1662b213e92
+      target_aliases:
+      - frontend
+  case-openrca2-o2hs-v3-e09a153b:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 3ea7ce50-d916-5d32-9854-5c2c2d579f15
+      - ed8b34a4-cb48-5ec8-9ffb-4e8eb7af4d7a
+      - a792ca43-ab58-582f-844b-89ecddd057f1
+      - 5aa2c4a3-f826-577b-8653-95f2609039c6
+      - 04437954-42e6-530a-818b-62a01e4236ea
+      - 3c75224d-60a8-5219-85cc-0533a1a55cc5
+      target_aliases:
+      - frontend
+  case-openrca2-o2hs-v3-b2f9d5a8:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - a1b7d69f-f030-5100-acb8-e72656d25c71
+      - c088771b-705e-55b6-9578-cb0f2e0f3000
+      - 0f3b5407-33a1-5e5e-a080-2b14c4f083f4
+      - 52be6495-4509-5e97-baad-f44fcab92bff
+      - b39a3353-4409-5e9a-a2d1-517c018bc5c7
+      - 30ad7f78-33e5-556d-9ca8-e53306d2dffe
+      target_aliases:
+      - geo
+  case-openrca2-o2hs-v3-2e261b3c:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 3482f48e-2aa4-54ba-990a-ca9b50de730f
+      - da669256-f3cf-5c18-a5a5-4bd11ec0038c
+      - bac2a457-a4b3-5462-a15a-272f73cd7400
+      - 1a581784-b18d-55d4-99e9-681c6f4ab309
+      - f283a69d-0e6c-5c67-862c-436d8b7d589c
+      - 7400327b-08cd-5839-b95f-47ab74af93ed
+      target_aliases:
+      - rate
+  case-openrca2-o2hs-v3-6112078c:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 6c7ac5de-c4fa-5344-94d4-6e427b23b8bf
+      - 871df5df-c7dc-566b-9efa-dfd7be9945e1
+      - 41f0addb-70c1-5c3f-a80d-6dedd790e7c3
+      - f75cc088-c3e0-5cb2-a9a9-ffd530e8ae7b
+      - 94677302-2b0a-5149-a0e9-7c94122da2db
+      - d050341c-86a6-57e3-8a4f-abd322456f1c
+      target_aliases:
+      - recommendation
+  case-openrca2-o2hs-v3-86483e01:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 8891306e-ac03-50cb-8e50-cfed5f20eefe
+      - 902307f3-7de7-5785-b5cb-992702ac508f
+      - 46a0e17d-a341-507a-a4a7-eba38d573cea
+      - f3bd47a5-4da1-59f2-9618-c5cc8c9d628a
+      - 2903ee33-b3ac-5086-b5f0-469be96826ad
+      - 61b7540f-c7ab-519d-be8d-87b9a129979c
+      target_aliases:
+      - reservation
+  case-openrca2-o2hs-v3-10d07115:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 22349af6-4c78-587f-907f-6811f7afc4f7
+      - f4da088c-382a-5c47-8c30-b20f4d342475
+      - a6890898-bb6c-527e-abce-ca9e86d3b2de
+      - bdb2ad7d-37ce-5d2f-aca6-9f72e4a1bdbf
+      - 9d34b2dc-0d6b-5426-8a24-70af2d2d04ec
+      - 169cad7c-33d8-540d-8021-b3807b62a87e
+      target_aliases:
+      - search
+  case-openrca2-o2hs-v3-e4254c32:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - c1b2272f-369b-5d62-b086-b7833de6466a
+      - 3ff883ba-454b-542c-990f-20161b6864fb
+      - a91bdda4-bf1d-5a2b-b88e-e60f5eeaea29
+      - 388b58d1-fcf0-5fa9-b948-ab557b0df009
+      - ed5dfd85-03fb-5197-8f29-fa6f52f50537
+      - 7cd8e696-e989-5292-a67a-a944b2c460c8
+      target_aliases:
+      - search
+  case-openrca2-o2hs-v3-6bf9ef13:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 252beaec-0e19-5848-ab3c-b8601130abad
+      - cd5a0463-3239-5590-bcd9-1426d1eca68e
+      - c77f80b0-6113-5090-a046-d0acc5330fc8
+      - 36e34d9f-ea38-5f9d-a030-8d9437ced348
+      - 7855783e-8aa2-57c4-b0ec-74244f3b709b
+      - d6112560-cfa8-5d59-85a2-f5b9d7320935
+      target_aliases:
+      - search
+  case-openrca2-o2hs-v3-8fb00ac5:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - fb60f0e2-54fa-593e-ba96-a9125f04b378
+      - 12b10d44-fe85-5bf5-b003-b655a6823a1c
+      - 58d1955b-5463-5ace-864f-4d5c4a6f6627
+      - 01a77c5a-bf70-5aa7-9323-8c2ee245abd6
+      - fe82e89a-839d-577a-bbf1-700a015a0956
+      - d408f3b9-92df-54e8-a56b-16c32aebe770
+      target_aliases:
+      - search
+  case-openrca2-o2hs-v3-63a823f3:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 30f58bac-2846-5a91-b6f1-d615928bdf3e
+      - bd5c5461-7fe3-53a8-99c5-a9cd9ecde907
+      - 2aec2016-8c9d-5576-9bc9-37b31064d3b7
+      - 8d8fab8e-4fb7-5442-b4d2-52fa23fceceb
+      - 4996b81d-e6d8-5d55-8324-2caa39194edf
+      - a966a5bb-15ff-5510-898a-f9582431e8ec
+      target_aliases:
+      - search
+  case-openrca2-o2hs-v3-d97abad6:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 0cc0b1d7-fd26-5cb2-b5f1-b23b9523bec5
+      - 6db129a4-aa48-54c9-8bcb-c06c85a0fc82
+      - d2d53eb9-a0e4-558f-bcc4-56db093e4888
+      - 1d977df1-bbfa-5eef-a4ac-90506456e4c2
+      - 3f38e020-3747-5f17-b822-6a8044a07eb7
+      - 401f899a-1565-5790-b226-5787c059b797
+      target_aliases:
+      - search
+  case-openrca2-o2hs-v3-2bf436dc:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 027711a3-8e97-5e97-9649-1ef91b501325
+      - 8d92895e-ba06-5432-aed0-56f74a5e0163
+      - 418ee4e1-00d1-55bd-afeb-db9803dec42c
+      - eaacaccb-3ffa-5352-85bc-b46f28fe7fcb
+      - 781492b6-dd2c-5d22-9979-3408782edaf2
+      - 8dea6653-c1df-5fac-a171-5320a3aa9944
+      target_aliases:
+      - search
+  case-openrca2-o2hs-v3-e9ccb77b:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 4db37070-435f-563c-8b39-cfa4bab76d20
+      - 592467d8-82e1-5ba4-a033-034c5ac144a1
+      - e2b20cf3-7ee3-562c-958f-d6e0fc54177f
+      - 63fada0d-a629-5ec1-b629-f186dca93c77
+      - 3a7b1fc8-3b04-5bba-ba09-e045c1ce8a9d
+      - 10cc6236-2a93-5a9e-a671-90f9a4613878
+      target_aliases:
+      - search
+  case-openrca2-o2hs-v3-a4c2ba49:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - edcb081c-634b-565c-8b4a-2d84238b9e1f
+      - 96d706e6-dc7c-5488-bc74-09ddf6e46dab
+      - d01b3d45-def4-548c-b48d-07f1ae95cfeb
+      - 953b5d99-160d-576e-9506-f4134f9f0589
+      - 46ff0ec3-3fb0-525f-a644-998946ac2f66
+      - 83950405-ae53-5317-bddc-e805ce660634
+      target_aliases:
+      - search
+  case-openrca2-o2hs-v3-89d0481f:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 06e684c8-3a08-5bc7-819b-708f0f91546c
+      - 803ac321-e347-52d7-849f-dc77ef529ef6
+      - c6ae3d85-af19-53cb-a681-e3ac39149f82
+      - 6e862335-0102-5db1-b327-7afe67af4591
+      - 687cee29-7d72-5457-b358-c005be4104d9
+      - 912a4639-3b25-5f9f-aa97-c3600101e6bf
+      target_aliases:
+      - search
+  case-openrca2-o2hs-v3-7a27afae:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 12b5f59f-2feb-59e3-a579-cf0bc81b5343
+      - da2ba2f4-4fe0-5b41-8f73-b4f624cef8d4
+      - f72df436-b5e8-545e-96c9-b37cb4a282b0
+      - 6b076a13-1609-5803-84e9-b8dba2ff3546
+      - 78be27d1-bcec-5c00-86f4-1f2d82907813
+      - cf1dc11e-a272-516e-94ae-c251b6619598
+      target_aliases:
+      - search
+  case-openrca2-o2hs-v3-6eaf1f94:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 8263b596-7e35-50a5-9062-ceb61dc7f9a4
+      - adbd4197-ba8d-53a2-87aa-5b0f1c35be66
+      - a8fdf7e0-92a3-5f6b-9560-3a1b05cadfa9
+      - a2d7adf6-efad-5ef5-a222-f714f133e028
+      - 39bc73b5-065a-5299-b8b6-17484cf1dfe3
+      - eb4d734c-1aed-59aa-8b72-8f493639f0c0
+      target_aliases:
+      - attractions
+  case-openrca2-o2hs-v3-e04ceddc:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 1ce7fec5-acd5-5403-a2fc-52a72066b9a7
+      - e9f1e92f-0bd0-5a8f-8d97-c4f136185bf3
+      - 5ba9a118-3aac-5a45-8bc3-eda06de91508
+      - c0a41614-3466-5c4a-92f5-9b017cd90228
+      - 34693eca-ea94-5fb2-819f-5d4f60901c58
+      - e6e04527-adca-5185-96fa-044e546d4c12
+      target_aliases:
+      - rate
+  case-openrca2-o2hs-v3-a7fac467:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - d45ba8c9-7599-54f2-8bd3-a22ebbf0d13e
+      - 9ef50033-7780-54f5-a357-38125211f54d
+      - 3daf46ca-394f-55de-a398-dbc2230f5056
+      - bac6c368-3c71-5bf9-9593-8ce951e8766a
+      - 4f6bcd97-f218-5fb3-bc47-7545334e922e
+      - bca5a3cd-8a05-5bcd-ba9b-7389107a6960
+      target_aliases:
+      - search
+  case-openrca2-o2hs-v3-8a738547:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - de441ff9-3cd9-5205-a72b-c6c7ccbe3568
+      - 31643d7b-da94-50e5-a9f3-64af3e6a842b
+      - fa7e86a4-0d0a-52db-ae9d-72be093b9f1e
+      - a792898b-647c-5319-b0cb-12d4c9023c9b
+      - bea25911-fe29-5e1b-b273-73c5c375b5f6
+      - da8f7c7f-b8b9-5d3d-99ac-efba57ffc30f
+      target_aliases:
+      - profile
+  case-openrca2-o2hs-v3-8d580491:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 4ec0591e-a1dd-57ae-8f23-bf4aef991c41
+      - 6cf02427-c913-5d62-af17-11265eda9eb8
+      - ac3227cb-a6c5-5e1f-8f62-40664e2766fa
+      - 4cbfd127-b83c-560d-9440-669e4cb264dd
+      - 9a60f9a6-07e4-5de5-956d-39a1aa530825
+      - 645e5ac3-b540-53ec-87d3-bfb798965f7b
+      target_aliases:
+      - user
+  case-openrca2-o2hs-v3-dc59de97:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - d88a6180-dc40-59fe-b0c9-e59ebda8a4e1
+      - 96c4d8af-15d9-5d49-9a38-a19e2b9e2e8a
+      - ddd1e9cc-d99c-528b-9cde-ce01b95c5ac9
+      - b30f75b9-b8ae-5c42-9f87-9ca6c1d6d2fd
+      - 89547445-61a1-519e-81e4-1058a1b74a96
+      - 7bced427-5609-5bea-907f-6f0256321e5d
+      target_aliases:
+      - profile
+  case-openrca2-o2hs-v3-17ea0016:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - ece3c2f4-3beb-56de-81cd-564b8a743a44
+      - c3131383-fe12-5bf9-90d8-2f087b26eff6
+      - b3095e36-7be3-5d0e-b144-05f2568e9a9d
+      - 6b64bf73-36ef-58b2-ba0d-f3d9a8acf2c7
+      - 1f5c57fb-a2c8-5a53-9b28-b2b15033adbf
+      - 1fb4d4ec-bd26-5111-951e-a81abd59b99e
+      target_aliases:
+      - reservation
+  case-openrca2-o2hs-v3-dd387564:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - dd482469-3b89-593b-8405-62a3bbffa538
+      - 74290123-001d-5c59-98ac-290d48124037
+      - 085dbffa-f910-5be2-98c3-37d3d6f4db7e
+      - 47d0218e-6302-54ba-af78-8577f4eee00b
+      - e4acaf7f-3723-5abd-8969-2a03f24fc59b
+      - 5ddd5eb1-2c10-5b55-8bc2-ffcae9e17261
+      target_aliases:
+      - search
+  case-openrca2-o2hs-v3-b3a6e892:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - e214812d-e2f8-5605-ae26-df7b04b1551c
+      - 13008c25-87b6-5780-8b93-f2d414eed12f
+      - 95f9881e-bd94-5b0f-b348-8a0d84870812
+      - 98629f05-6fbf-54a4-9983-2c181feed919
+      - 1bd19633-a299-598b-8402-22555e0e1abd
+      - 2ebd1062-3b0a-544d-9098-af95f2099efd
+      target_aliases:
+      - profile
+  case-openrca2-o2hs-v3-db56ba61:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - d2f2362c-97dd-5e75-8f01-8f72b42f16c2
+      - 717707b6-5be9-5b97-8b10-a602b81398ed
+      - f6e360b8-89fe-5b16-81ba-7ee6def919f3
+      - 5275ce35-8f12-5193-8a0b-cfe847f17761
+      - 8e421069-1dbc-5452-95e1-4a41f90faebf
+      - 7680f1d4-b8f0-521c-8538-d7601ed6784c
+      target_aliases:
+      - reservation
+  case-openrca2-o2hs-v3-498ca296:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - f321b513-ab33-55c0-bd31-eb09802219b8
+      - 12ffadd6-3e7b-5a94-9ec2-2a17cb129f72
+      - 4c47f89f-e39a-57ea-a1b0-782e6cdc5523
+      - 547f21bb-0c5a-5e52-bcce-cd1bba562b35
+      - bd20ddc1-5b45-5842-8f9b-0fe28b0154b3
+      - cf9b3e55-018d-58d0-88f8-36a9387e8494
+      target_aliases:
+      - search
+  case-openrca2-o2hs-v3-c76c41e9:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - b9f302a2-f0b6-5fed-8017-94dd4098260b
+      - 5dfdf8cd-09f4-56f9-b851-64e7334209ef
+      - 620ec472-b621-5fc8-8e74-0e5c14d9abc7
+      - 7ef3f732-ebec-5a87-b0bd-c1379ced9c8f
+      - 3a6d1118-2cff-57f3-b4c6-3cedd6c6e568
+      - b414c77b-778b-501a-a953-6ef98db47d2f
+      target_aliases:
+      - search
+  case-openrca2-o2hs-v3-dfac77f7:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 39853f4d-cf9d-596f-bfcb-3115d966b229
+      - 0c83654d-4426-5fe1-bfc3-3d4f814b1608
+      - 5f85e22a-45ef-556f-a69d-75313259388f
+      - 89c89864-b0f5-5812-8f86-f2bab257935f
+      - 1e70c51a-df3c-531b-915e-f6f61a0ee7d7
+      - 0ec10291-d4a0-5cee-b5de-66241fefe6a1
+      target_aliases:
+      - reservation
+  case-openrca2-o2hs-v3-9607143a:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 93811ba6-22dc-56c5-8ebe-702bcb047b9d
+      - 6349e9bb-e157-5b16-bf16-5f01544c774c
+      - 9fb52361-d4ab-5070-9883-fbf4435a8e9d
+      - 23b97b44-407d-53e5-be32-c8e3e87588c4
+      - 2db84725-38d4-55cb-82a1-476f24913b3c
+      - 1215d0d0-525c-5d66-8899-4626922e371f
+      target_aliases:
+      - search
+  case-openrca2-o2hs-v3-4fce01a6:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - ee14bcda-087b-5f94-b02f-b3b44b57281b
+      - 552b571d-b479-50e4-8eac-0a47c20a97d2
+      - bc1c6a14-93d6-569f-9fd4-d8d90c5d382d
+      - b6c79f8a-91ac-57f6-9972-79f5cd859034
+      - c7cb25d2-5678-5690-8951-faa2c8c7e83d
+      - 424567fe-4c6c-54bd-98dd-3abc212285f9
+      target_aliases:
+      - reservation
+  case-openrca2-o2hs-v3-5df79148:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 9821eea5-fd39-51e0-b866-7d94808d2812
+      - a8933357-b359-53c3-ab25-b138cda0870f
+      - ba926031-e7b0-5b54-afa8-81389b1dab7f
+      - 792c9b50-f346-5e1c-a6e6-84bb84bfbd9c
+      - 71bbcf1d-78a3-5dfe-9b40-2c26633286bc
+      - ec3dc6f4-f6c4-579b-a26b-2dda31f4257d
+      target_aliases:
+      - reservation
+  case-openrca2-o2hs-v3-b2e2e78b:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 0177077d-947d-585a-a376-7bd8d128ad92
+      - 24744dd5-14a5-5472-a3c4-64adc67b0e78
+      - 8d0cf37d-3516-534c-be3c-f17da45101b1
+      - 3029561e-a0b7-52a7-9fb3-bb0d4fb652ac
+      - 7005d340-2b10-506d-bc81-e6fcd7685197
+      - da685e83-ec59-5157-a70e-b43b4babb5f1
+      target_aliases:
+      - search
+  case-openrca2-o2hs-v3-eab03b4b:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 4bd02e07-cb5d-5503-9b2e-6a326cd791bd
+      - 46b974b3-6ca8-5381-86bd-a2b5014d6731
+      - 82dc9c25-854a-5906-bd52-5e55c4b9ded7
+      - a5a4d33a-c459-5261-9e32-d5ed6e3e4b0e
+      - b70cb314-8bbf-5986-8ab2-d488e2e714dd
+      - 698df082-138c-513b-9308-ceb4fd79b11a
+      target_aliases:
+      - recommendation
+  case-openrca2-o2hs-v3-7d0fc0c6:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - cf7aaa2e-8e97-538d-8adf-bf2ee74db353
+      - 80363dad-90c7-52d0-9afc-3991b6dd6659
+      - c501cde4-11cf-5adc-9b8b-e688ac48efee
+      - 99390794-720c-568a-85d9-44e73cac7212
+      - c89b074a-63e1-577c-9172-084b0d825c1d
+      - 152955f7-c84f-582c-ad4e-b280dc8a4aa9
+      target_aliases:
+      - recommendation
+  case-openrca2-o2hs-v3-01cd30ab:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - f241bb06-47bf-56ea-a563-b95815886efe
+      - f104f946-7369-5dbf-81d6-76fe3efedb7f
+      - 82d100d3-23e4-5512-8fd1-4e7a540057df
+      - 88a25789-b99e-5d84-a80d-0f979a3b9646
+      - 2bc3ade5-6d06-5e2d-93bf-1162a39c8ab8
+      - 047e7f07-f7f4-5908-a960-ceff61625e21
+      target_aliases:
+      - user
+  case-openrca2-o2hs-v3-01f629a7:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - a425deb2-d08b-5596-969b-fbaef484d631
+      - a895b07f-fc31-5ef0-bb3f-c9afeb4b3629
+      - 867ef034-0612-5d51-af70-643da4528a25
+      - 6149e61e-312b-5c09-95f9-54edf6b29d71
+      - 1b4199d3-741e-5a3e-84d0-8c71e4a1f577
+      - 6bbe40d7-e0c8-5b1b-b378-1f643fc2fb01
+      target_aliases:
+      - attractions
+  case-openrca2-o2hs-v3-9a9ca14f:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - fd76a2cc-7eed-59c5-8d35-6ef28a4c2cb1
+      - bd16f4e4-92b7-526e-adb6-e20ae6802f56
+      - 449e0ebb-2650-5194-a7a7-1608a4cacff4
+      - e5937b77-d9c9-50a9-afc0-49f408f32c07
+      - 6f77b11e-8a63-5989-9aa3-ecfc87055f55
+      - e4f83da0-a83a-563a-acfe-220c6144fc59
+      target_aliases:
+      - geo
+  case-openrca2-o2hs-v3-a89952bf:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 1ea43650-5490-5499-9570-4502fc358db7
+      - 0dc26ae3-6216-5eae-b10d-125235ec7c3c
+      - 60c26e8f-f584-5bec-979d-d3708f28e338
+      - d67bad0a-f2ae-5ab8-bc31-fb149458422f
+      - 43b35ae8-d05b-5932-be86-0c3959fa4629
+      - 7cd37373-685f-5ba7-9565-9430a5789c2d
+      target_aliases:
+      - geo
+  case-openrca2-o2hs-v3-f97f2878:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 8c2d7a36-ba86-593b-a5a5-414f54892687
+      - ac5ed8f2-2414-5671-8da8-ac8065f11330
+      - 827375d8-d7d4-5730-9cd8-9df56ba7af30
+      - 8e8146c4-e50b-5e28-a84c-f7bdaaad5b1a
+      - ecad0bca-dfc6-5586-aa98-c25734bcabe2
+      - 2eacb791-6eb0-5d26-b0d4-69b16a5727b6
+      target_aliases:
+      - recommendation
+  case-openrca2-o2hs-v3-d56ab63e:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - e8451c5c-0165-5910-9fa8-3040bf67af28
+      - 35119b2c-854c-557c-88ae-a1a49fdec00b
+      - 2dfe43e6-784c-53d0-a142-20869c221b8b
+      - 58b7e710-4d27-5440-9d5d-4dbb24099d90
+      - 06ab13da-9502-5b49-971e-f4ae8a247ece
+      - caa0d857-b976-5651-8538-7a912ff6ce0c
+      target_aliases:
+      - search
+  case-openrca2-o2hs-v3-4d765264:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - b2754a05-61e3-57bb-bb9c-c5c21d1748ae
+      - c26649b9-80d2-537b-a306-77727acafb40
+      - 23828481-2729-596c-baad-23db49726f5d
+      - 4569088b-0ba0-5de6-ae49-e23db274d5f7
+      - 801b27fe-abed-5cb0-969d-bf54d85c3af3
+      - 540e823d-ee0c-5cf8-b1b5-ad40815d02dc
+      target_aliases:
+      - search
+  case-openrca2-o2hs-v3-2b9d4f15:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - b6175518-d1ac-5c58-9b97-aceafe1711aa
+      - 825772d2-a64d-5f39-938c-920956b605cf
+      - 679c7e56-52d0-5de8-a7df-63127b9a830d
+      - 0280595f-7eee-58ce-9943-0e9234b1481d
+      - 086d625e-6f60-524b-9b02-18b5a17d8c45
+      - 295eeddc-3da0-51fb-b1cd-faca0e4fc84c
+      target_aliases:
+      - user
+  case-openrca2-o2hs-v3-e77b4e04:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - dffe59e1-c9a2-57bf-afb8-0b90ca7b5df1
+      - 65f90c7c-2500-575c-8775-8a95ca2fa80b
+      - b8d019c6-d1d5-57ed-9e42-9e48f532032a
+      - ffb9d49b-1dc9-5c8d-9f94-d185acdbd1df
+      - 6452ecc7-f44d-57cb-b041-2c8fca6f602c
+      - 854b6761-2054-5f36-b6d2-2f39834e1916
+      target_aliases:
+      - attractions
+  case-openrca2-o2hs-v3-edb2e72a:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 1bc49cf4-ed05-54c4-ba8b-b6845ebcb4a4
+      - 688a29d7-f272-5853-b4db-d27f50e815f7
+      - 5ea11de6-5036-58e7-b868-93f8fc3fdf56
+      - f9a7d8e0-fed1-558d-9d96-d1ee5c4014d2
+      - 51a938ca-bf38-5ed9-bdcd-2ec7d590fe03
+      - f47d2560-eee7-5baa-ad41-310e9e3114e2
+      target_aliases:
+      - recommendation
+  case-openrca2-o2hs-v3-a506e4de:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - c33931f4-6cf7-51d6-b40e-d74a01d3c9a4
+      - 23599659-8b86-5ea9-966b-7a7248808384
+      - 2fbc8853-6ee3-5743-bf5a-6f45342c6c63
+      - 8e7ea066-3c50-54b3-9baf-1a5ecbc7f8eb
+      - 0eef2d27-d63a-54f5-a923-5df431262b1a
+      - 8ae11c44-3838-5a24-bad2-7b9f7c395e99
+      target_aliases:
+      - user
+  case-openrca2-o2hs-v3-c758966e:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 2818a737-1a80-5f48-9197-b0e62a49e72b
+      - a2e935df-d666-53fd-831f-261987a85bc5
+      - 6382dbbe-3bd3-5bff-b8d0-0d8b9ab0261a
+      - 3bdc8a8f-5f2c-5d0d-aba0-4682db919381
+      - 818c6e14-8a19-5849-9998-304560420c06
+      - d6a13519-5fda-55cc-adf8-196efe69d68f
+      target_aliases:
+      - recommendation
+  case-openrca2-o2hs-v3-5033ac82:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - f29fd8e6-b406-5ecd-9da7-3266905a3d93
+      - bda6eac7-d29f-5414-8125-7c19da1c62ec
+      - a2c76940-db21-53db-ae3f-c7f692043b07
+      - bc3f139b-1e4f-5c71-9ce6-95a76da2185f
+      - 75c30d16-dfbb-52d4-b407-e593ae66d6a8
+      - 50419cec-7635-5d20-8182-bdb66ab59ca8
+      target_aliases:
+      - reservation
+  case-openrca2-o2hs-v3-4d898882:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - c6b01a94-9756-5e9d-92ae-386d120579a2
+      - fe032402-8a2b-5d3d-bd33-2bfc1d1b6b07
+      - dee6560e-65d6-5331-ab77-7252d6faaa75
+      - e7502f39-234d-509c-9dc6-ad219dd85c5f
+      - e5c8701c-4340-50b2-8537-e9d898cfae0f
+      - 190195cd-fc56-5394-8623-ec71811a1e76
+      target_aliases:
+      - geo
+  case-openrca2-o2hs-v3-5c45015b:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 34fc3c62-b811-5dfb-8aca-f32733b3ab13
+      - 9795e156-ac9c-5c0a-8003-c7e40d3e264f
+      - c6513cd2-3d76-5941-9d5f-37f490ef8e41
+      - db5fabe9-66ba-530e-bee3-cc20a98ea680
+      - c2bf4538-3c87-5721-a827-ec4634a4d5b4
+      - ec2a5a65-56c5-54b2-a2ce-03b9ef80efd1
+      target_aliases:
+      - reservation
+  case-openrca2-o2hs-v3-0a8159ab:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - b5d76dc5-e476-5b93-b4e4-b1ef06b99ea1
+      - 8650e78d-bcff-5e7e-b6f5-f9619401e3c8
+      - d543f36a-7d2e-59d3-ba7d-640d2a734217
+      - 2d7d7c8a-bfaf-5c82-bbbe-fe47b00a14fe
+      - 46f51e20-0e82-53e2-83f1-cd27e3c2ea25
+      - ed30a71f-aa7e-5123-8e7a-2e68a09c9993
+      target_aliases:
+      - frontend
+  case-openrca2-o2hs-v3-4e1af919:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - d7e762b8-82fe-5d63-97db-209f45fb4099
+      - 7a945f46-c158-5ee9-80d1-fb6d836bea80
+      - 0197a80a-59f2-55e6-9092-5b943209371a
+      - 035f2b7f-a4e3-5140-b63b-bfacdd029c5c
+      - 1838275a-a22a-5fd8-8b0f-04cc982a0598
+      - 834aa218-b00e-5f25-9d08-1c484956e2d9
+      target_aliases:
+      - rate
+  case-openrca2-o2hs-v3-551b962e:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 3b2dcb41-44e7-53de-8753-ca24fff479db
+      - e40161ca-d568-5314-bb84-786139f88249
+      - 163d63f8-3a31-53ad-9c28-8429d62eba8e
+      - dca7fc65-26ce-5c71-960d-958b92ed86af
+      - d8edcd1f-056b-59df-8b33-f975fa9382e6
+      - f2cccd44-2af5-5258-bbd7-9a396a2f88f5
+      target_aliases:
+      - search
+  case-openrca2-o2hs-v3-af4fad8b:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - f08728de-c2f8-5923-b831-27968eb4b4cb
+      - dba3a713-8e18-5ac5-8cdf-b1a9cca12c54
+      - a53398af-db02-5408-b38b-5ca70739ae14
+      - d9c28d6f-34b4-59c5-85f8-1a0a04d04eb3
+      - a941b0dc-6e89-598d-9706-ee4a36c3ae6a
+      - 36c4677b-929d-546e-8bb2-9935da258c52
+      target_aliases:
+      - user
+  case-openrca2-o2hs-v3-9e61bc03:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - ff157688-06f9-551c-9508-fad905dc0fc8
+      - 40d8172e-d301-5326-b751-36e53ff87d79
+      - 31c3f14a-1730-55e9-a26f-8a41350d5d95
+      - 2e888004-7822-58c7-9ae8-1712e12f6ba0
+      - 7e045122-06c9-5d91-b91d-b76dce72dcf0
+      - 750567fc-dabf-51f7-aa75-7fd2760fb2d6
+      target_aliases:
+      - attractions

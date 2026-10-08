@@ -1,0 +1,1083 @@
+# RCAEval tt4 converted captures (scripts/rcaeval_convert.py). Source: Pham et al., RCAEval, WWW'25 companion; Zenodo 14590730, CC BY 4.0.
+version: 1
+cases:
+  case-rcaeval-tt4-v3-5f5e6b83:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 4a75d0d0-617f-5c81-bd8e-e7165fd795d0
+      - 41866aab-4312-5ea2-9d79-84015a4d51d6
+      - 4e1f6b81-5f9d-531a-950f-331c8ef6f3f2
+      - 790f6402-979f-5e32-b885-8a37cc80c083
+      - 3f2461ff-2993-5a93-98c7-7e34fe8b1cfd
+      - ed2cf68b-0b97-5077-99e1-2314c94c47c0
+      target_aliases:
+      - ts-auth-service
+  case-rcaeval-tt4-v3-13b91fe6:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 36d5b20a-40d2-5f73-bef2-cd23497787a0
+      - 89e4f73a-5c2c-5438-aead-51eac1af66b1
+      - 0b843d13-475a-5c35-8c89-f4e55b473472
+      - 46b33eba-3522-5abb-bbfc-b525a59e8d9d
+      - 2d8d6e57-b2cc-541e-ac5b-70e0c613bc4f
+      - 6713d020-dbb6-59dc-a2f0-f657d814d826
+      target_aliases:
+      - ts-auth-service
+  case-rcaeval-tt4-v3-d992f9a7:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 35231056-24fd-556e-b5ca-2dec5d3f666d
+      - 2cec9cc3-9df5-5039-ae5e-31e78db772c0
+      - 16debafc-20a9-503f-8930-dc7017b0f2f5
+      - ac3abf00-3840-5fb5-b038-542843a895ec
+      - 7d6deb18-68ca-5856-ac06-e4a150ac44e7
+      - 035daade-892b-51b0-93f7-937aa4fe795f
+      target_aliases:
+      - ts-auth-service
+  case-rcaeval-tt4-v3-e707b26b:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - b09089ac-be1b-57ec-b00c-7e81e222025b
+      - a802c962-0655-5205-ae86-9b5728551af4
+      - 91ba0b65-a71e-5a2c-8bfb-34504e7d5566
+      - 98cb5335-9e7c-5271-8a47-02be47480bbe
+      - 813b959f-634a-54d6-9719-7740fa85fdcc
+      - c017734e-8892-578a-ae43-750e8c1d4c05
+      target_aliases:
+      - ts-auth-service
+  case-rcaeval-tt4-v3-46a171e8:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 269d8132-21fd-5d7e-afd0-bb50adc00732
+      - 04d1c82d-2250-574e-ab63-e8d770f0fd22
+      - bd19521a-dd5f-5430-894c-9e160cf78bab
+      - 25e685f0-5aca-5a4d-9b23-a077b40cc725
+      - 9e2e2592-ee1a-596b-b021-c67aca0ecdd8
+      - badebc66-f675-5e53-a32f-e92d05b134de
+      target_aliases:
+      - ts-auth-service
+  case-rcaeval-tt4-v3-6fb27cb2:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 2c7c951a-fe7b-5085-8a1f-1074215551b5
+      - f48b2441-7275-54fe-9204-8fc260f7fb6b
+      - 7d4df780-d116-5586-8d6e-ee8f48567f62
+      - 4ce29466-90d0-5e5b-bb6a-98e59bb86574
+      - eca3b5dc-cead-5dfe-9770-48d87ebfa9c9
+      - 2aa2cad9-d99c-504a-9ff7-646c2f44b8a5
+      target_aliases:
+      - ts-auth-service
+  case-rcaeval-tt4-v3-0a15b0b6:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 257957d2-f196-5b00-8556-d6f1bcf86be3
+      - 6856ceed-2dc1-5bf0-819b-917b16fda31c
+      - 9bb46388-4f03-58ce-82c3-78a2fc708259
+      - 4ba7f8e3-6553-5fcb-888f-f47ef37b5c00
+      - 64780903-bfb2-593a-ac3b-ea50bbee6987
+      - f81002a5-7a87-5a4c-b511-3cdad8f1d879
+      target_aliases:
+      - ts-auth-service
+  case-rcaeval-tt4-v3-f7cc5564:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 68e9870b-3a8e-52a1-bcbe-f4f12fa7abbc
+      - ba05daf1-66a0-5314-a80a-a2ef658875f0
+      - 681cdf5a-7b0b-5d49-bb10-1e73b317a5fe
+      - c9dc8deb-8702-5e3a-b4ce-eee365c1583c
+      - 0c0cf34f-b620-56aa-adb0-30eb2f79e9ed
+      - d448e05f-2780-52dd-89ac-52502d3c22db
+      target_aliases:
+      - ts-auth-service
+  case-rcaeval-tt4-v3-3e030e20:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 2ca858a7-add3-55f0-a9bf-c510d06920f1
+      - 96e811cd-3094-5f5c-91b0-97a8fae5c995
+      - 8cf570dc-fe9e-5b04-b3a0-e28376ca663f
+      - 70cd3887-feb3-5062-a7c4-369279daaaf4
+      - 3525ac58-3147-5caa-8320-fbaa7f6bc28a
+      - f70ef3af-56cf-53df-8485-f5262da4a31b
+      target_aliases:
+      - ts-auth-service
+  case-rcaeval-tt4-v3-39d0db03:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - da40e6b6-e973-5379-a1dd-c853bad1e0ec
+      - df49daa6-bde9-515f-ad6a-8bb0b5881744
+      - a35a0f30-91e5-5d8f-a5c8-6977ab729567
+      - 37023857-25ea-5378-886f-1fa8d9ac8bdc
+      - 15dc269b-cbe1-5c25-924e-237d01e67a43
+      - fa8b5d6c-7819-59aa-af85-ff1d72ef0c29
+      target_aliases:
+      - ts-auth-service
+  case-rcaeval-tt4-v3-e84d9651:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 9cbc2ddd-6f57-51ba-8343-78c110886a0c
+      - e031da28-906b-5f5a-b3fc-16215a1402f8
+      - a5cec279-dc90-546c-ae9e-24b84ca8351c
+      - 9f4a4be9-d913-5c25-9429-6332f843b6d0
+      - cb8d4c43-5102-5f5a-a926-d018c4d3b224
+      - 8a93204e-46a8-50c0-a738-80b3e86ba78c
+      target_aliases:
+      - ts-auth-service
+  case-rcaeval-tt4-v3-1320b986:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 52b5eeba-403e-5b15-9bda-84378b9fea26
+      - f26d6396-e04b-51c6-ab7d-c4873305ccbc
+      - 1884bbb2-53aa-5f37-930f-2cde467b810d
+      - 6a10e35f-6465-5438-81fd-6542a5696579
+      - 7425b17c-6cbd-573c-a4fe-8670fd6ee1fa
+      - 53383862-ec02-5ac1-8ca9-456fd2334476
+      target_aliases:
+      - ts-auth-service
+  case-rcaeval-tt4-v3-629f2b0b:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 53843739-9141-52c8-bbfd-a1b777584f53
+      - 197d8ebd-2579-5546-bc27-6ad1582e1b24
+      - 416d7017-1223-51e8-9675-bf70e52d5b47
+      - 304c3d61-ba80-5e5f-a0ce-b2123a9dfce3
+      - 97da41e7-0482-58e6-b7f4-0ff9178b5142
+      - 4af7290e-afa8-5e99-9bbd-6a3065027f2d
+      target_aliases:
+      - ts-auth-service
+  case-rcaeval-tt4-v3-27f52547:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - d1f762da-e1d1-5354-a18c-27cbdbacbafb
+      - 6ad52046-aeea-527d-b759-3bd8812d3c8c
+      - 460bbbf1-0103-511f-a77a-c3240f31d623
+      - e7d5a258-2695-5c63-99bc-e4d8cc05e3b9
+      - 8af67d15-2a35-57cf-9412-cd4945e2c99c
+      - d6af1d20-3371-585b-b331-e4e0d53d95d7
+      target_aliases:
+      - ts-auth-service
+  case-rcaeval-tt4-v3-a892034a:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - fb608fa6-bf5c-5de8-aecd-f5dd40ff1500
+      - dce99c0c-bc6c-53fe-8f16-3d861e5e58e7
+      - 3af1f0e5-a9f1-5f2c-9b1a-f97b7052b6e7
+      - 19d010ed-d3b6-5074-bed9-47839427b0c5
+      - 10fdcb95-cafc-5482-9cdf-ca73830f44c3
+      - d7d91c97-afc7-551b-a047-162b8e60ecb5
+      target_aliases:
+      - ts-auth-service
+  case-rcaeval-tt4-v3-3146d3fe:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 482bb1c2-ea84-5f90-a9ea-f45f29c72274
+      - 7b820c55-3544-5c98-a57b-8732632b3ba7
+      - 8025cc6c-020b-5064-b083-64e8d2687c58
+      - e944f23c-5653-5447-b409-e92760fc0c51
+      - 530604ed-d706-570c-a1e6-8b56a6c4fbed
+      - 2c2186a0-979f-5ce9-b3aa-fcda0a88f225
+      target_aliases:
+      - ts-auth-service
+  case-rcaeval-tt4-v3-43bc1dd4:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 441bdae9-93e4-5647-8d84-8644dfbf2547
+      - 5df580f2-6d1b-521d-a768-ef17999c5e5c
+      - a9b4b3ea-5a3a-5397-b244-f0c78ed01f1f
+      - 4c8e6066-8f53-5397-81fc-c02cdbe9b208
+      - e74c54d7-37be-5c76-a635-4ce223413839
+      - b33a9635-8d98-5992-92d3-694f987b622f
+      target_aliases:
+      - ts-auth-service
+  case-rcaeval-tt4-v3-f1c538a1:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - d7334283-4f67-52dc-99c2-7e8385815d06
+      - 36639077-3063-58d7-b6d4-a7aab7d4cc3c
+      - 59dd609a-d30e-5bf7-ae8d-640c6d9b41c9
+      - 5a9256c9-e781-5858-a412-f40c148ec33c
+      - a601dce2-1c4b-55c8-8441-1533057e9f7e
+      - ad5b90ed-f310-566b-a821-af6c5b46574f
+      target_aliases:
+      - ts-auth-service
+  case-rcaeval-tt4-v3-9cbc0d52:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 103a91ba-e47d-51be-b5f1-78a1b2920cce
+      - 4ab63e8d-96d4-514a-9503-fef7906bc827
+      - 3da58622-a9db-5fa5-82a8-7dc8c2c3fbec
+      - 01c6ce34-3a23-5a3d-8e81-bf5066d9508d
+      - 8367ab91-9e52-5011-a621-14b265073960
+      - 0a6dc06d-7a66-5dee-ac14-a9c646a4d0ab
+      target_aliases:
+      - ts-order-service
+  case-rcaeval-tt4-v3-e16e6a40:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 4ae6fb99-491d-5e38-b9c3-15eec1b3cc91
+      - 526a6fa9-0e5b-54d6-b9bb-790082abe9f5
+      - a76a9b8c-d4cd-53e2-9126-b740039a3642
+      - 81211a99-00d1-5fce-95f0-7830f4581327
+      - c4066268-55dd-5a6d-8a5f-775dd78c19f3
+      - 59e7add6-6967-514a-961a-559fb69f1586
+      target_aliases:
+      - ts-order-service
+  case-rcaeval-tt4-v3-0288e218:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - ec900078-af63-59bf-9983-dc7b646cd90d
+      - 37bbb60b-52ae-5ba7-9f30-67cd01418c3f
+      - 1ab8df40-d8e2-5116-8fe5-806b0713d548
+      - bcda3150-6530-5014-ad23-6c3a5e094b0a
+      - 3597bde3-d0a2-5b4d-bc50-1d289a88aa5d
+      - 2eca7163-be03-58b7-9c48-5840e04e5afc
+      target_aliases:
+      - ts-order-service
+  case-rcaeval-tt4-v3-a0c6f65f:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 2098db7d-744a-5804-9ec2-834591dd503f
+      - d0c9d0b7-e3dc-51d8-ae68-02e701121857
+      - 7c0da1bd-5e70-5071-843b-6c7178c65aae
+      - 88a77b2b-80f1-5af7-b72f-af9b92e41bdf
+      - 15005df6-c532-5df3-83fb-3a3b0398edc3
+      - 21cbc505-aab4-55d7-9c49-889a51d3389c
+      target_aliases:
+      - ts-order-service
+  case-rcaeval-tt4-v3-dd63de8e:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - f35533c4-a754-5e3a-8770-b446756ee3e3
+      - 2a6a1f74-a708-5d12-bef4-029e80abaae6
+      - 7857d1af-9fd8-54c2-a41b-9b535231d7aa
+      - 37f7eca0-eed0-5510-8509-d3d87e8d6bd3
+      - 8f27bf63-a26a-5850-a652-46a1e026feb7
+      - b541a2f0-ed5a-5128-9006-0df2a1a2eb7d
+      target_aliases:
+      - ts-order-service
+  case-rcaeval-tt4-v3-1acdbc79:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 54583dd6-8ab4-532a-b7e9-2ed77db931cc
+      - b10e3032-b3ba-5ec8-af35-5c585d17b470
+      - 805b70a4-f43a-56fc-a5c9-800216fb3ee6
+      - 4c823588-af82-53d5-b538-7078537acbf8
+      - 301a1f04-aab1-5ad8-b04e-2987ecc006df
+      - deb95919-73a4-5de2-a9e4-375ec4e5756f
+      target_aliases:
+      - ts-order-service
+  case-rcaeval-tt4-v3-d01a7a7d:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 4b5b00eb-9871-52ba-968b-1d4df7a3e917
+      - e165cf76-0a0d-50b9-97e8-2169fa2040fb
+      - 49901f23-eb24-5cdf-abf3-708e05cedb0e
+      - a4bf90d1-9a6b-5b5c-804c-9cb3d559b652
+      - 8b20dce1-db2d-5410-b884-a5c571479229
+      - 25cb11fc-71a6-5b2d-8e9b-73b4ddd906b0
+      target_aliases:
+      - ts-order-service
+  case-rcaeval-tt4-v3-50d3752a:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 4fd88c8b-5f07-5fe9-adbf-ca040b4f1f77
+      - ce042072-8a2b-5a7f-b18a-45a9572b65de
+      - e20ff98d-101b-52ce-aa02-e0cc34a3c3ee
+      - 5bfb7adc-7abb-5adb-b270-fe6eb09093ab
+      - b4c13eac-5d5e-5f72-9707-02b09898f0fc
+      - 9bac3a02-e835-5f1d-a0a6-7f64900866cf
+      target_aliases:
+      - ts-order-service
+  case-rcaeval-tt4-v3-08929c8a:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - df2689cf-e068-554c-b8f2-0beeaac8b996
+      - 8732f835-3f9d-5d8d-a4f4-124128f230fc
+      - f9ec8ce0-ce0c-50da-8a9d-848b9d8a8d35
+      - af875a3c-99ff-5cff-8c20-a89686e6a4d9
+      - efa49f8c-8958-5717-82f0-401afac6a112
+      - ec26c997-b7a7-5bdb-a01d-c28dff2d2fb2
+      target_aliases:
+      - ts-order-service
+  case-rcaeval-tt4-v3-1624ea06:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 31e36ae0-dd3a-538f-a629-07753b773451
+      - d53ece1f-0c24-57f9-a4c9-f64561b9b965
+      - 5809ad23-1cd3-562b-8440-fea2c67271bd
+      - b5fd19b6-e3c6-5283-a2e3-fe7aef544a58
+      - 2238810e-c477-552b-8050-d40fe7fbf004
+      - 8a2647b1-0f57-58e2-affe-22e5d31130e6
+      target_aliases:
+      - ts-order-service
+  case-rcaeval-tt4-v3-75f19789:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - d5decebb-131d-55bd-85fc-e60a4fe487fd
+      - d2588166-d455-5f56-8998-2f5c3e24f53d
+      - a1e723e8-2606-5714-99b1-37cec921a8d2
+      - 666a1e20-3bbe-5efb-b0bd-11b03196245a
+      - 510336db-429e-5ccb-a376-85e5d5f22459
+      - c61873a8-cd0c-5a69-adc3-a20619a35a29
+      target_aliases:
+      - ts-order-service
+  case-rcaeval-tt4-v3-69972843:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 09456847-31fd-5019-b372-a63b09cc5996
+      - 379bf1aa-dbf4-5ec8-9f6c-6a913203b8dc
+      - 6bb658e1-7349-598e-96cd-86fbcc50334b
+      - dbca1f38-3dc0-5774-be04-577e96287380
+      - c8bbfd77-975e-5453-ae9d-a9ec52b3a5c3
+      - a8e26542-f94b-55a2-93ef-29528f8381d9
+      target_aliases:
+      - ts-order-service
+  case-rcaeval-tt4-v3-73bd2005:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 88cbb861-d895-5d38-8fbf-930f17b91c43
+      - e0f969f6-2787-5285-aaef-2e8ac47fca9a
+      - e8b979a9-f7a3-5d4f-b1be-bbbc39cabc34
+      - 046c8c06-0287-5ada-9763-acf26f7142b8
+      - adea98c1-24b8-5bb6-8a66-40ac22fe9e06
+      - ee956a40-cf0e-5e9a-aa82-a9f89e8c1b56
+      target_aliases:
+      - ts-order-service
+  case-rcaeval-tt4-v3-d701b2c4:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - cd47d115-7ab1-5dce-820e-a615f03ac35b
+      - adb62a34-bf25-56d6-8b53-c454ef349b97
+      - 7d37a43c-f2fd-5662-aeca-3a91d0a202f1
+      - 1e1ade2a-c658-5bad-ac54-f68299070146
+      - 0d29e0c0-6dcf-509e-b6d6-07f07837bccb
+      - 7035babd-56a6-5c80-93e8-f91276d8f781
+      target_aliases:
+      - ts-order-service
+  case-rcaeval-tt4-v3-9de5d62b:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - e6642a27-dd60-5f5c-9811-0f24cbe6af33
+      - 1cc84023-d39e-5adb-8830-aa73be2bcaf6
+      - bc913de7-f3d3-5c34-9e9e-8bf97ea226bf
+      - d224ef7f-a0b6-5232-b869-6adee3a130a8
+      - cb1b1c82-c939-5c7a-8675-9e1bc2e53d38
+      - 5023bbea-a5b5-5bfe-8cb5-d8d23f692ef1
+      target_aliases:
+      - ts-order-service
+  case-rcaeval-tt4-v3-ffd76848:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 22b3dbd1-96c7-5091-8142-a6a9f65c8dbb
+      - aa3be406-51f5-5f76-aee1-833bffa2cbb7
+      - 53d776dc-ab06-5e51-b7c6-49b38773d7cd
+      - 7a026a0e-4bbf-5d26-9eae-eda0816f3e2e
+      - e18c0d82-c742-55df-8c1f-56e01264cd46
+      - cfc3d9b2-2a73-5088-a11e-0164b8865b87
+      target_aliases:
+      - ts-order-service
+  case-rcaeval-tt4-v3-3cc1b6a7:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - df46e6fa-c240-5b10-b4a0-0942aae30394
+      - 54905505-4153-5607-9675-e4caa6e17179
+      - c91a4605-3dd0-5b94-b89e-1a7fab95820f
+      - d41ef86d-fe07-5d40-9dd0-bee67b68aa5f
+      - 1b5233af-35d2-5a5c-b644-b199d96b3bd1
+      - 49ff51f4-ddac-5510-9f13-ed67b6109f0b
+      target_aliases:
+      - ts-order-service
+  case-rcaeval-tt4-v3-ec379c40:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 4c697e5d-65b1-5c88-b6d4-0ce69041ce87
+      - f5f46054-21eb-51d9-b637-e65817b24fbc
+      - d339510f-256b-533b-acb8-6989fb2eaaa6
+      - 2ad3af90-806b-5883-94b3-7595e471f656
+      - 3a92cb26-d4f6-5833-af3c-a4b45e48a43c
+      - ab180d0f-3ab1-50d3-984f-b1ad841722f9
+      target_aliases:
+      - ts-order-service
+  case-rcaeval-tt4-v3-cb2d2bb9:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 7a53dc26-560a-5819-ab66-21627e295007
+      - 1f5ae502-0af7-522c-9925-4890e02ef6c3
+      - ce8fc6e4-ad54-5e2b-861c-e4d12d6519b0
+      - 0000fa8f-b090-51ef-843f-e335382e33a6
+      - 7db8eed6-3204-5ea1-9c89-8acbee5d2833
+      - e6e435eb-10b7-57cd-946e-6f8059418fbd
+      target_aliases:
+      - ts-route-service
+  case-rcaeval-tt4-v3-09fcbd90:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 3e114a04-9a8e-51ac-927c-fe35e6fd0393
+      - 4afcf2a5-5987-5a5c-9759-fd2d8941905c
+      - 7123c7b4-8780-5408-b1de-906b512a458e
+      - 3651e5f3-37c8-5ca7-83e7-d142d3102bc6
+      - a9f96d90-1ef9-5fe6-831a-97bc0ffbe3e6
+      - 6bd0fc6d-7186-57bb-bac9-b4f865997f7c
+      target_aliases:
+      - ts-route-service
+  case-rcaeval-tt4-v3-126604cb:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - abb0172a-374d-5f09-a78a-e8b0b0d3d3c6
+      - 68a7cd34-ef8d-5400-a865-7dd85952fd6d
+      - 6830e977-87c4-5228-b542-6cd268139049
+      - 2f9e2ccc-0ed5-562d-bfb0-b554621672ce
+      - 528ecd8b-30c6-5777-8fdf-9bcd68be0e22
+      - 5c08acc1-b78a-5e0a-9236-86ff923cf632
+      target_aliases:
+      - ts-route-service
+  case-rcaeval-tt4-v3-9345ef75:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 4cef7680-3f99-5094-9e0a-4101c6c952b1
+      - ea90f8bd-7280-5c2a-8cd3-2c11047426ce
+      - 1a8fc5f2-57a9-5d2e-8f22-b82bdc48c98c
+      - c3f9f4da-b029-537e-9b84-1b7ede9b60ea
+      - f9e7ad69-c310-55b9-86b5-6e80b538836d
+      - 6167836d-ef13-564f-9a3c-39e18e0fcb8c
+      target_aliases:
+      - ts-route-service
+  case-rcaeval-tt4-v3-e7b19ee3:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - fb63246e-ec07-56ca-a62e-d389b8bf3b61
+      - 44009ebe-d2c5-50e8-919b-791ace412c69
+      - f4b51e7f-fdf6-5aab-a255-ad7c63a11f47
+      - 60790137-009b-50e2-852e-910ac0b0b82a
+      - 2cefd216-1b60-50ce-bc39-ac55b12830d0
+      - cd90ca1a-780e-5e29-a9f3-83d06bb82c18
+      target_aliases:
+      - ts-route-service
+  case-rcaeval-tt4-v3-9c37210f:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - f4c6f76e-4e8b-5018-ac25-af3821928277
+      - 13e3e0d5-4660-57f4-a767-af8c36b47c72
+      - 3d92e7ad-cd2a-5b97-839a-d7039d33ada0
+      - 4fbf4c1d-cf0f-5601-8061-fe202022c715
+      - cecb93ff-6528-5a91-a2b7-e6be4f989c48
+      - 872283eb-f18a-5ef2-9272-e568cb98d489
+      target_aliases:
+      - ts-route-service
+  case-rcaeval-tt4-v3-85bddc92:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 2fe1e8ee-2810-5450-a3a3-8757801f8fcb
+      - 854579c1-6d36-59c0-8449-c3bc26a56097
+      - b83a8507-f55e-55fa-b4f2-c2d58aca08f8
+      - 79021ffd-0da7-5f49-bd65-ef32edeb0632
+      - 7cc10f28-b96f-53e5-ae91-72e8e2c9d238
+      - e4a711b5-95b7-5325-9eea-20f9041618a3
+      target_aliases:
+      - ts-route-service
+  case-rcaeval-tt4-v3-ecaa8e85:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - ed4c1ad7-f02f-5df5-8415-923e02de4c1d
+      - 67423f1d-3d90-5e57-9841-482cc3270989
+      - 32b7074c-3f9c-559c-95e3-9d5adf297b20
+      - aa51a22c-e694-5bfd-ae66-f22f5ac3dc36
+      - 4f6c59ab-ff4a-5799-a557-eb5485160240
+      - e6d30049-cf6c-5560-8cd6-748b5b186898
+      target_aliases:
+      - ts-route-service
+  case-rcaeval-tt4-v3-e2c709a1:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 780969dd-03c9-590f-8981-44832591b1ef
+      - 1b03c2ee-4b3c-55c1-8b5a-d22765383d0d
+      - ca0c1e0e-047e-5127-a96c-c9621e3d82f7
+      - 29fc53e6-920e-5ff8-b984-4f1880507dd9
+      - 620173f8-9d5d-5772-858e-fd707e32a910
+      - 05926c9b-1f80-5ea8-bc43-29b9abe03b0d
+      target_aliases:
+      - ts-route-service
+  case-rcaeval-tt4-v3-27b67a1c:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - a71a9d00-e850-5213-b4f6-3d9f6d8ff7a9
+      - 5f4e2d3b-baf9-5401-b3d7-1a3f588cb7b3
+      - 41360efd-e923-593e-8cd0-8592e105faa5
+      - 854324b1-06d0-5663-a885-3b8b272fd9ef
+      - a90d944e-1ea4-576c-a04b-4e00b60a6fad
+      - d9cac111-e52d-54c6-9f35-5ea7d891e49a
+      target_aliases:
+      - ts-route-service
+  case-rcaeval-tt4-v3-e47cf4d2:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 188811e0-b59d-5a31-a222-4ccc97c5267b
+      - 943c5fe3-2567-56d0-9d45-6b1506e95e0e
+      - 99d54079-e9d4-52fc-9bf3-ea2d4deb4792
+      - 27d27b15-3dda-5411-8cee-78e9d73357fa
+      - 1b6261b6-810b-5e99-b990-03f859ec61d2
+      - 61227cee-6f91-5d8f-8bf7-dd596a356fb2
+      target_aliases:
+      - ts-route-service
+  case-rcaeval-tt4-v3-29dafa39:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 9571cf4f-aae7-57dc-97ad-6bac2f0aad0b
+      - e0a38bac-9375-5fd8-addc-0750e8e09373
+      - 6a8db859-b75e-5d59-aa65-92e8fef5bbd5
+      - 353168b7-3bd9-5955-b429-b0379b08b8cc
+      - b343ba77-8c84-5d08-8a38-00e2a608b1b9
+      - 17281ac3-b549-5d67-a78f-007d21994325
+      target_aliases:
+      - ts-route-service
+  case-rcaeval-tt4-v3-69d492e0:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - cbd1f2ca-f182-5148-a5a9-fa9e592d1be5
+      - 0464650a-375d-5bb6-9dc4-47f1f0caaadc
+      - 6e310aa8-371e-5fcb-a8b6-2b27e6edbb42
+      - 27f3dd86-7ec2-5fac-8f5f-ad690c25afaa
+      - d94db7be-270a-50b1-8965-40289eb1b837
+      - d5c495f5-7d89-5075-85eb-4c12e75fa024
+      target_aliases:
+      - ts-route-service
+  case-rcaeval-tt4-v3-d60ca5ec:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 395f9c19-1571-5564-accc-5868c9519e4f
+      - 26a627a3-cce3-50b5-9778-a2f06604a2c7
+      - b3c85fd2-23ed-54f3-98e0-c6b2fad4f147
+      - 48dd6016-e629-5aa2-afa3-9bbf7c8d7fce
+      - 3bc98930-4ee9-5c78-a83b-5cf8630617bd
+      - acdfcd86-13f8-5959-b5c4-32b46f8bcd7f
+      target_aliases:
+      - ts-route-service
+  case-rcaeval-tt4-v3-711c95b7:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 04354f61-59d5-5ad2-91a6-7b6a66e1f2cd
+      - 6ffdfd92-96a8-502d-849d-9c2a7eac6940
+      - 7180e6b1-8e59-5b66-ba58-834782540aca
+      - 5d1601c0-d097-525c-9119-e5f451fde758
+      - c5bca838-85b8-5c7c-87f0-dae09893e743
+      - f8d81469-86a4-5414-aa55-992c2a033fd6
+      target_aliases:
+      - ts-route-service
+  case-rcaeval-tt4-v3-cf5d0638:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - f3e434cf-393f-5e88-95c3-5a5957327a37
+      - f3a57d15-5957-561b-b007-67d67136586b
+      - 216aabbf-ff90-5211-959e-198c00535af3
+      - 72a40da3-6b2e-572d-869d-eaf8f1d325a2
+      - b6aca570-685c-5d17-82dd-cc85114934e8
+      - b78e5b55-245b-5557-921b-9b13333f66fc
+      target_aliases:
+      - ts-route-service
+  case-rcaeval-tt4-v3-950c84c4:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 3e8e7000-d0b3-5536-9cb3-cf44990599fc
+      - 57c0f950-00e0-5785-a266-2da1f3f53caa
+      - 2a4585dd-8951-5599-857f-40474d670ea7
+      - 1efb1e64-6959-53ce-b8dc-2c99fc65abe0
+      - ed64df78-54a4-5a18-9cad-d0e97fd8ef7f
+      - 0961e087-9a81-5c15-a286-36538e68a5c9
+      target_aliases:
+      - ts-route-service
+  case-rcaeval-tt4-v3-25252c08:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - ccacafc2-a982-5610-87d4-f3078846ba21
+      - 87336b9c-6f57-5fc3-8449-5d376b2ac120
+      - d33772b1-052a-5843-85ff-b3ade32b9c38
+      - be84f9da-0f95-54c3-a475-67d83afc26a5
+      - c42c8eb2-51da-57ba-a3c6-fd4d5df4e100
+      - 3ea250a0-99ea-5cca-90f2-adab4637d7ae
+      target_aliases:
+      - ts-route-service
+  case-rcaeval-tt4-v3-0a253289:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 8926aae9-e662-58a3-ba93-ef9e3147012a
+      - d25ef311-bfbf-5df2-b45e-d21fa4a2b705
+      - aa011619-d6ac-51c0-b498-0839e0fb2407
+      - 12e00893-2c7e-56a3-959c-158ce7c9e0fa
+      - b883e5e1-9c29-57e2-bb9b-aaeff6f6d572
+      - c55ca8ca-274f-55f5-9a5b-50e6fbefa35c
+      target_aliases:
+      - ts-train-service
+  case-rcaeval-tt4-v3-d7b59cab:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 2da46ee9-89bd-5844-b91a-d1937b2ef713
+      - e8c9ee11-7d69-51d1-aabb-b8c1a11cdf3c
+      - e2870f4a-59d5-50e4-8795-3679c0fde11e
+      - 77b7bbe5-7d8a-5597-813a-836b4c05bebd
+      - b434445a-d697-51dd-9be3-3d037d151e26
+      - f76ae186-e3a4-5ce3-ab20-98d1c509ca0a
+      target_aliases:
+      - ts-train-service
+  case-rcaeval-tt4-v3-3b5acccb:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - d3a448bf-c1cf-53b1-86af-b755729b909f
+      - 8b045feb-3da7-569a-bb7b-19579f84c1fe
+      - e22fe609-b132-53ef-b5b9-23474d5a7efa
+      - ec1cadc5-8fc7-5a5c-8ca0-6bb7477388d3
+      - 5fe8526d-c60c-5816-a642-82a30d71b7de
+      - 000f1f54-484e-5940-820c-f6085da3535e
+      target_aliases:
+      - ts-train-service
+  case-rcaeval-tt4-v3-7b86949c:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 20035b71-f5d0-58a7-8154-a0ee3e37b65d
+      - c9375be1-5f87-553d-95ec-56a413d827ec
+      - 11556d92-5994-54db-a813-7f5a5e948fd9
+      - b6e1c344-a380-5c41-a8b3-f70eecdfb788
+      - 82148648-0fa9-54cf-8c53-8b14fcf04513
+      - f9ffe0da-c7d5-515c-addd-eb82d5070763
+      target_aliases:
+      - ts-train-service
+  case-rcaeval-tt4-v3-1b0ddb8e:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - df9a6fb9-ca16-5925-badb-a9ef673a3050
+      - 05d78f40-cf4f-57cd-87e2-c49f2d4ea928
+      - cf7ec88f-19ea-545d-abda-9992f43db371
+      - b99735ff-efb7-5b41-8a58-7210267ceabc
+      - f40eb216-e6b5-5b59-bde6-7a0021d2d97d
+      - d054ac3f-d6ed-5a43-a4f2-b307c1da5329
+      target_aliases:
+      - ts-train-service
+  case-rcaeval-tt4-v3-773cce5c:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - c68dba8e-d2f7-5c50-9ea3-200cf2261a03
+      - d80bc993-88e5-5340-8e86-51da48ed121f
+      - 5c936596-15ad-5322-a7c6-33ee022dfc72
+      - f5397b99-db47-50e6-b154-ad72ac1d46d7
+      - b8c0f06e-b411-5771-b166-459d884350da
+      - 9bc706f2-a9e3-5f9d-9ef2-e5e037c40820
+      target_aliases:
+      - ts-train-service
+  case-rcaeval-tt4-v3-52ca5c00:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - cb3dba6e-3ee8-5b36-a9be-1b3becdca76e
+      - c545a967-027f-5182-a5d9-ef5b0c9f16ff
+      - 81f9e193-4f4b-5139-8991-3338485d0813
+      - 9f45c1b3-c0f6-549b-8fa8-f23609f4aa50
+      - 3be028f6-f782-5204-a1d8-1f533ca4d7c0
+      - 62a06382-2e5a-50cd-8f62-6b5beddac4a7
+      target_aliases:
+      - ts-train-service
+  case-rcaeval-tt4-v3-68b769c0:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 9fa439c3-59c6-5b3c-b932-f707d7976f7c
+      - d9c1fc52-5242-5918-b68c-d926c500c4d2
+      - ea254bcb-1d02-5421-b576-67533c19d842
+      - ea33dadd-17af-50e0-ba6c-ce1f02f37809
+      - 4550ff0e-8b9f-52b2-bf98-363ab3e5ec95
+      - 045503c2-34bd-5fc3-ab4f-3da72c89c835
+      target_aliases:
+      - ts-train-service
+  case-rcaeval-tt4-v3-df8495d8:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - bb352a0b-dcf8-5cf4-a7aa-aa651984a042
+      - 2be5ebd6-5530-59e3-ac12-1b54a2d91d4a
+      - 51c54d67-3991-5aab-9f8e-fd17405c500a
+      - 7d30ca8b-6f80-590c-acfe-46402471027a
+      - de3c9219-f695-5650-bfc9-c361e887f4a1
+      - 37e8d2dc-e96f-5881-8dd0-bdc3484a9497
+      target_aliases:
+      - ts-train-service
+  case-rcaeval-tt4-v3-20feaef5:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - badbc890-60eb-5689-8957-ed89eb300c46
+      - 0d2ad65d-ef21-5de2-adb6-1a41079f1cb8
+      - d48b3993-0d0d-5d1d-ab3c-6d6eaeb4e8fb
+      - 932f54b8-d102-58db-a25b-2506e55b163a
+      - df11b531-cfe4-556c-b18b-b2d842213b59
+      - d1c7222f-6090-5765-83d2-c2d5a0768a67
+      target_aliases:
+      - ts-train-service
+  case-rcaeval-tt4-v3-28a6eb28:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 4bfc6b70-53a3-5eaa-b170-9f27ec45410e
+      - 799329e6-4aff-599c-85d6-77ee71416723
+      - 77182e32-9879-5320-ba29-f527c99e52a1
+      - f017b40d-2911-520f-8a36-00383bd1b73e
+      - 6bccf5fd-eaad-55e7-8381-3bce9ef4bc07
+      - ad9d09f6-49bd-5442-9b74-71a182e5d9a6
+      target_aliases:
+      - ts-train-service
+  case-rcaeval-tt4-v3-43d10ed2:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - a0392a5a-d731-5689-bc14-e71baf7468f5
+      - 1798c367-88b5-5f1d-9d51-45c64118c303
+      - 6a7d1083-276a-5bb4-b2a2-e09a72fcd1b5
+      - f5a7057e-b69a-5d49-8205-10c43d947dcb
+      - 54672ece-58d1-5e81-a781-6ffdc5f485b1
+      - a892334b-3a69-52e4-a8a7-df9215b33170
+      target_aliases:
+      - ts-train-service
+  case-rcaeval-tt4-v3-84007f0c:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 72240e3e-a1fe-5baf-91e9-162ab1f69ca3
+      - df18ada4-7532-5e58-b599-6a4b701bef7a
+      - a2cf11fd-1811-5a63-aee6-9096c1e4a7e5
+      - aebf3271-89ab-5122-8e4d-beb873af3ba1
+      - 26471abe-0d00-5f24-8076-8884b0dfae94
+      - b2d5236d-adcb-5cb5-bf36-106b49b39052
+      target_aliases:
+      - ts-train-service
+  case-rcaeval-tt4-v3-513ec474:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 68ee4f9b-2b66-5279-a86e-1a74e23ab593
+      - b9d97561-e3f8-543d-8729-bdd75ecf580b
+      - 0d175b8c-2cf8-5e51-af0b-42331360f818
+      - 5f302811-9255-54a8-a4e2-11938ed44d67
+      - 6286a8cf-84fd-57be-99b6-40792f323ecf
+      - 5a0215fb-cac8-54ed-b6e5-ba5f10dce817
+      target_aliases:
+      - ts-train-service
+  case-rcaeval-tt4-v3-5167eeee:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 2ec2bf36-e147-5ae3-9048-28c423d6a0ec
+      - 828b84ce-e60d-5760-89ba-2f2c1f638dd1
+      - a549045b-4883-5974-b8ab-28466e5815f7
+      - 06b79b3e-4f35-508c-88d6-0c362de18d95
+      - 85a97237-6c69-53a6-a3e1-81951420991f
+      - d50960b4-5817-5971-9e39-df78c01c4057
+      target_aliases:
+      - ts-train-service
+  case-rcaeval-tt4-v3-a328352b:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 6fb34cbb-a50b-592b-9a9a-8a8a3965a1c5
+      - dbbd3d6e-258f-554c-91d0-e9738b7f830c
+      - 50ab1f92-d3b5-5878-bf5c-8a9e96776e3a
+      - 91569c82-3984-5acd-be0f-fe2be10b0ddc
+      - fb723357-7ec5-5773-ad11-69ec7ebfdf9b
+      - 20a0479e-bec7-51bd-b436-827a1c0fe24d
+      target_aliases:
+      - ts-train-service
+  case-rcaeval-tt4-v3-3a584ee8:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - b38835ab-56d8-565c-8cdb-cc6ae0a070d7
+      - 511233b9-b919-5dfe-8d87-d398912f3ac4
+      - 0ccd7865-714d-5d43-8cec-ed4984d7601b
+      - 70b2c440-1f53-53ea-96b6-7e32835fd8f8
+      - 55015d0f-120b-5f4a-b0a8-9af6e925eb76
+      - da056b20-f765-50d8-beed-e03695303a12
+      target_aliases:
+      - ts-train-service
+  case-rcaeval-tt4-v3-635dc952:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 8fdd8209-7a20-524d-b256-ff9e0aedc71a
+      - 1a530bc7-e58e-5aef-b799-3c41dab05d6d
+      - 3eab4d5a-e16d-54cc-bab6-f959456b9499
+      - eebde172-f607-5a76-8dfa-cb1aa9f7f7ce
+      - f20e85ff-757e-505e-880c-979b5f0876ea
+      - aff9cd97-d8b7-5cf7-b75c-41ea839b0c9a
+      target_aliases:
+      - ts-train-service
+  case-rcaeval-tt4-v3-cebe68ad:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 74c1ade9-e048-58c0-9bda-08b34985abc4
+      - dd344fb0-5a90-5e7c-bbe6-755398886d89
+      - f5e2866c-aa0f-576c-b5db-15cc2b601ad5
+      - 38b93442-65ea-5f5f-b0f5-63ac18243c56
+      - 3bfa1a32-0192-5686-87d0-01dbacc0676a
+      - c17c8282-b49c-52e6-930b-7860f88e1e1d
+      target_aliases:
+      - ts-travel-service
+  case-rcaeval-tt4-v3-9b0b6f4b:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - d8e3fbc3-87b4-5ec6-bf27-4a94b028a76c
+      - 7b59799d-b8a3-5c95-9444-fb7a765ef67c
+      - a38a777c-45e8-5329-88b9-3268f26a59ab
+      - 3ed885a3-a44d-523a-9e91-cbc3de7f45bf
+      - c8990129-a823-5353-aead-62e38f3e41da
+      - 017476cb-f556-5007-bb81-7a8fe218bd49
+      target_aliases:
+      - ts-travel-service
+  case-rcaeval-tt4-v3-02960cd9:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 7656e910-b0c6-5ec1-b022-f82fcbebe2ce
+      - e44b8121-3c91-5db6-a6f8-af5b2b1e3cf9
+      - b8a65a72-18dd-5c23-a9b5-9092157a0f41
+      - 10188b71-851f-550e-a93c-4cf9405b64b0
+      - 66a70346-5b82-50b3-bb13-babd2cd56a07
+      - 9685e98f-479c-5bcd-8216-f53cbc6d8c97
+      target_aliases:
+      - ts-travel-service
+  case-rcaeval-tt4-v3-e5c36cf6:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 508f9fc4-ec4d-519c-9b09-35770f01c181
+      - 994c75f2-950c-54a8-8c04-2605cdaddfc7
+      - 0dbf0876-f988-5e25-91d6-139ddfe405bc
+      - 5a809319-ba8d-5a92-81cf-7472487aea68
+      - be18a626-f5f1-5393-b984-5e18106e4db2
+      - 66f8ca76-6313-5b6c-85a6-b124d6ca1e43
+      target_aliases:
+      - ts-travel-service
+  case-rcaeval-tt4-v3-6c2a8fe2:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 753f2a3d-c46d-5e7c-aaea-fa6d432b892e
+      - b0107b39-e087-5249-97c8-de9a27cbaa4a
+      - beb4f57b-a6c3-5d57-ba95-816af7a987a4
+      - a2b537b8-ce47-5500-afb6-6c8970fea4f2
+      - 5761ec71-3129-581b-aca3-5c1d992aa836
+      - 41b2dcd1-acd7-5965-a8e8-2065b194ed60
+      target_aliases:
+      - ts-travel-service
+  case-rcaeval-tt4-v3-cf77794e:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 3f5ff41f-d4e1-5275-a03d-8c3598fceda6
+      - 126b65c7-f859-5d87-870b-12a405819de6
+      - a2619de1-f7e2-5638-8dbd-68c3829a6b7a
+      - 1d8bb40a-e37b-58f7-9cec-5706c4decfdd
+      - f90cfacd-f281-56a0-b9e8-3a170803cb17
+      - a77ad98c-acef-5496-bd2b-fed58f55c5c1
+      target_aliases:
+      - ts-travel-service
+  case-rcaeval-tt4-v3-1f4baf04:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 0485094f-2c2b-5258-87af-058869fca9c6
+      - 29fe534e-436e-58cf-9d1e-63c478d372b4
+      - 291c0ee5-25e6-5cc9-a5cb-8cf66aff2565
+      - 7b9d3884-a1ec-50fd-b190-0c4919c97e6d
+      - 36cc221c-0c0a-5719-8ef2-f41d101c3027
+      - b297d72a-7906-57cb-ba7a-42c2161fcec6
+      target_aliases:
+      - ts-travel-service
+  case-rcaeval-tt4-v3-53578c10:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 6475c1ab-525a-5b90-b319-6e0eb22b5a68
+      - 797cb61b-38ff-5553-9816-b961bd384711
+      - 7bfd1568-7cf4-51c1-84ef-ae5bb194cac4
+      - b9355c7a-a259-54a1-874a-88ceb584b93b
+      - fe81f2c0-4b2d-5bef-af33-35b5ba866f6b
+      - b776d8ea-8641-5c5d-977b-df40ba2b1822
+      target_aliases:
+      - ts-travel-service
+  case-rcaeval-tt4-v3-158f2019:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - a8d8d58d-4c27-5738-98ae-67efdd8c715f
+      - b7abf732-619c-579c-92b4-24ca248eb562
+      - be89369c-296a-5bd7-98e7-12dad4f7799c
+      - a1b7bcd1-e1a2-55dd-bec0-31bd696803da
+      - dc14d471-f224-52b3-8a91-70e57f4c3896
+      - 42c518cb-601b-5e45-8bc9-cea15a6515c2
+      target_aliases:
+      - ts-travel-service
+  case-rcaeval-tt4-v3-ab34b3df:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 11b762dd-73c6-58f8-aa25-b383612edaad
+      - 61804a54-cd8b-503b-90e7-b50082b612db
+      - d8834038-e0a4-5141-a850-1f3e0838d66c
+      - 211f9ae4-666e-5f85-a2fd-e74cbaffb655
+      - cae637ce-a1ed-5f93-9811-1d578f86f953
+      - e3f2a1ad-4c2c-532a-aa9c-92a05c2980f7
+      target_aliases:
+      - ts-travel-service
+  case-rcaeval-tt4-v3-49b82ee0:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 62f534ee-ee43-59e2-8769-a8ec6593ded2
+      - ad64796d-3233-5544-8259-acda90cee859
+      - 38460076-c46c-5674-b2ad-ea6787ce3682
+      - ea894919-4011-5192-a5a7-18dfb3120b9a
+      - 8d5a4d8c-fdc6-5984-8a12-1b1a823d9e1f
+      - 6d584b1b-a108-5909-8a71-cbbc4c0284fd
+      target_aliases:
+      - ts-travel-service
+  case-rcaeval-tt4-v3-7c0c3826:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 95d26188-cc13-5354-b90c-1ae38933707b
+      - c68e6f64-e0c1-53ae-8a5f-f4a36e91cf3d
+      - 61f7bf8e-0592-5e58-af8c-0f685e828c8a
+      - daaa16d0-e29f-5712-8ba2-e39c995feb51
+      - 5f52f1b2-6846-5c62-90a0-7eab5d8e99db
+      - 16897216-7693-520a-ae5e-6f5dc5716026
+      target_aliases:
+      - ts-travel-service
+  case-rcaeval-tt4-v3-9fc0c72f:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - aea260bc-9242-508d-8ed5-17f0fce439cf
+      - bdb1c4ea-1683-544d-b303-b9950a557174
+      - 2baee933-3f8d-5ac0-980e-674cb308a525
+      - 3cb15b2d-7182-5338-a270-a0d068f1b368
+      - 1d16e5ee-8722-56c7-8428-b4e3d5023977
+      - 1342f7a1-55f5-51bd-a455-d32343d30a04
+      target_aliases:
+      - ts-travel-service
+  case-rcaeval-tt4-v3-72cfd1fc:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - a46ecf51-65df-5b4d-a17b-dadc1605b1f2
+      - 58f82672-144c-58a6-9084-4257ca704c8f
+      - 44c7de69-1d00-58bd-89e2-3b34b7f42c91
+      - 225bf56e-ed0f-5967-8e6c-d121dbf81c51
+      - 4a11a104-80f1-5ce6-ae1c-f4eed8ea7e23
+      - 5f7581b4-2510-552d-8aca-df815643af87
+      target_aliases:
+      - ts-travel-service
+  case-rcaeval-tt4-v3-b643ae2d:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - dcc3c9a9-8563-581f-a652-1b1ae0496095
+      - 0cf44458-bcf7-5538-b616-79a266f75fcc
+      - cfa05cc5-4108-5ef9-a81d-f9cfb19a7d7d
+      - 2376c5ac-40ca-5c9a-954a-10764e4525de
+      - 1dc2a651-cc53-5d82-a16e-a060af3d7114
+      - f349e665-a71b-55d5-b00c-d02c2eb1d042
+      target_aliases:
+      - ts-travel-service
+  case-rcaeval-tt4-v3-51a11a14:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 41102eb8-577f-5716-a539-34e4689b08b5
+      - b58130d3-9fa9-55d1-813f-0dd9c7821475
+      - c426cf10-f9a8-59b3-a19f-11f941cc011b
+      - aaa9f32f-157f-55bb-8ce4-257b307ec574
+      - f360c31b-0c64-5e64-a7b6-c960d2a4f393
+      - 32803f37-a175-528b-b9ed-93695219a705
+      target_aliases:
+      - ts-travel-service
+  case-rcaeval-tt4-v3-d21d518c:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - a920405d-32ed-571b-92fb-c75105f35c8d
+      - 86db298a-38c4-5f8c-93ab-85e318897385
+      - f9a3d2df-ae80-50a3-b4ba-ebc3a6f72add
+      - b3d7c723-4bfe-517a-9e00-9c45295f3fed
+      - 1e128aab-f055-5c41-9853-2d33ecc495f7
+      - b64f83d3-58fd-5d66-b813-74e59d39cb9f
+      target_aliases:
+      - ts-travel-service
+  case-rcaeval-tt4-v3-6edf357e:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - b1f4a9f0-5a1c-503f-af98-9c1643e72d00
+      - b8c5c18d-cb0e-5dfd-b5ab-6c06a5323789
+      - 4beb083f-070b-5a5e-abd2-5ca9e88601e7
+      - 7dcef0a4-c91a-5b1f-85ac-2bfc3d720f5f
+      - ea19276e-94be-5b2a-9c29-1dec4b807b89
+      - 2b4df8c8-f1d1-5878-bc38-71935baeaf52
+      target_aliases:
+      - ts-travel-service

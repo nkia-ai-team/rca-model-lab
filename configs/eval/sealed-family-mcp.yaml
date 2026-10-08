@@ -1,0 +1,88 @@
+version: 1
+cases:
+  # case-f04-h-v3-af25dea6: legacy sealed-family-v3.yaml 의 단일 UUID 루트를 mcp_golden_from_legacy.py 로 워크로드 전체 UUID 집합으로 확장.
+  case-f04-h-v3-af25dea6:
+    expected_status: confirmed
+    roots:
+    - target_ids: [93df2d34-b054-4ecd-8f8e-bafa098dc6cd, 4c534722-e54d-4b2a-b69f-bdf3a715ecb0, e20d67af-6847-4aed-92ec-27b4309e8e3e, f93ce73b-e0a1-4bb5-8df4-e16974d72512, 1b15036e-21ed-4004-8be6-41dbc893ca5b, fdbd1a00-7b2a-4808-a2e1-5d9b4f788bb4, 66858698-f6b1-474e-9a13-c6623fab3c8c, d2af0fda-a283-4a19-aa3f-ee6ed192a2e0, 6554cb64-ad0a-426c-81b2-687796f10314, 19687c95-ca67-4ca0-9208-47294d53768e, 23efc585-f405-43cf-97e9-0beb2ba8c363, 8c2be2b0-a710-40bd-8459-4d148394d0ee, 06089b53-b08f-4651-8ff6-fe6c90d45342, b2fce274-f83b-483f-9ee3-f18fe46a541d, f7c68e4c-22d1-4050-ad1c-93ed5e645757, 99dab72f-a2a5-4d76-9d96-0e04ffe43f8f]
+      target_aliases: [testbed-order, commerce-order, order-service]
+  # case-f08-g-v3-0ac275b0: legacy sealed-family-v3.yaml 의 단일 UUID 루트를 mcp_golden_from_legacy.py 로 워크로드 전체 UUID 집합으로 확장.
+  case-f08-g-v3-0ac275b0:
+    expected_status: confirmed
+    roots:
+    - target_ids: [00149c2f-8a97-43bf-8907-c25029973e51, d1c009f4-0c88-4714-8487-38493e14cc76, b4d77c2b-7574-4a99-8fd5-eb1bcf34b0ed, a33a1d9a-e2ed-43d8-a8c3-6dd366a5e378, 0b01c02c-b373-4b0c-99ac-181301a205bd, 6526e763-eb56-4541-984b-21129b1ed6f7]
+      target_aliases: [Oracle-corebanking, BANKING]
+  # case-f08-h-v3-6bdc9531: legacy sealed-family-v3.yaml 의 단일 UUID 루트를 mcp_golden_from_legacy.py 로 워크로드 전체 UUID 집합으로 확장.
+  case-f08-h-v3-6bdc9531:
+    expected_status: provisional
+    roots:
+    - target_ids: [c3a3587e-215e-4da8-a76c-729732394e40, 69baeaba-e83b-4109-a741-3757e599650b, 5026bd5f-ab84-4a1f-a334-f06dbd24c603, 06083f32-e4c1-45ae-abee-24795b93e4bf, 15dccf59-f629-4008-b34c-64dffbb14991, 28822568-e862-4b2b-ba17-e4f0843e652a, 1f4a47ba-32d6-4ffd-bf4b-1cf483df4ae1, 2111c2a4-41ad-44ee-ad66-74deb1b988ee, 7879f9d9-e693-4dad-9bb4-0b96ac4a4f63, 0e850ae1-8158-4c1e-8de6-4b6687fd8aa9, 7ffcbeab-171d-4e1d-8235-87e97588a007, 2431cd7a-c2c4-478d-9c13-a9fa77df89ce, 2e81b529-8e3f-411a-8e76-9550aace4524, e987dbfc-bde5-46c2-bfe4-89ca0e2fdffe, 850c55f8-fe22-4ba2-8413-65916a9698b5, c7a0492d-633e-4882-be7c-5cd749d26d45]
+      target_aliases: [testbed-payment, commerce-payment, payment-service]
+    - pseudo_kind: external_dependency
+      pseudo_ids: ['external:external-pg', 'external:testbed-external-pg-mock']
+      proxy_target_ids: [7956c805-a580-490f-90c3-356c30947445, 9d932c91-2ce8-4cd5-8c8a-60fe86926d0e, 38cf0fe7-bb9f-40ad-8275-c22f1e1be6fd, b4c24f03-5343-4756-8725-956e81aaa779, 2262a7b9-c41e-493a-842c-008ad4e8bd6e, 382dae1b-a176-49d1-b2a3-b5a1fb886a66, 77d20d4f-bfae-4587-8c92-bf546b4860f6, 3dfd48a2-de4b-4437-8750-b7d610b92b52, fe5e5904-e91f-4802-9596-b32473c0ab01, f5e3d6cd-278b-49c1-ae7c-65a6a7b6de37, c6c6a59f-fa69-4d6e-9231-ca3e547f9df2, 52e3d566-64fc-4ef7-8fe1-12f867f0f690, 836558eb-4ecf-4181-aff7-e0242a4c78aa, ef8ef696-4f46-4087-9f01-ecbfee894bb4, f4213942-59e5-4bf3-b204-6487b6e3f20c, 31e57392-0bb9-48fd-9a89-ffcf49f99717, d41edc3c-9b48-480d-ad56-e2653aa0635c, 272d86f1-0c26-425a-a9b8-d4d2dc5a4f97, de94e1d8-e587-4032-a170-a654542840eb, 016de474-2508-4458-9a18-281ac64226e5, 075f6fa6-d9ef-44c6-a97a-3f4315052126]
+      boundary_target_ids: [c3a3587e-215e-4da8-a76c-729732394e40]
+      boundary_target_aliases: [testbed-payment, commerce-payment, payment-service]
+  # case-f08-p-v3-78f4a1ba: legacy sealed-family-v3.yaml 의 단일 UUID 루트를 mcp_golden_from_legacy.py 로 워크로드 전체 UUID 집합으로 확장.
+  case-f08-p-v3-78f4a1ba:
+    expected_status: confirmed
+    roots:
+    - target_ids: [93df2d34-b054-4ecd-8f8e-bafa098dc6cd, 9b38d2fb-9391-4885-906a-2802d4d308b7, 3dbba034-407c-491c-a880-22298d22b7f9, e20d67af-6847-4aed-92ec-27b4309e8e3e, 1b15036e-21ed-4004-8be6-41dbc893ca5b, f93ce73b-e0a1-4bb5-8df4-e16974d72512, d2af0fda-a283-4a19-aa3f-ee6ed192a2e0, 66858698-f6b1-474e-9a13-c6623fab3c8c, 19687c95-ca67-4ca0-9208-47294d53768e, 6554cb64-ad0a-426c-81b2-687796f10314, 23efc585-f405-43cf-97e9-0beb2ba8c363, 8c2be2b0-a710-40bd-8459-4d148394d0ee, 06089b53-b08f-4651-8ff6-fe6c90d45342, b2fce274-f83b-483f-9ee3-f18fe46a541d, f7c68e4c-22d1-4050-ad1c-93ed5e645757, 99dab72f-a2a5-4d76-9d96-0e04ffe43f8f]
+      target_aliases: [testbed-order, commerce-order, order-service]
+  # case-f12-h-v3-8c1cf9f8: legacy sealed-family-v3.yaml 의 단일 UUID 루트를 mcp_golden_from_legacy.py 로 워크로드 전체 UUID 집합으로 확장.
+  case-f12-h-v3-8c1cf9f8:
+    expected_status: confirmed
+    roots:
+    - target_ids: [766ec1cd-e07e-4ee7-8fc7-55c5fb6e8379, 1393ec76-eb78-473e-9fe8-cddb1c6d71a4, 6965eb9b-f9a3-491a-8d26-caeee9bc3d9c, 5b499055-7d43-46b6-a32e-6bebe9294e5c, 7f379e35-1e1e-4c30-953f-7dc31e06d9cd, f7e9372a-0eed-466a-b575-0035dd2d1a77, f45b48ee-4be7-4678-97b0-c570fb7b1aba, 1dab1467-fc92-4057-b83b-1c9782d4fd3f, 77c5dfa0-b815-49fe-9ae5-1b4563cfb8c5, 0bb6734f-866d-4584-9f6c-b4224a72505f, f220e8a1-2340-4b04-be4e-48edc137bbe8, 7ebd2147-f96b-4409-9351-37cd7a6b1837, aea4af00-f45e-418b-bbd3-ab82a607574a, b24ccf24-0f01-4fcd-accd-4c98d89680a6, 320de3d7-c6cd-41a9-9752-0dd1d166f592, 99d12e85-e561-475b-8364-7547997a7643]
+      target_aliases: [testbed-product, commerce-product, product-service]
+  # case-f08-p-v3-ad967f62: case-f08-p-v3-78f4a1ba 의 재캡처 (같은 scenario_metadata_sha256). mcp_golden_extend.py 로 targets 테이블에서 (type, 정규화 이름) 대응해 도출.
+  case-f08-p-v3-ad967f62:
+    expected_status: confirmed
+    roots:
+    - target_ids: [93df2d34-b054-4ecd-8f8e-bafa098dc6cd, ca1c8c98-dc93-4372-9512-bf79655748a8, ba475286-6be6-47a5-b7d6-6f8ce152df8d, e20d67af-6847-4aed-92ec-27b4309e8e3e, 1b15036e-21ed-4004-8be6-41dbc893ca5b, f93ce73b-e0a1-4bb5-8df4-e16974d72512, d2af0fda-a283-4a19-aa3f-ee6ed192a2e0, 66858698-f6b1-474e-9a13-c6623fab3c8c, 19687c95-ca67-4ca0-9208-47294d53768e, 6554cb64-ad0a-426c-81b2-687796f10314, 23efc585-f405-43cf-97e9-0beb2ba8c363, 8c2be2b0-a710-40bd-8459-4d148394d0ee, 06089b53-b08f-4651-8ff6-fe6c90d45342, b2fce274-f83b-483f-9ee3-f18fe46a541d, f7c68e4c-22d1-4050-ad1c-93ed5e645757, 99dab72f-a2a5-4d76-9d96-0e04ffe43f8f]
+      target_aliases: [testbed-order, commerce-order, order-service]
+  # case-f15-h-v3-2ba8a6dc: legacy sealed-family-v3.yaml 의 단일 UUID 루트를 mcp_golden_from_legacy.py 로 워크로드 전체 UUID 집합으로 확장.
+  case-f15-h-v3-2ba8a6dc:
+    expected_status: provisional
+    roots:
+    - target_ids: [414db206-d121-43b1-886c-78b240d23a7a, 3ece2685-6487-44c9-8ee2-4b1c5326877c, 9af4702d-62fa-4ae1-b9a4-435460ed11ef, 17b19d58-6ce8-4f05-aaf4-a0b3800556cb, 5207250b-9c00-433c-a142-ae45c86ad5cf, dfc323c5-6a42-483d-bc25-678805b01627, 3902488a-ff91-4de4-bfd5-b7006892327c, e0d46362-f32c-474b-a90f-430c89b8b31d, c13f897d-1109-4d3d-bc4e-e27000de147d, 6ab30e74-1514-47b2-8be5-7f2e8a634d01, acfb071b-eea5-4831-9d96-c04c02350140, 39c4d8cf-4820-4275-9d01-41a95c2fe4b1, 7abe4556-2bb3-444b-b481-942cd7225b81, 4b9e8d83-1f17-426e-b6e2-ce5688841cbb, 7486b165-c948-43b6-a12e-93eb88fe3322, ce0a4160-19b0-4a6c-bf4d-3cc7b4c41dc9]
+      target_aliases: [commerce-inventory, inventory-service]
+    - target_ids: [2e6120e3-37fa-4c44-a224-6ab13afdd9ee, 3264d1f3-cc97-46b5-9737-6124867e4989, 81a26129-c2c1-41db-939f-90671baabf9a, 34958ee6-1364-4205-8060-d5efdba01872, b14bfb7a-6c05-497b-ab18-2cdf542a62e2, f0e9cbf9-707f-4f63-8368-fdfe6f389f9d, bd617e5f-8bb5-4d5c-a48b-bac140e6da0d, 87ea097b-f9ad-441d-acf9-d083807cbcff, 6b9d24ef-d68f-410c-b1fa-dd7b45a7beb4, a252f9d6-d65e-4e5f-b068-d7a2d4ce2d07, 3a91b724-6114-4004-bcdc-b2673f92a788, c1651b53-20d9-4f54-ac7e-e858c68cc8f6, a7b3d8c5-d410-49ed-b72b-d1956c15b902, d92caab2-a3ce-4cca-a3f5-0650feb72067, 5ff53056-6257-49f4-a3d0-63d3cb9130cc, 3c23898e-8599-4637-8b75-7a48d9e92f49]
+      target_aliases: [food-delivery-payment]
+    - pseudo_kind: external_dependency
+      pseudo_ids: ['external:external-pg', 'external:testbed-external-pg-mock']
+      proxy_target_ids: [7956c805-a580-490f-90c3-356c30947445, 38cf0fe7-bb9f-40ad-8275-c22f1e1be6fd, b4c24f03-5343-4756-8725-956e81aaa779, 382dae1b-a176-49d1-b2a3-b5a1fb886a66, 3dfd48a2-de4b-4437-8750-b7d610b92b52, 9d932c91-2ce8-4cd5-8c8a-60fe86926d0e, 77d20d4f-bfae-4587-8c92-bf546b4860f6, 2262a7b9-c41e-493a-842c-008ad4e8bd6e, fe5e5904-e91f-4802-9596-b32473c0ab01, f5e3d6cd-278b-49c1-ae7c-65a6a7b6de37, c6c6a59f-fa69-4d6e-9231-ca3e547f9df2, 836558eb-4ecf-4181-aff7-e0242a4c78aa, 52e3d566-64fc-4ef7-8fe1-12f867f0f690, ef8ef696-4f46-4087-9f01-ecbfee894bb4, f4213942-59e5-4bf3-b204-6487b6e3f20c, 272d86f1-0c26-425a-a9b8-d4d2dc5a4f97, 31e57392-0bb9-48fd-9a89-ffcf49f99717, d41edc3c-9b48-480d-ad56-e2653aa0635c, de94e1d8-e587-4032-a170-a654542840eb, 016de474-2508-4458-9a18-281ac64226e5, 075f6fa6-d9ef-44c6-a97a-3f4315052126]
+      boundary_target_ids: [2e6120e3-37fa-4c44-a224-6ab13afdd9ee]
+      boundary_target_aliases: [food-delivery-payment]
+  # case-f15-p-v3-3843c3fe: legacy sealed-family-v3.yaml 의 단일 UUID 루트를 mcp_golden_from_legacy.py 로 워크로드 전체 UUID 집합으로 확장.
+  case-f15-p-v3-3843c3fe:
+    expected_status: confirmed
+    roots:
+    - target_ids: [7946cf87-60e2-47de-a7be-89b1bd0977ad]
+      target_aliases: [tb-w2]
+  # case-f15-t1-v3-9a5c5eae: legacy sealed-family-v3.yaml 의 단일 UUID 루트를 mcp_golden_from_legacy.py 로 워크로드 전체 UUID 집합으로 확장.
+  case-f15-t1-v3-9a5c5eae:
+    expected_status: confirmed
+    roots:
+    - target_ids: [414db206-d121-43b1-886c-78b240d23a7a, 9af4702d-62fa-4ae1-b9a4-435460ed11ef, 5207250b-9c00-433c-a142-ae45c86ad5cf, dfc323c5-6a42-483d-bc25-678805b01627, 17b19d58-6ce8-4f05-aaf4-a0b3800556cb, c13f897d-1109-4d3d-bc4e-e27000de147d, 39c4d8cf-4820-4275-9d01-41a95c2fe4b1, acfb071b-eea5-4831-9d96-c04c02350140, e0d46362-f32c-474b-a90f-430c89b8b31d, 4b9e8d83-1f17-426e-b6e2-ce5688841cbb, 7486b165-c948-43b6-a12e-93eb88fe3322, 3ece2685-6487-44c9-8ee2-4b1c5326877c, 6ab30e74-1514-47b2-8be5-7f2e8a634d01, 7abe4556-2bb3-444b-b481-942cd7225b81, ce0a4160-19b0-4a6c-bf4d-3cc7b4c41dc9, 3902488a-ff91-4de4-bfd5-b7006892327c]
+      target_aliases: [commerce-inventory, inventory-service]
+    - target_ids: [2e6120e3-37fa-4c44-a224-6ab13afdd9ee, 86fcae80-60cd-464a-b7cb-28fbf0bacb58, 7c8a2e7b-ebc1-45ba-af38-56670d72cd94, 3264d1f3-cc97-46b5-9737-6124867e4989, b14bfb7a-6c05-497b-ab18-2cdf542a62e2, a252f9d6-d65e-4e5f-b068-d7a2d4ce2d07, bd617e5f-8bb5-4d5c-a48b-bac140e6da0d, 6b9d24ef-d68f-410c-b1fa-dd7b45a7beb4, f0e9cbf9-707f-4f63-8368-fdfe6f389f9d, 3c23898e-8599-4637-8b75-7a48d9e92f49, 3a91b724-6114-4004-bcdc-b2673f92a788, c1651b53-20d9-4f54-ac7e-e858c68cc8f6, a7b3d8c5-d410-49ed-b72b-d1956c15b902, d92caab2-a3ce-4cca-a3f5-0650feb72067, 5ff53056-6257-49f4-a3d0-63d3cb9130cc, 634dd439-3a9c-41b8-8886-3dd0a6f0805d]
+      target_aliases: [food-delivery-payment]
+  # case-f17-p-v3-bce52242: legacy sealed-family-v3.yaml 의 단일 UUID 루트를 mcp_golden_from_legacy.py 로 워크로드 전체 UUID 집합으로 확장.
+  case-f17-p-v3-bce52242:
+    expected_status: provisional
+    roots:
+    - target_ids: [f0ce5940-a7e2-44a2-843f-196de379d898, 8d83bd66-d023-4ef7-9c6c-7a0c3fa16d4e, 4548a75e-4f3a-4e8d-bc49-b8317e042901, 6c845e72-e772-474f-ac9d-33a4e57ef067, e0c355e2-bc28-455f-8416-a0680ded12e1, 31b4899d-8609-439d-8ee0-9dccff3c5410, 7facb2e1-5d07-431c-9af2-004e311dba01, 4ea35e19-77f4-4f80-9dc4-1eb6b6a24b9f, 6d33428d-74fe-423e-bb5e-9f5c57178806, 884762db-c223-46ea-80ce-43d2cb39536d, 6ff97e49-389b-4600-a4d6-ea47981b8e3f, 16ecc753-4a38-4b24-a01d-bcb6825e24ea, 9f7c5084-eb34-4992-be15-eae556a594bf, fd9c2ffe-64f3-4b25-aaec-b5cbc826c566, 200af750-6892-4f85-ba47-fd5e7bc599b9, e2ad12d2-35c3-4ebc-9995-73df8422afdf, d5f960e6-3153-4f80-be65-187c9a6cfeec]
+      target_aliases: [testbed-transfer, banking-transfer, transfer-service]
+  # case-f17-p-v3-8adc39ba: case-f17-p-v3-bce52242 의 재캡처 (같은 scenario_metadata_sha256). mcp_golden_extend.py 로 targets 테이블에서 (type, 정규화 이름) 대응해 도출.
+  case-f17-p-v3-8adc39ba:
+    expected_status: provisional
+    roots:
+    - target_ids: [f0ce5940-a7e2-44a2-843f-196de379d898, 8d83bd66-d023-4ef7-9c6c-7a0c3fa16d4e, 4548a75e-4f3a-4e8d-bc49-b8317e042901, 6c845e72-e772-474f-ac9d-33a4e57ef067, e0c355e2-bc28-455f-8416-a0680ded12e1, 31b4899d-8609-439d-8ee0-9dccff3c5410, 7facb2e1-5d07-431c-9af2-004e311dba01, 4ea35e19-77f4-4f80-9dc4-1eb6b6a24b9f, 6d33428d-74fe-423e-bb5e-9f5c57178806, 884762db-c223-46ea-80ce-43d2cb39536d, 6ff97e49-389b-4600-a4d6-ea47981b8e3f, 16ecc753-4a38-4b24-a01d-bcb6825e24ea, 9f7c5084-eb34-4992-be15-eae556a594bf, fd9c2ffe-64f3-4b25-aaec-b5cbc826c566, 200af750-6892-4f85-ba47-fd5e7bc599b9, e2ad12d2-35c3-4ebc-9995-73df8422afdf, d5f960e6-3153-4f80-be65-187c9a6cfeec]
+      target_aliases: [testbed-transfer, banking-transfer, transfer-service]
+  # case-f17-p-v3-e68c5992: case-f17-p-v3-bce52242 의 재캡처 (같은 scenario_metadata_sha256). mcp_golden_extend.py 로 targets 테이블에서 (type, 정규화 이름) 대응해 도출.
+  case-f17-p-v3-e68c5992:
+    expected_status: provisional
+    roots:
+    - target_ids: [f0ce5940-a7e2-44a2-843f-196de379d898, 8d83bd66-d023-4ef7-9c6c-7a0c3fa16d4e, 4548a75e-4f3a-4e8d-bc49-b8317e042901, 6c845e72-e772-474f-ac9d-33a4e57ef067, e0c355e2-bc28-455f-8416-a0680ded12e1, 31b4899d-8609-439d-8ee0-9dccff3c5410, 7facb2e1-5d07-431c-9af2-004e311dba01, 4ea35e19-77f4-4f80-9dc4-1eb6b6a24b9f, 6d33428d-74fe-423e-bb5e-9f5c57178806, 884762db-c223-46ea-80ce-43d2cb39536d, 6ff97e49-389b-4600-a4d6-ea47981b8e3f, 16ecc753-4a38-4b24-a01d-bcb6825e24ea, 9f7c5084-eb34-4992-be15-eae556a594bf, fd9c2ffe-64f3-4b25-aaec-b5cbc826c566, 200af750-6892-4f85-ba47-fd5e7bc599b9, e2ad12d2-35c3-4ebc-9995-73df8422afdf, d5f960e6-3153-4f80-be65-187c9a6cfeec]
+      target_aliases: [testbed-transfer, banking-transfer, transfer-service]

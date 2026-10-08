@@ -3,6 +3,8 @@ package main
 import (
 	"testing"
 	"time"
+
+	"github.com/nkia-ai-team/rca-model-lab/tools/rca-mcp/llm"
 )
 
 func TestParseEventWindow(t *testing.T) {
@@ -41,5 +43,22 @@ func TestParseEventWindow(t *testing.T) {
 				t.Fatalf("window = %v..%v; want %v..%v", from, to, wantFrom, wantTo)
 			}
 		})
+	}
+}
+
+// tools/list must follow registry order: a map iteration used to shuffle the catalog per process,
+// which shuffled the student's prompt run to run and desynced it from the exported training catalog.
+func TestToolListKeepsRegistryOrder(t *testing.T) {
+	var ordered []llm.Tool
+	for _, name := range []string{"describe_data_sources", "search_targets", "get_process_snapshot", "sample_logs"} {
+		ordered = append(ordered, llm.Tool{Name: name, Parameters: []byte(`{"type":"object"}`)})
+	}
+	for round := 0; round < 3; round++ {
+		got := toolList(ordered)
+		for i, want := range ordered {
+			if got[i]["name"] != want.Name {
+				t.Fatalf("round %d position %d = %v, want %s", round, i, got[i]["name"], want.Name)
+			}
+		}
 	}
 }

@@ -1,0 +1,16 @@
+# RCAEval tt2 converted captures (scripts/rcaeval_convert.py). Source: Pham et al., RCAEval, WWW'25 companion; Zenodo 14590730, CC BY 4.0.
+train:
+- case-rcaeval-tt2-v3-5f5e6b83
+- case-rcaeval-tt2-v3-e707b26b
+- case-rcaeval-tt2-v3-0a15b0b6
+- case-rcaeval-tt2-v3-39d0db03
+- case-rcaeval-tt2-v3-629f2b0b
+- case-rcaeval-tt2-v3-3146d3fe
+- case-rcaeval-tt2-v3-9cbc0d52
+- case-rcaeval-tt2-v3-a0c6f65f
+- case-rcaeval-tt2-v3-d01a7a7d
+- case-rcaeval-tt2-v3-1624ea06
+- case-rcaeval-tt2-v3-73bd2005
+- case-rcaeval-tt2-v3-ffd76848
+validation: []
+sealed_eval: []

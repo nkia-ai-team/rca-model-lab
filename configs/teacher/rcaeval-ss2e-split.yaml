@@ -1,0 +1,12 @@
+# RCAEval ss2e converted captures (scripts/rcaeval_convert.py). Source: Pham et al., RCAEval, WWW'25 companion; Zenodo 14590730, CC BY 4.0.
+train:
+- case-rcaeval-ss2e-v3-aa317245
+- case-rcaeval-ss2e-v3-ae50c64a
+- case-rcaeval-ss2e-v3-451f2994
+- case-rcaeval-ss2e-v3-a58018c0
+- case-rcaeval-ss2e-v3-5c686f99
+- case-rcaeval-ss2e-v3-eec9b372
+- case-rcaeval-ss2e-v3-f821ec89
+- case-rcaeval-ss2e-v3-eea1ad8f
+validation: []
+sealed_eval: []

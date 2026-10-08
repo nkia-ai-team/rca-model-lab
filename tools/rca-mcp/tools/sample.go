@@ -32,6 +32,13 @@ const (
 	sampleSurgeRatio    = 5.0 // 분당 비율 급증 문턱(임시)
 	sampleSurgeMinCount = 10  // 급증 판정 최소 현재 계수(임시)
 	sampleGoneMinExpect = 5.0 // 소멸 판정 최소 기대 출현 수(임시) — 기준선
+	// 총량 변동(volume_shift): 템플릿 단위 4구획은 "종류"만 보므로 로그 흐름이
+	// 통째로 끊기거나 폭주하는 경우(기준선 867건 → 창 1건이 normal 로 표시된
+	// 실측, 2026-09-21)를 놓친다. 총량 분당 비율을 기준선과 비교해 별도 구획으로
+	// 노출한다 — 판정 수치는 다른 문턱과 같이 임시(계약 §7).
+	sampleVolumeMinExpect    = 30.0 // 기준선 비율로 기대되는 현재 창 건수가 이 미만이면 총량 비교 불가(희소 로그)
+	sampleVolumeCollapseRate = 0.1  // 현재 비율 ≤ 기준선 비율 × 이 값 → collapsed
+	sampleVolumeSurgeRate    = 5.0  // 현재 비율 ≥ 기준선 비율 × 이 값 → surged
 	// 비율×현재 창 길이가 이만큼인데 0회일 때만 소멸. 없으면 드문 로그가
 	// 짧은 현재 창에 우연히 없다는 이유로 소멸 홍수가 난다(라이브 실측:
 	// 60m 기준선 vs 11m 창에서 3,943종 오탐).
@@ -57,7 +64,7 @@ func NewSampleLogsTool(ch *CH, firstEvent time.Time) llm.Tool {
 	params, _ := json.Marshal(map[string]any{
 		"type": "object",
 		"properties": map[string]any{
-			"mode":          map[string]any{"type": "string", "enum": []string{"map", "grep"}, "description": "map=로그 종류 지도(뭐가 있는지 모를 때 시작점), grep=원문 드릴다운(지도의 template_id나 검색어로)"},
+			"mode":          map[string]any{"type": "string", "enum": []string{"map", "grep"}, "description": "map=로그 종류 지도(기준선 미관측/급증/소멸/최빈 4구획 + 총량 변동 volume_shift: 흐름 전체의 끊김·폭주; 뭐가 있는지 모를 때 시작점), grep=원문 드릴다운(지도의 template_id나 검색어로)"},
 			"target":        map[string]string{"type": "string", "description": "target_id(UUID)"},
 			"from":          map[string]string{"type": "string", "description": "UTC RFC3339, 반개구간 시작(포함)"},
 			"to":            map[string]string{"type": "string", "description": "UTC RFC3339, 반개구간 끝(제외)"},
@@ -73,7 +80,7 @@ func NewSampleLogsTool(ch *CH, firstEvent time.Time) llm.Tool {
 	})
 	return llm.Tool{
 		Name: "sample_logs",
-		Description: "대상의 로그 조사 — mode=map은 종류 지도(존재 4구획: 기준선 미관측/급증/소멸/최빈 + 레벨 분포), mode=grep은 raw 원문(레벨 불문, template_id·검색어·맥락 줄). " +
+		Description: "대상의 로그 조사 — mode=map은 종류 지도(존재 4구획: 기준선 미관측/급증/소멸/최빈 + 총량 변동 volume_shift(흐름 전체의 끊김·폭주) + 레벨 분포), mode=grep은 raw 원문(레벨 불문, template_id·검색어·맥락 줄). " +
 			"모르는 대상은 map부터, 지도의 template_id로 grep 드릴다운.",
 		Parameters: params,
 		Call: func(ctx context.Context, args json.RawMessage) (any, error) {
@@ -96,7 +103,7 @@ func NewSampleLogsTool(ch *CH, firstEvent time.Time) llm.Tool {
 			}
 			switch f.Mode {
 			case "map":
-				baseFrom, baseTo := firstEvent.Add(-scanLookback), firstEvent
+				baseFrom, baseTo := sampleDefaultBaseline(firstEvent, CaptureStart)
 				if f.BaselineFrom != "" || f.BaselineTo != "" {
 					bf, err1 := time.Parse(time.RFC3339, f.BaselineFrom)
 					bt, err2 := time.Parse(time.RFC3339, f.BaselineTo)
@@ -333,10 +340,24 @@ func sampleMap(ctx context.Context, ch *CH, target string, from, to, baseFrom, b
 		meta["gone_skipped_note"] = fmt.Sprintf(
 			"기준선에만 있던 %d종은 드물어서(기대 출현 %.0f회 미만) 소멸로 세지 않음 — 부재가 판단 재료면 grep으로 직접 확인", skippedRareGone, sampleGoneMinExpect)
 	}
+	// 총량 변동 구획 — 종류 구획이 못 보는 "흐름 전체가 끊김/폭주" 를 사실로만 기록한다.
+	shift := volumeShift(curTotal, baseTotal, curMin, baseMin)
+	if shift.Kind != "" {
+		volRef := fmt.Sprintf("ch:lucida_logs_local:%s:volume:%s", target, shift.Kind)
+		refs = append(refs, volRef)
+		findings = append(findings, Finding{
+			"section": "volume_shift", "kind": shift.Kind,
+			"current_total": curTotal, "baseline_total": baseTotal,
+			"current_rate_per_min": round1(shift.CurRate), "baseline_rate_per_min": round1(shift.BaseRate),
+			"ratio_to_baseline": shift.Ratio,
+			"note":              shift.Note,
+			"refs":              []string{volRef},
+		})
+	}
 	findings = append(findings, meta)
 
 	status := "normal"
-	if nNew > 0 || nSurge > 0 || nGone > 0 {
+	if nNew > 0 || nSurge > 0 || nGone > 0 || shift.Kind != "" {
 		status = "anomalous"
 	}
 	truncated := len(newG) > sampleQuotaNew || len(surgeG) > sampleQuotaSurge ||
@@ -344,6 +365,9 @@ func sampleMap(ctx context.Context, ch *CH, target string, from, to, baseFrom, b
 	summary := fmt.Sprintf(
 		"로그 종류 4구획: 기준선 미관측 %d/%d종, 급증 %d/%d종, 소멸 %d/%d종, 최빈 표시 %d/%d종. 원문은 mode=grep에 template_id로.",
 		nNew, len(newG), nSurge, len(surgeG), nGone, len(goneG), nFreq, len(frequentG))
+	if shift.Kind != "" {
+		summary += fmt.Sprintf(" 총량 %s: 분당 %.1f → %.1f건(기준선 대비 ×%.2f).", shift.Kind, shift.BaseRate, shift.CurRate, shift.Ratio)
+	}
 	if !baselineKnown {
 		summary += " 기준선 로그 없음 — 신규성 판단 불가."
 	}
@@ -355,9 +379,9 @@ func sampleMap(ctx context.Context, ch *CH, target string, from, to, baseFrom, b
 		Summary: summary,
 		// 도착 수평선 기반(§14-5 5c 결정 ①) — 창 끝을 수평선이 못 넘으면
 		// 그만큼이 수집 지연으로 계산된다(CollectLagOf).
-		ObservedRange: horizonObservedRange(from, to, horizon),
-		Findings:      findings,
-		Refs:          refs,
+		ObservedRange:  horizonObservedRange(from, to, horizon),
+		Findings:       findings,
+		Refs:           refs,
 		Truncated:      truncated,
 		QueryTruncated: bool(acc),
 		// 구획별 절단(§5.1 계약 2). 구획이 0종이어도 싣는다 — "이 구획을
@@ -523,6 +547,40 @@ func truncBody(s string) string {
 	return s[:sampleBodyCap] + "…(잘림)"
 }
 
+// volumeShiftResult 는 map 모드의 총량 변동 판정이다. Kind 는 "" (판정 없음 —
+// 정상이거나 비교 불가), "collapsed", "surged" 중 하나.
+type volumeShiftResult struct {
+	Kind     string
+	CurRate  float64 // 현재 창 분당 건수
+	BaseRate float64 // 기준선 창 분당 건수
+	Ratio    float64 // CurRate / BaseRate
+	Note     string
+}
+
+// volumeShift 는 현재 창과 기준선 창의 총량 분당 비율을 비교한다. 기준선이 없거나
+// 기준선 비율로 기대되는 현재 창 건수가 sampleVolumeMinExpect 미만이면(희소 로그)
+// 비교하지 않는다 — "원래 드문 로그"와 "끊김"을 가를 수 없기 때문이다.
+func volumeShift(curTotal, baseTotal int, curMin, baseMin float64) volumeShiftResult {
+	if baseTotal <= 0 || baseMin <= 0 || curMin <= 0 {
+		return volumeShiftResult{}
+	}
+	baseRate := float64(baseTotal) / baseMin
+	curRate := float64(curTotal) / curMin
+	if baseRate*curMin < sampleVolumeMinExpect {
+		return volumeShiftResult{CurRate: curRate, BaseRate: baseRate, Ratio: round2(curRate / baseRate)}
+	}
+	r := volumeShiftResult{CurRate: curRate, BaseRate: baseRate, Ratio: round2(curRate / baseRate)}
+	switch {
+	case curRate <= baseRate*sampleVolumeCollapseRate:
+		r.Kind = "collapsed"
+		r.Note = "로그 흐름 전체가 기준선 대비 끊김 — 종류별 소멸 구획에는 드물어서 안 잡힐 수 있다. 프로세스 정지·재시작·스레드 멈춤의 단서일 수 있으니 같은 창의 프로세스/K8s/트레이스 활동과 대조"
+	case curRate >= baseRate*sampleVolumeSurgeRate:
+		r.Kind = "surged"
+		r.Note = "로그 총량이 기준선 대비 폭주 — 급증 구획의 종류와 대조"
+	}
+	return r
+}
+
 func round1(f float64) float64 { return float64(int(f*10+0.5)) / 10 }
 
 func safeDiv(a, b float64) float64 {
@@ -530,4 +588,14 @@ func safeDiv(a, b float64) float64 {
 		return 0
 	}
 	return a / b
+}
+
+// sampleDefaultBaseline is the default map-mode baseline [first-lookback, first), clipped to captureStart when
+// the capture holds less than the nominal lookback, so the baseline rate is taken over the data that exists.
+func sampleDefaultBaseline(first, captureStart time.Time) (time.Time, time.Time) {
+	from, to := first.Add(-scanLookback), first
+	if !captureStart.IsZero() && from.Before(captureStart) && captureStart.Before(to) {
+		from = captureStart
+	}
+	return from, to
 }
