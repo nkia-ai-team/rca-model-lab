@@ -243,6 +243,12 @@ def run_one(args: argparse.Namespace, case_id: str, run_dir: Path, run_index: in
             reasoning_guard=not args.no_reasoning_guard,
             max_turns=args.max_turns,
             max_prompt_tokens=args.max_prompt_tokens,
+            max_tokens=getattr(args, "max_output_tokens", 4096),
+            thinking_token_budget=getattr(args, "thinking_token_budget", None),
+            stop_on_output_limit=getattr(args, "stop_on_output_limit", False),
+            forced_submit_validation_retries=getattr(args, "forced_submit_validation_retries", 0),
+            response_log=run_dir / "responses.jsonl",
+            request_timeout=getattr(args, "request_timeout", 900),
             tool_result_max_chars=args.tool_result_max_chars,
             observation_policy=getattr(args, "observation_policy", "legacy"),
             observation_dir=run_dir / "observations",
@@ -264,7 +270,12 @@ def run_one(args: argparse.Namespace, case_id: str, run_dir: Path, run_index: in
                 "seed": config.seed, "max_turns": config.max_turns,
                 "max_prompt_tokens": config.max_prompt_tokens, "max_tokens": config.max_tokens,
                 "tool_result_max_chars": config.tool_result_max_chars,
+                "stop_on_output_limit": config.stop_on_output_limit,
+                "forced_submit_validation_retries": config.forced_submit_validation_retries,
+                "request_timeout": config.request_timeout,
             }
+            if config.thinking_token_budget is not None:
+                runtime["thinking_token_budget"] = config.thinking_token_budget
             (run_dir / "observation-runtime.json").write_text(json.dumps(runtime, ensure_ascii=False, indent=2), encoding="utf-8")
         env = raw_server_env(connections, seed, mcp_binary) if config.tool_surface == "raw" else {**os.environ, **connections}
         with MCPClient(command, env, log_path=run_dir / "mcp.stderr") as mcp:
@@ -274,8 +285,13 @@ def run_one(args: argparse.Namespace, case_id: str, run_dir: Path, run_index: in
             (run_dir / "alias.json").write_text(json.dumps(episode.alias_map, ensure_ascii=False, indent=1), encoding="utf-8")
         # structured-v1 counts only refs delivered in a view/page; legacy keeps its old scoring.
         (run_dir / "observed_refs.json").write_text(json.dumps(sorted(episode.observed_refs), ensure_ascii=False), encoding="utf-8")
-        extra = {"prompt_tokens_last": episode.prompt_tokens_last, "aliased": bool(episode.alias_map), "reasoning_guard": not args.no_reasoning_guard, "observation_policy": config.observation_policy,
+        extra = {"max_output_tokens": config.max_tokens, "output_limit_hits": episode.output_limit_hits, "stop_on_output_limit": config.stop_on_output_limit,
+                 "forced_submit_validation_retries": episode.forced_submit_validation_retries,
+                 "forced_submit_validation_retry_budget": config.forced_submit_validation_retries,
+                 "prompt_tokens_last": episode.prompt_tokens_last, "aliased": bool(episode.alias_map), "reasoning_guard": not args.no_reasoning_guard, "observation_policy": config.observation_policy,
                  **({"tool_surface": "raw"} if config.tool_surface == "raw" else {})}
+        if config.thinking_token_budget is not None:
+            extra["thinking_token_budget"] = config.thinking_token_budget
     else:
         config = TeacherConfig(claude_model=args.claude_model, mcp_binary=mcp_binary, max_turns=args.max_turns, python_executable=sys.executable, hint=hint,
                                tool_surface=getattr(args, "teacher_tools", "harness"))
@@ -483,9 +499,14 @@ def main() -> None:
     parser.add_argument("--no-alias", action="store_true", help="student sees raw UUIDs instead of T<n> handles")
     parser.add_argument("--no-reasoning-guard", action="store_true", help="pre-2026-09-29 grammar: reasoning may contain ATEM text (stop-string collision); only for parity with older runs")
     parser.add_argument("--no-guided", action="store_true", help="do not enforce the Muse reasoning→ATEM grammar (structural tag)")
-    parser.add_argument("--max-prompt-tokens", type=int, default=40_000)
+    parser.add_argument("--max-prompt-tokens", type=int, default=40_000, help="Soft investigation budget; 0 disables prompt-token forced submission")
+    parser.add_argument("--max-output-tokens", type=int, default=4_096, help="Student per-response reasoning plus answer/tool token budget")
+    parser.add_argument("--thinking-token-budget", type=int, default=None, help="Optional vLLM top-level thinking token budget; must be positive and lower than --max-output-tokens")
+    parser.add_argument("--request-timeout", type=int, default=900, help="Student completion HTTP timeout in seconds")
+    parser.add_argument("--stop-on-output-limit", action="store_true", help="Classify truncated responses as output_budget_exhausted before executing partial tool calls")
+    parser.add_argument("--forced-submit-validation-retries", type=int, default=0, help="After a forced submit_rca schema rejection, allow this many submit_rca-only repair attempts; 0 preserves legacy rejection")
     parser.add_argument("--tool-result-max-chars", type=int, default=6_000)
-    parser.add_argument("--observation-policy", choices=("legacy", "structured-v1"), default="legacy", help="structured-v1: persist full blind tool responses and expose bounded views with read_observation")
+    parser.add_argument("--observation-policy", choices=("legacy", "structured-v1", "structured-v2"), default="legacy", help="structured policies persist full tool responses and expose read_observation; v2 retains read evidence")
     parser.add_argument("--temperature", type=float, default=1.0)
     parser.add_argument("--top-p", type=float, default=0.95)
     parser.add_argument("--top-k", type=int, default=64)
@@ -501,8 +522,18 @@ def main() -> None:
     parser.add_argument("--ladder-prior-root", default=None, help="use <root>/<case>/run*/ (e.g. the RL iteration's rollouts) as rung 0 and start at rung 1")
     parser.add_argument("--ladder-stop", choices=("mechanism", "target"), default="mechanism", help="mechanism: a rung counts as solved only with root_f1 1 and mechanism judge 1 (v2)")
     args = parser.parse_args()
+    if args.request_timeout <= 0:
+        parser.error("--request-timeout must be > 0")
+    if args.max_output_tokens <= 0:
+        parser.error("--max-output-tokens must be > 0")
+    if args.thinking_token_budget is not None and args.thinking_token_budget <= 0:
+        parser.error("--thinking-token-budget must be > 0")
+    if args.thinking_token_budget is not None and args.thinking_token_budget >= args.max_output_tokens:
+        parser.error("--thinking-token-budget must be < --max-output-tokens")
+    if args.forced_submit_validation_retries < 0:
+        parser.error("--forced-submit-validation-retries must be >= 0")
     if args.observation_policy != "legacy" and args.runner != "student":
-        parser.error("--observation-policy structured-v1 currently supports only the student runner")
+        parser.error("--observation-policy structured policies currently support only the student runner")
     args.hints_by_case = load_hints(args.hints)
     args.ladder_hints_by_case = load_ladder_hints(args.ladder_hints)
     if args.hint_ladder and (args.runner == "prepare" or args.hints):

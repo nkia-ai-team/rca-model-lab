@@ -61,6 +61,13 @@ func rsJSON(rev, hist string, env string, probePath, memLimit string) string {
 		`"livenessProbe":{"httpGet":{"path":"` + probePath + `","port":8080,"scheme":"HTTP","httpHeaders":[{"name":"Authorization","value":"TOKEN"}]},"periodSeconds":15,"timeoutSeconds":3,"failureThreshold":5,"successThreshold":1}}]}}}}`
 }
 
+func rsJSONWithDNS(rev, dnsPolicy string, dnsConfig string) string {
+	return `{"kind":"ReplicaSet","metadata":{"annotations":{"deployment.kubernetes.io/revision":"` + rev + `"}},` +
+		`"spec":{"template":{"spec":{"dnsPolicy":"` + dnsPolicy + `",` +
+		`"dnsConfig":` + dnsConfig + `,` +
+		`"containers":[{"name":"app","image":"svc:1"}]}}}}`
+}
+
 func mustPod(t *testing.T, raw string) (k8sPodSpec, int, []int) {
 	t.Helper()
 	pod, rev, hist, perr := parseRSSpec(raw)
@@ -119,6 +126,58 @@ func TestDiffPodSpecsExposedFieldsOnly(t *testing.T) {
 		if strings.Contains(string(b), banned) {
 			t.Fatalf("비노출 값 %q가 차이에 실렸다: %s", banned, b)
 		}
+	}
+}
+
+func TestDiffPodSpecsDNSPolicyAndConfig(t *testing.T) {
+	valFive := "5"
+	valTwo := "2"
+	prev := k8sPodSpec{
+		DNSPolicy: "ClusterFirst",
+		DNSConfig: &k8sDNSConfig{
+			Nameservers: []string{"10.96.0.10"},
+			Searches:    []string{"svc.cluster.local", "cluster.local"},
+			Options:     []k8sDNSOption{{Name: "ndots", Value: &valFive}, {Name: "single-request-reopen"}},
+		},
+		Containers: []k8sContainerSpec{{Name: "app", Image: "svc:1"}},
+	}
+	next := k8sPodSpec{
+		DNSPolicy: "Default",
+		DNSConfig: &k8sDNSConfig{
+			Nameservers: []string{"8.8.8.8", "1.1.1.1"},
+			Searches:    []string{"corp.local"},
+			Options:     []k8sDNSOption{{Name: "ndots", Value: &valTwo}, {Name: "rotate"}},
+		},
+		Containers: []k8sContainerSpec{{Name: "app", Image: "svc:1"}},
+	}
+
+	diffs, clipped := diffPodSpecs(prev, next)
+	if clipped != 0 {
+		t.Fatalf("DNS 값이 잘렸다: %d", clipped)
+	}
+	got := map[string]k8sDiff{}
+	for _, d := range diffs {
+		got[d.Field] = d
+	}
+	for _, field := range []string{
+		"dnsPolicy", "dnsConfig.nameservers", "dnsConfig.searches",
+		"dnsConfig.options.ndots", "dnsConfig.options.rotate", "dnsConfig.options.single-request-reopen",
+	} {
+		if _, ok := got[field]; !ok {
+			t.Fatalf("%s 차이가 누락됨: %+v", field, diffs)
+		}
+	}
+	if d := got["dnsPolicy"]; d.Container != "pod" || d.Change != "modified" || *d.Before != "ClusterFirst" || *d.After != "Default" {
+		t.Fatalf("dnsPolicy diff 이상: %+v", d)
+	}
+	if d := got["dnsConfig.nameservers"]; d.Change != "modified" || *d.After != "8.8.8.8, 1.1.1.1" {
+		t.Fatalf("nameservers diff 이상: %+v", d)
+	}
+	if d := got["dnsConfig.options.rotate"]; d.Change != "added" || d.Before != nil || d.After == nil || *d.After != "" {
+		t.Fatalf("DNS option 추가 diff 이상: %+v", d)
+	}
+	if d := got["dnsConfig.options.single-request-reopen"]; d.Change != "removed" || d.Before == nil || *d.Before != "" || d.After != nil {
+		t.Fatalf("DNS option 제거 diff 이상: %+v", d)
 	}
 }
 
@@ -462,6 +521,40 @@ func TestListChangesK8sSectionEndToEnd(t *testing.T) {
 	}
 	if _, bad := meta["source_errors"]; bad {
 		t.Fatalf("정상 조회인데 source_errors: %v", meta["source_errors"])
+	}
+}
+
+func TestK8sRolloutFindingComparesDNSFields(t *testing.T) {
+	prevPod, _, _, perr := parseRSSpec(rsJSONWithDNS("10", "ClusterFirst",
+		`{"nameservers":["10.96.0.10"],"searches":["svc.cluster.local"],"options":[{"name":"ndots","value":"5"}]}`))
+	if perr != "" {
+		t.Fatal(perr)
+	}
+	nextPod, _, _, perr := parseRSSpec(rsJSONWithDNS("11", "Default",
+		`{"nameservers":["8.8.8.8"],"searches":["corp.local"],"options":[{"name":"ndots","value":"2"}]}`))
+	if perr != "" {
+		t.Fatal(perr)
+	}
+	r := k8sRollout{At: time.Date(2026, 8, 22, 4, 19, 17, 0, time.UTC), Cluster: "c", Namespace: "ns",
+		Deployment: "svc", New: "svc-new", Prev: "svc-old", PrevBasis: "revision_order"}
+	f, _, _, _, _ := k8sRolloutFinding(r, []*k8sRS{
+		{Name: "svc-old", Pod: prevPod, Revision: 10},
+		{Name: "svc-new", Pod: nextPod, Revision: 11},
+	}, lcInventory{byID: map[string]lcTargetMeta{}, byName: map[string]string{}}, "", true)
+	if f["template_diff_status"] != "compared" {
+		t.Fatalf("DNS 변경이 비교됨으로 표시되지 않음: %+v", f)
+	}
+	fields := map[string]bool{}
+	for _, d := range f["template_diff"].([]k8sDiff) {
+		fields[d.Field] = true
+	}
+	for _, want := range []string{"dnsPolicy", "dnsConfig.nameservers", "dnsConfig.searches", "dnsConfig.options.ndots"} {
+		if !fields[want] {
+			t.Fatalf("%s 차이가 rollout finding에 없음: %+v", want, f["template_diff"])
+		}
+	}
+	if f["template_diff_total"] != 4 {
+		t.Fatalf("DNS 차이 총계 = %v, want 4", f["template_diff_total"])
 	}
 }
 

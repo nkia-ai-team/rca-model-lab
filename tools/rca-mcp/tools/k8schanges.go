@@ -183,6 +183,19 @@ type k8sContainerSpec struct {
 type k8sPodSpec struct {
 	Containers     []k8sContainerSpec `json:"containers"`
 	InitContainers []k8sContainerSpec `json:"initContainers"`
+	DNSPolicy      string             `json:"dnsPolicy"`
+	DNSConfig      *k8sDNSConfig      `json:"dnsConfig"`
+}
+
+type k8sDNSConfig struct {
+	Nameservers []string       `json:"nameservers"`
+	Searches    []string       `json:"searches"`
+	Options     []k8sDNSOption `json:"options"`
+}
+
+type k8sDNSOption struct {
+	Name  string  `json:"name"`
+	Value *string `json:"value"`
 }
 
 // k8sRS는 ReplicaSet 한 개의 비교 재료다. 주석에서는 리비전 번호만 꺼낸다.
@@ -461,9 +474,65 @@ func (d *k8sDiffer) cmp(container, field string, a string, hasA bool, b string, 
 // 반환 순서는 결정론적이다(새 템플릿의 컨테이너·env 순서, 그다음 제거분).
 func diffPodSpecs(prev, next k8sPodSpec) ([]k8sDiff, int) {
 	d := &k8sDiffer{}
+	diffPodLevel(d, prev, next)
 	diffContainerLists(d, "init:", prev.InitContainers, next.InitContainers)
 	diffContainerLists(d, "", prev.Containers, next.Containers)
 	return d.out, d.clipped
+}
+
+func diffPodLevel(d *k8sDiffer, prev, next k8sPodSpec) {
+	d.cmp("pod", "dnsPolicy", prev.DNSPolicy, prev.DNSPolicy != "", next.DNSPolicy, next.DNSPolicy != "")
+	d.cmp("pod", "dnsConfig.nameservers", strings.Join(prev.dnsNameservers(), ", "), len(prev.dnsNameservers()) > 0,
+		strings.Join(next.dnsNameservers(), ", "), len(next.dnsNameservers()) > 0)
+	d.cmp("pod", "dnsConfig.searches", strings.Join(prev.dnsSearches(), ", "), len(prev.dnsSearches()) > 0,
+		strings.Join(next.dnsSearches(), ", "), len(next.dnsSearches()) > 0)
+	diffDNSOptions(d, prev.dnsOptions(), next.dnsOptions())
+}
+
+func (p k8sPodSpec) dnsNameservers() []string {
+	if p.DNSConfig == nil {
+		return nil
+	}
+	return p.DNSConfig.Nameservers
+}
+
+func (p k8sPodSpec) dnsSearches() []string {
+	if p.DNSConfig == nil {
+		return nil
+	}
+	return p.DNSConfig.Searches
+}
+
+func (p k8sPodSpec) dnsOptions() []k8sDNSOption {
+	if p.DNSConfig == nil {
+		return nil
+	}
+	return p.DNSConfig.Options
+}
+
+func diffDNSOptions(d *k8sDiffer, prev, next []k8sDNSOption) {
+	pm := map[string]string{}
+	for _, o := range prev {
+		pm[o.Name] = k8sDNSOptionValue(o)
+	}
+	seen := map[string]bool{}
+	for _, o := range next {
+		seen[o.Name] = true
+		old, had := pm[o.Name]
+		d.cmp("pod", "dnsConfig.options."+o.Name, old, had, k8sDNSOptionValue(o), true)
+	}
+	for _, o := range prev {
+		if !seen[o.Name] {
+			d.cmp("pod", "dnsConfig.options."+o.Name, pm[o.Name], true, "", false)
+		}
+	}
+}
+
+func k8sDNSOptionValue(o k8sDNSOption) string {
+	if o.Value == nil {
+		return ""
+	}
+	return *o.Value
 }
 
 // diffContainerLists는 컨테이너를 이름으로 짝짓는다. init 컨테이너는 "init:" 접두로 구별한다.
@@ -1143,7 +1212,7 @@ func k8sAssemble(ctx context.Context, vm *VM, res *k8sChangeResult, rollouts []k
 	}
 	res.Meta["basis"] = "롤아웃 = 같은 Deployment에서 한 ReplicaSet이 0에서 스케일 업(스케일 이벤트)되었거나 창 안에서 새 ReplicaSet이 생성된 것. " +
 		"이전 RS = ReplicaSet 리비전 원장(현재+revision-history)의 직전 리비전 소유 RS — 원장 맞춤이 안 되면 가장 가까운 다른 RS 스케일 다운. " +
-		"파드 템플릿은 ReplicaSet별 불변이라 현재 스냅샷 비교가 당시 차이다. 비교 필드는 이미지·env·envFrom·리소스·프로브·command/args·포트뿐(라벨·주석 비노출)"
+		"파드 템플릿은 ReplicaSet별 불변이라 현재 스냅샷 비교가 당시 차이다. 비교 필드는 DNS policy/config·이미지·env·envFrom·리소스·프로브·command/args·포트뿐(라벨·주석 비노출)"
 	res.Meta["not_covered"] = "StatefulSet·DaemonSet 템플릿 변경(ControllerRevision 미수집), 이미 삭제된 ReplicaSet의 템플릿"
 }
 
@@ -1511,7 +1580,7 @@ func k8sRolloutFinding(r k8sRollout, sibs []*k8sRS, inv lcInventory, hint string
 		f["template_diff_total"] = nDiff
 		if nDiff == 0 {
 			f["template_diff_status"] = "no_exposed_difference"
-			notes = append(notes, "비교 필드(이미지·env·리소스·프로브·command/args·포트)에는 차이 없음 — 템플릿의 비노출 부분이 바뀌었다")
+			notes = append(notes, "비교 필드(DNS policy/config·이미지·env·리소스·프로브·command/args·포트)에는 차이 없음 — 템플릿의 비노출 부분이 바뀌었다")
 		} else {
 			f["template_diff_status"] = "compared"
 			if nDiff > k8sChgMaxDiff {

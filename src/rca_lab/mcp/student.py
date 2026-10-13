@@ -7,6 +7,7 @@ structured-v1 preserves full responses outside context and offers a local reader
 
 from __future__ import annotations
 
+import copy
 import json
 import time
 import urllib.error
@@ -17,6 +18,7 @@ from typing import Any
 
 from rca_lab.mcp.alias import UUIDAliaser
 from rca_lab.mcp.answer import SUBMIT_TOOL, SUBMIT_TOOL_NAME, validate_result
+from rca_lab.mcp.answer import UUID_RE as ANSWER_UUID_RE
 from rca_lab.mcp.client import MCPClient, openai_tools
 from rca_lab.mcp.context import rolling_view
 from rca_lab.mcp.muse_grammar import guided_request_fields
@@ -38,16 +40,20 @@ class StudentConfig:
     reasoning_guard: bool = True  # no ATEM markup inside the reasoning channel (muse_grammar.REASONING_EXCLUDES)
     max_turns: int = 40
     max_calls_per_turn: int = 4
-    max_prompt_tokens: int = 40_000  # 49152 server limit − 4096 completion − one more tool envelope
+    max_prompt_tokens: int = 40_000  # Soft submission threshold; 0 disables it, not the server context limit.
     tool_result_max_chars: int = 6_000
     observation_policy: str = "legacy"
     observation_dir: Path | None = None
     max_tokens: int = 4_096
+    thinking_token_budget: int | None = None
+    stop_on_output_limit: bool = False
+    response_log: Path | None = None
     temperature: float = 1.0
     top_p: float = 0.95
     top_k: int = 64
     seed: int = 0
     max_nudges: int = 3
+    forced_submit_validation_retries: int = 0
     request_timeout: int = 900
     extra_body: dict[str, Any] = field(default_factory=dict)
     transport_retry_delays: tuple[int, ...] = TRANSPORT_RETRY_DELAYS_DEFAULT
@@ -67,6 +73,8 @@ class StudentRun:
     prompt_tokens_last: int
     wall_seconds: float
     alias_map: dict[str, str] = field(default_factory=dict)
+    output_limit_hits: int = 0
+    forced_submit_validation_retries: int = 0
 
 
 # Transport-level failures are retried: the vLLM endpoint sits behind an SSH tunnel whose far end (KT proxy)
@@ -82,6 +90,9 @@ def _is_transport_error(exc: BaseException) -> bool:
 
 
 def _post_chat(config: StudentConfig, body: dict[str, Any]) -> dict[str, Any]:
+    if config.endpoint == "codex://local":
+        from rca_lab.mcp.codex_completion import complete
+        return complete(body, timeout_seconds=config.request_timeout)
     payload = json.dumps(body).encode("utf-8")
     for attempt, delay in enumerate((*config.transport_retry_delays, None)):
         request = urllib.request.Request(config.endpoint.rstrip("/") + "/chat/completions", data=payload, headers={"Content-Type": "application/json"})
@@ -97,6 +108,22 @@ def _post_chat(config: StudentConfig, body: dict[str, Any]) -> dict[str, Any]:
             print(f"[student] transport error ({type(exc).__name__}: {exc}); retry {attempt + 1}/{len(config.transport_retry_delays)} in {delay}s", flush=True)
             time.sleep(delay)
     raise AssertionError("unreachable")
+
+
+def _validate_token_budgets(config: StudentConfig) -> None:
+    if config.max_tokens <= 0:
+        raise ValueError("max_tokens must be > 0")
+    if config.thinking_token_budget is None:
+        return
+    if config.thinking_token_budget <= 0:
+        raise ValueError("thinking_token_budget must be > 0")
+    if config.thinking_token_budget >= config.max_tokens:
+        raise ValueError("thinking_token_budget must be < max_tokens")
+
+
+def _apply_thinking_token_budget(config: StudentConfig, body: dict[str, Any]) -> None:
+    if config.thinking_token_budget is not None:
+        body["thinking_token_budget"] = config.thinking_token_budget
 
 
 def _truncate(text: str, limit: int) -> str:
@@ -167,15 +194,206 @@ def _wire_messages(messages: list[dict[str, Any]], *, live_system: str | None = 
     return wire
 
 
+def _aliaser_from_mapping(alias_map: dict[str, str]) -> UUIDAliaser:
+    aliaser = UUIDAliaser()
+    seen_handles: set[str] = set()
+    ordered: list[tuple[int, str, str]] = []
+    for uuid, handle in alias_map.items():
+        original = str(uuid).lower()
+        shown = str(handle)
+        if not ANSWER_UUID_RE.match(original):
+            raise ValueError(f"invalid alias UUID: {uuid!r}")
+        if not shown.startswith("T") or not shown[1:].isdigit():
+            raise ValueError(f"invalid alias handle: {shown!r}")
+        if shown in seen_handles:
+            raise ValueError(f"duplicate alias handle: {shown!r}")
+        seen_handles.add(shown)
+        ordered.append((int(shown[1:]), original, shown))
+    for expected, (_, original, shown) in enumerate(sorted(ordered), start=1):
+        if int(shown[1:]) != expected:
+            raise ValueError("alias handles must be contiguous from T1")
+        if aliaser.handle_for(original) != shown:
+            raise ValueError("alias map is not reproducible")
+    return aliaser
+
+
+def _last_message_is_submit_rejection(messages: list[dict[str, Any]]) -> None:
+    if not messages:
+        raise ValueError("messages must end with a submit_rca validation rejection")
+    last = messages[-1]
+    if last.get("role") != "tool" or last.get("name") != SUBMIT_TOOL_NAME:
+        raise ValueError("messages must end with a submit_rca validation rejection")
+    try:
+        content = json.loads(str(last.get("content", "")))
+    except json.JSONDecodeError as exc:
+        raise ValueError("submit_rca rejection content must be JSON") from exc
+    error = content.get("error") if isinstance(content, dict) else None
+    if not isinstance(error, str) or "submit_rca rejected:" not in error:
+        raise ValueError("messages must end with a submit_rca validation rejection")
+    tool_call_id = last.get("tool_call_id")
+    for message in reversed(messages[:-1]):
+        if message.get("role") != "assistant":
+            continue
+        for call in message.get("tool_calls") or []:
+            if call.get("id") == tool_call_id and call.get("function", {}).get("name") == SUBMIT_TOOL_NAME:
+                return
+        break
+    raise ValueError("submit_rca rejection must reference a prior submit_rca tool call")
+
+
+def run_forced_submit_repair(
+    config: StudentConfig,
+    messages: list[dict[str, Any]],
+    alias_map: dict[str, str],
+    *,
+    retry_budget: int = 1,
+    observed_refs: set[str] | None = None,
+) -> StudentRun:
+    """Replay only bounded submit_rca schema repair after an existing rejection."""
+    if retry_budget < 0:
+        raise ValueError("retry_budget must be >= 0")
+    _validate_token_budgets(config)
+    _last_message_is_submit_rejection(messages)
+    started = time.time()
+    repaired_messages = copy.deepcopy(messages)
+    aliaser = _aliaser_from_mapping(alias_map) if config.alias_targets else None
+    if not config.alias_targets and alias_map:
+        raise ValueError("alias_map requires alias_targets")
+
+    def outbound(text: str) -> str:
+        return aliaser.alias_text(text) if aliaser else text
+
+    def inbound(args: dict[str, Any]) -> tuple[dict[str, Any], set[str]]:
+        if not aliaser:
+            return args, set()
+        return aliaser.resolve(args), aliaser.unknown_handles(args)
+
+    if config.response_log is not None:
+        config.response_log.parent.mkdir(parents=True, exist_ok=True)
+        config.response_log.write_text("", encoding="utf-8")
+
+    tools = openai_tools([SUBMIT_TOOL])
+    repaired_messages.append({"role": "user", "content": "submit_rca 검증 오류가 있다. 새 조사는 금지된다. 위 오류만 고쳐 submit_rca 를 다시 호출하라."})
+    start_turn = sum(1 for message in messages if message.get("role") == "assistant")
+    prompt_tokens = 0
+    output_limit_hits = 0
+    tool_errors = 0
+    result: dict[str, Any] | None = None
+    stop_reason = "forced_answer_rejected"
+    attempts = 0
+    for attempts in range(1, retry_budget + 1):
+        body: dict[str, Any] = {
+            "model": config.model,
+            "messages": _wire_messages(repaired_messages),
+            "tools": tools,
+            "tool_choice": {"type": "function", "function": {"name": SUBMIT_TOOL_NAME}},
+            "max_tokens": config.max_tokens,
+            "temperature": config.temperature,
+            "top_p": config.top_p,
+            "top_k": config.top_k,
+            "seed": config.seed + start_turn + attempts,
+            "stream": False,
+            **config.extra_body,
+        }
+        _apply_thinking_token_budget(config, body)
+        if config.guided:
+            body.update(guided_request_fields(tools, only=SUBMIT_TOOL_NAME, reasoning_guard=config.reasoning_guard))
+        reply = _post_chat(config, body)
+        choice = reply["choices"][0]
+        message = choice["message"]
+        output_limited = choice.get("finish_reason") == "length"
+        output_limit_hits += int(output_limited)
+        if config.response_log is not None:
+            with config.response_log.open("a", encoding="utf-8") as sink:
+                sink.write(json.dumps({
+                    "turn": start_turn + attempts,
+                    "finish_reason": choice.get("finish_reason"),
+                    "output_budget_exhausted": output_limited,
+                    "requested_max_tokens": body["max_tokens"],
+                    **({"requested_thinking_token_budget": config.thinking_token_budget} if config.thinking_token_budget is not None else {}),
+                    "usage": reply.get("usage", {}),
+                }, ensure_ascii=False) + "\n")
+        prompt_tokens = int(reply.get("usage", {}).get("prompt_tokens", prompt_tokens))
+        repaired_messages.append(_assistant_message(message))
+        if output_limited and config.stop_on_output_limit:
+            stop_reason = "output_budget_exhausted"
+            break
+        calls = message.get("tool_calls") or []
+        if not calls:
+            stop_reason = "no_tool_call"
+            break
+        call = calls[0]
+        name = call["function"]["name"]
+        raw_args = call["function"].get("arguments") or "{}"
+        try:
+            args = json.loads(raw_args) if isinstance(raw_args, str) else dict(raw_args)
+        except json.JSONDecodeError as exc:
+            tool_errors += 1
+            repaired_messages.append({"role": "tool", "tool_call_id": call.get("id"), "name": name, "content": json.dumps({"error": f"arguments are not valid JSON: {exc}"}, ensure_ascii=False)})
+            if attempts < retry_budget:
+                repaired_messages.append({"role": "user", "content": "submit_rca 검증 오류가 있다. 새 조사는 금지된다. 위 오류만 고쳐 submit_rca 를 다시 호출하라."})
+            continue
+        if not isinstance(args, dict):
+            tool_errors += 1
+            repaired_messages.append({"role": "tool", "tool_call_id": call.get("id"), "name": name, "content": json.dumps({"error": "arguments must be an object"})})
+            if attempts < retry_budget:
+                repaired_messages.append({"role": "user", "content": "submit_rca 검증 오류가 있다. 새 조사는 금지된다. 위 오류만 고쳐 submit_rca 를 다시 호출하라."})
+            continue
+        if name != SUBMIT_TOOL_NAME:
+            tool_errors += 1
+            repaired_messages.append({"role": "tool", "tool_call_id": call.get("id"), "name": name, "content": json.dumps({"error": "강제 제출 복구 단계에서는 submit_rca 만 호출할 수 있다"}, ensure_ascii=False)})
+            break
+        resolved, unknown = inbound(args)
+        if unknown:
+            tool_errors += 1
+            repaired_messages.append({"role": "tool", "tool_call_id": call.get("id"), "name": name, "content": json.dumps({"error": f"본 적 없는 대상 핸들 {sorted(unknown)} — seed 나 이전 도구 응답에 나온 핸들만 쓸 수 있다"}, ensure_ascii=False)})
+            if attempts < retry_budget:
+                repaired_messages.append({"role": "user", "content": "submit_rca 검증 오류가 있다. 새 조사는 금지된다. 위 오류만 고쳐 submit_rca 를 다시 호출하라."})
+            continue
+        try:
+            result = validate_result(resolved)
+        except ValueError as exc:
+            tool_errors += 1
+            repaired_messages.append({"role": "tool", "tool_call_id": call.get("id"), "name": name, "content": json.dumps({"error": outbound(str(exc))}, ensure_ascii=False)})
+            if attempts < retry_budget:
+                repaired_messages.append({"role": "user", "content": "submit_rca 검증 오류가 있다. 새 조사는 금지된다. 위 오류만 고쳐 submit_rca 를 다시 호출하라."})
+            continue
+        repaired_messages.append({"role": "tool", "tool_call_id": call.get("id"), "name": name, "content": "accepted"})
+        stop_reason = "submitted"
+        break
+    return StudentRun(
+        messages=repaired_messages,
+        result=result,
+        stop_reason=stop_reason,
+        turns=attempts,
+        tool_calls=0,
+        tool_errors=tool_errors,
+        observed_refs=set(observed_refs or set()),
+        prompt_tokens_last=prompt_tokens,
+        wall_seconds=time.time() - started,
+        alias_map=aliaser.mapping if aliaser else {},
+        output_limit_hits=output_limit_hits,
+        forced_submit_validation_retries=attempts,
+    )
+
+
 def run_student(config: StudentConfig, seed: dict[str, Any], mcp: MCPClient) -> StudentRun:
-    if config.observation_policy not in {"legacy", "structured-v1"}:
+    if config.observation_policy not in {"legacy", "structured-v1", "structured-v2"}:
         raise ValueError("unknown observation policy")
     if config.tool_surface not in {"harness", "raw"}:
         raise ValueError("unknown tool surface")
-    structured = config.observation_policy == "structured-v1"
+    if config.max_prompt_tokens < 0:
+        raise ValueError("max_prompt_tokens must be >= 0")
+    _validate_token_budgets(config)
+    if config.forced_submit_validation_retries < 0:
+        raise ValueError("forced_submit_validation_retries must be >= 0")
+    if config.response_log is not None:
+        config.response_log.parent.mkdir(parents=True, exist_ok=True)
+        config.response_log.write_text("", encoding="utf-8")
+    structured = config.observation_policy != "legacy"
     if structured and config.tool_result_max_chars < 1200:
-        raise ValueError("structured-v1 requires tool_result_max_chars >= 1200")
-    store = ObservationStore(config.observation_dir) if structured else None
+        raise ValueError("structured policies require tool_result_max_chars >= 1200")
+    store = ObservationStore(config.observation_dir, policy=config.observation_policy) if structured else None
     catalog = mcp.list_tools()
     if store is not None:
         if any(tool["name"] == READ_OBSERVATION_TOOL["name"] for tool in catalog):
@@ -191,7 +409,7 @@ def run_student(config: StudentConfig, seed: dict[str, Any], mcp: MCPClient) -> 
     system_prompt = (raw_system_prompt() if config.tool_surface == "raw" else SYSTEM_PROMPT) + (ALIAS_NOTE if aliaser else "")
     if structured:
         system_prompt += (
-            "\n관측 전달 정책 structured-v1: 응답은 원본 참조와 표시된 필드로 구성된다. "
+            f"\n관측 전달 정책 {config.observation_policy}: 응답은 원본 참조와 표시된 필드로 구성된다. "
             "생략된 필드는 미관측이지 정상이나 부재의 증거가 아니다. "
             "필요한 필드가 빠졌으면 read_observation으로 해당 observation_id의 원문을 읽는다. "
             "구조화 필드는 json_pointer로 경로를 지정하고, 긴 값은 next_offset으로 이어 읽는다. "
@@ -252,7 +470,11 @@ def run_student(config: StudentConfig, seed: dict[str, Any], mcp: MCPClient) -> 
     turn = 0
     force_answer = False
     context_recoveries = 0
-    while turn < config.max_turns + 2:  # +2: one forced-answer turn and one retry
+    output_limit_hits = 0
+    forced_submit_validation_retries = 0
+    # Investigation stays capped by max_turns; forced submission gets one bounded answer turn plus
+    # the opt-in format repair attempts.
+    while turn < config.max_turns + 2 + config.forced_submit_validation_retries:
         turn += 1
         body: dict[str, Any] = {
             "model": config.model,
@@ -267,6 +489,7 @@ def run_student(config: StudentConfig, seed: dict[str, Any], mcp: MCPClient) -> 
             "stream": False,
             **config.extra_body,
         }
+        _apply_thinking_token_budget(config, body)
         if config.guided:
             body.update(guided_request_fields(tools, only=SUBMIT_TOOL_NAME if force_answer else None, reasoning_guard=config.reasoning_guard))
         if request_log is not None:
@@ -275,6 +498,10 @@ def run_student(config: StudentConfig, seed: dict[str, Any], mcp: MCPClient) -> 
         try:
             reply = _post_chat(config, body)
         except RuntimeError as exc:
+            # V2 never converts an API capacity failure into a forced diagnostic
+            # conclusion, nor deletes already-read evidence to manufacture success.
+            if config.observation_policy == "structured-v2":
+                raise
             if "maximum context length" not in str(exc) or force_answer:
                 raise
             # Preserve the old bailout for legacy. The structured arm gets one compacted
@@ -293,8 +520,25 @@ def run_student(config: StudentConfig, seed: dict[str, Any], mcp: MCPClient) -> 
                     collect_visible_refs(str(delivered.get("content", "")))
         choice = reply["choices"][0]
         message = choice["message"]
+        output_limited = choice.get("finish_reason") == "length"
+        output_limit_hits += int(output_limited)
+        if config.response_log is not None:
+            with config.response_log.open("a", encoding="utf-8") as sink:
+                sink.write(json.dumps({
+                    "turn": turn,
+                    "finish_reason": choice.get("finish_reason"),
+                    "output_budget_exhausted": output_limited,
+                    "requested_max_tokens": body["max_tokens"],
+                    **({"requested_thinking_token_budget": config.thinking_token_budget} if config.thinking_token_budget is not None else {}),
+                    "usage": reply.get("usage", {}),
+                }, ensure_ascii=False) + "\n")
         prompt_tokens = int(reply.get("usage", {}).get("prompt_tokens", prompt_tokens))
         messages.append(_assistant_message(message))
+        # A truncated tool call is not a completed action. Opt-in preserves older
+        # evaluation semantics while making capacity failures explicit in new runs.
+        if output_limited and config.stop_on_output_limit:
+            stop_reason = "output_budget_exhausted"
+            break
         calls = message.get("tool_calls") or []
         if not calls:
             nudges += 1
@@ -304,6 +548,7 @@ def run_student(config: StudentConfig, seed: dict[str, Any], mcp: MCPClient) -> 
             messages.append({"role": "user", "content": "도구를 호출하거나, 조사가 끝났으면 submit_rca 로 결론을 제출하라. 산문만 쓰지 마라."})
             continue
         submitted = False
+        retry_forced_submission = False
         for call in calls[: config.max_calls_per_turn]:
             name = call["function"]["name"]
             raw_args = call["function"].get("arguments") or "{}"
@@ -316,6 +561,10 @@ def run_student(config: StudentConfig, seed: dict[str, Any], mcp: MCPClient) -> 
             if not isinstance(args, dict):
                 tool_errors += 1
                 messages.append({"role": "tool", "tool_call_id": call.get("id"), "name": name, "content": json.dumps({"error": "arguments must be an object"})})
+                continue
+            if force_answer and name != SUBMIT_TOOL_NAME:
+                tool_errors += 1
+                messages.append({"role": "tool", "tool_call_id": call.get("id"), "name": name, "content": json.dumps({"error": "조사 예산이 끝난 강제 제출 단계에서는 submit_rca 만 호출할 수 있다"}, ensure_ascii=False)})
                 continue
             if store is not None and name == READ_OBSERVATION_TOOL["name"]:
                 tool_calls += 1
@@ -334,6 +583,11 @@ def run_student(config: StudentConfig, seed: dict[str, Any], mcp: MCPClient) -> 
                 except ValueError as exc:
                     tool_errors += 1
                     messages.append({"role": "tool", "tool_call_id": call.get("id"), "name": name, "content": json.dumps({"error": outbound(str(exc))}, ensure_ascii=False)})
+                    if force_answer and forced_submit_validation_retries < config.forced_submit_validation_retries:
+                        forced_submit_validation_retries += 1
+                        messages.append({"role": "user", "content": "submit_rca 검증 오류가 있다. 새 조사는 금지된다. 위 오류만 고쳐 submit_rca 를 다시 호출하라."})
+                        retry_forced_submission = True
+                        break
                     continue
                 messages.append({"role": "tool", "tool_call_id": call.get("id"), "name": name, "content": "accepted"})
                 submitted = True
@@ -368,10 +622,12 @@ def run_student(config: StudentConfig, seed: dict[str, Any], mcp: MCPClient) -> 
         if submitted:
             stop_reason = "submitted"
             break
+        if retry_forced_submission:
+            continue
         if force_answer:
             stop_reason = "forced_answer_rejected"
             break
-        if prompt_tokens >= config.max_prompt_tokens or turn >= config.max_turns:
+        if (config.max_prompt_tokens > 0 and prompt_tokens >= config.max_prompt_tokens) or turn >= config.max_turns:
             force_answer = True
             messages.append({"role": "user", "content": "조사 예산이 끝났다. 지금까지의 관측만으로 submit_rca 를 호출하라. 근거가 부족하면 status=insufficient 로 제출하라."})
     return StudentRun(
@@ -385,4 +641,6 @@ def run_student(config: StudentConfig, seed: dict[str, Any], mcp: MCPClient) -> 
         prompt_tokens_last=prompt_tokens,
         wall_seconds=time.time() - started,
         alias_map=aliaser.mapping if aliaser else {},
+        output_limit_hits=output_limit_hits,
+        forced_submit_validation_retries=forced_submit_validation_retries,
     )

@@ -14,6 +14,7 @@ from pathlib import Path
 from typing import Any
 
 VERSION = "mcp-observation-v1"
+VERSION_V2 = "mcp-observation-v2"
 READ_OBSERVATION_TOOL_NAME = "read_observation"
 DEFAULT_PAGE_LIMIT = 4_000
 MAX_PAGE_LIMIT = 12_000
@@ -209,7 +210,7 @@ def _is_observation_envelope(text: str) -> dict[str, Any] | None:
         payload = json.loads(text)
     except json.JSONDecodeError:
         return None
-    if isinstance(payload, dict) and payload.get("version") == VERSION and isinstance(payload.get("observation_id"), str):
+    if isinstance(payload, dict) and payload.get("version") in {VERSION, VERSION_V2} and isinstance(payload.get("observation_id"), str):
         return payload
     return None
 
@@ -222,11 +223,16 @@ def compact_observation(text: str, budget: int = MIN_PRESENTATION_BUDGET) -> str
     payload = _is_observation_envelope(text)
     if payload is None:
         return None
+    # Every delivered v2 field/page is evidence, not a disposable preview.
+    # Preserve exact content and provenance in inference and training views.
+    # The presentation budget bounds each envelope; the API owns total capacity.
+    if payload.get("version") == VERSION_V2:
+        return text
     if budget < MIN_PRESENTATION_BUDGET:
         raise ValueError(f"observation compact budget must be >= {MIN_PRESENTATION_BUDGET}")
     retrieval = payload.get("retrieval") if isinstance(payload.get("retrieval"), dict) else {}
     compact = {
-        "version": VERSION,
+        "version": payload["version"],
         "observation_id": payload["observation_id"],
         "tool_name": payload.get("tool_name"),
         "is_error": bool(payload.get("is_error")),
@@ -286,7 +292,10 @@ class ObservationStore:
     registered in this in-memory store.  The tool never accepts paths.
     """
 
-    def __init__(self, directory: Path | None = None) -> None:
+    def __init__(self, directory: Path | None = None, *, policy: str = "structured-v1") -> None:
+        if policy not in {"structured-v1", "structured-v2"}:
+            raise ValueError("unknown observation policy")
+        self._version = VERSION_V2 if policy == "structured-v2" else VERSION
         self._records: dict[str, _Observation] = {}
         self._ids_by_digest: dict[str, str] = {}
         self._directory = directory
@@ -317,7 +326,7 @@ class ObservationStore:
             (self._directory / f"{observation_id}.json").write_text(
                 _json_dumps(
                     {
-                        "version": VERSION,
+                        "version": self._version,
                         "observation_id": observation_id,
                         "tool_name": tool_name,
                         "is_error": is_error,
@@ -329,9 +338,21 @@ class ObservationStore:
                 ),
                 encoding="utf-8",
             )
-        fields, omitted = _selected_fields(text, budget // 2)
+        if self._version == VERSION_V2:
+            # Supply whole candidate fields: _bounded_json accounts for metadata
+            # and accepts only fields that fit the actual total envelope budget.
+            try:
+                payload = json.loads(text)
+            except json.JSONDecodeError:
+                payload = None
+            fields = payload if isinstance(payload, dict) else {}
+            omitted = [] if payload is None or isinstance(payload, dict) else [
+                {"path": "$", "chars": len(text), "reason": "json_root_not_object"}
+            ]
+        else:
+            fields, omitted = _selected_fields(text, budget // 2)
         envelope: dict[str, Any] = {
-            "version": VERSION,
+            "version": self._version,
             "observation_id": observation_id,
             "tool_name": tool_name,
             "is_error": is_error,
@@ -362,7 +383,7 @@ class ObservationStore:
         if record is None:
             return _bounded_json(
                 {
-                    "version": VERSION,
+                    "version": self._version,
                     "error": "unknown observation_id",
                     "observation_id": observation_id,
                     "known": False,
@@ -376,22 +397,22 @@ class ObservationStore:
             try:
                 selected = _select_json(record.text, pointer)
             except (ValueError, TypeError):
-                return _json_dumps({"version": VERSION, "observation_id": observation_id, "error": "invalid json_pointer or source is not valid JSON"}), True
+                return _json_dumps({"version": self._version, "observation_id": observation_id, "error": "invalid json_pointer or source is not valid JSON"}), True
         offset_raw = args.get("offset", 0)
         limit_raw = args.get("limit", DEFAULT_PAGE_LIMIT)
         if isinstance(offset_raw, bool) or not isinstance(offset_raw, int) or isinstance(limit_raw, bool) or not isinstance(limit_raw, int):
-            return _json_dumps({"version": VERSION, "error": "offset and limit must be integers", "observation_id": observation_id}), True
+            return _json_dumps({"version": self._version, "error": "offset and limit must be integers", "observation_id": observation_id}), True
         offset = offset_raw
         limit = limit_raw
         if offset < 0:
-            return _json_dumps({"version": VERSION, "error": "offset must be >= 0", "observation_id": observation_id}), True
+            return _json_dumps({"version": self._version, "error": "offset must be >= 0", "observation_id": observation_id}), True
         if offset > len(selected):
-            return _json_dumps({"version": VERSION, "error": "offset exceeds observation length", "observation_id": observation_id, "chars": len(selected)}), True
+            return _json_dumps({"version": self._version, "error": "offset exceeds observation length", "observation_id": observation_id, "chars": len(selected)}), True
         if limit <= 0 or limit > MAX_PAGE_LIMIT:
-            return _json_dumps({"version": VERSION, "observation_id": observation_id, "error": "limit is out of range"}), True
+            return _json_dumps({"version": self._version, "observation_id": observation_id, "error": "limit is out of range"}), True
         selection_args = {"json_pointer": pointer} if "json_pointer" in args else {}
         base = {
-            "version": VERSION,
+            "version": self._version,
             "observation_id": observation_id,
             "tool_name": record.tool_name,
             "is_error": record.is_error,
@@ -428,7 +449,7 @@ class ObservationStore:
         if best is None or (best["page"].get("returned_chars", 0) == 0 and offset < len(selected)):
             return _bounded_json(
                 {
-                    "version": VERSION,
+                    "version": self._version,
                     "error": "budget too small for observation page metadata",
                     "observation_id": observation_id,
                     "chars": record.chars,

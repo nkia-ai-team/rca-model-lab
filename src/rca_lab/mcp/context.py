@@ -3,7 +3,8 @@
 Legacy trajectories retain responses up to the rollout truncation budget. Structured-v1
 trajectories contain bounded JSON views backed by run-local complete response artifacts.
 Recent results remain as stored; older structured views keep whole fields and retrieval
-metadata, while older legacy responses retain the historical head-slice policy. This function
+metadata. Structured-v2 preserves every delivered envelope even after it ages out of the
+recent window, while older legacy responses retain the historical head-slice policy. This function
 is shared by rollout, rationalization and training; it never mutates stored trajectories.
 """
 

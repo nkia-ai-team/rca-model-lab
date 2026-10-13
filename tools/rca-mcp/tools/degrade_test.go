@@ -234,8 +234,8 @@ func dgCHScripts() []dgCHScript {
 // 유일해야 한다(fakePG는 등록 순서 매칭).
 func dgPGScripts(p *dgFakePG) {
 	// expand_topology 명부 — seed가 있어야 CH(죽은 쪽)까지 간다.
-	p.script("meta->>'resource_kind'", []string{"id", "name", "type", "rk", "rkey", "rtype", "parent"},
-		[][]string{{dgUUID, "app1", "application", "", "", "", ""}})
+	p.script("meta->>'resource_kind'", []string{"id", "name", "type", "rk", "rkey", "rtype", "parent", "host"},
+		[][]string{{dgUUID, "app1", "application", "", "", "", "", ""}})
 	// compare_peers — 유형 → 그룹 없음 → 유형 전체 폴백 또래 1.
 	p.script("SELECT type FROM targets WHERE id", []string{"type"}, [][]string{{"application"}})
 	p.script("FROM targets WHERE type", []string{"id"}, [][]string{{dgPeerUUID}})

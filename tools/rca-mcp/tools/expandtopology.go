@@ -202,7 +202,7 @@ func NewExpandTopologyTool(pg *sql.DB, ch *CH, firstEvent, lastEvent time.Time, 
 	return llm.Tool{
 		Name: "expand_topology",
 		Description: "대상 주변의 연결을 원천에서 즉석 조립한다 — 앱 호출(트레이스)·앱→DB·계측 밖 목적지·" +
-			"올라탄 호스트·네트워크 장비. 간선마다 호출자/피호출자 양쪽 관측을 병치하며(어긋남 자체가 단서), " +
+			"서버에 올라탄 서비스(역방향 포함)·호스트·네트워크 장비. 간선마다 호출자/피호출자 양쪽 관측을 병치하며(어긋남 자체가 단서), " +
 			"끝점의 대상 UUID를 못 풀어도 간선은 살린다(버리면 의존이 없는 것처럼 보인다). " +
 			"트레이스 0건은 의존 없음이 아니라 계측 없음일 수 있다.",
 		Parameters: params,
@@ -327,9 +327,18 @@ func etExpand(ctx context.Context, pg *sql.DB, ch *CH, seed string, hops int, fr
 	}
 	res.sources["apm"] = "checked"
 
+	// Load one consistent, windowed hosting relation; traverse it in both directions.
+	hosting, hostErr := etHostingRelations(ctx, pg, ch, inv, svcOf, from, to, &acc)
+	if hostErr != nil {
+		res.sources["hosted_on"] = "error: " + beDetail(hostErr)
+	} else {
+		res.sources["hosted_on"] = "checked(windowed_spans,current_inventory)"
+		res.notes = append(res.notes, "hosted_on은 시간창 안 span과 현재 파드 배치의 결합이다. 과거 배치·미계측 서비스·PID/포트 전체 목록을 보장하지 않는다. 이름이 모호한 파드/노드는 연결하지 않는다")
+	}
 	frontier := []*etNode{seedNode}
 	for hop := 1; hop <= hops && len(frontier) > 0; hop++ {
 		var next []*etNode
+		frontier = append(frontier, etHostingClosure(res, hosting, frontier, hop-1)...)
 
 		// (1) apm 계열 — 앱 노드에서만 의미가 있다.
 		apps := etFilterKind(frontier, "application")
@@ -345,13 +354,7 @@ func etExpand(ctx context.Context, pg *sql.DB, ch *CH, seed string, hops int, fr
 
 		// (2) zero-cost closure — hosted_on은 홉을 소모하지 않으므로
 		// 같은 층에서 즉시 편입되고, 그 호스트가 frontier가 된다(§12.5).
-		hosted, err := etHostedOn(ctx, pg, ch, res, inv, append(apps, etFilterKind(next, "application")...), hop, from, to, &acc)
-		if err != nil {
-			res.sources["hosted_on"] = "error: " + beDetail(err)
-		} else if len(apps) > 0 {
-			res.sources["hosted_on"] = "checked"
-		}
-		next = append(next, hosted...)
+		next = append(next, etHostingClosure(res, hosting, next, hop)...)
 
 		// (3) 네트워크 — frontier 노드마다 유형으로 판정한다(seed 한 번이
 		// 아니다. hosted_on으로 들어온 노드가 여기 걸린다).
@@ -404,6 +407,7 @@ func etFilterKind(ns []*etNode, kinds ...string) []*etNode {
 
 type etTargetMeta struct {
 	Name, Type, ResourceKind, ResourceKey string
+	HostTargetID                          string
 }
 
 type etInventory struct {
@@ -431,18 +435,19 @@ func etLoadTargets(ctx context.Context, pg *sql.DB) (*etInventory, error) {
 	rows, err := pg.QueryContext(ctx, `
 		SELECT id::text, coalesce(nullif(display_name,''), name), type,
 		       coalesce(meta->>'resource_kind',''), coalesce(meta->>'resource_key',''),
-		       coalesce(meta->>'resource_type',''), coalesce(meta->>'parent_target_id','')
+		       coalesce(meta->>'resource_type',''), coalesce(meta->>'parent_target_id',''),
+               coalesce(meta->>'host_target_id','')
 		FROM targets`)
 	if err != nil {
 		return nil, fmt.Errorf("expand_topology 대상 명부: %w", pgErr(err))
 	}
 	defer rows.Close()
 	for rows.Next() {
-		var id, name, typ, rk, rkey, rtype, parent string
-		if err := rows.Scan(&id, &name, &typ, &rk, &rkey, &rtype, &parent); err != nil {
+		var id, name, typ, rk, rkey, rtype, parent, host string
+		if err := rows.Scan(&id, &name, &typ, &rk, &rkey, &rtype, &parent, &host); err != nil {
 			return nil, fmt.Errorf("expand_topology 명부 행: %w", pgErr(err))
 		}
-		inv.byID[id] = etTargetMeta{Name: name, Type: etNormType(typ, rk), ResourceKind: rk, ResourceKey: rkey}
+		inv.byID[id] = etTargetMeta{Name: name, Type: etNormType(typ, rk), ResourceKind: rk, ResourceKey: rkey, HostTargetID: host}
 		if rk == "node" && rkey != "" {
 			inv.nodes[rkey] = id
 		}
@@ -1120,88 +1125,134 @@ func etSelfObserved(ctx context.Context, ch *CH, res *etResult, svcs []string, f
 //
 // 실측 커버리지 55/55. data->>'nodeId'는 k8s UID라 우리 대상 UUID가
 // 아니므로 nodeName을 거쳐야 한다.
-func etHostedOn(ctx context.Context, pg *sql.DB, ch *CH, res *etResult, inv *etInventory,
-	apps []*etNode, hop int, from, to time.Time, acc *truncAcc) ([]*etNode, error) {
+// etHostingRelation keeps source evidence separate from graph traversal direction.
+type etHostingRelation struct {
+	App, Host *etNode
+	Pod       string
+}
 
-	if len(apps) == 0 {
-		return nil, nil
-	}
-	svcs := []string{}
-	for _, n := range apps {
-		if n.Name != "" {
-			svcs = append(svcs, n.Name)
-		}
-	}
-	sort.Strings(svcs)
-
-	// 1) 서비스 → 파드명(span host_name).
+func etHostingRelations(ctx context.Context, pg *sql.DB, ch *CH, inv *etInventory,
+	svcOf map[string]etSvcID, from, to time.Time, acc *truncAcc) ([]etHostingRelation, error) {
 	rows, tr, err := ch.Query(ctx, `
-		SELECT service_name AS svc, host_name AS pod, count() AS n
+		SELECT service_name AS svc, host_name AS pod
 		FROM otel_traces_local
 		WHERE timestamp >= {from:DateTime64(9)} AND timestamp < {to:DateTime64(9)}
-		  AND host_name != '' AND has({svcs:Array(String)}, service_name)
-		GROUP BY svc, pod`,
-		map[string]string{"from": chTime(from), "to": chTime(to), "svcs": chArray(svcs)})
+		  AND host_name != '' AND service_name != ''
+		GROUP BY svc, pod ORDER BY svc, pod`,
+		map[string]string{"from": chTime(from), "to": chTime(to)})
 	if err != nil {
-		return nil, fmt.Errorf("expand_topology 파드 조회: %w", err)
+		return etJoinHosting(inv, svcOf, nil, nil), fmt.Errorf("expand_topology 파드 조회: %w", err)
 	}
 	acc.note(tr)
-	podOf := map[string][]string{}
-	for _, r := range rows {
-		podOf[chStr(r["svc"])] = append(podOf[chStr(r["svc"])], chStr(r["pod"]))
-	}
-	if len(podOf) == 0 {
-		return nil, nil
-	}
-
-	// 2) 파드명 → nodeName (PG kcm_resources).
 	pods := []string{}
-	for _, ps := range podOf {
-		pods = append(pods, ps...)
+	for _, r := range rows {
+		pods = append(pods, chStr(r["pod"]))
 	}
 	nodeOf, err := etPodNodes(ctx, pg, pods)
 	if err != nil {
-		return nil, err
+		return etJoinHosting(inv, svcOf, nil, nil), err
 	}
+	return etJoinHosting(inv, svcOf, rows, nodeOf), nil
+}
 
+func etJoinHosting(inv *etInventory, svcOf map[string]etSvcID, rows []map[string]any,
+	nodeOf map[string]string) []etHostingRelation {
+	var out []etHostingRelation
+	// Direct inventory host ownership is accepted only for application -> server.
+	// A pod's host_target_id may be a cluster; it is deliberately not used here.
+	for id, meta := range inv.byID {
+		if meta.Type != "application" || meta.HostTargetID == id {
+			continue
+		}
+		host, ok := inv.byID[meta.HostTargetID]
+		if !ok || host.Type != "server" {
+			continue
+		}
+		out = append(out, etHostingRelation{App: etTargetNode(inv, id, 0), Host: etTargetNode(inv, meta.HostTargetID, 0)})
+	}
+	for _, row := range rows {
+		svc, pod := chStr(row["svc"]), chStr(row["pod"])
+		nodeName := nodeOf[pod]
+		if svc == "" || nodeName == "" {
+			continue
+		}
+		// Duplicate node names across clusters must not choose an arbitrary host.
+		var matches []string
+		for id, meta := range inv.byID {
+			if meta.ResourceKind == "node" && meta.ResourceKey == nodeName {
+				matches = append(matches, id)
+			}
+		}
+		if len(matches) > 1 {
+			continue
+		}
+		host := &etNode{ID: "peer:node/" + nodeName, Name: nodeName, Type: "server",
+			ResolutionStatus: "unresolved", MatchBasis: "pod_name", Confidence: "environment_observation", Scope: "peer_observed"}
+		if len(matches) == 1 {
+			host = etTargetNode(inv, matches[0], 0)
+			host.MatchBasis, host.Confidence = "pod_name", "environment_observation"
+		}
+		out = append(out, etHostingRelation{App: etSvcNode(inv, svcOf, svc, 0), Host: host, Pod: pod})
+	}
+	sort.Slice(out, func(i, j int) bool {
+		a, b := out[i], out[j]
+		return a.App.ID+"\x00"+a.Host.ID+"\x00"+a.Pod < b.App.ID+"\x00"+b.Host.ID+"\x00"+b.Pod
+	})
+	return out
+}
+
+// Zero-cost fixed point: a host seed discovers its apps before the next APM hop.
+// Edges always point app -> host, including when traversed from a host.
+func etHostingClosure(res *etResult, relations []etHostingRelation, seeds []*etNode, hop int) []*etNode {
+	reachable := map[string]bool{}
+	for _, n := range seeds {
+		reachable[n.ID] = true
+	}
 	var grown []*etNode
-	for _, app := range apps {
-		seen := map[string]bool{}
-		for _, pod := range podOf[app.Name] {
-			nodeName, ok := nodeOf[pod]
-			if !ok || seen[nodeName] {
+	for changed := true; changed; {
+		changed = false
+		for _, rel := range relations {
+			if !reachable[rel.App.ID] && !reachable[rel.Host.ID] {
 				continue
 			}
-			seen[nodeName] = true
-			nodeID, resolved := inv.nodes[nodeName]
-
-			var host *etNode
-			if resolved {
-				host = etTargetNode(inv, nodeID, hop) // hop_cost=0 — 같은 층
-				if host != nil {
-					host.MatchBasis = "pod_name"
-					host.Confidence = "environment_observation"
+			edge := &etEdge{Source: rel.App.ID, Target: rel.Host.ID, Kind: etKindHosted,
+				Hop: hop, Observation: "topology_record", WindowBasis: "span_in_window; pod_placement=current_inventory",
+				Note: "hop_cost=0; source=otel_traces_local.host_name -> kcm_resources.pod.nodeName -> targets.resource_key; pod=" + rel.Pod}
+			if rel.Pod == "" {
+				edge.WindowBasis = "current_inventory; not_historical"
+				edge.Note = "hop_cost=0; source=targets.meta.host_target_id; typed application -> server"
+			}
+			_, edgeExists := res.edges[etEdgeKey(edge)]
+			needed := 0
+			if res.nodes[rel.App.ID] == nil {
+				needed++
+			}
+			if res.nodes[rel.Host.ID] == nil {
+				needed++
+			}
+			if len(res.nodes)+needed > etMaxNodes || (!edgeExists && len(res.edges) >= etMaxEdges) {
+				res.truncAt = hop
+				res.boundary = append(res.boundary, rel.App.ID, rel.Host.ID)
+				continue
+			}
+			for _, proto := range []*etNode{rel.App, rel.Host} {
+				n := *proto
+				n.Hop = hop
+				actual := res.addNode(&n)
+				if !reachable[n.ID] {
+					reachable[n.ID], changed = true, true
+					grown = append(grown, actual)
 				}
 			}
-			if host == nil {
-				host = &etNode{ID: "peer:node/" + nodeName, Name: nodeName, Type: "server", Hop: hop,
-					ResolutionStatus: "unresolved", MatchBasis: "pod_name",
-					Confidence: "environment_observation", Scope: "peer_observed"}
-			}
-			host = res.addNode(host)
-			res.addEdge(&etEdge{
-				Source: app.ID, Target: host.ID, Kind: etKindHosted, Hop: hop,
-				Observation: "topology_record",
-				Note:        "hop_cost=0 — 홉 거리를 올리지 않는다. 파드 " + pod + " 기준",
-			})
-			grown = append(grown, host)
+			res.addEdge(edge)
 		}
 	}
-	return grown, nil
+	return grown
 }
 
 func etPodNodes(ctx context.Context, pg *sql.DB, pods []string) (map[string]string, error) {
 	out := map[string]string{}
+	seen := map[string]bool{}
 	if len(pods) == 0 {
 		return out, nil
 	}
@@ -1218,9 +1269,12 @@ func etPodNodes(ctx context.Context, pg *sql.DB, pods []string) (map[string]stri
 		if err := rows.Scan(&pod, &node); err != nil {
 			return nil, fmt.Errorf("expand_topology 파드→노드 행: %w", pgErr(err))
 		}
-		if node != "" {
+		if seen[pod] {
+			delete(out, pod)
+		} else if node != "" {
 			out[pod] = node
 		}
+		seen[pod] = true
 	}
 	return out, pgErr(rows.Err())
 }
@@ -1452,7 +1506,7 @@ func etEnvelope(res *etResult, seed *etNode, from, to time.Time, wbasis string,
 			"observation_mismatch는 '피호출자가 실패를 자기 기록에 안 남김'이라는 사실이지 원인 지목이 아니다. " +
 			"끝점 미해소는 확신도 4축(resolution_status·match_basis·confidence·scope)으로 표기",
 		ObservedRange:  &TimeRange{From: from, To: to},
-		Truncated:      truncated,
+		Truncated:      truncated || res.truncAt >= 0,
 		QueryTruncated: bool(acc),
 	}
 }

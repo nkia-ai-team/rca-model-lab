@@ -155,7 +155,7 @@ func NewListChangesTool(pg *sql.DB, ch *CH, vm *VM, firstEvent, lastEvent time.T
 	return llm.Tool{
 		Name: "list_changes",
 		Description: "시간창 안에 일어난 변경 전부 — 정책 배포·수집기 등록·구성 변경·자산 트리 편집·계정 변경, " +
-			"그리고 쿠버네티스 워크로드 변경: 롤아웃(새·이전 ReplicaSet과 파드 템플릿 구조 차이 — 이미지·env·리소스 requests/limits·프로브·command/args·포트)과 " +
+			"그리고 쿠버네티스 워크로드 변경: 롤아웃(새·이전 ReplicaSet과 파드 템플릿 구조 차이 — DNS policy/config·이미지·env·리소스 requests/limits·프로브·command/args·포트)과 " +
 			"레플리카 수 변경(스케일 업/다운의 이전→이후 개수). 각 항목에 deployment·replicaset target_id가 붙는다. " +
 			"리소스 limits(memory·cpu)가 바뀐 롤아웃에는 새 ReplicaSet pod의 그 자원 사용량 피크(절대값·새 한도 대비 %·피크 시각)를 붙인다. " +
 			"대상은 선택이며 필터가 아니라 정렬 힌트다(이웃 대상 변경이 원인인 경우가 흔해 창 전역을 반환한다). " +
