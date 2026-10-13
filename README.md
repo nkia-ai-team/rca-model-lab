@@ -27,6 +27,42 @@ Python 조사 루프가 모델과 Go MCP 도구를 연결하고, PostgreSQL·Cli
 정책명만 같아도 실행 조건이 같지는 않습니다. 모델·템플릿·MCP 바이너리·턴/출력 한도·서버 컨텍스트도 함께 고정해야 합니다.
 **진행 중 평가의 고정 바이너리는 소스 변경만으로 교체되지 않습니다.** 최신 기능의 평가에는 새 실행과 버전 기록이 필요합니다.
 
+<!-- TOOL-CATALOG:START -->
+## 전체 도구 목록
+
+Go 관측 도구 **23종**, Python 결론 제출 **1종**, structured 정책 전용 원문 조회 **1종**입니다. legacy에서는 `read_observation`을 제공하지 않습니다.
+
+| 도구 | 언제 사용하는가 | 제공 조건 |
+|---|---|---|
+| `describe_data_sources` | 어떤 관측 데이터를 조회할 수 있는지 먼저 확인한다. | Go 공통 |
+| `search_targets` | 이름·주소·유형으로 대상 UUID를 찾는다. | Go 공통 |
+| `get_process_snapshot` | 사건 시간창의 프로세스 원본 스냅샷을 조회한다. | Go 공통 |
+| `get_trace_summaries` | 저장된 오류 체인·호출 경로 요약에서 대표 trace를 찾는다. | Go 공통 |
+| `get_trace_spans` | 대표 trace의 span 원문을 따라 호출·실패 경로를 확인한다. | Go 공통 |
+| `get_trace_activity` | 직전 같은 길이의 시간창과 처리량을 비교해 사라진 작업·메시지 흐름을 찾는다. | Go 공통 |
+| `search_host_data` | 호스트 syslog 또는 기록된 소켓 연결을 검색한다. | Go 공통 |
+| `get_cluster_projections` | 캡처에 기록된 이벤트의 클러스터·desired version 할당을 확인한다. | Go 공통 |
+| `scan_metrics` | 대상의 모든 지표를 기준선과 비교해 조사할 신호를 찾는다. | Go 공통 |
+| `read_timeseries` | 지표의 시간적 모양과 대상 간 이상 시작 순서를 비교한다. | Go 공통 |
+| `sample_logs` | 로그 종류를 먼저 파악하고 특정 종류의 원문을 읽는다. | Go 공통 |
+| `list_events` | 이상감지·외부 알람·K8s 이벤트를 시간 순서로 확인한다. | Go 공통 |
+| `describe_target` | 대상 정체·소속·하위 자원·한도를 확인한다. | Go 공통 |
+| `list_changes` | 사건 전후 변경을 전역에서 찾아 배포·구성 변경과 증상을 연결한다. | Go 공통 |
+| `compare_peers` | 한 대상만 이탈했는지 또래도 함께 이탈했는지 확인한다. | Go 공통 |
+| `expand_topology` | 앱의 의존 관계와 서버에 배치된 서비스를 양방향으로 탐색한다. | Go 공통 |
+| `db_blocking` | DB 잠금 사건과 장시간 세션·클라이언트별 대기 상태를 조사한다. | Go 공통 |
+| `db_slow_queries` | 수집된 top-SQL의 지연과 기준선 대비 악화를 확인한다. | Go 공통 |
+| `breakdown_endpoints` | 서비스 내부의 어떤 진입·처리·외부 호출 구간이 느리거나 실패하는지 분해한다. | Go 공통 |
+| `get_data_coverage` | 관측이 없는 이유를 수집 상태와 실제 저장소 건수로 점검한다. | Go 공통 |
+| `get_processes` | 호스트 지표에서 리소스를 많이 쓰는 프로세스를 찾는다. | Go 공통 |
+| `get_snmp_traps` | 네트워크 장비가 보낸 직접적인 trap 신호를 확인한다. | Go 공통 |
+| `get_k8s_state` | 클러스터 또는 승격 리소스의 pod 이상 상태를 확인한다. | Go 공통 |
+| `submit_rca` | 조사를 끝내고 원인 대상·기전·근거를 구조화해 제출한다. | Python 공통 |
+| `read_observation` | 축약 응답에서 생략된 저장 원문을 필요한 범위만 다시 읽는다. | structured only |
+
+입력·반환·호출 예시는 [HTML 도구 사전](docs/rca-harness-architecture.html#tools)에서 확인할 수 있습니다.
+
+<!-- TOOL-CATALOG:END -->
 ## 시작하기
 
 Python 3.12, `uv`가 필요합니다. MCP 빌드는 Go ≥ 1.25, 격리 데이터 복원에는 Docker Compose와 캡처 데이터가 필요합니다.
