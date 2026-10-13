@@ -1,0 +1,880 @@
+[
+ {
+  "description": "현재 캡처·수집 데이터 전체를 탐색한다. 각 데이터셋의 주요 필드, 시간·대상 축, 담당 조회 도구, 제한사항을 반환한다. 시나리오에 나오지 않은 근거를 찾을 때 먼저 사용한다.",
+  "inputSchema": {
+   "properties": {
+    "domain": {
+     "description": "선택 필터: inventory | metrics | logs | events | traces | database | process | network | kubernetes",
+     "type": "string"
+    }
+   },
+   "type": "object"
+  },
+  "name": "describe_data_sources"
+ },
+ {
+  "description": "Discover target UUIDs by name, type or address before calling describe_target or target-scoped RCA tools. Lists the connected inventory snapshot; existence does not establish health or incident involvement. Follow next_offset for more matches.",
+  "inputSchema": {
+   "properties": {
+    "limit": {
+     "default": 50,
+     "maximum": 100,
+     "minimum": 1,
+     "type": "integer"
+    },
+    "offset": {
+     "default": 0,
+     "maximum": 1000000,
+     "minimum": 0,
+     "type": "integer"
+    },
+    "query": {
+     "description": "Literal case-insensitive substring of name, display name, UUID or address; omit to list targets. %, _ are literal characters.",
+     "type": "string"
+    },
+    "type": {
+     "description": "Exact target type, e.g. server, application, database, kubernetes; omit for all types.",
+     "type": "string"
+    }
+   },
+   "type": "object"
+  },
+  "name": "search_targets"
+ },
+ {
+  "description": "캡처된 process_snapshot과 process_meta를 시간창·프로세스 키로 결합해 과거 CPU/RSS/상태와 PID·PPID·사용자·명령행을 조회한다. 라이브 get_processes와 별도의 재현용 도구다.",
+  "inputSchema": {
+   "properties": {
+    "from": {
+     "description": "UTC RFC3339",
+     "type": "string"
+    },
+    "offset": {
+     "description": "동일 필터·정렬의 페이지 시작 위치 (기본 0)",
+     "type": "integer"
+    },
+    "pid": {
+     "description": "프로세스 PID",
+     "type": "integer"
+    },
+    "proc_key": {
+     "description": "정확한 UInt64 프로세스 키 (문자열)",
+     "type": "string"
+    },
+    "sort_by": {
+     "description": "cpu | memory | threads (기본 cpu)",
+     "type": "string"
+    },
+    "target": {
+     "description": "server target_id(UUID)",
+     "type": "string"
+    },
+    "to": {
+     "description": "UTC RFC3339",
+     "type": "string"
+    },
+    "top_n": {
+     "description": "상위 N(기본 10, 최대 50)",
+     "type": "integer"
+    }
+   },
+   "required": [
+    "target",
+    "from",
+    "to"
+   ],
+   "type": "object"
+  },
+  "name": "get_process_snapshot"
+ },
+ {
+  "description": "Read stored path/error summaries overlapping a window. Counts cover each original summary window, not just the overlap. Follow exemplar_trace_ids with get_trace_spans; offset pages retain all matching summaries.",
+  "inputSchema": {
+   "additionalProperties": false,
+   "properties": {
+    "from": {
+     "description": "RFC3339 inclusive",
+     "type": "string"
+    },
+    "kind": {
+     "enum": [
+      "error_chain",
+      "path"
+     ],
+     "type": "string"
+    },
+    "offset": {
+     "maximum": 1000000,
+     "minimum": 0,
+     "type": "integer"
+    },
+    "signature": {
+     "description": "Exact signature filter for drilldown",
+     "type": "string"
+    },
+    "target": {
+     "description": "Exact target UUID or service name",
+     "type": "string"
+    },
+    "to": {
+     "description": "RFC3339 exclusive",
+     "type": "string"
+    },
+    "top_n": {
+     "maximum": 100,
+     "minimum": 1,
+     "type": "integer"
+    }
+   },
+   "required": [
+    "kind",
+    "target",
+    "from",
+    "to"
+   ],
+   "type": "object"
+  },
+  "name": "get_trace_summaries"
+ },
+ {
+  "description": "Read raw spans and full attributes/events/links for an observed trace. duration_ns is an exact decimal string. Paginate for all spans; missing parents may lie outside the requested window or instrumentation.",
+  "inputSchema": {
+   "additionalProperties": false,
+   "properties": {
+    "from": {
+     "description": "RFC3339 inclusive",
+     "type": "string"
+    },
+    "limit": {
+     "maximum": 100,
+     "minimum": 1,
+     "type": "integer"
+    },
+    "offset": {
+     "maximum": 1000000,
+     "minimum": 0,
+     "type": "integer"
+    },
+    "to": {
+     "description": "RFC3339 exclusive; widen if trace crosses summary boundaries",
+     "type": "string"
+    },
+    "trace_id": {
+     "description": "Exact exemplar trace ID from a summary or trace finding",
+     "type": "string"
+    }
+   },
+   "required": [
+    "trace_id",
+    "from",
+    "to"
+   ],
+   "type": "object"
+  },
+  "name": "get_trace_spans"
+ },
+ {
+  "description": "Compare time-bucket span counts to the immediately preceding equal-length window, retaining baseline-only disappeared operations and empty buckets. Grouped by service/kind/operation/topic/consumer group. Counts measure captured spans, not broker backlog or guaranteed delivery.",
+  "inputSchema": {
+   "additionalProperties": false,
+   "properties": {
+    "bucket_seconds": {
+     "description": "At most 240 buckets/window. Default chooses 60s or larger.",
+     "maximum": 3600,
+     "minimum": 1,
+     "type": "integer"
+    },
+    "consumer_group": {
+     "description": "Optional exact messaging.kafka.consumer.group",
+     "type": "string"
+    },
+    "from": {
+     "description": "RFC3339 current-window start",
+     "type": "string"
+    },
+    "limit": {
+     "maximum": 50,
+     "minimum": 1,
+     "type": "integer"
+    },
+    "offset": {
+     "maximum": 1000000,
+     "minimum": 0,
+     "type": "integer"
+    },
+    "target": {
+     "description": "Exact service name or target UUID",
+     "type": "string"
+    },
+    "to": {
+     "description": "RFC3339 current-window end; max 24 hours",
+     "type": "string"
+    },
+    "topic": {
+     "description": "Optional exact messaging.destination.name",
+     "type": "string"
+    }
+   },
+   "required": [
+    "target",
+    "from",
+    "to"
+   ],
+   "type": "object"
+  },
+  "name": "get_trace_activity"
+ },
+ {
+  "description": "Search syslog and host socket observations. Returns raw fields and content refs, plus pagination with a matching-count lower bound (not an exact total). Unsupported mode filters are rejected.",
+  "inputSchema": {
+   "additionalProperties": false,
+   "properties": {
+    "app": {
+     "description": "syslog only: exact app_name.",
+     "type": "string"
+    },
+    "direction": {
+     "description": "connections only; exact recorded direction.",
+     "enum": [
+      "in",
+      "out"
+     ],
+     "type": "string"
+    },
+    "from": {
+     "description": "Inclusive RFC3339 timestamp.",
+     "type": "string"
+    },
+    "host": {
+     "description": "Exact hostname (syslog) or host_name (connections).",
+     "type": "string"
+    },
+    "kind": {
+     "enum": [
+      "syslog",
+      "connections"
+     ],
+     "type": "string"
+    },
+    "limit": {
+     "default": 50,
+     "maximum": 200,
+     "minimum": 1,
+     "type": "integer"
+    },
+    "local_port": {
+     "description": "connections only: exact port.",
+     "maximum": 65535,
+     "minimum": 0,
+     "type": "integer"
+    },
+    "offset": {
+     "default": 0,
+     "description": "Use pagination.next_offset with unchanged filters on a fixed dataset. Beyond the bound, narrow the time window.",
+     "maximum": 1000000,
+     "minimum": 0,
+     "type": "integer"
+    },
+    "process": {
+     "description": "connections only: exact process.",
+     "type": "string"
+    },
+    "query": {
+     "description": "Case-insensitive literal substring: syslog message/raw; connections local/remote addresses and decimal ports, process, state, direction and host.",
+     "type": "string"
+    },
+    "remote": {
+     "description": "connections only: exact remote address.",
+     "type": "string"
+    },
+    "remote_port": {
+     "description": "connections only: exact port.",
+     "maximum": 65535,
+     "minimum": 0,
+     "type": "integer"
+    },
+    "severity_max": {
+     "description": "syslog only: include severity <= this RFC level (0 emergency, 1 alert, 2 critical, 3 error, 4 warning, 5 notice, 6 info, 7 debug).",
+     "maximum": 7,
+     "minimum": 0,
+     "type": "integer"
+    },
+    "state": {
+     "description": "connections only: exact socket state.",
+     "type": "string"
+    },
+    "target": {
+     "description": "connections only: exact target UUID.",
+     "type": "string"
+    },
+    "to": {
+     "description": "Exclusive RFC3339 timestamp.",
+     "type": "string"
+    }
+   },
+   "required": [
+    "kind",
+    "from",
+    "to"
+   ],
+   "type": "object"
+  },
+  "name": "search_host_data"
+ },
+ {
+  "description": "캡처된 event_cluster_projection_local에서 이벤트·클러스터·desired version 할당을 조회한다.",
+  "inputSchema": {
+   "properties": {
+    "cluster": {
+     "type": "string"
+    },
+    "from": {
+     "type": "string"
+    },
+    "limit": {
+     "type": "integer"
+    },
+    "to": {
+     "type": "string"
+    }
+   },
+   "required": [
+    "from",
+    "to"
+   ],
+   "type": "object"
+  },
+  "name": "get_cluster_projections"
+ },
+ {
+  "description": "대상의 전 지표를 기준선(인시던트 전 고정 창)과 대조해 존재 4분류로 준다 — disappeared(사라짐)/appeared(새로 등장)/shifted(robust z 이상)/steady(건수). 뭐가 있는지 모르는 대상의 조사 시작점. 여기 나온 지표 이름으로 read_timeseries를 부른다.",
+  "inputSchema": {
+   "properties": {
+    "baseline_from": {
+     "description": "기준선 창 override 시작(선택 — 기본은 인시던트 첫 증상 직전 60분. 탐지 지연이 커서 직전 60분도 이미 병들었다고 볼 때만)",
+     "type": "string"
+    },
+    "baseline_to": {
+     "description": "기준선 창 override 끝(선택, baseline_from과 함께)",
+     "type": "string"
+    },
+    "from": {
+     "description": "현재 창 시작 — UTC RFC3339, 반개구간 [from,to)",
+     "type": "string"
+    },
+    "target": {
+     "description": "target_id(UUID)",
+     "type": "string"
+    },
+    "to": {
+     "description": "현재 창 끝(제외)",
+     "type": "string"
+    }
+   },
+   "required": [
+    "target",
+    "from",
+    "to"
+   ],
+   "type": "object"
+  },
+  "name": "scan_metrics"
+ },
+ {
+  "description": "대상들의 지표 시계열을 버킷 값 배열로 준다(모양 독해용) + 코드 파생값 부착: 각 시계열의 onset(평소 대비 이탈 시작 구간)과 시계열 간 선후 타임라인, 한도 짝이 있으면 한도 대비 %. 차원 분해는 group_by 라벨로.",
+  "inputSchema": {
+   "properties": {
+    "baseline_from": {
+     "description": "기준선 override 시작(선택 — 기본은 인시던트 첫 증상 직전 60분)",
+     "type": "string"
+    },
+    "baseline_to": {
+     "description": "기준선 override 끝(선택)",
+     "type": "string"
+    },
+    "from": {
+     "description": "UTC RFC3339 또는 now/now-15m 상대 표기, 반개구간 시작",
+     "type": "string"
+    },
+    "group_by": {
+     "description": "분해 라벨(선택 — 예: pod, name, device). 지정 시 지표 1개만, 라벨 값 상위 5 + other",
+     "type": "string"
+    },
+    "metrics": {
+     "description": "지표 이름 목록 — scan_metrics가 알려준 것. 대상×지표 조합 최대 8",
+     "items": {
+      "type": "string"
+     },
+     "type": "array"
+    },
+    "targets": {
+     "description": "target_id(UUID) 목록 — 복수면 선후(onset) 비교가 자동 부착됨",
+     "items": {
+      "type": "string"
+     },
+     "type": "array"
+    },
+    "to": {
+     "description": "UTC RFC3339 또는 now — '지금도 그런가'는 to:now로",
+     "type": "string"
+    }
+   },
+   "required": [
+    "targets",
+    "metrics",
+    "from",
+    "to"
+   ],
+   "type": "object"
+  },
+  "name": "read_timeseries"
+ },
+ {
+  "description": "대상의 로그 조사 — mode=map은 종류 지도(존재 4구획: 기준선 미관측/급증/소멸/최빈 + 총량 변동 volume_shift(흐름 전체의 끊김·폭주) + 레벨 분포), mode=grep은 raw 원문(레벨 불문, template_id·검색어·맥락 줄). 모르는 대상은 map부터, 지도의 template_id로 grep 드릴다운.",
+  "inputSchema": {
+   "properties": {
+    "baseline_from": {
+     "description": "map 전용: 기준선 창 override 시작(선택 — 기본은 인시던트 첫 증상 직전 60분)",
+     "type": "string"
+    },
+    "baseline_to": {
+     "description": "map 전용: 기준선 창 override 끝(선택, baseline_from과 함께)",
+     "type": "string"
+    },
+    "context_lines": {
+     "description": "grep 전용(선택): 매치 전후 맥락 줄 수(0~5, 같은 귀속 스트림 한정)",
+     "type": "integer"
+    },
+    "from": {
+     "description": "UTC RFC3339, 반개구간 시작(포함)",
+     "type": "string"
+    },
+    "limit": {
+     "description": "grep 전용(선택): 최대 반환 매치 수(기본 30, 최대 100)",
+     "type": "integer"
+    },
+    "mode": {
+     "description": "map=로그 종류 지도(기준선 미관측/급증/소멸/최빈 4구획 + 총량 변동 volume_shift: 흐름 전체의 끊김·폭주; 뭐가 있는지 모를 때 시작점), grep=원문 드릴다운(지도의 template_id나 검색어로)",
+     "enum": [
+      "map",
+      "grep"
+     ],
+     "type": "string"
+    },
+    "query": {
+     "description": "grep 전용: 본문 부분 일치 검색어(template_id 없을 때)",
+     "type": "string"
+    },
+    "severity_min": {
+     "description": "grep 전용(선택): 이 레벨 이상만 (TRACE|DEBUG|INFO|WARN|ERROR|FATAL)",
+     "type": "string"
+    },
+    "target": {
+     "description": "target_id(UUID)",
+     "type": "string"
+    },
+    "template_id": {
+     "description": "grep 전용: map 응답의 template_id를 그대로 — 그 종류의 원문을 본다",
+     "type": "string"
+    },
+    "to": {
+     "description": "UTC RFC3339, 반개구간 끝(제외)",
+     "type": "string"
+    }
+   },
+   "required": [
+    "mode",
+    "target",
+    "from",
+    "to"
+   ],
+   "type": "object"
+  },
+  "name": "sample_logs"
+ },
+ {
+  "description": "대상의 시간창 내 사건 — 이상감지 에피소드(발단·해소·지속·진행 중), 외부 알람, K8s 대상이면 쿠버네티스 이벤트(Normal·Warning 모두)까지 합성. kubernetes 클러스터 대상 UUID를 주면 클러스터 전체(모든 namespace) 쿠버네티스 이벤트를 창 안에서 전부 보고 (namespace, kind, reason) 묶음 요약을 함께 준다 — 승격 리소스(deployment·pod 등) UUID면 그 리소스 이름의 이벤트만. 롤아웃 전후 스펙 차이·레플리카 수 변경은 list_changes. 과거가 궁금하면(평소에도 울리나) 창을 옮겨 재호출.",
+  "inputSchema": {
+   "properties": {
+    "from": {
+     "description": "UTC RFC3339 또는 now/now-15m, 반개구간 시작(포함)",
+     "type": "string"
+    },
+    "target": {
+     "description": "target_id(UUID). kubernetes 클러스터 대상 UUID면 클러스터 전체 쿠버네티스 이벤트",
+     "type": "string"
+    },
+    "to": {
+     "description": "UTC RFC3339 또는 now, 반개구간 끝(제외)",
+     "type": "string"
+    }
+   },
+   "required": [
+    "target",
+    "from",
+    "to"
+   ],
+   "type": "object"
+  },
+  "name": "list_events"
+ },
+ {
+  "description": "대상 하나의 신상명세 — 정체(유형·이름·주소·상태), 소속(호스트·K8s·서비스그룹 합성), 하위 요약, 한도 카탈로그(이 대상에서 한도를 아는 지표와 limit 값·창 내 변화). 사용률 % 정독은 read_timeseries로.",
+  "inputSchema": {
+   "properties": {
+    "from": {
+     "description": "한도 관측 창 시작(RFC3339 또는 now-15m 꼴, 생략 시 첫 증상 60분 전)",
+     "type": "string"
+    },
+    "target": {
+     "description": "조회할 target_id(UUID) 하나 — 여러 대상의 정체 훑기는 조사 브리핑에 이미 있다",
+     "type": "string"
+    },
+    "to": {
+     "description": "한도 관측 창 끝(생략 시 now)",
+     "type": "string"
+    }
+   },
+   "required": [
+    "target"
+   ],
+   "type": "object"
+  },
+  "name": "describe_target"
+ },
+ {
+  "description": "시간창 안에 일어난 변경 전부 — 정책 배포·수집기 등록·구성 변경·자산 트리 편집·계정 변경, 그리고 쿠버네티스 워크로드 변경: 롤아웃(새·이전 ReplicaSet과 파드 템플릿 구조 차이 — 이미지·env·리소스 requests/limits·프로브·command/args·포트)과 레플리카 수 변경(스케일 업/다운의 이전→이후 개수). 각 항목에 deployment·replicaset target_id가 붙는다. 리소스 limits(memory·cpu)가 바뀐 롤아웃에는 새 ReplicaSet pod의 그 자원 사용량 피크(절대값·새 한도 대비 %·피크 시각)를 붙인다. 대상은 선택이며 필터가 아니라 정렬 힌트다(이웃 대상 변경이 원인인 경우가 흔해 창 전역을 반환한다). 기본 창은 발단 기준 24시간 소급 — 배포는 새벽, 발현은 오전인 축적형 원인을 잡기 위해서다.",
+  "inputSchema": {
+   "properties": {
+    "from": {
+     "description": "선택. UTC RFC3339 또는 now-24h. 기본 = 인시던트 발단 -24시간",
+     "type": "string"
+    },
+    "include_audit_activity": {
+     "description": "기본 false. true면 조회 전용 감사 기록(DB 화면 조회 등)까지 포함 — 접기는 풀지 않는다",
+     "type": "boolean"
+    },
+    "limit": {
+     "description": "선택. 반환 사건 상한(기본 40, 접기 후 기준)",
+     "type": "integer"
+    },
+    "target": {
+     "description": "target_id(UUID) — 선택. 필터가 아니라 정렬 힌트다(주면 귀속분이 위로, 나머지도 함께 반환)",
+     "type": "string"
+    },
+    "to": {
+     "description": "선택. UTC RFC3339 또는 now. 기본 = 인시던트 창 끝(없으면 now)",
+     "type": "string"
+    }
+   },
+   "type": "object"
+  },
+  "name": "list_changes"
+ },
+ {
+  "description": "대상의 지표를 또래와 대조해 **혼자 이탈인지 또래도 같이 이탈인지** 답한다. 판정은 각자 자기 기준선 대비 이탈 여부이지 값 크기 비교가 아니며, 좋고 나쁨은 판정하지 않는다. 또래 집합 근거와 관측 없는 또래는 응답에 명시된다.",
+  "inputSchema": {
+   "properties": {
+    "baseline_from": {
+     "description": "기준선 override 시작(선택 — 기본은 인시던트 첫 증상 직전 60분)",
+     "type": "string"
+    },
+    "baseline_to": {
+     "description": "기준선 override 끝(선택)",
+     "type": "string"
+    },
+    "from": {
+     "description": "UTC RFC3339 또는 now/now-15m, 반개구간 시작",
+     "type": "string"
+    },
+    "metric": {
+     "description": "비교할 지표 이름 1개 — scan_metrics가 알려준 것(부분 일치 안 됨)",
+     "type": "string"
+    },
+    "target": {
+     "description": "target_id(UUID)",
+     "type": "string"
+    },
+    "to": {
+     "description": "UTC RFC3339 또는 now",
+     "type": "string"
+    }
+   },
+   "required": [
+    "target",
+    "metric",
+    "from",
+    "to"
+   ],
+   "type": "object"
+  },
+  "name": "compare_peers"
+ },
+ {
+  "description": "대상 주변의 연결을 원천에서 즉석 조립한다 — 앱 호출(트레이스)·앱→DB·계측 밖 목적지·올라탄 호스트·네트워크 장비. 간선마다 호출자/피호출자 양쪽 관측을 병치하며(어긋남 자체가 단서), 끝점의 대상 UUID를 못 풀어도 간선은 살린다(버리면 의존이 없는 것처럼 보인다). 트레이스 0건은 의존 없음이 아니라 계측 없음일 수 있다.",
+  "inputSchema": {
+   "properties": {
+    "edge_kinds": {
+     "description": "선택. 출력 필터일 뿐 탐색은 항상 전 종류로 한다(막으면 그 종류를 거쳐야 닿는 노드가 사라진다). sync_call·async_candidate·unknown_parent_child·apm_db·apm_client_peer·hosted_on·network_fdb·network_lldp",
+     "items": {
+      "type": "string"
+     },
+     "type": "array"
+    },
+    "from": {
+     "description": "선택. UTC RFC3339 또는 now-1h. 기본 = 인시던트 발단",
+     "type": "string"
+    },
+    "hops": {
+     "description": "확장 깊이(기본 2, 최대 3). hosted_on은 홉을 소모하지 않는다",
+     "type": "integer"
+    },
+    "limit": {
+     "description": "선택. 간선 수 상한(기본 400) — 노드는 간선에서 파생된다",
+     "type": "integer"
+    },
+    "target": {
+     "description": "확장 기준 대상 target_id(UUID). 필수",
+     "type": "string"
+    },
+    "to": {
+     "description": "선택. 기본 = 인시던트 창 끝(없으면 now)",
+     "type": "string"
+    }
+   },
+   "required": [
+    "target"
+   ],
+   "type": "object"
+  },
+  "name": "expand_topology"
+ },
+ {
+  "description": "DB의 시간창에서 블로킹 사건과 세션 상태를 본다. ① 블로킹 사건 — 누가 누구를 막았나(루트 세션 포함), 몇 세션이 막혔나, 어느 객체를 두고 다퉜나 (창 전역을 훑어 연속 관측을 한 사건으로 접는다). ② 세션 상태 구획(블로킹이 없어도 실린다) — 트랜잭션 경과 시간 상위 세션(상태·대기 이벤트·SQL 본문)과 클라이언트(접속 IP·호스트 → pod·워크로드·애플리케이션)별 세션 상태·대기 이벤트 분포의 시간 추이. db는 database 대상 UUID다(search_targets type=database). DB 전체 세션 수 시계열·커넥션 포화 추이는 read_timeseries의 몫.",
+  "inputSchema": {
+   "properties": {
+    "db": {
+     "description": "database 대상의 target_id(UUID) — search_targets(type=database)로 찾는다. db_resource 하위 대상이 아니라 부모 database 대상",
+     "type": "string"
+    },
+    "from": {
+     "description": "UTC RFC3339 또는 now/now-2h. 생략하면 인시던트 창",
+     "type": "string"
+    },
+    "max_events": {
+     "description": "사건 반환 상한(기본 20)",
+     "type": "integer"
+    },
+    "to": {
+     "description": "UTC RFC3339 또는 now. 생략하면 인시던트 창",
+     "type": "string"
+    }
+   },
+   "required": [
+    "db"
+   ],
+   "type": "object"
+  },
+  "name": "db_blocking"
+ },
+ {
+  "description": "DB의 시간창에서 수집된 top-SQL을 접어 준다 — 어느 쿼리가 느린가, 그리고 직전 24시간 자기 기준선 대비 느려졌나(만성과 사건을 구분한다). SQL 본문·실행계획 존재까지 붙인다. 블로킹 짝은 db_blocking, 커넥션 포화는 read_timeseries의 몫.",
+  "inputSchema": {
+   "properties": {
+    "db": {
+     "description": "database 대상의 target_id(UUID)",
+     "type": "string"
+    },
+    "exclude_self_monitoring": {
+     "description": "컬렉터 자기 쿼리 제외(기본 false)",
+     "type": "boolean"
+    },
+    "from": {
+     "description": "UTC RFC3339 또는 now/now-2h. 생략하면 인시던트 창",
+     "type": "string"
+    },
+    "full_text_for": {
+     "description": "SQL 본문 전문을 받을 sql_key(최대 3개)",
+     "items": {
+      "type": "string"
+     },
+     "type": "array"
+    },
+    "plan_for": {
+     "description": "실행계획을 받을 sql_key(최대 2개)",
+     "items": {
+      "type": "string"
+     },
+     "type": "array"
+    },
+    "sort": {
+     "description": "정렬축: total_ms(기본)|ratio_p50|latency_p50|latency_max|execs",
+     "type": "string"
+    },
+    "to": {
+     "description": "UTC RFC3339 또는 now. 생략하면 인시던트 창",
+     "type": "string"
+    },
+    "top_n": {
+     "description": "반환 상한(기본 10)",
+     "type": "integer"
+    }
+   },
+   "required": [
+    "db"
+   ],
+   "type": "object"
+  },
+  "name": "db_slow_queries"
+ },
+ {
+  "description": "한 서비스 안에서 어느 처리 구간이 느린가/에러인가를 분해한다. HTTP 엔드포인트뿐 아니라 메시지 소비·스케줄러·프레임워크 구간·나가는 호출까지 세 구획으로 나눠 직전 창 대비 지연·실패 변화를 판정한다.",
+  "inputSchema": {
+   "properties": {
+    "from": {
+     "description": "UTC RFC3339",
+     "type": "string"
+    },
+    "sections": {
+     "description": "entry(진입 처리) | step(프레임워크 구간) | egress(나가는 호출). 기본 셋 전부",
+     "items": {
+      "type": "string"
+     },
+     "type": "array"
+    },
+    "target": {
+     "description": "service.name 정확일치(또는 lucida.target_id UUID — 서비스와 1:1)",
+     "type": "string"
+    },
+    "to": {
+     "description": "UTC RFC3339",
+     "type": "string"
+    },
+    "top_n": {
+     "description": "구획당 최대 행(기본 20, 상한 50)",
+     "type": "integer"
+    }
+   },
+   "required": [
+    "target"
+   ],
+   "type": "object"
+  },
+  "name": "breakdown_endpoints"
+ },
+ {
+  "description": "대상별 수집기 상태(등록·최근 수집 성공/실패)와 저장소별 실제 관측 수를 대조한다 — 수집기 상태는 현재 스냅샷이며 사건 시간창의 연속 수집을 증명하지 않는다. 0건은 장애 배제 근거가 아니다.",
+  "inputSchema": {
+   "properties": {
+    "from": {
+     "description": "UTC RFC3339",
+     "type": "string"
+    },
+    "targets": {
+     "description": "판별할 target_id(UUID) 목록",
+     "items": {
+      "type": "string"
+     },
+     "type": "array"
+    },
+    "to": {
+     "description": "UTC RFC3339",
+     "type": "string"
+    }
+   },
+   "required": [
+    "targets",
+    "from",
+    "to"
+   ],
+   "type": "object"
+  },
+  "name": "get_data_coverage"
+ },
+ {
+  "description": "호스트에서 리소스를 많이 쓰는 프로세스 상위 N(프로세스명·pid 차원).",
+  "inputSchema": {
+   "properties": {
+    "from": {
+     "description": "UTC RFC3339",
+     "type": "string"
+    },
+    "host": {
+     "description": "server 대상의 target_id(UUID)",
+     "type": "string"
+    },
+    "sort_by": {
+     "description": "cpu | memory | io_read | io_write (기본 cpu)",
+     "type": "string"
+    },
+    "to": {
+     "description": "UTC RFC3339",
+     "type": "string"
+    },
+    "top_n": {
+     "description": "상위 N(기본 5)",
+     "type": "integer"
+    }
+   },
+   "required": [
+    "host",
+    "from",
+    "to"
+   ],
+   "type": "object"
+  },
+  "name": "get_processes"
+ },
+ {
+  "description": "네트워크 장비가 보낸 SNMP trap(linkDown 등 직접 원인 신호)을 조회한다.",
+  "inputSchema": {
+   "properties": {
+    "device": {
+     "description": "network 대상의 target_id(UUID)",
+     "type": "string"
+    },
+    "from": {
+     "description": "UTC RFC3339",
+     "type": "string"
+    },
+    "to": {
+     "description": "UTC RFC3339",
+     "type": "string"
+    }
+   },
+   "required": [
+    "device",
+    "from",
+    "to"
+   ],
+   "type": "object"
+  },
+  "name": "get_snmp_traps"
+ },
+ {
+  "description": "클러스터(또는 특정 pod)의 창 내 상태 — 재시작 증가, CrashLoopBackOff, OOMKilled, waiting pod.",
+  "inputSchema": {
+   "properties": {
+    "from": {
+     "description": "UTC RFC3339",
+     "type": "string"
+    },
+    "target": {
+     "description": "kubernetes 클러스터 또는 승격 리소스의 target_id(UUID)",
+     "type": "string"
+    },
+    "to": {
+     "description": "UTC RFC3339",
+     "type": "string"
+    }
+   },
+   "required": [
+    "target",
+    "from",
+    "to"
+   ],
+   "type": "object"
+  },
+  "name": "get_k8s_state"
+ }
+]

@@ -1,0 +1,12 @@
+# Ladder ② for the f07-h family: both captures re-attributed the root to commerce-cart under the
+# status-only hint (teacher-status run1/run2 root_f1 0.0) and the recapture's hinted runs graded
+# confirmed against a provisional golden. Combines the accepted r2 exclusion with the status rule.
+# Hints live only in the live system prompt — never in records or training prompts.
+# 2026-09-21 철회: 골든 등급이 규칙 A 로 confirmed 가 되어 아래 provisional 유도 문구는 더 이상 유효하지 않음 (이미 소비된 힌트, 기록용).
+# case-f07-h-v3-7de1a36f: '이전 조사 판정: commerce-cart 커넥션 풀·CPU 포화를 원인으로 지목한 결론은 오답 판정. cart 의 포화는 같은 부하 아래 함께 나타난 전파 지점이지 발원지가 아니다 — 부하가 처음 유입·증폭된 상류에서 한 홉 더 거슬러 올라가 발원지를 찾아라. 결론 등급: confirmed 는 원인 대상의 이상과 영향의 시각·경로가 직접 연결된 관측이 있을 때만 준다. 영향 실측이 여럿이어도 직접 인과 관측이 없으면 provisional 이다.'
+# 2026-09-21 철회: 골든 등급이 규칙 A 로 confirmed 가 되어 아래 provisional 유도 문구는 더 이상 유효하지 않음 (이미 소비된 힌트, 기록용).
+# case-f07-h-v3-4ab16f7a: '이전 조사 판정: 대상 지목은 맞지만 결론 등급이 오답 판정. commerce-cart 의 포화는 전파 지점이지 발원지가 아니라는 판단은 유지하라. confirmed 는 원인 대상의 이상과 영향의 시각·경로가 직접 연결된 관측이 있을 때만 준다. 영향 실측이 여럿이어도 직접 인과 관측이 없으면 provisional 이다.'
+# f14-p: status-hinted runs kept the DB root but dropped the second golden root (the consumer that turns the DB error into loss).
+case-f14-p-v3-0bdb303b: '이전 조사 판정: DB 측 대상 지목과 provisional 등급은 맞지만 결론이 불완전하다는 판정 — 발원지가 하나라는 가정이 오답이다. 그 DB 오류를 받은 소비 측 내부 서비스가 실패를 어떻게 처리했는지(재시도·롤백·오프셋 커밋·예외 삼킴)를 그 서비스의 로그와 처리 결과 부재로 확인하라. 오류를 삼켜 결과를 영구 유실시킨 내부 서비스가 있으면 그것도 발원지이므로 causes 에 함께 적어라.'
+# f20-r: status-hinted run added the shared PostgreSQL instance as a second root; the golden root is the query source.
+case-f20-r-v3-caf04820: '이전 조사 판정: 등급은 맞지만 원인 목록이 오답 판정. 공유 PostgreSQL 인스턴스의 메모리 한도 도달·CPU 상승은 상류 쿼리 부하가 만든 전파 지점이지 발원지가 아니다. 어느 서비스의 어떤 쿼리 패턴(비인덱스 전체 스캔 류)이 그 부하를 만들었는지 느린 쿼리·트레이스로 추적해 그 서비스 하나만 causes 에 두고, DB 와 같은 DB 를 쓰는 다른 서비스는 영향으로만 기술하라.'

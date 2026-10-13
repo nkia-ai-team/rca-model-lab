@@ -1,0 +1,9 @@
+# OpenRCA 2.0 o2p converted captures (scripts/openrca2_convert.py). Source: huggingface anon-ops/ops-lite@581eba39, Apache-2.0.
+# public_compare: deterministic ~20% hold-out per system (hash of the case name) for comparison with published OpenRCA 2.0 results; never train on it.
+train:
+- case-openrca2-o2p-v3-171a00ae
+- case-openrca2-o2p-v3-1308e6cc
+validation: []
+sealed_eval: []
+public_compare:
+- case-openrca2-o2p-v3-1b4bf042

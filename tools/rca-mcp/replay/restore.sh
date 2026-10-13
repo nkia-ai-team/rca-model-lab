@@ -17,6 +17,17 @@ COMPOSE=(docker compose -f "$DIR/eval-dbs.compose.yml" -p "$PROJ")
 
 CH=(clickhouse-client -u lucida --password lucida123)
 
+remove_clickhouse_ttl_if_present() {
+  local table=${1:?table}
+  local create_sql
+  create_sql=$("${COMPOSE[@]}" exec -T clickhouse "${CH[@]}" --query \
+    "SHOW CREATE TABLE lucida.${table}" | tr -d '\r')
+  if printf '%s\n' "$create_sql" | grep -Eq '(^|\\n)TTL[[:space:]]'; then
+    "${COMPOSE[@]}" exec -T clickhouse "${CH[@]}" \
+      --query "ALTER TABLE lucida.${table} REMOVE TTL"
+  fi
+}
+
 [ -d "$CASE/data" ] || { echo "케이스 데이터 없음: $CASE/data"; exit 1; }
 [ -d "$LUCIDA_NEXT/database/ddl/clickhouse" ] || {
   echo "lucida-next DDL 없음: $LUCIDA_NEXT (LUCIDA_NEXT env로 지정)"; exit 1; }
@@ -114,8 +125,7 @@ for f in "$CASE"/data/clickhouse/*.parquet; do
   t=$(basename "$f" .parquet)
   # These are newly created isolated replay tables, never live services.
   # Old event-time partitions must survive merges throughout evaluation.
-  "${COMPOSE[@]}" exec -T clickhouse "${CH[@]}" \
-    --query "ALTER TABLE lucida.${t} REMOVE TTL"
+  remove_clickhouse_ttl_if_present "$t"
   "${COMPOSE[@]}" exec -T clickhouse "${CH[@]}" \
     --query "INSERT INTO lucida.${t} FORMAT Parquet" < "$f"
   echo "    ${t}"

@@ -282,7 +282,7 @@ var metaClasses = map[ObservationSource][]string{
 	SrcListEvents:         {"summary_meta"},
 	SrcSampleLogs:         {"summary_meta", "before", "after"},
 	SrcDBSlowQueries:      {"coverage", "sql_text_full", "sql_plan"},
-	SrcDBBlocking:         {"coverage"},
+	SrcDBBlocking:         {"coverage", "session_holders", "session_clients"}, // 세션 상태 구획(2026-10-06) — 사실 표, 술어 판정 대상 아님
 	SrcBreakdownEndpoints: {"coverage"},
 	SrcComparePeers:       {"verdict", "peer_set", "peers_folded", "peers_excluded", "compare_meta"},
 	SrcK8sState:           {},

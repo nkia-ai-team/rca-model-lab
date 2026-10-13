@@ -55,3 +55,30 @@ func TestTruncBody(t *testing.T) {
 		t.Fatalf("짧은 본문 변형: %q", got)
 	}
 }
+
+// 총량 변동은 종류 구획이 못 보는 "흐름 전체가 끊김/폭주"를 사실로 노출한다 —
+// 기준선 867건/60분 → 현재 1건/30분 이 normal 로 표시되던 실측(2026-09-21)의 회귀.
+func TestVolumeShift(t *testing.T) {
+	cases := []struct {
+		name                string
+		curTotal, baseTotal int
+		curMin, baseMin     float64
+		wantKind            string
+	}{
+		{"collapse (867/60m -> 1/30m)", 1, 867, 30, 60, "collapsed"},
+		{"steady", 400, 867, 30, 60, ""},
+		{"surge x6", 2600, 867, 30, 60, "surged"},
+		{"sparse baseline: cannot compare", 0, 10, 30, 60, ""},
+		{"no baseline", 5, 0, 30, 60, ""},
+		{"zero-length window", 5, 100, 0, 60, ""},
+	}
+	for _, c := range cases {
+		got := volumeShift(c.curTotal, c.baseTotal, c.curMin, c.baseMin)
+		if got.Kind != c.wantKind {
+			t.Errorf("%s: kind=%q want %q (ratio %.3f)", c.name, got.Kind, c.wantKind, got.Ratio)
+		}
+	}
+	if got := volumeShift(1, 867, 30, 60); got.Note == "" || got.Ratio > 0.01 {
+		t.Fatalf("collapse must carry a note and a tiny ratio: %+v", got)
+	}
+}

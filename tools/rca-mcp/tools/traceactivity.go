@@ -145,6 +145,13 @@ func traceActivityEnvelope(rows []map[string]any, tr *CHTrunc, in traceActivityI
 		f["baseline_counts"] = g.Baseline
 		f["current_total"] = cur
 		f["baseline_total"] = base
+		if k := uncapturedBaselineBuckets(baselineFrom, bucket, n); k > 0 {
+			// the capture starts inside the baseline window: its first k buckets hold no data at all, so the
+			// totals are not comparable — per-captured-bucket rates are
+			f["baseline_uncaptured_buckets"] = k
+			f["baseline_rate_per_bucket"] = float64(base) / float64(n-k)
+			f["current_rate_per_bucket"] = float64(cur) / float64(n)
+		}
 		f["raw_rows_both_windows"] = g.RawCount
 		f["bucket_seconds"] = bucket
 		f["current_from"] = from.Format(time.RFC3339Nano)
@@ -168,11 +175,26 @@ func traceActivityEnvelope(rows []map[string]any, tr *CHTrunc, in traceActivityI
 	if tr != nil {
 		page["next_action"] = "Narrow time/topic/group: incomplete backend query"
 	}
-	fs = append(fs, page, Finding{"section": "coverage", "current_window": map[string]string{"from": from.Format(time.RFC3339Nano), "to": to.Format(time.RFC3339Nano)}, "baseline_window": map[string]string{"from": baselineFrom.Format(time.RFC3339Nano), "to": from.Format(time.RFC3339Nano)}, "buckets_per_window": n, "last_bucket_may_be_partial": to.Sub(from)%(time.Duration(bucket)*time.Second) != 0, "limits": "Zero counts mean no recorded spans for that group/bucket, not proof of service outage or complete collection. Producer/consumer counts cannot prove backlog, loss or end-to-end delivery (sampling, retries, fan-out, prior backlog)."})
+	coverage := Finding{"section": "coverage", "current_window": map[string]string{"from": from.Format(time.RFC3339Nano), "to": to.Format(time.RFC3339Nano)}, "baseline_window": map[string]string{"from": baselineFrom.Format(time.RFC3339Nano), "to": from.Format(time.RFC3339Nano)}, "buckets_per_window": n, "last_bucket_may_be_partial": to.Sub(from)%(time.Duration(bucket)*time.Second) != 0, "limits": "Zero counts mean no recorded spans for that group/bucket, not proof of service outage or complete collection. Producer/consumer counts cannot prove backlog, loss or end-to-end delivery (sampling, retries, fan-out, prior backlog)."}
+	if k := uncapturedBaselineBuckets(baselineFrom, bucket, n); k > 0 {
+		coverage["capture_start"] = CaptureStart.Format(time.RFC3339Nano)
+		coverage["baseline_uncaptured_buckets"] = k
+		coverage["capture_note"] = fmt.Sprintf("The capture starts inside the baseline window: the first %d baseline buckets hold no data (not collected, not zero traffic). Compare per-bucket rates, not totals.", k)
+	}
+	fs = append(fs, page, coverage)
 	env := Envelope{Status: "normal", Summary: fmt.Sprintf("Trace activity: %d groups returned from %d observed groups. Compare bucket arrays for gaps and recovery.", end-start, len(keys)), Findings: fs, Refs: refs, Truncated: end < len(keys), QueryTruncated: tr != nil || in.Offset > 0, AssessmentBasis: "Current and baseline union of operation groups; recorded-span counts without health inference."}
 	if len(keys) == 0 {
 		env.Status = "no_data"
 		env.NoDataReason = NoDataUnknown
 	}
 	return env
+}
+
+// uncapturedBaselineBuckets counts the leading baseline buckets that end before CaptureStart (zero when unknown).
+func uncapturedBaselineBuckets(baselineFrom time.Time, bucket, n int) int {
+	if CaptureStart.IsZero() || !baselineFrom.Before(CaptureStart) {
+		return 0
+	}
+	k := int(CaptureStart.Sub(baselineFrom) / (time.Duration(bucket) * time.Second))
+	return min(k, n-1)
 }

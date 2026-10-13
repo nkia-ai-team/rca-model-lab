@@ -170,14 +170,14 @@ func TestFixtureCapture(t *testing.T) {
 		   OR toInt64OrZero(log_attributes['blockingTid']) > 0
 		GROUP BY target_id ORDER BY at DESC LIMIT 1`); r != nil {
 		tgt, at := fmt.Sprint(r["t"]), chParseTime(fmt.Sprint(r["at"]))
-		save("db_blocking", cap2(NewDBBlockingTool(ch, at.Add(-30*time.Minute), at, nil).Call(ctx,
+		save("db_blocking", cap2(NewDBBlockingTool(ch, pg, at.Add(-30*time.Minute), at, nil).Call(ctx,
 			args(map[string]any{"db": tgt, "from": at.Add(-30 * time.Minute).Format(time.RFC3339),
 				"to": at.Add(time.Minute).Format(time.RFC3339)}))))
 	} else if r := chOne(`SELECT toString(target_id) AS t, toString(max(timestamp)) AS at
 		FROM dpm_session_local GROUP BY target_id ORDER BY at DESC LIMIT 1`); r != nil {
 		// 블로킹 0건 경로도 골든 재료다 — normal + query_scope(0/0).
 		tgt, at := fmt.Sprint(r["t"]), chParseTime(fmt.Sprint(r["at"]))
-		save("db_blocking", cap2(NewDBBlockingTool(ch, at.Add(-30*time.Minute), at, nil).Call(ctx,
+		save("db_blocking", cap2(NewDBBlockingTool(ch, pg, at.Add(-30*time.Minute), at, nil).Call(ctx,
 			args(map[string]any{"db": tgt, "from": at.Add(-30 * time.Minute).Format(time.RFC3339),
 				"to": at.Add(time.Minute).Format(time.RFC3339)}))))
 	}
@@ -197,7 +197,7 @@ func TestFixtureCapture(t *testing.T) {
 			args(map[string]any{"targets": []string{tgt}, "from": fs, "to": ts}))))
 		save("expand_topology", cap2(NewExpandTopologyTool(pg, ch, from, to, nil).Call(ctx,
 			args(map[string]any{"target": tgt, "from": fs, "to": ts}))))
-		save("list_changes", cap2(NewListChangesTool(pg, from, to, nil).Call(ctx,
+		save("list_changes", cap2(NewListChangesTool(pg, ch, vm, from, to, nil).Call(ctx,
 			args(map[string]any{"from": fs, "to": ts}))))
 	}
 }
