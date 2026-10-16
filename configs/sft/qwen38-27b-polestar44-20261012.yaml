@@ -1,0 +1,49 @@
+# Template: launcher binds actual completed dataset digest and counts before use.
+name: qwen38-27b-polestar44-20261012
+model_name: /home/work/models/qwen3.8-27b-fp8
+tokenizer_name: /home/work/models/qwen3.8-27b-fp8
+checkpoint_format: finegrained_fp8_block
+model_revision: 017b9c7af6b5689d5dd426a76e0bc077eb5ca20a
+model_config_sha256: 74227dd615bf1ea975aa676bdf355a0379858c12f394b5365cd9dfa5fc2c70bc
+model_index_sha256: f0838c766951bdfe76d6afbdb2771a8f67aaa2231dedb3d33cebd817729843a2
+tokenizer_sha256: 5e9d8b588a4c0ff8dd6e3956ca24e3ad24bbf285f16648800e42227f0e3e499b
+training_compute_dtype: bfloat16
+adapter_parameter_dtype: float32
+optimizer_state_dtype: float32
+dequantize_for_training: true
+dataset: outputs/qwen-polestar-20261012/datasets/polestar.jsonl
+dataset_sha256: ''
+expected_examples: 86
+expected_cases: 44
+output_dir: /home/work/models/rca-adapters/qwen38-27b-polestar44-20261012
+max_length: 65536
+epochs: 1
+max_steps: -1
+learning_rate: 1.0e-05
+lr_scheduler_type: cosine
+warmup_ratio: 0.05
+max_grad_norm: 1.0
+batch_size: 1
+gradient_accumulation_steps: 4
+save_total_limit: 20
+save_steps: 50
+reasoning_strength: null
+case_balanced_loss: true
+use_liger_kernel: false
+supervise_end_token: true
+sequence_mode: turns
+lora:
+  rank: 16
+  alpha: 32
+  dropout: 0.05
+  target_modules: .*language_model.*(self_attn\.(q_proj|k_proj|v_proj|o_proj)|linear_attn\.(in_proj_qkv|in_proj_z|in_proj_a|in_proj_b|out_proj)|mlp\.(gate_proj|up_proj|down_proj))
+  freeze_a: false
+wandb:
+  entity: nkia-ai
+  project: rca-actor-sft
+  version: qwen38-27b-polestar44-20261012
+reasoning_loss_weight: 1.0
+source_sampling: legacy
+turn_selection_policy: legacy_random
+max_prompt_length: null
+turns_per_episode: 0

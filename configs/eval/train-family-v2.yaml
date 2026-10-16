@@ -1,0 +1,274 @@
+version: 1
+# expected_status 규칙 A (2026-09-21 확정): confirmed = 궤적 안에서 root 대상의 이상과 영향이 시각·경로로 직접 연결되는
+# 관측이 가능한 시나리오. provisional = root 가 계측 밖 외부 의존(내부 상태 관측 불가)이거나 기전 자체가 도구로 관측되지
+# 않는 시나리오(f09-h GC, f03-h 직렬화 렌더러). 8/27 초기값은 근거 없이 찍힌 것이라 이 규칙으로 재정렬함 (f05-p f10-h + 6 시나리오).
+# 2026-10-01 정답 설명 점검(사용자 승인): f03-h 는 직렬화가 jvm.thread.count{state=blocked}≈199(RUNNABLE 평소 수준)로 도구에서
+# 관측되므로 confirmed 로 변경. f09-h 는 GC 지표 미수집이라 provisional 유지. allowed_target_ids = 주입 장애와 별개로 동반 부하가
+# 무너뜨린 병행 병목(f07-h cart, f19-p/s·f10-h dispatch) — 적어도 틀린 후보로 세지 않음, 주입 원인은 여전히 필수.
+cases:
+  case-f01-h-v3-48ec8e62:
+    expected_status: provisional
+    roots:
+      - target_ids: [c3a3587e-215e-4da8-a76c-729732394e40, 0e850ae1-8158-4c1e-8de6-4b6687fd8aa9, 15dccf59-f629-4008-b34c-64dffbb14991, 1f4a47ba-32d6-4ffd-bf4b-1cf483df4ae1, 2111c2a4-41ad-44ee-ad66-74deb1b988ee, 2431cd7a-c2c4-478d-9c13-a9fa77df89ce, 28822568-e862-4b2b-ba17-e4f0843e652a, 2e81b529-8e3f-411a-8e76-9550aace4524, 5731ad8b-b294-4207-ad18-6669d059223d, 7879f9d9-e693-4dad-9bb4-0b96ac4a4f63, 7ffcbeab-171d-4e1d-8235-87e97588a007, 850c55f8-fe22-4ba2-8413-65916a9698b5, c3f08314-56a1-440c-92d6-a9d8286cba78, c7a0492d-633e-4882-be7c-5cd749d26d45, e987dbfc-bde5-46c2-bfe4-89ca0e2fdffe, f20d2598-2073-483a-a48c-95db322188e4]
+        target_aliases: [commerce-payment, payment-service]
+      - pseudo_kind: external_dependency
+        pseudo_ids: [external:external-pg, external:testbed-external-pg-mock]
+        proxy_target_ids: [016de474-2508-4458-9a18-281ac64226e5, 075f6fa6-d9ef-44c6-a97a-3f4315052126, 2262a7b9-c41e-493a-842c-008ad4e8bd6e, 272d86f1-0c26-425a-a9b8-d4d2dc5a4f97, 31e57392-0bb9-48fd-9a89-ffcf49f99717, 382dae1b-a176-49d1-b2a3-b5a1fb886a66, 38cf0fe7-bb9f-40ad-8275-c22f1e1be6fd, 3dfd48a2-de4b-4437-8750-b7d610b92b52, 52e3d566-64fc-4ef7-8fe1-12f867f0f690, 77d20d4f-bfae-4587-8c92-bf546b4860f6, 7956c805-a580-490f-90c3-356c30947445, 836558eb-4ecf-4181-aff7-e0242a4c78aa, 9d932c91-2ce8-4cd5-8c8a-60fe86926d0e, b4c24f03-5343-4756-8725-956e81aaa779, c6c6a59f-fa69-4d6e-9231-ca3e547f9df2, d41edc3c-9b48-480d-ad56-e2653aa0635c, de94e1d8-e587-4032-a170-a654542840eb, ef8ef696-4f46-4087-9f01-ecbfee894bb4, f4213942-59e5-4bf3-b204-6487b6e3f20c, f5e3d6cd-278b-49c1-ae7c-65a6a7b6de37, fe5e5904-e91f-4802-9596-b32473c0ab01]
+        boundary_target_ids: [c3a3587e-215e-4da8-a76c-729732394e40]
+        boundary_target_aliases: [commerce-payment, payment-service]
+  case-f01-p-v3-d691440c:
+    expected_status: confirmed
+    roots:
+      - target_ids: [00149c2f-8a97-43bf-8907-c25029973e51, 0b01c02c-b373-4b0c-99ac-181301a205bd, 6526e763-eb56-4541-984b-21129b1ed6f7, a33a1d9a-e2ed-43d8-a8c3-6dd366a5e378, b4d77c2b-7574-4a99-8fd5-eb1bcf34b0ed, d1c009f4-0c88-4714-8487-38493e14cc76]
+        target_aliases: [Oracle-corebanking, BANKING]
+  case-f01-r-v3-34274f3e:
+    expected_status: confirmed
+    roots:
+      - target_ids: [cf97076f-e72d-4c9e-b731-649592cfc5bf, 01650062-9986-406f-9851-1c739f0bd4b1, 219fab4d-9db9-47a1-a039-ad3e99337e77, 4a94a5d3-f72f-4499-a7f9-43333e87928c, 940fe707-2d8a-4d2d-a143-4098f48cb858, de42e86f-db35-41b7-856a-74db678cec4f]
+        target_aliases: [PostgreSQL-commerce, commerce-postgresql]
+  case-f03-h-v3-d4192a3b:
+    expected_status: confirmed
+    roots:
+      - target_ids: [93df2d34-b054-4ecd-8f8e-bafa098dc6cd, 06089b53-b08f-4651-8ff6-fe6c90d45342, 19687c95-ca67-4ca0-9208-47294d53768e, 1b15036e-21ed-4004-8be6-41dbc893ca5b, 23efc585-f405-43cf-97e9-0beb2ba8c363, 4c534722-e54d-4b2a-b69f-bdf3a715ecb0, 6554cb64-ad0a-426c-81b2-687796f10314, 66858698-f6b1-474e-9a13-c6623fab3c8c, 8c2be2b0-a710-40bd-8459-4d148394d0ee, 99dab72f-a2a5-4d76-9d96-0e04ffe43f8f, b2fce274-f83b-483f-9ee3-f18fe46a541d, d2af0fda-a283-4a19-aa3f-ee6ed192a2e0, e20d67af-6847-4aed-92ec-27b4309e8e3e, f7c68e4c-22d1-4050-ad1c-93ed5e645757, f93ce73b-e0a1-4bb5-8df4-e16974d72512, fdbd1a00-7b2a-4808-a2e1-5d9b4f788bb4]
+        target_aliases: [commerce-order, order-service]
+        proof_types: [resource_saturation]
+  # 주입 사실: testbed-shipping 를 0 replica 로 축소 → consumer group 정지.
+  # 동기 주문 경로는 정상이라 5xx 가 전혀 없고 consumer lag 만 쌓인다.
+  case-f04-r-v3-c508c52d:
+    expected_status: confirmed
+    roots:
+      - target_ids: [452da2b8-a908-497f-a2a9-948b92d96dc4, 16b0a4fc-2531-4a76-b83e-348e88842ec0, 517d070a-577d-4c8a-ac69-a17d007c5492, 521d54e8-94f2-41a5-bab6-16f716faf662, 535f80db-79fc-44d1-9a99-ebd4b8defe36, 6ef29281-cbd3-4d0e-b385-51e257423e02, 7f8172ff-9cc1-4fcf-8387-43c0940a4477, 84be6076-caaf-462f-befe-e1a051a3294e, 95ec4186-53f0-4a43-8369-b1ca1e0f5ca6, b28a8e97-17ce-4195-ac80-82e8ea8dafe4, b789da27-33b0-419d-8dd6-8c8c59c1d142, c044804f-a83a-4eae-b8e3-c2aabe4f98d0, cff3ad71-f403-4239-9e32-ae63a41cc645, da5894ec-ed0e-4680-8d86-0aa5af5c500d, e0a9b3e4-ce19-49ef-a911-a55eb38905da, eb0d3d71-1eb0-4b23-92a5-3e38c6a1b3bf]
+        target_aliases: [commerce-shipping, shipping-service]
+  case-f05-h-v3-36a247f1:
+    expected_status: confirmed  # 2026-09-21 규칙 A 재정렬: liveness 오설정 재시작 루프: 재시작 이벤트·컨테이너 교체가 직접 관측됨
+    roots:
+      - target_ids: [c3a3587e-215e-4da8-a76c-729732394e40, 06083f32-e4c1-45ae-abee-24795b93e4bf, 0e850ae1-8158-4c1e-8de6-4b6687fd8aa9, 15dccf59-f629-4008-b34c-64dffbb14991, 15ee2aff-0d17-481a-b1e5-8e1c08df0999, 1f4a47ba-32d6-4ffd-bf4b-1cf483df4ae1, 2111c2a4-41ad-44ee-ad66-74deb1b988ee, 2431cd7a-c2c4-478d-9c13-a9fa77df89ce, 28822568-e862-4b2b-ba17-e4f0843e652a, 2e81b529-8e3f-411a-8e76-9550aace4524, 36854b47-5913-4515-81ba-95d7f700a9f5, 7879f9d9-e693-4dad-9bb4-0b96ac4a4f63, 7ffcbeab-171d-4e1d-8235-87e97588a007, 850c55f8-fe22-4ba2-8413-65916a9698b5, a7f95fec-40ac-4c9d-bb39-ac42dc2292e3, c7a0492d-633e-4882-be7c-5cd749d26d45]
+        target_aliases: [commerce-payment, payment-service]
+  case-f05-p-v3-6fe331ef:
+    expected_status: confirmed  # 2026-09-21 사용자 결정: 직접 인과 관측(oom-killer 로그 / fio→PVC 디스크 포화) 실측으로 provisional→confirmed
+    roots:
+      - target_ids: [a0a6668c-f22e-429f-8733-839766878e12]
+        target_aliases: [tb-w1]
+  case-f05-r-v3-527f3692:
+    expected_status: confirmed
+    roots:
+      - target_ids: [c3a3587e-215e-4da8-a76c-729732394e40, 06083f32-e4c1-45ae-abee-24795b93e4bf, 15dccf59-f629-4008-b34c-64dffbb14991, 1f4a47ba-32d6-4ffd-bf4b-1cf483df4ae1, 2111c2a4-41ad-44ee-ad66-74deb1b988ee, 2431cd7a-c2c4-478d-9c13-a9fa77df89ce, 28822568-e862-4b2b-ba17-e4f0843e652a, 36854b47-5913-4515-81ba-95d7f700a9f5, 7879f9d9-e693-4dad-9bb4-0b96ac4a4f63, 7ffcbeab-171d-4e1d-8235-87e97588a007, 850c55f8-fe22-4ba2-8413-65916a9698b5, bbf5c27b-50ad-411d-96ff-8c5dabe94424, c7a0492d-633e-4882-be7c-5cd749d26d45, cc11ea0f-7247-4368-bf66-6e22486a9ebe, e776861e-972f-4904-870f-95c0f9c8260a, f13504cb-da9a-42c3-b51b-ce48e4129344]
+        target_aliases: [commerce-payment, payment-service]
+  case-f06-h-v3-e43298a2:
+    expected_status: confirmed
+    roots:
+      - target_ids: [cf97076f-e72d-4c9e-b731-649592cfc5bf, 01650062-9986-406f-9851-1c739f0bd4b1, 219fab4d-9db9-47a1-a039-ad3e99337e77, 4a94a5d3-f72f-4499-a7f9-43333e87928c, 940fe707-2d8a-4d2d-a143-4098f48cb858, de42e86f-db35-41b7-856a-74db678cec4f]
+        target_aliases: [PostgreSQL-commerce, commerce-postgresql]
+  case-f06-p-v3-100785c9:
+    expected_status: provisional
+    roots:
+      - target_ids: [2e6120e3-37fa-4c44-a224-6ab13afdd9ee, 3264d1f3-cc97-46b5-9737-6124867e4989, 3a91b724-6114-4004-bcdc-b2673f92a788, 3c23898e-8599-4637-8b75-7a48d9e92f49, 5ff53056-6257-49f4-a3d0-63d3cb9130cc, 634dd439-3a9c-41b8-8886-3dd0a6f0805d, 6b9d24ef-d68f-410c-b1fa-dd7b45a7beb4, 7c8a2e7b-ebc1-45ba-af38-56670d72cd94, 86fcae80-60cd-464a-b7cb-28fbf0bacb58, a252f9d6-d65e-4e5f-b068-d7a2d4ce2d07, a7b3d8c5-d410-49ed-b72b-d1956c15b902, b14bfb7a-6c05-497b-ab18-2cdf542a62e2, bd617e5f-8bb5-4d5c-a48b-bac140e6da0d, c1651b53-20d9-4f54-ac7e-e858c68cc8f6, d92caab2-a3ce-4cca-a3f5-0650feb72067, f0e9cbf9-707f-4f63-8368-fdfe6f389f9d]
+        target_aliases: [food-delivery-payment]
+      - pseudo_kind: external_dependency
+        pseudo_ids: [external:external-pg, external:testbed-external-pg-mock]
+        proxy_target_ids: [016de474-2508-4458-9a18-281ac64226e5, 075f6fa6-d9ef-44c6-a97a-3f4315052126, 2262a7b9-c41e-493a-842c-008ad4e8bd6e, 272d86f1-0c26-425a-a9b8-d4d2dc5a4f97, 31e57392-0bb9-48fd-9a89-ffcf49f99717, 382dae1b-a176-49d1-b2a3-b5a1fb886a66, 38cf0fe7-bb9f-40ad-8275-c22f1e1be6fd, 3dfd48a2-de4b-4437-8750-b7d610b92b52, 52e3d566-64fc-4ef7-8fe1-12f867f0f690, 77d20d4f-bfae-4587-8c92-bf546b4860f6, 7956c805-a580-490f-90c3-356c30947445, 836558eb-4ecf-4181-aff7-e0242a4c78aa, 9d932c91-2ce8-4cd5-8c8a-60fe86926d0e, b4c24f03-5343-4756-8725-956e81aaa779, c6c6a59f-fa69-4d6e-9231-ca3e547f9df2, d41edc3c-9b48-480d-ad56-e2653aa0635c, de94e1d8-e587-4032-a170-a654542840eb, ef8ef696-4f46-4087-9f01-ecbfee894bb4, f4213942-59e5-4bf3-b204-6487b6e3f20c, f5e3d6cd-278b-49c1-ae7c-65a6a7b6de37, fe5e5904-e91f-4802-9596-b32473c0ab01]
+        boundary_target_ids: [2e6120e3-37fa-4c44-a224-6ab13afdd9ee]
+        boundary_target_aliases: [food-delivery-payment]
+  case-f06-r-v3-6ace8a7d:
+    expected_status: provisional
+    roots:
+      - target_ids: [c3a3587e-215e-4da8-a76c-729732394e40, 0e850ae1-8158-4c1e-8de6-4b6687fd8aa9, 15dccf59-f629-4008-b34c-64dffbb14991, 1f4a47ba-32d6-4ffd-bf4b-1cf483df4ae1, 2111c2a4-41ad-44ee-ad66-74deb1b988ee, 2431cd7a-c2c4-478d-9c13-a9fa77df89ce, 28822568-e862-4b2b-ba17-e4f0843e652a, 2e81b529-8e3f-411a-8e76-9550aace4524, 5731ad8b-b294-4207-ad18-6669d059223d, 7879f9d9-e693-4dad-9bb4-0b96ac4a4f63, 7ffcbeab-171d-4e1d-8235-87e97588a007, 850c55f8-fe22-4ba2-8413-65916a9698b5, c3f08314-56a1-440c-92d6-a9d8286cba78, c7a0492d-633e-4882-be7c-5cd749d26d45, e987dbfc-bde5-46c2-bfe4-89ca0e2fdffe, f20d2598-2073-483a-a48c-95db322188e4]
+        target_aliases: [commerce-payment, payment-service]
+      - pseudo_kind: external_dependency
+        pseudo_ids: [external:external-pg, external:testbed-external-pg-mock]
+        proxy_target_ids: [016de474-2508-4458-9a18-281ac64226e5, 075f6fa6-d9ef-44c6-a97a-3f4315052126, 2262a7b9-c41e-493a-842c-008ad4e8bd6e, 272d86f1-0c26-425a-a9b8-d4d2dc5a4f97, 31e57392-0bb9-48fd-9a89-ffcf49f99717, 382dae1b-a176-49d1-b2a3-b5a1fb886a66, 38cf0fe7-bb9f-40ad-8275-c22f1e1be6fd, 3dfd48a2-de4b-4437-8750-b7d610b92b52, 52e3d566-64fc-4ef7-8fe1-12f867f0f690, 77d20d4f-bfae-4587-8c92-bf546b4860f6, 7956c805-a580-490f-90c3-356c30947445, 836558eb-4ecf-4181-aff7-e0242a4c78aa, 9d932c91-2ce8-4cd5-8c8a-60fe86926d0e, b4c24f03-5343-4756-8725-956e81aaa779, c6c6a59f-fa69-4d6e-9231-ca3e547f9df2, d41edc3c-9b48-480d-ad56-e2653aa0635c, de94e1d8-e587-4032-a170-a654542840eb, ef8ef696-4f46-4087-9f01-ecbfee894bb4, f4213942-59e5-4bf3-b204-6487b6e3f20c, f5e3d6cd-278b-49c1-ae7c-65a6a7b6de37, fe5e5904-e91f-4802-9596-b32473c0ab01]
+        boundary_target_ids: [c3a3587e-215e-4da8-a76c-729732394e40]
+        boundary_target_aliases: [commerce-payment, payment-service]
+  case-f07-h-v3-7de1a36f:
+    expected_status: confirmed  # 2026-09-21 규칙 A 재정렬: order 풀 10/10·pending·트레이스 커넥션 대기가 지연과 직접 연결됨
+    allowed_target_ids: [b0a1acde-b717-44c2-9743-e494e4f184e4, fc54857c-9bbb-4b47-abb4-7fa35971d994, cf356586-4300-45b6-8663-faffee4a94d7, 0b9e9a9f-8968-424c-a1a6-8e438aca3603, 23cd65a0-fa16-4e10-ac62-902eb3a272c3, f59ce123-c516-47c4-addf-8c5bc3605b9a, 7e305d22-e8c0-466c-bffe-66bdf9967e6c, ad924a4e-5d11-42e8-9377-daa52fb61099, 9a0c643c-eed2-4be4-9c9b-ac1a9f8e1515, f6892acf-210f-4c52-9b80-7729c8c43ab3, 1e6c20d4-5d96-4cfd-8c39-ff0f6a905387, bace6326-35de-4747-83b2-f6072fabb531, e24eda82-c0e5-4fee-ae44-a049756ec34b, 63363f22-49d2-4fc6-9c46-ab530aa8c0df, 690b5662-b7e5-48ce-a7d0-fd8f7b5740c5, 5b556a82-fa3d-41f6-ae7b-33b7d9c0e403]
+    allowed_note: "commerce-cart: parallel CPU/pool-20 saturation under the same ingress surge (all 5xx), not a hop of order (2026-10-01 audit)"
+    roots:
+      - target_ids: [93df2d34-b054-4ecd-8f8e-bafa098dc6cd, 06089b53-b08f-4651-8ff6-fe6c90d45342, 19687c95-ca67-4ca0-9208-47294d53768e, 1b15036e-21ed-4004-8be6-41dbc893ca5b, 23efc585-f405-43cf-97e9-0beb2ba8c363, 304a35fd-48bb-4b72-b34d-31a1320b4337, 6554cb64-ad0a-426c-81b2-687796f10314, 66858698-f6b1-474e-9a13-c6623fab3c8c, 8c2be2b0-a710-40bd-8459-4d148394d0ee, 99dab72f-a2a5-4d76-9d96-0e04ffe43f8f, b2fce274-f83b-483f-9ee3-f18fe46a541d, d2af0fda-a283-4a19-aa3f-ee6ed192a2e0, d5ec0bdc-3500-499b-94b0-b0b38d0d9a3e, e20d67af-6847-4aed-92ec-27b4309e8e3e, f7c68e4c-22d1-4050-ad1c-93ed5e645757, f93ce73b-e0a1-4bb5-8df4-e16974d72512]
+        target_aliases: [commerce-order, order-service]
+  case-f09-h-v3-0c795f2b:
+    expected_status: provisional
+    roots:
+      - target_ids: [93df2d34-b054-4ecd-8f8e-bafa098dc6cd, 06089b53-b08f-4651-8ff6-fe6c90d45342, 19687c95-ca67-4ca0-9208-47294d53768e, 1b15036e-21ed-4004-8be6-41dbc893ca5b, 23efc585-f405-43cf-97e9-0beb2ba8c363, 4ed8881f-281c-4902-904f-a4322e0429b1, 6554cb64-ad0a-426c-81b2-687796f10314, 66858698-f6b1-474e-9a13-c6623fab3c8c, 682de1c6-1f73-42da-b14a-adf34174382e, 8c2be2b0-a710-40bd-8459-4d148394d0ee, 99dab72f-a2a5-4d76-9d96-0e04ffe43f8f, b2fce274-f83b-483f-9ee3-f18fe46a541d, d2af0fda-a283-4a19-aa3f-ee6ed192a2e0, e20d67af-6847-4aed-92ec-27b4309e8e3e, f7c68e4c-22d1-4050-ad1c-93ed5e645757, f93ce73b-e0a1-4bb5-8df4-e16974d72512]
+        target_aliases: [commerce-order, order-service]
+  # 정정(2026-09-11): 주입 사실은 inventory deployment 의 CPU limit 축소(500m→250m)다. 원래 항목은
+  # 클러스터(prod-k8s-01)를 root 로 뒀지만 클러스터는 장소이지 원인이 아니다 — 캠페인 채택본도
+  # commerce-inventory(신 파드 cpu_limit 250 vs 또래 500)를 골든으로 판정했다.
+  case-f09-p-v3-6dae1c0b:
+    expected_status: confirmed
+    roots:
+      - target_ids: [414db206-d121-43b1-886c-78b240d23a7a, 17b19d58-6ce8-4f05-aaf4-a0b3800556cb, 3902488a-ff91-4de4-bfd5-b7006892327c, 39c4d8cf-4820-4275-9d01-41a95c2fe4b1, 3ece2685-6487-44c9-8ee2-4b1c5326877c, 4b9e8d83-1f17-426e-b6e2-ce5688841cbb, 5207250b-9c00-433c-a142-ae45c86ad5cf, 6ab30e74-1514-47b2-8be5-7f2e8a634d01, 7486b165-c948-43b6-a12e-93eb88fe3322, 7abe4556-2bb3-444b-b481-942cd7225b81, 9af4702d-62fa-4ae1-b9a4-435460ed11ef, acfb071b-eea5-4831-9d96-c04c02350140, c13f897d-1109-4d3d-bc4e-e27000de147d, ce0a4160-19b0-4a6c-bf4d-3cc7b4c41dc9, dfc323c5-6a42-483d-bc25-678805b01627, e0d46362-f32c-474b-a90f-430c89b8b31d]
+        target_aliases: [commerce-inventory, inventory-service]
+  case-f10-h-v3-4fe69be0:
+    expected_status: confirmed  # 2026-09-21 사용자 결정: 직접 인과 관측(oom-killer 로그 / fio→PVC 디스크 포화) 실측으로 provisional→confirmed
+    allowed_target_ids: [1f1eb9b2-a368-4a70-a003-5fe70b1a983b, 30457c41-078d-4a50-815b-7fc3c3ec8148, e54ec64f-e0a3-4566-9468-1cc415cf92ef, e8e76144-e9a0-4b89-839f-39f5034a0918, 6ad78517-1903-4dff-8297-bdfaf3d989fe, d3bc9980-197c-4011-9cba-cb275d582387, f5ccec8f-9d88-4180-8bf0-82c0c2624cfc, bc0c87be-9370-4576-a78c-949b54eeeb3a, 9fca3223-f0cf-4da0-b00d-8b9478d0ca81, f14b5aa2-9639-44ca-ba85-4f02d271d5cd, 60e77777-1d04-4e14-89f0-16a14a172cf7, bdbf7b9a-b071-4e3f-a67c-01fa10257a94, f56bf1ef-fd5c-4461-a785-19b7e06f8bdb, df44905e-ebf7-4e39-aefd-2737fe75dc67, 864139d5-f17c-4710-9aef-23fa4a3b2771, 6b9f9e0a-cfbf-4bab-a3de-4066e858e592, e93d93da-cdbb-43e9-8682-dc0ab66582ed]
+    allowed_note: "food-delivery-dispatch: load-induced pool-10 collapse from the non-sargable dispatches COUNT under the companion load (2026-10-01 audit)"
+    roots:
+      - target_ids: [828413c9-5210-42b5-a6a1-68ad42d3ca78]
+        target_aliases: [tb-w3]
+  case-f11-r-v3-85b9a489:
+    expected_status: provisional
+    allowed_target_ids: [fc54857c-9bbb-4b47-abb4-7fa35971d994, 0b9e9a9f-8968-424c-a1a6-8e438aca3603, 1e6c20d4-5d96-4cfd-8c39-ff0f6a905387, 23cd65a0-fa16-4e10-ac62-902eb3a272c3, 5b556a82-fa3d-41f6-ae7b-33b7d9c0e403, 63363f22-49d2-4fc6-9c46-ab530aa8c0df, 690b5662-b7e5-48ce-a7d0-fd8f7b5740c5, 7e305d22-e8c0-466c-bffe-66bdf9967e6c, 9a0c643c-eed2-4be4-9c9b-ac1a9f8e1515, ad924a4e-5d11-42e8-9377-daa52fb61099, b0a1acde-b717-44c2-9743-e494e4f184e4, bace6326-35de-4747-83b2-f6072fabb531, cf356586-4300-45b6-8663-faffee4a94d7, e24eda82-c0e5-4fee-ae44-a049756ec34b, f59ce123-c516-47c4-addf-8c5bc3605b9a, f6892acf-210f-4c52-9b80-7729c8c43ab3]
+    allowed_note: 'origin rule (2026-10-06 사용자 "응 진행해"): 원인 = 주입 발원지. 클러스터 안에서 운영되는 의존(이 경우 testbed-redis)의 장애는 그 워크로드가 원인이고, 피해를 키운 서비스(commerce-cart)는 지목해도 감점 없음 — 증폭 기전은 기전 판정이 본다. 경계 서비스 필수는 내부를 볼 수 없는 진짜 외부 원인에만.'
+    roots:
+      # 런타임 인벤토리는 Redis 를 target id db:redis:testbed-redis:6379 로 노출하고,
+      # 하네스는 외부 의존을 external:<peer id> 로 이름 짓는다. 옛 표기도 함께 허용.
+      - pseudo_kind: redis
+        pseudo_ids: [external:testbed-redis, external:db:redis:testbed-redis:6379]
+        proxy_target_ids: [183c4ce7-fe73-425d-8e18-e0f9e27c489b, 4b517e44-64e2-435e-b7b7-bc728ce92eee, 5e4bde4a-0280-430f-9657-53fd904b1198, 5f298f65-2d2f-43d6-a6c5-1eab9911e01f, aee0f3e7-65b6-47f4-8965-060dfcf7f5d0, b850d7b9-b822-44b7-9dc9-27622ad83918, ba0362cd-1f9f-4a19-b50b-f25154f71228, d2a727dc-2b28-4f2a-9d37-8367d721e53f, d6e7dff8-9df8-4072-a20d-7edf30f0c917, f3b3a203-4946-4e67-9435-939ac8742cf4]
+        boundary_target_ids: [fc54857c-9bbb-4b47-abb4-7fa35971d994]
+        boundary_target_aliases: [commerce-cart, cart-service]
+  case-f14-p-v3-0bdb303b:
+    expected_status: confirmed  # 2026-09-21 규칙 A 재정렬: ORA-12081 로그가 원인 테이블을 직접 명명, 소비 측 실패→유실 관측
+    allowed_target_ids: [b018e513-74d0-4d42-91c1-2a60755765ec, 63928ce6-127d-4eb4-85d1-2156e99e6538, 7247e6a6-1de1-4d6b-a9d8-dbfcefea0475, 81bf6c0d-e7be-4bff-8224-ec83286c625f, 81c9a9cf-57a6-4b6d-95f4-7859e72ec622, a0002404-bc2e-40a7-8deb-80f62c81d510, a696c75a-b0f8-455a-83a1-ac4eb4c69620, aee97756-d733-458d-ba1e-9376ecb18120, bc0c231a-b8d5-4cde-8075-90e756ccbcab, d038a46b-4096-4a34-ba82-ba0531cda2ca, d884136d-44d9-4768-98fb-1b6fb3bb6c38, db2b7382-7bba-4b8f-b8af-ee76fbc6fcf9, e5a41a42-b04a-4abb-b3c2-51a3c9ff861d, e642800c-2a75-4ed7-9243-5b96ecdc15f1, e9455b3a-a6d0-4eff-8a69-867ce15ce01b, f1287ed8-ab2d-451b-ad87-a0eaa935df31]
+    allowed_note: 'origin rule (2026-10-06 사용자 "응 진행해"): 원인 = 주입 발원지. 클러스터 안에서 운영되는 의존(이 경우 Oracle BANKING.LEDGER_ENTRIES READ ONLY)의 장애는 그 워크로드가 원인이고, 피해를 키운 서비스(core-banking-ledger(예외 삼킴·오프셋 커밋))는 지목해도 감점 없음 — 증폭 기전은 기전 판정이 본다. 경계 서비스 필수는 내부를 볼 수 없는 진짜 외부 원인에만.'
+    roots:
+      - target_ids: [00149c2f-8a97-43bf-8907-c25029973e51, 0b01c02c-b373-4b0c-99ac-181301a205bd, 6526e763-eb56-4541-984b-21129b1ed6f7, a33a1d9a-e2ed-43d8-a8c3-6dd366a5e378, b4d77c2b-7574-4a99-8fd5-eb1bcf34b0ed, d1c009f4-0c88-4714-8487-38493e14cc76]
+        target_aliases: [Oracle-corebanking, BANKING]
+  # 주입 사실: 두 DB 에 동시에 행 잠금을 건다. ① PostgreSQL commerce 의
+  # inventory_schema.inventory(product_id=1) ② Oracle BANKING.accounts(commerce-settlement).
+  # 잠금은 DB 안에 존재하므로 root 는 두 DB 자체다. 애플리케이션은 대기하는 쪽이다.
+  case-f15-g-v3-ce2e64de:
+    expected_status: confirmed
+    roots:
+      - target_ids: [cf97076f-e72d-4c9e-b731-649592cfc5bf, 01650062-9986-406f-9851-1c739f0bd4b1, 219fab4d-9db9-47a1-a039-ad3e99337e77, 4a94a5d3-f72f-4499-a7f9-43333e87928c, 940fe707-2d8a-4d2d-a143-4098f48cb858, de42e86f-db35-41b7-856a-74db678cec4f]
+        target_aliases: [PostgreSQL-commerce, commerce-postgresql]
+        proof_types: [db_blocking]
+      - target_ids: [00149c2f-8a97-43bf-8907-c25029973e51, 0b01c02c-b373-4b0c-99ac-181301a205bd, 6526e763-eb56-4541-984b-21129b1ed6f7, a33a1d9a-e2ed-43d8-a8c3-6dd366a5e378, b4d77c2b-7574-4a99-8fd5-eb1bcf34b0ed, d1c009f4-0c88-4714-8487-38493e14cc76]
+        target_aliases: [Oracle-corebanking, BANKING]
+        proof_types: [db_blocking]
+  # 정정(2026-09-11): 주입 사실은 testbed-user 의 readinessProbe 를 실패 경로로 바꿔 파드가 엔드포인트에서
+  # 빠지는 것이다. 원래 항목은 클러스터를 root 로 뒀지만 원인은 user 서비스의 워크로드 설정이다 —
+  # 캠페인 채택본도 commerce-user 롤아웃→startup/readiness 실패→gateway 서킷을 골든으로 판정했다.
+  case-f16-h-v3-2f0555c7:
+    expected_status: confirmed  # 2026-09-21 규칙 A 재정렬: readiness Unhealthy→엔드포인트 공백→gateway refused 가 직접 연결됨
+    roots:
+      - target_ids: [252a3a37-77fd-495a-8e12-d79303753fda, 1333c3ba-c21c-43a7-8a44-4995a1af3e4b, 184ec485-da23-429f-b073-7de3d95fc6ee, 3cb1ab73-47b1-4ef3-8760-cb28a5d8ba35, 3e819ec4-d81e-4e69-91aa-b38dc7f9cbb2, 425234d5-1bd7-476f-8787-b1ff1b3f0963, 4fefcc8b-e9ab-4538-9d1f-fe2e5ae6fdac, 503c9a1b-9065-4a7d-9512-7ee930442776, 5458a0be-402d-4062-8902-1048c2d15d9f, 588ca67c-e646-4f1a-afec-6dee6811a786, 76a0a1d0-e552-416a-9484-3a097ef0e091, 77e3023c-988b-410a-b2d3-1a847b538f07, 9999d183-1b34-4f4b-bbbd-9d169792a553, b41b8052-95de-4432-aa28-87636026f1d4, c1a15be2-76d5-445d-b12c-7b8a5ccac306, e277d2cd-6549-4b94-9b1e-454f6216674d]
+        target_aliases: [commerce-user, user-service]
+  # 주입 사실: testbed-transfer 의 readinessProbe 경로를 404 로 바꿔 pod NotReady →
+  # Service endpoints 0 → commerce payment 의 BankingTransferClient 연결 실패 → 전체 롤백.
+  # 판단 필요: pod NotReady 는 직접 관측되는 결정적 실패이고, 같은 대상의 f18-p 도
+  # confirmed 다. 그래서 confirmed 로 둔다. 현재 채택된 f17-r 교사 답안은 provisional
+  # (metric_causal 0.7) 이라 이 기준에서는 사다리 라운드가 한 번 더 필요하다.
+  case-f17-r-v3-ab7228ad:
+    expected_status: confirmed
+    roots:
+      - target_ids: [f0ce5940-a7e2-44a2-843f-196de379d898, 16ecc753-4a38-4b24-a01d-bcb6825e24ea, 200af750-6892-4f85-ba47-fd5e7bc599b9, 31b4899d-8609-439d-8ee0-9dccff3c5410, 4548a75e-4f3a-4e8d-bc49-b8317e042901, 4ea35e19-77f4-4f80-9dc4-1eb6b6a24b9f, 6c845e72-e772-474f-ac9d-33a4e57ef067, 6d33428d-74fe-423e-bb5e-9f5c57178806, 6ff97e49-389b-4600-a4d6-ea47981b8e3f, 7facb2e1-5d07-431c-9af2-004e311dba01, 884762db-c223-46ea-80ce-43d2cb39536d, 8d83bd66-d023-4ef7-9c6c-7a0c3fa16d4e, 9f7c5084-eb34-4992-be15-eae556a594bf, d5f960e6-3153-4f80-be65-187c9a6cfeec, e0c355e2-bc28-455f-8416-a0680ded12e1, e2ad12d2-35c3-4ebc-9995-73df8422afdf, fd9c2ffe-64f3-4b25-aaec-b5cbc826c566]
+        target_aliases: [core-banking-transfer, banking-transfer]
+  case-f18-p-v3-d2c566ad:
+    expected_status: confirmed
+    roots:
+      - target_ids: [f0ce5940-a7e2-44a2-843f-196de379d898, 16ecc753-4a38-4b24-a01d-bcb6825e24ea, 31b4899d-8609-439d-8ee0-9dccff3c5410, 40a9eff3-84c6-4274-a77d-61fbc3bf59e2, 4548a75e-4f3a-4e8d-bc49-b8317e042901, 4ea35e19-77f4-4f80-9dc4-1eb6b6a24b9f, 5a8ee2f9-bc35-4f86-ad45-83ac359e4839, 6d33428d-74fe-423e-bb5e-9f5c57178806, 6ff97e49-389b-4600-a4d6-ea47981b8e3f, 7facb2e1-5d07-431c-9af2-004e311dba01, 884762db-c223-46ea-80ce-43d2cb39536d, 8d83bd66-d023-4ef7-9c6c-7a0c3fa16d4e, 9f7c5084-eb34-4992-be15-eae556a594bf, a31898b4-e602-49d5-9efb-4603e5559e9b, e0c355e2-bc28-455f-8416-a0680ded12e1, e2ad12d2-35c3-4ebc-9995-73df8422afdf, fd9c2ffe-64f3-4b25-aaec-b5cbc826c566]
+        target_aliases: [core-banking-transfer, banking-transfer]
+  case-f19-p-v3-5a350c0a:
+    expected_status: provisional
+    allowed_target_ids: [1f1eb9b2-a368-4a70-a003-5fe70b1a983b, 30457c41-078d-4a50-815b-7fc3c3ec8148, e54ec64f-e0a3-4566-9468-1cc415cf92ef, e8e76144-e9a0-4b89-839f-39f5034a0918, 6ad78517-1903-4dff-8297-bdfaf3d989fe, d3bc9980-197c-4011-9cba-cb275d582387, f5ccec8f-9d88-4180-8bf0-82c0c2624cfc, bc0c87be-9370-4576-a78c-949b54eeeb3a, 9fca3223-f0cf-4da0-b00d-8b9478d0ca81, f14b5aa2-9639-44ca-ba85-4f02d271d5cd, 60e77777-1d04-4e14-89f0-16a14a172cf7, bdbf7b9a-b071-4e3f-a67c-01fa10257a94, f56bf1ef-fd5c-4461-a785-19b7e06f8bdb, df44905e-ebf7-4e39-aefd-2737fe75dc67, 864139d5-f17c-4710-9aef-23fa4a3b2771, 6b9f9e0a-cfbf-4bab-a3de-4066e858e592, e93d93da-cdbb-43e9-8682-dc0ab66582ed]
+    allowed_note: "food-delivery-dispatch: load-induced pool-10 collapse from the non-sargable dispatches COUNT under the companion load (2026-10-01 audit)"
+    roots:
+      - target_ids: [2e6120e3-37fa-4c44-a224-6ab13afdd9ee, 3264d1f3-cc97-46b5-9737-6124867e4989, 34958ee6-1364-4205-8060-d5efdba01872, 3a91b724-6114-4004-bcdc-b2673f92a788, 3c23898e-8599-4637-8b75-7a48d9e92f49, 5ff53056-6257-49f4-a3d0-63d3cb9130cc, 6b9d24ef-d68f-410c-b1fa-dd7b45a7beb4, 81a26129-c2c1-41db-939f-90671baabf9a, 87ea097b-f9ad-441d-acf9-d083807cbcff, a252f9d6-d65e-4e5f-b068-d7a2d4ce2d07, a7b3d8c5-d410-49ed-b72b-d1956c15b902, b14bfb7a-6c05-497b-ab18-2cdf542a62e2, bd617e5f-8bb5-4d5c-a48b-bac140e6da0d, c1651b53-20d9-4f54-ac7e-e858c68cc8f6, d92caab2-a3ce-4cca-a3f5-0650feb72067, f0e9cbf9-707f-4f63-8368-fdfe6f389f9d]
+        target_aliases: [food-delivery-payment]
+      - pseudo_kind: external_dependency
+        pseudo_ids: [external:external-pg, external:testbed-external-pg-mock]
+        proxy_target_ids: [016de474-2508-4458-9a18-281ac64226e5, 075f6fa6-d9ef-44c6-a97a-3f4315052126, 2262a7b9-c41e-493a-842c-008ad4e8bd6e, 272d86f1-0c26-425a-a9b8-d4d2dc5a4f97, 31e57392-0bb9-48fd-9a89-ffcf49f99717, 382dae1b-a176-49d1-b2a3-b5a1fb886a66, 38cf0fe7-bb9f-40ad-8275-c22f1e1be6fd, 3dfd48a2-de4b-4437-8750-b7d610b92b52, 52e3d566-64fc-4ef7-8fe1-12f867f0f690, 77d20d4f-bfae-4587-8c92-bf546b4860f6, 7956c805-a580-490f-90c3-356c30947445, 836558eb-4ecf-4181-aff7-e0242a4c78aa, 9d932c91-2ce8-4cd5-8c8a-60fe86926d0e, b4c24f03-5343-4756-8725-956e81aaa779, c6c6a59f-fa69-4d6e-9231-ca3e547f9df2, d41edc3c-9b48-480d-ad56-e2653aa0635c, de94e1d8-e587-4032-a170-a654542840eb, ef8ef696-4f46-4087-9f01-ecbfee894bb4, f4213942-59e5-4bf3-b204-6487b6e3f20c, f5e3d6cd-278b-49c1-ae7c-65a6a7b6de37, fe5e5904-e91f-4802-9596-b32473c0ab01]
+        boundary_target_ids: [2e6120e3-37fa-4c44-a224-6ab13afdd9ee]
+        boundary_target_aliases: [food-delivery-payment]
+  case-f19-s-v3-5daa9c97:
+    expected_status: provisional
+    allowed_target_ids: [1f1eb9b2-a368-4a70-a003-5fe70b1a983b, 30457c41-078d-4a50-815b-7fc3c3ec8148, e54ec64f-e0a3-4566-9468-1cc415cf92ef, e8e76144-e9a0-4b89-839f-39f5034a0918, 6ad78517-1903-4dff-8297-bdfaf3d989fe, d3bc9980-197c-4011-9cba-cb275d582387, f5ccec8f-9d88-4180-8bf0-82c0c2624cfc, bc0c87be-9370-4576-a78c-949b54eeeb3a, 9fca3223-f0cf-4da0-b00d-8b9478d0ca81, f14b5aa2-9639-44ca-ba85-4f02d271d5cd, 60e77777-1d04-4e14-89f0-16a14a172cf7, bdbf7b9a-b071-4e3f-a67c-01fa10257a94, f56bf1ef-fd5c-4461-a785-19b7e06f8bdb, df44905e-ebf7-4e39-aefd-2737fe75dc67, 864139d5-f17c-4710-9aef-23fa4a3b2771, 6b9f9e0a-cfbf-4bab-a3de-4066e858e592, e93d93da-cdbb-43e9-8682-dc0ab66582ed]
+    allowed_note: "food-delivery-dispatch: load-induced pool-10 collapse from the non-sargable dispatches COUNT under the companion load (2026-10-01 audit)"
+    roots:
+      - target_ids: [2e6120e3-37fa-4c44-a224-6ab13afdd9ee, 3264d1f3-cc97-46b5-9737-6124867e4989, 34958ee6-1364-4205-8060-d5efdba01872, 3a91b724-6114-4004-bcdc-b2673f92a788, 3c23898e-8599-4637-8b75-7a48d9e92f49, 5ff53056-6257-49f4-a3d0-63d3cb9130cc, 6b9d24ef-d68f-410c-b1fa-dd7b45a7beb4, 81a26129-c2c1-41db-939f-90671baabf9a, 87ea097b-f9ad-441d-acf9-d083807cbcff, a252f9d6-d65e-4e5f-b068-d7a2d4ce2d07, a7b3d8c5-d410-49ed-b72b-d1956c15b902, b14bfb7a-6c05-497b-ab18-2cdf542a62e2, bd617e5f-8bb5-4d5c-a48b-bac140e6da0d, c1651b53-20d9-4f54-ac7e-e858c68cc8f6, d92caab2-a3ce-4cca-a3f5-0650feb72067, f0e9cbf9-707f-4f63-8368-fdfe6f389f9d]
+        target_aliases: [food-delivery-payment]
+      - pseudo_kind: external_dependency
+        pseudo_ids: [external:external-pg, external:testbed-external-pg-mock]
+        proxy_target_ids: [016de474-2508-4458-9a18-281ac64226e5, 075f6fa6-d9ef-44c6-a97a-3f4315052126, 2262a7b9-c41e-493a-842c-008ad4e8bd6e, 272d86f1-0c26-425a-a9b8-d4d2dc5a4f97, 31e57392-0bb9-48fd-9a89-ffcf49f99717, 382dae1b-a176-49d1-b2a3-b5a1fb886a66, 38cf0fe7-bb9f-40ad-8275-c22f1e1be6fd, 3dfd48a2-de4b-4437-8750-b7d610b92b52, 52e3d566-64fc-4ef7-8fe1-12f867f0f690, 77d20d4f-bfae-4587-8c92-bf546b4860f6, 7956c805-a580-490f-90c3-356c30947445, 836558eb-4ecf-4181-aff7-e0242a4c78aa, 9d932c91-2ce8-4cd5-8c8a-60fe86926d0e, b4c24f03-5343-4756-8725-956e81aaa779, c6c6a59f-fa69-4d6e-9231-ca3e547f9df2, d41edc3c-9b48-480d-ad56-e2653aa0635c, de94e1d8-e587-4032-a170-a654542840eb, ef8ef696-4f46-4087-9f01-ecbfee894bb4, f4213942-59e5-4bf3-b204-6487b6e3f20c, f5e3d6cd-278b-49c1-ae7c-65a6a7b6de37, fe5e5904-e91f-4802-9596-b32473c0ab01]
+        boundary_target_ids: [2e6120e3-37fa-4c44-a224-6ab13afdd9ee]
+        boundary_target_aliases: [food-delivery-payment]
+  # 주입 사실: GET /api/orders/stats/daily?days=90 반복 호출 + 무제한 search →
+  # OrderRepository 의 비-sargable 쿼리(FUNCTION('DATE') GROUP BY, OR-null)가 orders 를
+  # 풀스캔 → 단일 PostgreSQL 인스턴스 CPU 상승 → 같은 인스턴스의 다른 스키마까지 지연.
+  # 메타↔캡처 불일치 (캠페인 로그 f20-r): 메타는 orders stats/search 라 하지만 캡처의
+  # CH topsql 실측은 주입창 orders 0행·products 77행이다. 풀스캔은 commerce-product 의
+  # products 조회에서 일어났다. 데이터 기준 채택 원칙에 따라 root 는 commerce-product.
+  # DB 는 포화되는 공유 자원이므로 root 에 넣지 않는다(f03-h 와 같은 방식).
+  case-f20-r-v3-caf04820:
+    expected_status: confirmed  # 2026-09-21 규칙 A 재정렬: topsql 전체 스캔→PG CPU→타 스키마 지연 사슬이 직접 관측됨
+    roots:
+      # 2026-09-16 분쟁: meta 는 commerce-order(stats/search 풀스캔), 이전 캠페인은 캡처 topsql 로 product 채택. 이번 채점자 실측은 주입창(96s) topsql 에 commerce 행 0건 → 어느 쪽도 캡처로 확정 못 함. 교사(힌트 ①)는 order 의 GET /api/orders 검색 무제한 쿼리를 트레이스·42P18 로그로 실측. 둘 다 허용 root 로 둔다. Youngdong 과 골든 재확인 필요.
+      - target_ids: [766ec1cd-e07e-4ee7-8fc7-55c5fb6e8379, 0bb6734f-866d-4584-9f6c-b4224a72505f, 1393ec76-eb78-473e-9fe8-cddb1c6d71a4, 1dab1467-fc92-4057-b83b-1c9782d4fd3f, 320de3d7-c6cd-41a9-9752-0dd1d166f592, 5b499055-7d43-46b6-a32e-6bebe9294e5c, 6965eb9b-f9a3-491a-8d26-caeee9bc3d9c, 77c5dfa0-b815-49fe-9ae5-1b4563cfb8c5, 7ebd2147-f96b-4409-9351-37cd7a6b1837, 7f379e35-1e1e-4c30-953f-7dc31e06d9cd, 99d12e85-e561-475b-8364-7547997a7643, aea4af00-f45e-418b-bbd3-ab82a607574a, b24ccf24-0f01-4fcd-accd-4c98d89680a6, f220e8a1-2340-4b04-be4e-48edc137bbe8, f45b48ee-4be7-4678-97b0-c570fb7b1aba, f7e9372a-0eed-466a-b575-0035dd2d1a77, 93df2d34-b054-4ecd-8f8e-bafa098dc6cd, 06089b53-b08f-4651-8ff6-fe6c90d45342, 19687c95-ca67-4ca0-9208-47294d53768e, 1b15036e-21ed-4004-8be6-41dbc893ca5b, 23efc585-f405-43cf-97e9-0beb2ba8c363, 4c534722-e54d-4b2a-b69f-bdf3a715ecb0, 6554cb64-ad0a-426c-81b2-687796f10314, 66858698-f6b1-474e-9a13-c6623fab3c8c, 8c2be2b0-a710-40bd-8459-4d148394d0ee, 99dab72f-a2a5-4d76-9d96-0e04ffe43f8f, b2fce274-f83b-483f-9ee3-f18fe46a541d, d2af0fda-a283-4a19-aa3f-ee6ed192a2e0, e20d67af-6847-4aed-92ec-27b4309e8e3e, f7c68e4c-22d1-4050-ad1c-93ed5e645757, f93ce73b-e0a1-4bb5-8df4-e16974d72512, fdbd1a00-7b2a-4808-a2e1-5d9b4f788bb4]
+        target_aliases: [commerce-product, product-service, commerce-order, order-service]
+  # 주입 사실: inventory.reconciliation.interval-ms 를 극단값으로 늘려 ReconciliationBatch
+  # 가 멈춘다 → 재고가 단조 감소해 0 도달 → reserve 가 409 CONFLICT 를 돌려준다.
+  case-f23-r-v3-04981a78:
+    expected_status: confirmed  # 2026-09-21 규칙 A 재정렬: 재입고 배치 로그 부재→재고 0→409 가 직접 관측됨
+    roots:
+      - target_ids: [414db206-d121-43b1-886c-78b240d23a7a, 17b19d58-6ce8-4f05-aaf4-a0b3800556cb, 39c4d8cf-4820-4275-9d01-41a95c2fe4b1, 3ece2685-6487-44c9-8ee2-4b1c5326877c, 4b9e8d83-1f17-426e-b6e2-ce5688841cbb, 5207250b-9c00-433c-a142-ae45c86ad5cf, 6ab30e74-1514-47b2-8be5-7f2e8a634d01, 7486b165-c948-43b6-a12e-93eb88fe3322, 7abe4556-2bb3-444b-b481-942cd7225b81, acfb071b-eea5-4831-9d96-c04c02350140, b76edca3-0062-40a0-8ce1-0d61c63fac04, b9a4db90-3c01-43c8-b47c-6bd3233b6d23, c13f897d-1109-4d3d-bc4e-e27000de147d, ce0a4160-19b0-4a6c-bf4d-3cc7b4c41dc9, dfc323c5-6a42-483d-bc25-678805b01627, e0d46362-f32c-474b-a90f-430c89b8b31d]
+        target_aliases: [commerce-inventory, inventory-service]
+  # 주입 사실: testbed-postgres 컨테이너 메모리 상한을 512Mi→128Mi 로 낮춰 OOMKill.
+  # 재시작 동안 8개 스키마 전체가 끊기고 commerce 서비스가 동시에 5xx 를 낸다.
+  case-f25-h-v3-dc3d4fc8:
+    expected_status: confirmed
+    roots:
+      - target_ids: [cf97076f-e72d-4c9e-b731-649592cfc5bf, 01650062-9986-406f-9851-1c739f0bd4b1, 219fab4d-9db9-47a1-a039-ad3e99337e77, 4a94a5d3-f72f-4499-a7f9-43333e87928c, 940fe707-2d8a-4d2d-a143-4098f48cb858, de42e86f-db35-41b7-856a-74db678cec4f]
+        target_aliases: [PostgreSQL-commerce, commerce-postgresql]
+  # case-f01-p-v3-20bfac59: case-f01-p-v3-d691440c 의 재캡처 (같은 scenario_metadata_sha256). mcp_golden_extend.py 로 targets 테이블에서 (type, 정규화 이름) 대응해 도출.
+  case-f01-p-v3-20bfac59:
+    expected_status: confirmed
+    roots:
+    - target_ids: [00149c2f-8a97-43bf-8907-c25029973e51, 0b01c02c-b373-4b0c-99ac-181301a205bd, 6526e763-eb56-4541-984b-21129b1ed6f7, a33a1d9a-e2ed-43d8-a8c3-6dd366a5e378, b4d77c2b-7574-4a99-8fd5-eb1bcf34b0ed, d1c009f4-0c88-4714-8487-38493e14cc76]
+      target_aliases: [Oracle-corebanking, BANKING]
+  # case-f07-h-v3-4ab16f7a: case-f07-h-v3-7de1a36f 의 재캡처 (같은 scenario_metadata_sha256). mcp_golden_extend.py 로 targets 테이블에서 (type, 정규화 이름) 대응해 도출.
+  case-f07-h-v3-4ab16f7a:
+    expected_status: confirmed  # 2026-09-21 규칙 A 재정렬: 같은 시나리오 재캡처
+    allowed_target_ids: [fc54857c-9bbb-4b47-abb4-7fa35971d994, bace6326-35de-4747-83b2-f6072fabb531, 690b5662-b7e5-48ce-a7d0-fd8f7b5740c5, 7e305d22-e8c0-466c-bffe-66bdf9967e6c, e24eda82-c0e5-4fee-ae44-a049756ec34b, 63363f22-49d2-4fc6-9c46-ab530aa8c0df, 1e6c20d4-5d96-4cfd-8c39-ff0f6a905387, 5b556a82-fa3d-41f6-ae7b-33b7d9c0e403, f6892acf-210f-4c52-9b80-7729c8c43ab3, b0a1acde-b717-44c2-9743-e494e4f184e4, 23cd65a0-fa16-4e10-ac62-902eb3a272c3, cf356586-4300-45b6-8663-faffee4a94d7, ad924a4e-5d11-42e8-9377-daa52fb61099, 0b9e9a9f-8968-424c-a1a6-8e438aca3603, f59ce123-c516-47c4-addf-8c5bc3605b9a, 9a0c643c-eed2-4be4-9c9b-ac1a9f8e1515]
+    allowed_note: "commerce-cart: parallel CPU/pool-20 saturation under the same ingress surge (all 5xx), not a hop of order (2026-10-01 audit)"
+    roots:
+    - target_ids: [93df2d34-b054-4ecd-8f8e-bafa098dc6cd, 06089b53-b08f-4651-8ff6-fe6c90d45342, 19687c95-ca67-4ca0-9208-47294d53768e, 1b15036e-21ed-4004-8be6-41dbc893ca5b, 23efc585-f405-43cf-97e9-0beb2ba8c363, fdbd1a00-7b2a-4808-a2e1-5d9b4f788bb4, 6554cb64-ad0a-426c-81b2-687796f10314, 66858698-f6b1-474e-9a13-c6623fab3c8c, 8c2be2b0-a710-40bd-8459-4d148394d0ee, 99dab72f-a2a5-4d76-9d96-0e04ffe43f8f, b2fce274-f83b-483f-9ee3-f18fe46a541d, d2af0fda-a283-4a19-aa3f-ee6ed192a2e0, 4c534722-e54d-4b2a-b69f-bdf3a715ecb0, e20d67af-6847-4aed-92ec-27b4309e8e3e, f7c68e4c-22d1-4050-ad1c-93ed5e645757, f93ce73b-e0a1-4bb5-8df4-e16974d72512]
+      target_aliases: [commerce-order, order-service]
+  # case-f11-r-v3-6366db31: case-f11-r-v3-85b9a489 의 재캡처 (같은 scenario_metadata_sha256). mcp_golden_extend.py 로 targets 테이블에서 (type, 정규화 이름) 대응해 도출.
+  case-f11-r-v3-6366db31:
+    expected_status: provisional
+    allowed_target_ids: [fc54857c-9bbb-4b47-abb4-7fa35971d994, 0b9e9a9f-8968-424c-a1a6-8e438aca3603, 1e6c20d4-5d96-4cfd-8c39-ff0f6a905387, 23cd65a0-fa16-4e10-ac62-902eb3a272c3, 5b556a82-fa3d-41f6-ae7b-33b7d9c0e403, 63363f22-49d2-4fc6-9c46-ab530aa8c0df, 690b5662-b7e5-48ce-a7d0-fd8f7b5740c5, 7e305d22-e8c0-466c-bffe-66bdf9967e6c, 9a0c643c-eed2-4be4-9c9b-ac1a9f8e1515, ad924a4e-5d11-42e8-9377-daa52fb61099, b0a1acde-b717-44c2-9743-e494e4f184e4, bace6326-35de-4747-83b2-f6072fabb531, cf356586-4300-45b6-8663-faffee4a94d7, e24eda82-c0e5-4fee-ae44-a049756ec34b, f59ce123-c516-47c4-addf-8c5bc3605b9a, f6892acf-210f-4c52-9b80-7729c8c43ab3]
+    allowed_note: 'origin rule (2026-10-06 사용자 "응 진행해"): 원인 = 주입 발원지. 클러스터 안에서 운영되는 의존(이 경우 testbed-redis)의 장애는 그 워크로드가 원인이고, 피해를 키운 서비스(commerce-cart)는 지목해도 감점 없음 — 증폭 기전은 기전 판정이 본다. 경계 서비스 필수는 내부를 볼 수 없는 진짜 외부 원인에만.'
+    roots:
+    - pseudo_kind: redis
+      pseudo_ids: ['external:testbed-redis', 'external:db:redis:testbed-redis:6379']
+      proxy_target_ids: [183c4ce7-fe73-425d-8e18-e0f9e27c489b, 3d3a2e9b-857f-4774-a952-cb2ca43675d5, 5e4bde4a-0280-430f-9657-53fd904b1198, 4a23c39a-a8c3-4ef6-9bd5-bba07415aaef, aee0f3e7-65b6-47f4-8965-060dfcf7f5d0, b850d7b9-b822-44b7-9dc9-27622ad83918, ba0362cd-1f9f-4a19-b50b-f25154f71228, d2a727dc-2b28-4f2a-9d37-8367d721e53f, d6e7dff8-9df8-4072-a20d-7edf30f0c917, f3b3a203-4946-4e67-9435-939ac8742cf4]
+      boundary_target_ids: [fc54857c-9bbb-4b47-abb4-7fa35971d994]
+      boundary_target_aliases: [commerce-cart, cart-service]
+  # case-f15-g-v3-fbe95718: case-f15-g-v3-ce2e64de 의 재캡처 (같은 scenario_metadata_sha256). mcp_golden_extend.py 로 targets 테이블에서 (type, 정규화 이름) 대응해 도출.
+  case-f15-g-v3-fbe95718:
+    expected_status: confirmed
+    roots:
+    - target_ids: [cf97076f-e72d-4c9e-b731-649592cfc5bf, 01650062-9986-406f-9851-1c739f0bd4b1, 219fab4d-9db9-47a1-a039-ad3e99337e77, 4a94a5d3-f72f-4499-a7f9-43333e87928c, 940fe707-2d8a-4d2d-a143-4098f48cb858, de42e86f-db35-41b7-856a-74db678cec4f]
+      target_aliases: [PostgreSQL-commerce, commerce-postgresql]
+    - target_ids: [00149c2f-8a97-43bf-8907-c25029973e51, 0b01c02c-b373-4b0c-99ac-181301a205bd, 6526e763-eb56-4541-984b-21129b1ed6f7, a33a1d9a-e2ed-43d8-a8c3-6dd366a5e378, b4d77c2b-7574-4a99-8fd5-eb1bcf34b0ed, d1c009f4-0c88-4714-8487-38493e14cc76]
+      target_aliases: [Oracle-corebanking, BANKING]
+  # case-f16-h-v3-f069f7c9: case-f16-h-v3-2f0555c7 의 재캡처 (같은 scenario_metadata_sha256). mcp_golden_extend.py 로 targets 테이블에서 (type, 정규화 이름) 대응해 도출.
+  case-f16-h-v3-f069f7c9:
+    expected_status: confirmed  # 2026-09-21 규칙 A 재정렬: 같은 시나리오 재캡처
+    roots:
+    - target_ids: [252a3a37-77fd-495a-8e12-d79303753fda, 1333c3ba-c21c-43a7-8a44-4995a1af3e4b, 184ec485-da23-429f-b073-7de3d95fc6ee, 3cb1ab73-47b1-4ef3-8760-cb28a5d8ba35, 3e819ec4-d81e-4e69-91aa-b38dc7f9cbb2, 425234d5-1bd7-476f-8787-b1ff1b3f0963, 4fefcc8b-e9ab-4538-9d1f-fe2e5ae6fdac, 503c9a1b-9065-4a7d-9512-7ee930442776, 5458a0be-402d-4062-8902-1048c2d15d9f, 588ca67c-e646-4f1a-afec-6dee6811a786, 76a0a1d0-e552-416a-9484-3a097ef0e091, 2ff78baf-3875-435e-90cb-4d0eb75942c6, 9999d183-1b34-4f4b-bbbd-9d169792a553, b41b8052-95de-4432-aa28-87636026f1d4, c1a15be2-76d5-445d-b12c-7b8a5ccac306, e21bea17-c96a-4ec4-a100-1991575545d4]
+      target_aliases: [commerce-user, user-service]
+  # case-f06-p-v3-24f2e956: case-f06-p-v3-100785c9 의 재캡처 (같은 scenario_metadata_sha256). mcp_golden_extend.py 로 targets 테이블에서 (type, 정규화 이름) 대응해 도출.
+  case-f06-p-v3-24f2e956:
+    expected_status: provisional
+    roots:
+    - target_ids: [2e6120e3-37fa-4c44-a224-6ab13afdd9ee, 3264d1f3-cc97-46b5-9737-6124867e4989, 3a91b724-6114-4004-bcdc-b2673f92a788, 3c23898e-8599-4637-8b75-7a48d9e92f49, 5ff53056-6257-49f4-a3d0-63d3cb9130cc, 634dd439-3a9c-41b8-8886-3dd0a6f0805d, 6b9d24ef-d68f-410c-b1fa-dd7b45a7beb4, 7c8a2e7b-ebc1-45ba-af38-56670d72cd94, 86fcae80-60cd-464a-b7cb-28fbf0bacb58, a252f9d6-d65e-4e5f-b068-d7a2d4ce2d07, a7b3d8c5-d410-49ed-b72b-d1956c15b902, b14bfb7a-6c05-497b-ab18-2cdf542a62e2, bd617e5f-8bb5-4d5c-a48b-bac140e6da0d, c1651b53-20d9-4f54-ac7e-e858c68cc8f6, d92caab2-a3ce-4cca-a3f5-0650feb72067, f0e9cbf9-707f-4f63-8368-fdfe6f389f9d]
+      target_aliases: [food-delivery-payment]
+    - pseudo_kind: external_dependency
+      pseudo_ids: ['external:external-pg', 'external:testbed-external-pg-mock']
+      proxy_target_ids: [016de474-2508-4458-9a18-281ac64226e5, 075f6fa6-d9ef-44c6-a97a-3f4315052126, 2262a7b9-c41e-493a-842c-008ad4e8bd6e, 272d86f1-0c26-425a-a9b8-d4d2dc5a4f97, 31e57392-0bb9-48fd-9a89-ffcf49f99717, 382dae1b-a176-49d1-b2a3-b5a1fb886a66, 38cf0fe7-bb9f-40ad-8275-c22f1e1be6fd, 3dfd48a2-de4b-4437-8750-b7d610b92b52, 52e3d566-64fc-4ef7-8fe1-12f867f0f690, 77d20d4f-bfae-4587-8c92-bf546b4860f6, 7956c805-a580-490f-90c3-356c30947445, 836558eb-4ecf-4181-aff7-e0242a4c78aa, 9d932c91-2ce8-4cd5-8c8a-60fe86926d0e, b4c24f03-5343-4756-8725-956e81aaa779, c6c6a59f-fa69-4d6e-9231-ca3e547f9df2, d41edc3c-9b48-480d-ad56-e2653aa0635c, de94e1d8-e587-4032-a170-a654542840eb, ef8ef696-4f46-4087-9f01-ecbfee894bb4, f4213942-59e5-4bf3-b204-6487b6e3f20c, f5e3d6cd-278b-49c1-ae7c-65a6a7b6de37, fe5e5904-e91f-4802-9596-b32473c0ab01]
+      boundary_target_ids: [2e6120e3-37fa-4c44-a224-6ab13afdd9ee]
+      boundary_target_aliases: [food-delivery-payment]
+  # case-f06-p-v3-79c62cdb: case-f06-p-v3-100785c9 의 재캡처 (같은 scenario_metadata_sha256). mcp_golden_extend.py 로 targets 테이블에서 (type, 정규화 이름) 대응해 도출.
+  case-f06-p-v3-79c62cdb:
+    expected_status: provisional
+    roots:
+    - target_ids: [2e6120e3-37fa-4c44-a224-6ab13afdd9ee, 3264d1f3-cc97-46b5-9737-6124867e4989, 3a91b724-6114-4004-bcdc-b2673f92a788, 3c23898e-8599-4637-8b75-7a48d9e92f49, 5ff53056-6257-49f4-a3d0-63d3cb9130cc, 634dd439-3a9c-41b8-8886-3dd0a6f0805d, 6b9d24ef-d68f-410c-b1fa-dd7b45a7beb4, 7c8a2e7b-ebc1-45ba-af38-56670d72cd94, 86fcae80-60cd-464a-b7cb-28fbf0bacb58, a252f9d6-d65e-4e5f-b068-d7a2d4ce2d07, a7b3d8c5-d410-49ed-b72b-d1956c15b902, b14bfb7a-6c05-497b-ab18-2cdf542a62e2, bd617e5f-8bb5-4d5c-a48b-bac140e6da0d, c1651b53-20d9-4f54-ac7e-e858c68cc8f6, d92caab2-a3ce-4cca-a3f5-0650feb72067, f0e9cbf9-707f-4f63-8368-fdfe6f389f9d]
+      target_aliases: [food-delivery-payment]
+    - pseudo_kind: external_dependency
+      pseudo_ids: ['external:external-pg', 'external:testbed-external-pg-mock']
+      proxy_target_ids: [016de474-2508-4458-9a18-281ac64226e5, 075f6fa6-d9ef-44c6-a97a-3f4315052126, 2262a7b9-c41e-493a-842c-008ad4e8bd6e, 272d86f1-0c26-425a-a9b8-d4d2dc5a4f97, 31e57392-0bb9-48fd-9a89-ffcf49f99717, 382dae1b-a176-49d1-b2a3-b5a1fb886a66, 38cf0fe7-bb9f-40ad-8275-c22f1e1be6fd, 3dfd48a2-de4b-4437-8750-b7d610b92b52, 52e3d566-64fc-4ef7-8fe1-12f867f0f690, 77d20d4f-bfae-4587-8c92-bf546b4860f6, 7956c805-a580-490f-90c3-356c30947445, 836558eb-4ecf-4181-aff7-e0242a4c78aa, 9d932c91-2ce8-4cd5-8c8a-60fe86926d0e, b4c24f03-5343-4756-8725-956e81aaa779, c6c6a59f-fa69-4d6e-9231-ca3e547f9df2, d41edc3c-9b48-480d-ad56-e2653aa0635c, de94e1d8-e587-4032-a170-a654542840eb, ef8ef696-4f46-4087-9f01-ecbfee894bb4, f4213942-59e5-4bf3-b204-6487b6e3f20c, f5e3d6cd-278b-49c1-ae7c-65a6a7b6de37, fe5e5904-e91f-4802-9596-b32473c0ab01]
+      boundary_target_ids: [2e6120e3-37fa-4c44-a224-6ab13afdd9ee]
+      boundary_target_aliases: [food-delivery-payment]

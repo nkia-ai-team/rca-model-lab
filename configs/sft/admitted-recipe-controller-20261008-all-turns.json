@@ -1,0 +1,38 @@
+{
+  "workspace": "outputs/admitted-recipe-20261008-all-turns/controller",
+  "out_root": "outputs/admitted-recipe-20261008-all-turns",
+  "candidate_input": "outputs/recipe-audit-20261008/quarantined-merged/joint.quarantined.jsonl",
+  "source_joint_manifest": "outputs/joint-recovered-20261008/datasets/joint.manifest.json",
+  "continuation_config": "configs/sft/admitted-joint-20261008-all-turns.yaml",
+  "continuation_workspace": "outputs/admitted-recipe-20261008-all-turns/training",
+  "judge_workers": 4,
+  "turns_per_episode": 0,
+  "minimum_final_per_source": 1,
+  "cache_roots": [
+    "outputs/recipe-audit-20261008/evidence-fresh-judged",
+    "outputs/recipe-audit-20261008/evidence-stratified-judged",
+    "outputs/evidence-audit-20261007/expanded-judged",
+    "outputs/admitted-recipe-20261008/judged",
+    "outputs/admitted-recipe-20261008-v2/judged"
+  ],
+  "commands": {
+    "prepare_candidates": [
+      "/home/swlee/projects/rca-model-lab-mcp/.venv/bin/python",
+      "scripts/mcp_prepare_admitted_recipe.py",
+      "build"
+    ],
+    "judge": [
+      "/home/swlee/projects/rca-model-lab-mcp/.venv/bin/python",
+      "scripts/mcp_judge_evidence.py"
+    ],
+    "export": [
+      "/home/swlee/projects/rca-model-lab-mcp/.venv/bin/python",
+      "scripts/mcp_prepare_admitted_recipe.py",
+      "export"
+    ],
+    "continue": [
+      "/home/swlee/projects/rca-model-lab-mcp/.venv/bin/python",
+      "scripts/mcp_continue_recovered.py"
+    ]
+  }
+}

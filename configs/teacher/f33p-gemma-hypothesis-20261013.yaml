@@ -1,0 +1,16 @@
+cases:
+- case-f33-p-v3-e79a2db0
+run_name: codex-actions-new17-20261012
+model: gpt-6-astra
+workers: 2
+accepted_per_case: 2
+max_attempts: 11
+max_turns: 60
+split: configs/teacher/polestar43-gemma-20261013.yaml
+contract: configs/eval/polestar-new17-20261012.yaml
+mcp_binary: outputs/polestar-new17-teacher-20261012/runtime-20261013/rca-mcp
+cases_root: /data/eval-cases
+workspace: outputs/polestar-new17-teacher-20261012
+retry_hints: outputs/polestar-new17-teacher-20261012/f33p-hypothesis-hints-20261013.yaml
+retry_hints_after_attempt: 9
+purpose: Teacher-only recovery, no automatic training invocation

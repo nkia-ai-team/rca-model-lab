@@ -1,0 +1,49 @@
+# mcp-v1f: v1c 절제 실험 — 데이터 v2, lr 1e-5, clip 0.5, attention LoRA 전부 동일, **추론 토큰 손실 가중 0**.
+# v1c(가중 1.0, 학생 추론)는 90 정점 후 261 발산, v1e(v3 Claude 추론, 가중 0.3)는 60 부터 베이스 이하·130 발산.
+# 다섯 런 모두 발산 → 추론 감독이 원인인지 트레이너인지 가르는 실험. save_steps 30.
+# mcp-v1f: v1d 발산 시 대체 — lr 1e-5, clip 0.5, attention 투영만. 데이터 v2.
+# mcp-v1b: lr 2e-5 (v1 은 5e-5 에서 step 36~69 CE 0.41→0.54·grad 0.15→1.3 상승). 나머지 동일.
+# mcp-v1: 첫 rca-mcp 표면 SFT. 학생 자기 궤적(정답·status 일치·ref 유효) 케이스당 ≤3개, 핸들(T<n>) 표기.
+# 모델·토크나이저 계약은 v45 와 동일 (fp8-block 원본 dequantize, LoRA fp32, 옵티마이저 fp32 마스터).
+name: muse-glimmer-30b-mcp-v1f
+model_name: /home/work/models/muse-glimmer-30b-fp8-block
+tokenizer_name: models/muse-glimmer-30b-tokenizer
+checkpoint_format: compressed_tensors_fp8_block
+model_revision: 8ed2e29141d4fef439b9a0e15e0a2678bc190a82
+model_config_sha256: 5f1476af88c0462bc448f05b36eaa4c2fae3bbe3cfafc2f281c7bf452958b8f8
+model_index_sha256: 22970c4e6b652245647b907d908147798d49e316623f43d1c611b1a12c79ba2d
+tokenizer_sha256: 399ef208c3f43075d950340f15ef628a409062e872202170620b4fb2323e68a2
+training_compute_dtype: bfloat16
+adapter_parameter_dtype: float32
+optimizer_state_dtype: float32
+dequantize_for_training: true
+dataset: data/processed/mcp-sft-v2.jsonl
+dataset_sha256: "8d96d380119b9d54e29dc9f2942ab2bf6a9a39681bde208f6008266137dc0cc7"
+expected_examples: 42
+expected_cases: 22
+output_dir: /home/work/models/rca-adapters/muse-glimmer-30b-mcp-v1f
+max_length: 52000   # 49152 window + final forced-answer turn margin; RoPE covers it
+epochs: 2
+learning_rate: 1.0e-05
+lr_scheduler_type: cosine
+warmup_ratio: 0.05
+max_grad_norm: 0.5
+batch_size: 1
+gradient_accumulation_steps: 4
+save_total_limit: 10
+save_steps: 30
+reasoning_strength: null
+case_balanced_loss: true
+reasoning_loss_weight: 0.0   # ablation: actions only; reasoning span stays in the sequence as context but gets no loss
+use_liger_kernel: false
+supervise_end_token: false
+sequence_mode: turns
+lora:
+  rank: 16
+  alpha: 32
+  dropout: 0.05
+  target_modules: '.*language_model.*self_attn\.(q_proj|k_proj|v_proj|o_proj)'   # regex: language model only (all-linear also wrapped the vision tower; vLLM refuses those targets)
+wandb:
+  entity: nkia-ai
+  project: rca-actor-sft
+  version: mcp-v1f

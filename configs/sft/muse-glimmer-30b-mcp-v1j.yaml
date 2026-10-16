@@ -1,0 +1,54 @@
+# mcp-v1j: v1h 레시피 그대로(LoRA-FA, lr 1e-5, max_steps 200 코사인→0, 추론 가중 1.0) + 데이터 v5.
+# v5 = 교사 3차(새 rca-mcp: sample_logs volume_shift · tools/list 순서 결정성 · get_k8s_state owner 핸들, 폭풍 억제 seed)
+#      블라인드 teacher-v3 + 힌트 ① teacher-v3h 채택분만, 케이스당 ≤2 → 44 에피소드 / 26 케이스. 구 도구 궤적(v4 이하) 불포함.
+# 등급 불일치 에피소드는 마지막 submit 턴만 손실 제외. 추론은 Claude 작성 + judge 통과 턴만 감독.
+# mcp-v1j: v1g 안정화 레시피(LoRA-FA, lr 1e-5, max_steps 200 코사인→0, 누적 스케일 수정) + 데이터 v3.
+# v3 = Claude 가 고정 호출을 알고 쓴 추론 + LLM 판정 통과 턴만 감독(1377/1383). 추론 가중 1.0.
+# v2 vs v3 비교는 생략(사용자 결정) — 추론 궤적의 출처·품질이 정답 여부보다 중요하다는 문헌 근거로 v3 채택.
+# mcp-v1j: v1c 레시피(데이터 v2, 학생 추론 가중 1.0, lr 1e-5, attention LoRA) + 진단 결과 반영.
+# mcp-v1j: v1d 발산 시 대체 — lr 1e-5, clip 0.5, attention 투영만. 데이터 v2.
+# mcp-v1: 첫 rca-mcp 표면 SFT. 학생 자기 궤적(정답·status 일치·ref 유효) 케이스당 ≤3개, 핸들(T<n>) 표기.
+# 모델·토크나이저 계약은 v45 와 동일 (fp8-block 원본 dequantize, LoRA fp32, 옵티마이저 fp32 마스터).
+name: muse-glimmer-30b-mcp-v1j
+model_name: /home/work/models/muse-glimmer-30b-fp8-block
+tokenizer_name: models/muse-glimmer-30b-tokenizer
+checkpoint_format: compressed_tensors_fp8_block
+model_revision: 8ed2e29141d4fef439b9a0e15e0a2678bc190a82
+model_config_sha256: 5f1476af88c0462bc448f05b36eaa4c2fae3bbe3cfafc2f281c7bf452958b8f8
+model_index_sha256: 22970c4e6b652245647b907d908147798d49e316623f43d1c611b1a12c79ba2d
+tokenizer_sha256: 399ef208c3f43075d950340f15ef628a409062e872202170620b4fb2323e68a2
+training_compute_dtype: bfloat16
+adapter_parameter_dtype: float32
+optimizer_state_dtype: float32
+dequantize_for_training: true
+dataset: data/processed/mcp-sft-v5.jsonl
+dataset_sha256: "babc2d5904a35aa979a86eb258e1a113b77b371a47c60dc6fc1ebe29111f9b54"
+expected_examples: 44
+expected_cases: 26
+output_dir: /home/work/models/rca-adapters/muse-glimmer-30b-mcp-v1j
+max_length: 52000   # 49152 window + final forced-answer turn margin; RoPE covers it
+epochs: 2
+max_steps: 200          # 스케줄이 200 스텝에서 끝난다 (누적 이동 ≈ 1e-5 × 200 × 0.6 ≈ 1.2e-3)
+learning_rate: 1.0e-05
+lr_scheduler_type: cosine
+warmup_ratio: 0.05
+max_grad_norm: 1.0
+batch_size: 1
+gradient_accumulation_steps: 4
+save_total_limit: 20
+save_steps: 20
+reasoning_strength: null
+case_balanced_loss: true
+use_liger_kernel: false
+supervise_end_token: false
+sequence_mode: turns
+lora:
+  rank: 16
+  alpha: 32
+  dropout: 0.05
+  target_modules: '.*language_model.*self_attn\.(q_proj|k_proj|v_proj|o_proj)'   # regex: language model only (all-linear also wrapped the vision tower; vLLM refuses those targets)
+  freeze_a: true            # LoRA-FA
+wandb:
+  entity: nkia-ai
+  project: rca-actor-sft
+  version: mcp-v1j

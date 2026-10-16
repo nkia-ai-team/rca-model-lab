@@ -1,0 +1,46 @@
+# mcp-v2a1r (2단계 SFT A1 재학습, 2026-10-06): 공개 tt4c — 키순서 보존 블라인드 필터 바이너리로 리플레이한 tt4 교사 궤적(요약이 학생 6000자 뷰 안).
+# 레시피는 v2a1 과 동일(attention qkvo + MLP LoRA, lr 1e-5, 에피소드당 6턴 샘플, 1회). KT GPU1.
+name: muse-glimmer-30b-mcp-v2a1r
+model_name: /home/work/models/muse-glimmer-30b-fp8-block
+tokenizer_name: models/muse-glimmer-30b-tokenizer
+checkpoint_format: compressed_tensors_fp8_block
+model_revision: 8ed2e29141d4fef439b9a0e15e0a2678bc190a82
+model_config_sha256: 5f1476af88c0462bc448f05b36eaa4c2fae3bbe3cfafc2f281c7bf452958b8f8
+model_index_sha256: 22970c4e6b652245647b907d908147798d49e316623f43d1c611b1a12c79ba2d
+tokenizer_sha256: 399ef208c3f43075d950340f15ef628a409062e872202170620b4fb2323e68a2
+training_compute_dtype: bfloat16
+adapter_parameter_dtype: float32
+optimizer_state_dtype: float32
+dequantize_for_training: true
+dataset: data/processed/mcp-sft-pub-tt4c.jsonl
+dataset_sha256: "19bc6d35b8b80901d0131bc2f9c72459f3fd7772134bb04b8ceacf5e7b2c2d3c"
+expected_examples: 66
+expected_cases: 49
+output_dir: /home/work/models/rca-adapters/muse-glimmer-30b-mcp-v2a1r
+max_length: 52000   # 49152 window + final forced-answer turn margin; RoPE covers it
+epochs: 1
+max_steps: 99          # 1 pass over 396 sampled supervised turns / accum 4
+learning_rate: 1.0e-05
+lr_scheduler_type: cosine
+warmup_ratio: 0.05
+max_grad_norm: 1.0
+batch_size: 1
+gradient_accumulation_steps: 4
+save_total_limit: 20
+save_steps: 50
+reasoning_strength: null
+case_balanced_loss: true
+use_liger_kernel: false
+supervise_end_token: false
+sequence_mode: turns
+turns_per_episode: 6
+lora:
+  rank: 16
+  alpha: 32
+  dropout: 0.05
+  target_modules: '.*language_model.*(self_attn\.(q_proj|k_proj|v_proj|o_proj)|mlp\.(gate_proj|up_proj|down_proj))'   # attention qkvo + MLP; attention output gate (self_attn.gate_proj = vLLM output_gate_proj) excluded
+  freeze_a: false           # 표준 LoRA (A 도 학습)
+wandb:
+  entity: nkia-ai
+  project: rca-actor-sft
+  version: mcp-v2a1r

@@ -1,0 +1,64 @@
+# v45: v43 분할에서 학습 4건을 validation 으로 이동(조기 종료용 홀드아웃). 봉인 9건·제외 1건 불변.
+# 2026-09-17: 8/31~9/1 재캡처 10건 등록. 전부 기존 시나리오와 scenario_metadata_sha256 이 같은
+# **다른 실행분**(UUID·시각·관측값만 다름) 이므로 원본과 같은 분할로 넣는다. 특히 f08-p·f17-p 는
+# 봉인 시나리오라 미등록 상태로 두면 export 의 봉인 거부가 못 막는다.
+name: v45-family-split-val
+family_overlap_allowed_by: lucida-next-rca-rlm docs/rca-family-split.md — 학습 가족(26)·봉인(9) 표 그대로. 동형 기전을 가족 안에서 갈라 근거리 전이를 측정하는 설계(전이쌍 1~6). validation 4건(f01-r·f05-h·f06-p·f06-r)은 학습 26건에서 뗀 에폭 선택용 홀드아웃
+  — 전이쌍 출발 케이스 아님, 각 기전은 학습에 형제(f06-h DB잠금, f05-r 재시작루프, f01-h 외부429, f19-s 외부지연)가 남음.
+teacher: claude
+accepted_trajectories_per_case: 2
+max_attempts_per_case: 5
+max_turns: 12
+train:
+- case-f01-h-v3-48ec8e62
+- case-f01-p-v3-d691440c
+- case-f01-p-v3-20bfac59      # 재캡처 (F01-P, 2026-09-01)
+- case-f03-h-v3-d4192a3b
+- case-f04-r-v3-c508c52d
+- case-f05-p-v3-6fe331ef
+- case-f05-r-v3-527f3692
+- case-f06-h-v3-e43298a2
+- case-f07-h-v3-7de1a36f
+- case-f07-h-v3-4ab16f7a      # 재캡처 (F07-H, 2026-08-31)
+- case-f09-h-v3-0c795f2b
+- case-f09-p-v3-6dae1c0b
+- case-f10-h-v3-4fe69be0
+- case-f11-r-v3-85b9a489
+- case-f11-r-v3-6366db31      # 재캡처 (F11-R, 2026-08-31)
+- case-f14-p-v3-0bdb303b
+- case-f15-g-v3-ce2e64de
+- case-f15-g-v3-fbe95718      # 재캡처 (F15-G, 2026-08-31)
+- case-f16-h-v3-2f0555c7
+- case-f16-h-v3-f069f7c9      # 재캡처 (F16-H, 2026-08-31)
+- case-f17-r-v3-ab7228ad
+- case-f18-p-v3-d2c566ad
+- case-f19-p-v3-5a350c0a
+- case-f19-s-v3-5daa9c97
+- case-f20-r-v3-caf04820
+- case-f23-r-v3-04981a78
+- case-f25-h-v3-dc3d4fc8
+sealed_eval:
+- case-f04-h-v3-af25dea6
+- case-f08-g-v3-0ac275b0
+- case-f08-h-v3-6bdc9531
+- case-f08-p-v3-78f4a1ba
+- case-f08-p-v3-ad967f62      # 재캡처 (F08-P, 2026-08-31) — 봉인
+- case-f12-h-v3-8c1cf9f8
+- case-f15-h-v3-2ba8a6dc
+- case-f15-p-v3-3843c3fe
+- case-f15-t1-v3-9a5c5eae
+- case-f17-p-v3-bce52242
+- case-f17-p-v3-8adc39ba      # 재캡처 (F17-P, 2026-09-01) — 봉인
+- case-f17-p-v3-e68c5992      # 재캡처 (F17-P, 2026-09-01) — 봉인
+excluded:
+- case-f15-r-v3-82e0537f
+# 2026-09-28: f06-p 재캡처 2건 골든 완성(mcp_golden_extend.py, 원본과 target id 전부 동일 확인) → validation 승격.
+# 검증 6캡처 = 4 시나리오(f06-p 는 3캡처). 학습에는 절대 들어가지 않는다.
+validation_pending_golden: []
+validation:
+- case-f01-r-v3-34274f3e
+- case-f05-h-v3-36a247f1
+- case-f06-p-v3-100785c9
+- case-f06-p-v3-24f2e956
+- case-f06-p-v3-79c62cdb
+- case-f06-r-v3-6ace8a7d

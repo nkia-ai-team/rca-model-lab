@@ -1,0 +1,48 @@
+# mcp-v1n (SFT 8차, 사용자 2026-10-02 "C로하자"): 2026-10-02 진단 반영 — v1l/v1m 은 800 예제(데이터 0.8회)·lr 1e-5·attention B 만이라
+# 학습 손실·vLLM NLL·다음 행동 일치율 모두 base 와 같았다(학습 무효). 단일 예제 과적합에서 attention 만은 폭주 후 회복 못 하고(3.17),
+# MLP 포함은 폭주 후 회복해 0.25(1e-4)/0.03(3e-4). 그래서: MLP 포함 + A 학습(LoRA-FA 끔) + lr 2e-5 + 800 스텝(v8 1075턴 ≈ 3회) + 50 스텝 저장.
+# 손실 급등에도 중단하지 않는다(과거 v1d 는 step 125 상승 때 수동 중단 — 회복 여부 미확인). 체크포인트는 다음 행동 일치율로 1차 선별.
+# 데이터 v8 = 49 에피소드 / 27 케이스 (v1m 과 동일). 모델·토크나이저 계약은 v45 와 동일.
+name: muse-glimmer-30b-mcp-v1n
+model_name: /home/work/models/muse-glimmer-30b-fp8-block
+tokenizer_name: models/muse-glimmer-30b-tokenizer
+checkpoint_format: compressed_tensors_fp8_block
+model_revision: 8ed2e29141d4fef439b9a0e15e0a2678bc190a82
+model_config_sha256: 5f1476af88c0462bc448f05b36eaa4c2fae3bbe3cfafc2f281c7bf452958b8f8
+model_index_sha256: 22970c4e6b652245647b907d908147798d49e316623f43d1c611b1a12c79ba2d
+tokenizer_sha256: 399ef208c3f43075d950340f15ef628a409062e872202170620b4fb2323e68a2
+training_compute_dtype: bfloat16
+adapter_parameter_dtype: float32
+optimizer_state_dtype: float32
+dequantize_for_training: true
+dataset: data/processed/mcp-sft-v8.jsonl
+dataset_sha256: "ac933c028486288ce652d4011c902d580af557a6888221b7afb64c1665521200"
+expected_examples: 49
+expected_cases: 27
+output_dir: /home/work/models/rca-adapters/muse-glimmer-30b-mcp-v1n
+max_length: 52000   # 49152 window + final forced-answer turn margin; RoPE covers it
+epochs: 3
+max_steps: 800          # v8 1075 턴 × 3회 ≈ 806 예제/누적4 → 800 스텝
+learning_rate: 2.0e-05
+lr_scheduler_type: cosine
+warmup_ratio: 0.05
+max_grad_norm: 1.0
+batch_size: 1
+gradient_accumulation_steps: 4
+save_total_limit: 20
+save_steps: 50
+reasoning_strength: null
+case_balanced_loss: true
+use_liger_kernel: false
+supervise_end_token: false
+sequence_mode: turns
+lora:
+  rank: 16
+  alpha: 32
+  dropout: 0.05
+  target_modules: '.*language_model.*\.(q_proj|k_proj|v_proj|o_proj|gate_proj|up_proj|down_proj)'   # language model attention + MLP (vision excluded)
+  freeze_a: false           # 표준 LoRA (A 도 학습) — 과적합 시험에서 MLP 포함 경로가 회복·수렴한 설정
+wandb:
+  entity: nkia-ai
+  project: rca-actor-sft
+  version: mcp-v1n

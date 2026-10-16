@@ -1,0 +1,147 @@
+# RCAEval tt3 converted captures (scripts/rcaeval_convert.py). Source: Pham et al., RCAEval, WWW'25 companion; Zenodo 14590730, CC BY 4.0.
+version: 1
+cases:
+  case-rcaeval-tt3-v3-5f5e6b83:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 5277289c-144b-506e-b5b2-c1a45997530d
+      - 411f8d39-9852-547d-850b-47b27a0c4bcb
+      - 47e17d98-1e2a-5abf-9be3-ecc7fbcae44f
+      - f7d72496-94aa-5389-b894-96e49b9f3b8d
+      - 710fd25d-1ad8-52aa-9716-7a8f3b710b1f
+      - 20cec879-883d-5cd1-a2e8-b576a94bda69
+      target_aliases:
+      - ts-auth-service
+  case-rcaeval-tt3-v3-e707b26b:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 776b7cae-eeae-55d5-899e-98f68387131e
+      - c7dd1de8-b7ec-5e84-ad29-1c40efdc6e5a
+      - 1a127d87-a5e8-58ad-97bc-df85607e3615
+      - 7f1ef993-8f7a-5f47-a46e-bb9560684931
+      - 301dcc60-17db-5e38-8582-e11e74c0d1d6
+      - 392046e6-57af-59b8-a1d3-51b9a966f56c
+      target_aliases:
+      - ts-auth-service
+  case-rcaeval-tt3-v3-0a15b0b6:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 43ead1c6-563f-59d9-a402-d793d90d5156
+      - 7da360c6-44fe-5f70-b2f2-e6ff3dc0e29c
+      - 8ad0e798-04cc-533e-9bcc-9c63815cb3ac
+      - 3d0f10a3-6032-560c-a65a-920c5cc52cf4
+      - 468392a1-6959-538d-8b0a-e486af2894b6
+      - e980369c-ded3-51a2-9917-50e2b936013e
+      target_aliases:
+      - ts-auth-service
+  case-rcaeval-tt3-v3-39d0db03:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - f42917d6-9279-51df-a1a0-7a90bc16cd72
+      - 2c8916b5-ebcc-5e88-a391-1d311c958360
+      - 5e1907f5-25e3-5cde-b3a2-eaebba5ac0ca
+      - 36a043f1-5429-533d-b331-b69d974b16db
+      - 73a5a01b-3b6e-5779-9dc5-71d6075c965c
+      - 6999de5e-49ff-5406-8a30-54b2401b8e56
+      target_aliases:
+      - ts-auth-service
+  case-rcaeval-tt3-v3-629f2b0b:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - ba3c56ee-1aa0-5dfe-ad89-868c47165f6e
+      - a6f57d57-0b89-53c7-9ce4-a206de2fd4f7
+      - 6b260490-f70b-5a32-bc4c-b4e7ed5a28a6
+      - 624ad911-d84c-5a66-9562-2f160bb55cec
+      - d654c09a-37de-54ef-bccb-3dd7a2e4904c
+      - 4d7e7a82-4d29-5bf7-918f-ee2075e2e22c
+      target_aliases:
+      - ts-auth-service
+  case-rcaeval-tt3-v3-3146d3fe:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 3a3bd76e-c0c3-5078-af28-7c1057c057e7
+      - b068a494-2c5a-5511-bbcf-90dd5104a308
+      - 66aee9f4-bf15-5a48-baae-48983b5c20a8
+      - 3d5ecaf9-87ac-5d81-af70-5f5e6d8d5b61
+      - a19f86ec-a8d9-58ca-99b4-0385845b02ed
+      - e576853e-8f11-5306-8d4b-502249b4fe5e
+      target_aliases:
+      - ts-auth-service
+  case-rcaeval-tt3-v3-9cbc0d52:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - c8a58fe4-b95c-5b5a-b7a8-a4d8ce9d7f53
+      - efbc61f2-6423-55cf-b152-ac3dd8d76352
+      - c6aac979-68ef-5d18-b787-4ee1eab63a02
+      - db0e0dcc-b72c-5cdd-b94d-a120279918b9
+      - d6c347b5-3bad-5e0b-a2a2-f759f7cb666b
+      - 6b8602e7-05f5-572d-9ab3-88a3cf22e728
+      target_aliases:
+      - ts-order-service
+  case-rcaeval-tt3-v3-a0c6f65f:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 6d02e0e1-c786-52d5-9bbc-2c04d7f0b7d3
+      - c098bd08-c65a-5680-80b9-05cbf40d3aec
+      - 209dec81-405d-5854-adb2-8c3218a237e8
+      - d6f6635d-f85f-5847-93d8-502e0cbf4316
+      - ef5aad4b-38e3-544b-b598-f54e53343533
+      - bf21b2a0-382f-50d5-8586-55925c1f050f
+      target_aliases:
+      - ts-order-service
+  case-rcaeval-tt3-v3-d01a7a7d:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - a446bcac-207b-5f03-80c2-f5cd05699ea7
+      - e09b7690-8f85-5165-9fdb-e8b4f409286f
+      - be0d1d85-a397-5f30-90fd-244f600b2a50
+      - 65b12699-7b47-546b-9fff-ec32b25a7d4e
+      - 12fc6eeb-7d30-52f3-a79b-f5be2c30809c
+      - 33ea16b9-1e17-59b5-9a01-6db5209d0f25
+      target_aliases:
+      - ts-order-service
+  case-rcaeval-tt3-v3-1624ea06:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 8c30dd8c-4e66-5fc6-ad83-7926b3578a3c
+      - 169fe449-4437-50cc-ab5e-62e100bf9ab5
+      - 01b94817-77f7-5017-9f68-6b416e40cebc
+      - 7f465f3f-bbd0-5c4c-98a2-44aac1387e82
+      - 13a6d27c-d453-5124-afd0-d2d308dc325e
+      - 7d119134-cc55-5c6e-9b76-5292e67e54db
+      target_aliases:
+      - ts-order-service
+  case-rcaeval-tt3-v3-73bd2005:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 90bbe2c1-5779-55a4-904a-fe4fff3519a5
+      - fd771906-0f41-5df6-abed-a61d47329fe5
+      - 50d56168-a0cf-550f-ba08-b75fcea44a63
+      - d1ff400d-b5e7-5b8b-97a2-72031df534d1
+      - fd5aaaa4-7833-5d06-a786-4e6d516bcb63
+      - be9c878c-676d-5e0b-b243-e4e1477e380c
+      target_aliases:
+      - ts-order-service
+  case-rcaeval-tt3-v3-ffd76848:
+    expected_status: confirmed
+    roots:
+    - target_ids:
+      - 02e67458-c5f3-5997-9585-77145e9331c6
+      - 7fd087d2-acc3-5885-929c-86adcd3fd8f9
+      - ec18bb72-83cd-5bd3-addf-140b82c6391c
+      - 05eeeb4c-9b41-5298-97f6-105c51c2ce25
+      - 41efd91b-d43e-5287-896a-71778bff8ace
+      - 9617fa6d-74e9-5b8c-8869-ed732e013157
+      target_aliases:
+      - ts-order-service

@@ -1,0 +1,97 @@
+# Continuation plan for recovered public+Polestar data, 2026-10-07.
+# Default is read-only preflight; execution waits for all recovered datasets.
+poll_seconds: 300
+template: configs/sft/muse-glimmer-30b-mcp-v1q.yaml
+
+recovery_expected:
+  writer_provider: codex
+  writer_model: gpt-6-astra
+  judge_provider: codex
+  judge_model: gpt-6.1-sol
+
+remote:
+  root: /home/work/rca-model-lab-mcp
+  launcher: /home/work/run-mcp-train.sh
+  gpu_index: 1
+  ssh:
+    host: proxy2.ainexus.ktcloud.com
+    port: 10504
+    user: work
+    key_path: /tmp/claude-1006/-home-swlee-projects/47c4a666-edf6-440b-93bc-c522a28efa1a/scratchpad/ktkey
+
+sync:
+  # Bounded train/runtime surface only. Do not use scratchpad kt_sync_mcp.sh broad overwrite.
+  paths:
+    - pyproject.toml
+    - scripts/train_mcp_sft.py
+    - src/rca_lab/train
+    - src/rca_lab/mcp
+    - models/muse-glimmer-30b-tokenizer
+
+eval_guard:
+  # Existing eval driver must be idle before this chain reloads LoRA adapters or validates.
+  state_files:
+    - path: /tmp/claude-1006/-home-swlee-projects/47c4a666-edf6-440b-93bc-c522a28efa1a/scratchpad/resume-codex-20261007/state.json
+      allowed_phases: [awaiting_mechanism_judge, complete, failed]
+  process_absent:
+    - "scripts/mcp_case_run.py.*resume-20261007"
+
+stages:
+  - key: tt4
+    version: recovered-tt4-20261007
+    dataset: outputs/data-recovery-codex-sol-20261007/datasets/tt4.jsonl
+    split: configs/teacher/rcaeval-tt4-split.yaml
+    turns_per_episode: 6
+    save_steps: 50
+    header: |
+      # recovered-chain A1: public Train Ticket tt4, recovered with provider provenance in the recovery workspace.
+      # Starts from the base Muse recipe; no old biased adapter is used.
+  - key: ob4
+    version: recovered-ob4-20261007
+    dataset: outputs/data-recovery-codex-sol-20261007/datasets/ob4.jsonl
+    split: configs/teacher/rcaeval-ob4-split.yaml
+    turns_per_episode: 6
+    save_steps: 50
+    header: |
+      # recovered-chain A2: public Online Boutique ob4, initialized from recovered-chain A1 only.
+  - key: o2
+    version: recovered-o2-20261007
+    dataset: outputs/data-recovery-codex-sol-20261007/datasets/o2.jsonl
+    split: configs/teacher/openrca2-all-split.yaml
+    turns_per_episode: 6
+    save_steps: 50
+    header: |
+      # recovered-chain A3: OpenRCA2 o2, initialized from recovered-chain A2 only.
+  - key: polestar
+    version: recovered-polestar-20261007
+    dataset: outputs/data-recovery-codex-sol-20261007/datasets/polestar.jsonl
+    split: configs/teacher/v45-family-split-val.yaml
+    turns_per_episode: 0
+    save_steps: 50
+    header: |
+      # recovered-chain B: Polestar v9-equivalent data, initialized from recovered-chain A3 only.
+
+validation:
+  endpoint: http://127.0.0.1:18002/v1
+  split: configs/teacher/v45-family-split-val.yaml
+  runs: 6
+  max_turns: 50
+  expected_scores: 36
+  out_root: outputs/mcp-eval
+  models:
+    - kind: base
+      model: muse-glimmer-base
+      run_name: val36f-base-recovered-chain-20261007
+    - kind: stage
+      stage: o2
+      run_name: val36f-recovered-o2-20261007
+    - kind: stage
+      stage: polestar
+      run_name: val36f-recovered-polestar-20261007
+
+mechanism_judge:
+  enabled: true
+  provider: codex
+  model: gpt-6.1-sol
+  rubric: v2
+  workers: 2

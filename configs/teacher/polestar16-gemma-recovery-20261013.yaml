@@ -1,0 +1,12 @@
+writer_provider: codex
+judge_provider: codex
+rationalize_workers: 2
+writer_model: gpt-6-astra
+judge_model: gpt-6.1-sol
+stages:
+- name: polestar-new16
+  split: configs/teacher/polestar43-gemma-20261013.yaml
+  cases_root: /data/eval-cases
+  roots:
+  - outputs/mcp-eval/codex-actions-new17-20261012
+  runner: student

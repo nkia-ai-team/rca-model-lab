@@ -1,0 +1,63 @@
+poll_seconds: 300
+template: configs/sft/muse-glimmer-30b-mcp-admitted-template.yaml
+recovery_expected:
+  writer_provider: codex
+  writer_model: gpt-6-astra
+  judge_provider: codex
+  judge_model: gpt-6.1-sol
+remote:
+  root: /home/work/rca-model-lab-mcp
+  launcher: /home/work/run-mcp-train.sh
+  gpu_index: 1
+  ssh:
+    host: proxy2.ainexus.ktcloud.com
+    port: 10504
+    user: work
+    key_path: /home/swlee/projects/rca-model-lab-mcp/outputs/recovered-chain-20261007/runtime/ktkey
+sync:
+  paths:
+  - pyproject.toml
+  - scripts/train_mcp_sft.py
+  - src/rca_lab/train
+  - src/rca_lab/mcp
+  - models/muse-glimmer-30b-tokenizer
+eval_guard:
+  state_files:
+  - path: /tmp/claude-1006/-home-swlee-projects/47c4a666-edf6-440b-93bc-c522a28efa1a/scratchpad/resume-codex-20261007/state.json
+    allowed_phases:
+    - awaiting_mechanism_judge
+    - complete
+    - failed
+  process_absent:
+  - scripts/mcp_case_run.py.*resume-20261007
+stages:
+- key: joint
+  version: admitted-joint-20261008
+  dataset: outputs/admitted-recipe-20261008/admitted/joint.jsonl
+  split: outputs/joint-recovered-20261008/joint-split.yaml
+  complete_marker: outputs/admitted-recipe-20261008/admitted/joint.complete.json
+  turns_per_episode: 6
+  save_steps: 50
+  header: '# Observation-admitted source-balanced joint control; fresh base.'
+  require_evidence_admission: true
+  training_budget: one_epoch
+validation:
+  endpoint: http://127.0.0.1:18002/v1
+  split: configs/teacher/v45-family-split-val.yaml
+  runs: 6
+  max_turns: 50
+  expected_scores: 36
+  out_root: outputs/mcp-eval
+  models:
+  - kind: base
+    model: muse-glimmer-base
+    run_name: val36f-base-joint-admitted-20261008
+  - kind: stage
+    stage: joint
+    run_name: val36f-joint-admitted-20261008
+mechanism_judge:
+  enabled: true
+  provider: codex
+  model: gpt-6.1-sol
+  rubric: v2
+  workers: 2

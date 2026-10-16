@@ -1,0 +1,49 @@
+# RL rl2 iteration 5: GRPO update from /home/work/models/rca-adapters/muse-glimmer-30b-mcp-rl-rl1-v1i40-i4/adapter; rollouts reward_mean=0.1315 groups 4/9 (flat 5).
+model_name: /home/work/models/muse-glimmer-30b-fp8-block
+tokenizer_name: models/muse-glimmer-30b-tokenizer
+checkpoint_format: compressed_tensors_fp8_block
+model_revision: 8ed2e29141d4fef439b9a0e15e0a2678bc190a82
+model_config_sha256: 5f1476af88c0462bc448f05b36eaa4c2fae3bbe3cfafc2f281c7bf452958b8f8
+model_index_sha256: 22970c4e6b652245647b907d908147798d49e316623f43d1c611b1a12c79ba2d
+tokenizer_sha256: 399ef208c3f43075d950340f15ef628a409062e872202170620b4fb2323e68a2
+training_compute_dtype: bfloat16
+adapter_parameter_dtype: float32
+optimizer_state_dtype: float32
+dequantize_for_training: true
+max_length: 52000
+lora:
+  rank: 16
+  alpha: 32
+  dropout: 0.05
+  target_modules: .*language_model.*self_attn\.(q_proj|k_proj|v_proj|o_proj)
+  freeze_a: true
+sequence_mode: turns
+use_liger_kernel: false
+supervise_end_token: false
+reasoning_strength: null
+name: muse-glimmer-30b-mcp-rl-rl2-i5
+method: rl
+dataset: data/processed/mcp-rl-rl2-i4.jsonl
+dataset_sha256: 18429ba3cc83f414135c5bfe20c5cd71a5377371a8b2c064394bff046d67cb20
+expected_examples: 18
+expected_cases: 5
+output_dir: /home/work/models/rca-adapters/muse-glimmer-30b-mcp-rl-rl2-i5
+init_adapter: /home/work/models/rca-adapters/muse-glimmer-30b-mcp-rl-rl1-v1i40-i4/adapter
+case_balanced_loss: false
+rl_negative_scale: 1.0
+epochs: 1
+max_steps: 0
+learning_rate: 8.0e-06
+lr_scheduler_type: constant
+warmup_ratio: 0.0
+max_grad_norm: 1.0
+batch_size: 1
+gradient_accumulation_steps: 16
+save_total_limit: 1
+save_steps: 0
+reasoning_loss_weight: 1.0
+wandb:
+  entity: nkia-ai
+  project: rca-actor-rl
+  version: mcp-rl-rl2-i5
+rl_turns_per_episode: 8

@@ -1,0 +1,46 @@
+# mcp-v1q (SFT 9차-B, 사용자 2026-10-02 "응 3안으로 둘 다 돌려줘"): MLP 포함(attention qkvo + MLP gate/up/down) + 표준 LoRA, lr 1e-5, 400 스텝, 50 스텝 저장, 데이터 v8.
+# 학습 로더 수정(2026-10-02): compressed-tensors 입력 활성값 가짜 양자화를 끄고(disable_quantization) 그래디언트 흐름 가드 통과 후 학습 — 이전 SFT/RL 은 기본 Linear 입력에서 그래디언트가 끊긴 상태였다.
+# 목적: 수정된 그래디언트에서 용량(MLP) 효과 측정. 과적합 위험 → 체크포인트별 다음 행동 일치율로 선별. KT GPU1.
+name: muse-glimmer-30b-mcp-v1q
+model_name: /home/work/models/muse-glimmer-30b-fp8-block
+tokenizer_name: models/muse-glimmer-30b-tokenizer
+checkpoint_format: compressed_tensors_fp8_block
+model_revision: 8ed2e29141d4fef439b9a0e15e0a2678bc190a82
+model_config_sha256: 5f1476af88c0462bc448f05b36eaa4c2fae3bbe3cfafc2f281c7bf452958b8f8
+model_index_sha256: 22970c4e6b652245647b907d908147798d49e316623f43d1c611b1a12c79ba2d
+tokenizer_sha256: 399ef208c3f43075d950340f15ef628a409062e872202170620b4fb2323e68a2
+training_compute_dtype: bfloat16
+adapter_parameter_dtype: float32
+optimizer_state_dtype: float32
+dequantize_for_training: true
+dataset: data/processed/mcp-sft-v8.jsonl
+dataset_sha256: "ac933c028486288ce652d4011c902d580af557a6888221b7afb64c1665521200"
+expected_examples: 49
+expected_cases: 27
+output_dir: /home/work/models/rca-adapters/muse-glimmer-30b-mcp-v1q
+max_length: 52000   # 49152 window + final forced-answer turn margin; RoPE covers it
+epochs: 3
+max_steps: 400          # v8 1075 턴 × ≈1.5회
+learning_rate: 1.0e-05
+lr_scheduler_type: cosine
+warmup_ratio: 0.05
+max_grad_norm: 1.0
+batch_size: 1
+gradient_accumulation_steps: 4
+save_total_limit: 20
+save_steps: 50
+reasoning_strength: null
+case_balanced_loss: true
+use_liger_kernel: false
+supervise_end_token: false
+sequence_mode: turns
+lora:
+  rank: 16
+  alpha: 32
+  dropout: 0.05
+  target_modules: '.*language_model.*(self_attn\.(q_proj|k_proj|v_proj|o_proj)|mlp\.(gate_proj|up_proj|down_proj))'   # attention qkvo + MLP; attention output gate (self_attn.gate_proj = vLLM output_gate_proj) excluded
+  freeze_a: false           # 표준 LoRA (A 도 학습)
+wandb:
+  entity: nkia-ai
+  project: rca-actor-sft
+  version: mcp-v1q

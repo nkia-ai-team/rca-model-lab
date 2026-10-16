@@ -1,0 +1,32 @@
+# OpenRCA 2.0 o2ot converted captures (scripts/openrca2_convert.py). Source: huggingface anon-ops/ops-lite@581eba39, Apache-2.0.
+# public_compare: deterministic ~20% hold-out per system (hash of the case name) for comparison with published OpenRCA 2.0 results; never train on it.
+train:
+- case-openrca2-o2ot-v3-fad722e3
+- case-openrca2-o2ot-v3-9da60ec2
+- case-openrca2-o2ot-v3-d28ae74b
+- case-openrca2-o2ot-v3-3dfba6e3
+- case-openrca2-o2ot-v3-5573a482
+- case-openrca2-o2ot-v3-2d489060
+- case-openrca2-o2ot-v3-a5d46cbe
+- case-openrca2-o2ot-v3-63aee688
+- case-openrca2-o2ot-v3-fab7ae7f
+- case-openrca2-o2ot-v3-033769dc
+- case-openrca2-o2ot-v3-47051b3b
+- case-openrca2-o2ot-v3-0a32ea46
+- case-openrca2-o2ot-v3-61e4c616
+- case-openrca2-o2ot-v3-42067040
+- case-openrca2-o2ot-v3-e42952f0
+- case-openrca2-o2ot-v3-ad2d2c1c
+- case-openrca2-o2ot-v3-7aaf8d8b
+- case-openrca2-o2ot-v3-1b67e049
+- case-openrca2-o2ot-v3-21e9f1c3
+- case-openrca2-o2ot-v3-e4580e35
+- case-openrca2-o2ot-v3-7cd4b2eb
+validation: []
+sealed_eval: []
+public_compare:
+- case-openrca2-o2ot-v3-bcd963d6
+- case-openrca2-o2ot-v3-d0f67950
+- case-openrca2-o2ot-v3-1b4bf042
+- case-openrca2-o2ot-v3-83ba3833
+- case-openrca2-o2ot-v3-367c0330

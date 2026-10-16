@@ -1,0 +1,15 @@
+original_split: configs/teacher/v45-family-split-val.yaml
+split: configs/teacher/polestar43-gemma-20261013.yaml
+out_root: outputs/gemma-polestar-20261013
+recovery_expected:
+  writer_provider: codex
+  writer_model: gpt-6-astra
+  judge_provider: codex
+  judge_model: gpt-6.1-sol
+sources:
+- key: polestar
+  dataset: outputs/data-recovery-codex-sol-20261007/datasets/polestar.jsonl
+  split: configs/teacher/v45-family-split-val.yaml
+- key: polestar-new16
+  dataset: outputs/polestar16-gemma-recovery-20261013/datasets/polestar-new16.jsonl
+  split: configs/teacher/polestar43-gemma-20261013.yaml

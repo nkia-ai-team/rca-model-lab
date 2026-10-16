@@ -1,0 +1,46 @@
+# mcp-v2a2s (2단계 SFT A2): v2a1s 어댑터에서 이어서 공개 ob4d(리플레이 화면·재정당화), 같은 레시피. KT GPU1.
+name: muse-glimmer-30b-mcp-v2a2s
+model_name: /home/work/models/muse-glimmer-30b-fp8-block
+tokenizer_name: models/muse-glimmer-30b-tokenizer
+checkpoint_format: compressed_tensors_fp8_block
+model_revision: 8ed2e29141d4fef439b9a0e15e0a2678bc190a82
+model_config_sha256: 5f1476af88c0462bc448f05b36eaa4c2fae3bbe3cfafc2f281c7bf452958b8f8
+model_index_sha256: 22970c4e6b652245647b907d908147798d49e316623f43d1c611b1a12c79ba2d
+tokenizer_sha256: 399ef208c3f43075d950340f15ef628a409062e872202170620b4fb2323e68a2
+training_compute_dtype: bfloat16
+adapter_parameter_dtype: float32
+optimizer_state_dtype: float32
+dequantize_for_training: true
+dataset: data/processed/mcp-sft-pub-ob4d.jsonl
+dataset_sha256: "e06aee6c54d83197afecce7035becb49521a7ca07d9263377092d66f39d40383"
+expected_examples: 51
+expected_cases: 28
+output_dir: /home/work/models/rca-adapters/muse-glimmer-30b-mcp-v2a2s
+max_length: 52000   # 49152 window + final forced-answer turn margin; RoPE covers it
+epochs: 1
+max_steps: 77          # 1 pass over 306 sampled supervised turns / accum 4
+learning_rate: 1.0e-05
+lr_scheduler_type: cosine
+warmup_ratio: 0.05
+max_grad_norm: 1.0
+batch_size: 1
+gradient_accumulation_steps: 4
+save_total_limit: 20
+save_steps: 50
+reasoning_strength: null
+case_balanced_loss: true
+use_liger_kernel: false
+supervise_end_token: false
+sequence_mode: turns
+turns_per_episode: 6
+init_adapter: /home/work/models/rca-adapters/muse-glimmer-30b-mcp-v2a1s/adapter
+lora:
+  rank: 16
+  alpha: 32
+  dropout: 0.05
+  target_modules: '.*language_model.*(self_attn\.(q_proj|k_proj|v_proj|o_proj)|mlp\.(gate_proj|up_proj|down_proj))'   # attention qkvo + MLP; attention output gate (self_attn.gate_proj = vLLM output_gate_proj) excluded
+  freeze_a: false           # 표준 LoRA (A 도 학습)
+wandb:
+  entity: nkia-ai
+  project: rca-actor-sft
+  version: mcp-v2a2s

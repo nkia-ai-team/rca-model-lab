@@ -1,0 +1,57 @@
+# Paired recipe: original BF16 base/LoRA/schedule; corrected teacher data and final-turn emphasis.
+# Whole submit_rca-turn weight, including reasoning; not a mechanism-token span multiplier.
+name: gemma4-mechanism-v2-20261014
+model_name: /home/work/models/gemma-4-26B-A4B-it
+tokenizer_name: /home/work/models/gemma-4-26B-A4B-it-eval-tokenizer
+checkpoint_format: dense
+model_revision: 4d7ae4984b7db7de8f8457170b3f1a419ee76d52
+model_config_sha256: ed0c1eb3633de771906e9ba004a44cc5635bcc06ee2062077c3d2e88a50707d3
+model_index_sha256: 907826a6e46ff454272bd6db1fee629d5531a2303be22986d825a0871d7dc7a7
+tokenizer_sha256: 8b74c4aa2113844f4afb4e69a1cf8e0905d61d83a378a8f9a5ca8c056c33c4da
+training_compute_dtype: bfloat16
+adapter_parameter_dtype: float32
+optimizer_state_dtype: float32
+dequantize_for_training: false
+dataset: outputs/gemma-mechanism-v2-20261014/data/polestar.jsonl
+dataset_sha256: ''
+expected_examples: 84
+expected_cases: 43
+output_dir: /home/work/models/rca-adapters/gemma4-mechanism-v2-20261014
+max_length: 65536
+epochs: 1
+max_steps: -1
+learning_rate: 1.0e-05
+lr_scheduler_type: cosine
+warmup_ratio: 0.05
+max_grad_norm: 1.0
+batch_size: 1
+gradient_accumulation_steps: 4
+save_total_limit: 20
+save_steps: 50
+reasoning_strength: null
+case_balanced_loss: true
+use_liger_kernel: false
+supervise_end_token: true
+sequence_mode: turns
+lora:
+  rank: 16
+  alpha: 32
+  dropout: 0.0
+  target_modules: .*language_model.*(self_attn\.(q_proj|k_proj|v_proj|o_proj)|mlp\.(gate_proj|up_proj|down_proj))
+  freeze_a: false
+  target_parameters:
+  - experts.gate_up_proj
+  - experts.down_proj
+wandb:
+  entity: nkia-ai
+  project: rca-actor-sft
+  version: gemma4-mechanism-v2-20261014
+reasoning_loss_weight: 1.0
+source_sampling: legacy
+turn_selection_policy: legacy_random
+max_prompt_length: null
+turns_per_episode: 0
+chat_template_kwargs:
+  enable_thinking: true
+  preserve_thinking: true
+final_rca_loss_weight: 3.0

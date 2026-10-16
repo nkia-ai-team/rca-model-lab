@@ -1,0 +1,18 @@
+# Polestar-only expanded recovery for Qwen SFT.
+# Existing 52 Polestar teacher episodes are reused; only the 17 new cases are
+# added through teacher-new17-20261012 once accepted/reviewed.
+writer_provider: codex
+judge_provider: codex
+rationalize_workers: 4
+redo_provider: true
+writer_model: gpt-6-astra
+judge_model: gpt-6.1-sol
+stages:
+- name: polestar
+  split: configs/teacher/polestar-expanded-20261012.yaml
+  cases_root: /data/eval-cases
+  roots:
+  - outputs/mcp-eval/teacher-v5
+  - outputs/mcp-eval/teacher-v5-ladder
+  - outputs/mcp-eval/verify-harness-final2
+  - outputs/mcp-eval/teacher-new17-20261012

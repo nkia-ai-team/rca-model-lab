@@ -1,0 +1,47 @@
+# mcp-v1o (SFT 8차 재기동, 사용자 2026-10-02 "응 원인 확정되면 빼야하지않을까"): v1n 레시피에서 q_proj/k_proj 만 LoRA 대상에서 뺐다.
+# 근거(2026-10-02 탐침, 스크래치 parity/probe*.log): 단일 예제 과적합의 손실 폭주는 활성값·logit 포화가 아니라 attention 엔트로피 붕괴 —
+# q_proj 변화량이 가장 크게 자라며 최소 헤드 엔트로피 0.10→0.004, 폭주 순간 k/q 그래디언트 폭발. q/k 제외 효과는 probe2 결과로 확인 후 기동.
+# 나머지는 v1n 과 동일: v/o + MLP, 표준 LoRA(A 학습), lr 2e-5, 800 스텝(v8 ≈ 3회), 50 스텝 저장, 손실 급등에도 중단 안 함.
+name: muse-glimmer-30b-mcp-v1o
+model_name: /home/work/models/muse-glimmer-30b-fp8-block
+tokenizer_name: models/muse-glimmer-30b-tokenizer
+checkpoint_format: compressed_tensors_fp8_block
+model_revision: 8ed2e29141d4fef439b9a0e15e0a2678bc190a82
+model_config_sha256: 5f1476af88c0462bc448f05b36eaa4c2fae3bbe3cfafc2f281c7bf452958b8f8
+model_index_sha256: 22970c4e6b652245647b907d908147798d49e316623f43d1c611b1a12c79ba2d
+tokenizer_sha256: 399ef208c3f43075d950340f15ef628a409062e872202170620b4fb2323e68a2
+training_compute_dtype: bfloat16
+adapter_parameter_dtype: float32
+optimizer_state_dtype: float32
+dequantize_for_training: true
+dataset: data/processed/mcp-sft-v8.jsonl
+dataset_sha256: "ac933c028486288ce652d4011c902d580af557a6888221b7afb64c1665521200"
+expected_examples: 49
+expected_cases: 27
+output_dir: /home/work/models/rca-adapters/muse-glimmer-30b-mcp-v1o
+max_length: 52000   # 49152 window + final forced-answer turn margin; RoPE covers it
+epochs: 3
+max_steps: 800          # v8 1075 턴 × 3회 ≈ 806 예제/누적4 → 800 스텝
+learning_rate: 2.0e-05
+lr_scheduler_type: cosine
+warmup_ratio: 0.05
+max_grad_norm: 1.0
+batch_size: 1
+gradient_accumulation_steps: 4
+save_total_limit: 20
+save_steps: 50
+reasoning_strength: null
+case_balanced_loss: true
+use_liger_kernel: false
+supervise_end_token: false
+sequence_mode: turns
+lora:
+  rank: 16
+  alpha: 32
+  dropout: 0.05
+  target_modules: '.*language_model.*\.(v_proj|o_proj|gate_proj|up_proj|down_proj)'   # q/k excluded (attention entropy collapse); vision excluded
+  freeze_a: false           # 표준 LoRA (A 도 학습) — 과적합 시험에서 MLP 포함 경로가 회복·수렴한 설정
+wandb:
+  entity: nkia-ai
+  project: rca-actor-sft
+  version: mcp-v1o

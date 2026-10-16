@@ -1,0 +1,37 @@
+# Codex recovery; followed by the separately supervised recovered-training chain.
+# Original Claude sources remain immutable. Regenerate under explicit provider provenance.
+writer_provider: codex
+judge_provider: codex
+rationalize_workers: 4
+redo_provider: true
+writer_model: gpt-6-astra
+judge_model: gpt-6-astra
+# User authorized Codex substitution on 2026-10-07; retain the original action trajectories.
+stages:
+  - name: tt4
+    split: configs/teacher/rcaeval-tt4-split.yaml
+    cases_root: data/external/rcaeval/captures
+    roots:
+      - outputs/mcp-eval/rcae-tt4-teacher
+      - outputs/mcp-eval/rcae-tt4-teacher-ladder
+      - outputs/mcp-eval/rcae-tt4-teacher-ladder2
+  - name: ob4
+    split: configs/teacher/rcaeval-ob4-split.yaml
+    cases_root: data/external/rcaeval/captures
+    roots:
+      - outputs/mcp-eval/rcae-ob4-teacher
+      - outputs/mcp-eval/rcae-ob4-teacher-ladder
+  - name: o2
+    split: configs/teacher/openrca2-all-split.yaml
+    cases_root: data/external/openrca2/captures
+    roots:
+      - outputs/mcp-eval/o2-teacher
+      - outputs/mcp-eval/o2-teacher-ladder
+      - outputs/mcp-eval/o2-pilot-teacher
+  - name: polestar
+    split: configs/teacher/v45-family-split-val.yaml
+    cases_root: /data/eval-cases
+    roots:
+      - outputs/mcp-eval/teacher-v5
+      - outputs/mcp-eval/teacher-v5-ladder
+      - outputs/mcp-eval/verify-harness-final2
