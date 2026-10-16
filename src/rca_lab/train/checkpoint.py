@@ -135,7 +135,29 @@ def load_training_tokenizer(contract: TrainingCheckpointContract) -> Any:
     from transformers import AutoTokenizer
 
     verify_training_checkpoint(contract)
-    return AutoTokenizer.from_pretrained(contract.resolved_tokenizer_name)
+    return gemma_native_thought_template(AutoTokenizer.from_pretrained(contract.resolved_tokenizer_name))
+
+
+GEMMA_THOUGHT_RENDER = "thinking_text + '\\n<channel|>'"
+GEMMA_NATIVE_THOUGHT_RENDER = "thinking_text + '<channel|>'"
+
+
+def gemma_native_thought_template(tokenizer: Any) -> Any:
+    """Render supervised Gemma thoughts the way Gemma generates them.
+
+    Gemma emits `<|channel>thought\\n{text}<channel|>` (no newline before the close; measured on
+    raw base generations 2026-10-15). The chat template's history rendering inserts "\\n" first,
+    which taught fine-tuned models that a newline ends a thought and suppressed the native close
+    (base 0.88 -> 0.17 close probability at base exit points). Other templates are untouched;
+    NATIVE_THOUGHT_CLOSE=0 restores the template rendering for ablations.
+    """
+    template = str(getattr(tokenizer, "chat_template", "") or "")
+    if os.environ.get("NATIVE_THOUGHT_CLOSE", "1") == "0" or GEMMA_THOUGHT_RENDER not in template:
+        return tokenizer
+    if template.count(GEMMA_THOUGHT_RENDER) != 1:
+        raise ValueError("Gemma thought render site must occur exactly once in the chat template")
+    tokenizer.chat_template = template.replace(GEMMA_THOUGHT_RENDER, GEMMA_NATIVE_THOUGHT_RENDER)
+    return tokenizer
 
 
 def save_training_tokenizer_artifacts(contract: TrainingCheckpointContract, output: Path) -> str:

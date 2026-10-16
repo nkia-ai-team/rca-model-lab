@@ -357,7 +357,7 @@ def run_one(args: argparse.Namespace, case_id: str, run_dir: Path, run_index: in
             endpoint=args.endpoint,
             model=args.model,
             alias_targets=not args.no_alias,
-            guided=not args.no_guided,
+            guided=getattr(args, "guided", False) and not getattr(args, "no_guided", False),
             reasoning_guard=not args.no_reasoning_guard,
             max_turns=args.max_turns,
             max_prompt_tokens=args.max_prompt_tokens,
@@ -620,7 +620,8 @@ def main() -> None:
     parser.add_argument("--model", default="muse-glimmer-base")
     parser.add_argument("--no-alias", action="store_true", help="student sees raw UUIDs instead of T<n> handles")
     parser.add_argument("--no-reasoning-guard", action="store_true", help="pre-2026-09-29 grammar: reasoning may contain ATEM text (stop-string collision); only for parity with older runs")
-    parser.add_argument("--no-guided", action="store_true", help="do not enforce the Muse reasoning→ATEM grammar (structural tag)")
+    parser.add_argument("--guided", action="store_true", help="Muse only (legacy): enforce the Muse reasoning->ATEM grammar via xgrammar structural tag. Gemma runs must stay unguided (default).")
+    parser.add_argument("--no-guided", action="store_true", help="kept for existing commands; unguided is the default")
     parser.add_argument("--max-prompt-tokens", type=int, default=40_000, help="Soft investigation budget; 0 disables prompt-token forced submission")
     parser.add_argument("--max-output-tokens", type=int, default=4_096, help="Student per-response reasoning plus answer/tool token budget")
     parser.add_argument("--thinking-token-budget", type=int, default=None, help="Optional vLLM top-level thinking token budget; must be positive and lower than --max-output-tokens")

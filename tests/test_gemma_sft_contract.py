@@ -41,8 +41,8 @@ class GemmaWeightedTokenizer:
         return self.markers.get(text, 0)
 
     def encode(self, text, *, add_special_tokens):
-        assert text == '<|channel>thought\n' and not add_special_tokens
-        return [100, 300, 108]
+        assert not add_special_tokens
+        return {'<|channel>thought\n': [100, 300, 108], '<|channel>thought\n<channel|>': [100, 300, 108, 101]}[text]
 
     def apply_chat_template(self, messages, *, tokenize, tools, add_generation_prompt=False, **kwargs):
         prefix = [2, 105, len(messages) if add_generation_prompt else len(messages)-1, 107]
@@ -89,6 +89,34 @@ def test_gemma_no_thought_and_no_call_text_remain_full_weight():
     for calls in [0, 1, 2]:
         [example] = tokenize_turns(GemmaWeightedTokenizer(), weighted_messages(reasoning='', calls=calls), [], reasoning_weight=.25, supervise_end_token=True)
         assert set(example['token_weight']) == {1.0}
+
+
+def test_gemma_tool_turn_without_reasoning_supervises_native_empty_thought():
+    # Gemma with thinking ON emits `<|channel>thought\n<channel|>` before a call even when it skips
+    # thinking; the template renders nothing for empty reasoning, so the block is supplied.
+    for calls in [1, 2]:
+        [example] = tokenize_turns(GemmaWeightedTokenizer(), weighted_messages(reasoning='', calls=calls), [], supervise_end_token=True)
+        prompt = example['prompt_tokens']
+        assert example['input_ids'][prompt:prompt + 5] == [100, 300, 108, 101, 48]
+        assert example['labels'][prompt:prompt + 4] == [100, 300, 108, 101]
+    [text_turn] = tokenize_turns(GemmaWeightedTokenizer(), weighted_messages(reasoning='', calls=0), [], supervise_end_token=True)
+    assert 100 not in text_turn['input_ids'][text_turn['prompt_tokens']:]
+
+
+def test_gemma_native_thought_template_drops_newline_before_close(monkeypatch):
+    from rca_lab.train.checkpoint import gemma_native_thought_template
+
+    class Tok:
+        chat_template = "{{- '<|channel>thought\\n' + thinking_text + '\\n<channel|>' -}}"
+    patched = gemma_native_thought_template(Tok()).chat_template
+    assert "thinking_text + '<channel|>'" in patched and "'\\n<channel|>'" not in patched
+    monkeypatch.setenv("NATIVE_THOUGHT_CLOSE", "0")
+    assert gemma_native_thought_template(Tok()).chat_template == Tok.chat_template
+    monkeypatch.delenv("NATIVE_THOUGHT_CLOSE")
+
+    class Other:
+        chat_template = "<|start|>assistant to=self<|message|>{{ reasoning }}<|eom|>"
+    assert gemma_native_thought_template(Other()).chat_template == Other.chat_template
 
 
 def test_gemma_unknown_or_duplicate_markers_fail_closed_only_for_nonunit_weight():

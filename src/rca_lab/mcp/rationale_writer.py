@@ -6,6 +6,11 @@ consistent (9/12 measured) but 11/12 of its texts talk about "the instruction" â
 failure as with hints ("don't mention it" is not followed). Claude follows that rule, so the
 reasoning is consistent and grounded by construction; judge.py still verifies every turn.
 The output is a short engineer's scratchpad in the register the student already uses.
+
+Muse-era register (single paragraph, 40-140 words, ending with the decision). Do not use it for
+Gemma 4 data: Gemma thinks in multi-line notes of varying length and often skips thinking, and
+SFT on this register shifted Gemma off its own thought-exit behavior (2026-10-15 probes). Gemma
+data uses rationalize.py writer="gemma" (on-policy native thoughts).
 """
 
 from __future__ import annotations

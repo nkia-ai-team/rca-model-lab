@@ -67,7 +67,8 @@ def main() -> int:
     parser.add_argument("--judge-rounds", type=int, default=2, help="resample+re-judge rounds for flagged turns (0 = audit only)")
     parser.add_argument("--judge-batch", type=int, default=12)
     parser.add_argument("--rejudge", action="store_true", help="judge cached episodes even when rationalize.json already carries verdicts")
-    parser.add_argument("--writer", choices=["student", "claude", "codex"], default="student", help="who writes the reasoning: the student (vLLM, forced call), Claude, or Codex (rationale_writer.py)")
+    parser.add_argument("--writer", choices=["gemma", "student", "claude", "codex"], default="student", help="who writes the reasoning: gemma (on-policy native Gemma thoughts, accepted when the sampled calls match; use with --max-tokens 8192 --temperature 1.0), the student (Muse, vLLM forced call), Claude, or Codex (rationale_writer.py)")
+    parser.add_argument("--gemma-samples", type=int, default=4, help="gemma writer: free samples per turn")
     parser.add_argument("--writer-model", default="claude-sonnet-5")
     parser.add_argument("--redo-provider", action="store_true", help="redo cached episodes whose writer/judge provider or model stamp differs from the requested provider/model")
     parser.add_argument("--shard", default=None, help="k/n: process only episodes with index %% n == k (parallel workers)")
@@ -76,7 +77,7 @@ def main() -> int:
     args = parser.parse_args()
     catalog = json.loads(Path(args.catalog).read_text(encoding="utf-8"))
     tools = openai_tools(catalog) + openai_tools([SUBMIT_TOOL])
-    config = RationalizeConfig(endpoint=args.endpoint, model=args.model, temperature=args.temperature, max_tokens=args.max_tokens, writer=args.writer, writer_model=args.writer_model)
+    config = RationalizeConfig(endpoint=args.endpoint, model=args.model, temperature=args.temperature, max_tokens=args.max_tokens, writer=args.writer, writer_model=args.writer_model, gemma_samples=args.gemma_samples)
     judge = claude_judge(JudgeConfig(provider=args.judge_provider, model=args.judge_model, batch_size=args.judge_batch)) if args.judge else None
 
     jobs: list[tuple[Path, list[dict], str]] = []

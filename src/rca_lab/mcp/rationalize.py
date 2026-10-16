@@ -36,9 +36,11 @@ class RationalizeConfig:
     request_timeout: int = 900
     max_attempts: int = 4  # per turn: the forced call must parse back identical (context shrinks count)
     action_note: bool = True  # student writer: tell the model (live prompt only) which call the reasoning must lead to
-    writer: str = "student"  # "student" (vLLM, forced call), "claude", or "codex" (rationale_writer.py)
+    writer: str = "student"  # "gemma" (on-policy native thoughts), "student" (Muse, forced call), "claude"/"codex" (rationale_writer.py)
     writer_model: str = "claude-sonnet-5"
     reasoning_guard: bool = True  # student writer: no ATEM markup inside the reasoning (muse_grammar)
+    gemma_samples: int = 4  # gemma writer: free samples per turn (clean context, no action note, no grammar)
+    transport_retry_delays: tuple[int, ...] = (5, 15, 45)
 
 
 class RationalizeInterrupted(SessionLimitError):
@@ -63,6 +65,84 @@ def _parsed_call(reply: dict[str, Any]) -> tuple[str, dict[str, Any]] | None:
     function = calls[0]["function"]
     arguments = function.get("arguments") or "{}"
     return function["name"], (json.loads(arguments) if isinstance(arguments, str) else dict(arguments))
+
+
+def _canonical_calls(calls: list[dict[str, Any]]) -> list[tuple[str, str]]:
+    """Order-free structural identity of a turn's tool calls (name + canonical JSON arguments)."""
+    out = []
+    for call in calls:
+        function = call.get("function") or {}
+        arguments = function.get("arguments") or "{}"
+        try:
+            parsed = json.loads(arguments) if isinstance(arguments, str) else dict(arguments)
+        except (json.JSONDecodeError, TypeError, ValueError):
+            parsed = {"_unparsed": str(arguments)}
+        out.append((str(function.get("name")), json.dumps(parsed, sort_keys=True, ensure_ascii=False)))
+    return sorted(out)
+
+
+def native_thought_accepted(message: dict[str, Any]) -> bool:
+    """Gemma writer turns whose sampled calls equal the trajectory's calls: on-policy and consistent
+    by construction, so an empty thought is Gemma's own (it often skips thinking) — not a failure."""
+    return (message.get("gemma_rationale") or {}).get("match") == "exact"
+
+
+def gemma_turn(config: RationalizeConfig, out: list[dict[str, Any]], index: int, tools: list[dict[str, Any]], stats: dict[str, Any], *, seed_offset: int = 0) -> bool:
+    """Gemma native thought for assistant turn `index`, sampled under the clean inference context.
+
+    Gemma writes its own reasoning and picks its own calls; the trajectory's actions are not
+    hinted or grammar-forced. A sample whose calls equal the trajectory's calls is accepted as is
+    (match="exact"); otherwise a sample with the same tool names keeps the trajectory's arguments
+    and is left to the LLM judge for reasoning-action consistency (match="names"). No sample
+    leading to the trajectory's tools leaves the turn without reasoning (unsupervised).
+    """
+    message = out[index]
+    target = _canonical_calls(message["tool_calls"])
+    body: dict[str, Any] = {
+        "model": config.model,
+        "messages": [{key: value for key, value in m.items() if key != "gemma_rationale"} for m in _strip_prior_reasoning_wire(out[:index])],
+        "tools": tools,
+        "n": config.gemma_samples,
+        "max_tokens": config.max_tokens,
+        "temperature": config.temperature,
+        "top_p": config.top_p,
+        "top_k": config.top_k,
+        "seed": config.seed + 97 * index + seed_offset,
+        "stream": False,
+    }
+    try:
+        reply = _post_chat(config, body)  # type: ignore[arg-type]
+    except RuntimeError as exc:
+        if "maximum context length" not in str(exc):
+            raise
+        stats["overflow"] = stats.get("overflow", 0) + 1
+        return False
+    names_candidate: str | None = None
+    for choice in reply.get("choices", []):
+        if choice.get("finish_reason") == "length":
+            continue
+        sampled = choice.get("message") or {}
+        calls = sampled.get("tool_calls") or []
+        if not calls:
+            continue
+        reasoning = (sampled.get("reasoning_content") or sampled.get("reasoning") or "").strip()
+        canonical = _canonical_calls(calls)
+        if canonical == target:
+            message["reasoning_content"] = reasoning
+            message["gemma_rationale"] = {"match": "exact", "samples": len(reply.get("choices", []))}
+            stats["gemma_exact"] = stats.get("gemma_exact", 0) + 1
+            return True
+        if names_candidate is None and reasoning and [name for name, _ in canonical] == [name for name, _ in target]:
+            names_candidate = reasoning
+    if names_candidate is not None:
+        message["reasoning_content"] = names_candidate
+        message["gemma_rationale"] = {"match": "names", "samples": len(reply.get("choices", []))}
+        stats["gemma_names"] = stats.get("gemma_names", 0) + 1
+        return True
+    message.pop("reasoning_content", None)
+    message["gemma_rationale"] = {"match": "none", "samples": len(reply.get("choices", []))}
+    stats["gemma_none"] = stats.get("gemma_none", 0) + 1
+    return False
 
 
 def tool_turn_indices(messages: list[dict[str, Any]]) -> list[int]:
@@ -94,6 +174,8 @@ def rationalize_infra_failures(messages: list[dict[str, Any]], stats: dict[str, 
     failed = {int(index) for index in stats.get("failed", [])}
     for index in tool_turn_indices(messages):
         message = messages[index]
+        if native_thought_accepted(message):
+            continue
         if not (message.get("reasoning_content") or "").strip() or quota_contaminated_reasoning(message):
             failed.add(index)
     if judge_expected:
@@ -142,6 +224,8 @@ def repair_turns(config: RationalizeConfig, out: list[dict[str, Any]], indices: 
 def regenerate_turn(config: RationalizeConfig, out: list[dict[str, Any]], index: int, tools: list[dict[str, Any]], stats: dict[str, Any], *, seed_offset: int = 0) -> bool:
     """Resample the reasoning of assistant turn `index` in place (its call is forced). Returns
     whether a sample parsed back identical and non-empty; on failure the turn keeps no reasoning."""
+    if config.writer == "gemma":
+        return gemma_turn(config, out, index, tools, stats, seed_offset=seed_offset)
     message = out[index]
     name, arguments = _call_of(message)
     context = _strip_prior_reasoning_wire(out[:index])
@@ -201,14 +285,15 @@ def judge_pass(config: RationalizeConfig, out: list[dict[str, Any]], tools: list
 
     existing = stats.get("judge") if isinstance(stats.get("judge"), dict) else {}
     verdicts: dict[int, dict[str, Any]] = {int(k): v for k, v in existing.items()}
-    items = judge_items(out, only=only)
+    native = {index for index, message in enumerate(out) if native_thought_accepted(message)}
+    items = [item for item in judge_items(out, only=only) if int(item["id"]) not in native]
     try:
         judged = judge(items)
     except SessionLimitError as exc:
         raise RationalizeInterrupted(str(exc), out, stats) from exc
     for verdict in judged:
         verdicts[int(verdict["id"])] = verdict
-    missing = [index for index, message in enumerate(out) if message.get("role") == "assistant" and message.get("tool_calls") and not (message.get("reasoning_content") or "").strip() and (only is None or index in only)]
+    missing = [index for index, message in enumerate(out) if message.get("role") == "assistant" and message.get("tool_calls") and index not in native and not (message.get("reasoning_content") or "").strip() and (only is None or index in only)]
     latest = [verdicts[int(item["id"])] for item in items if int(item["id"]) in verdicts]
     history = [sorted(set(flagged(latest)) | set(missing))]  # writer failures are resampled too
     for round_index in range(rounds):
@@ -218,13 +303,13 @@ def judge_pass(config: RationalizeConfig, out: list[dict[str, Any]], tools: list
         resampled = [index for index in todo if regenerate_turn(config, out, index, tools, stats, seed_offset=1000 * (round_index + 1))]
         stats["judge_resampled"] = stats.get("judge_resampled", 0) + len(resampled)
         try:
-            judged = judge(judge_items(out, only=set(resampled)))
+            judged = judge([item for item in judge_items(out, only=set(resampled)) if not native_thought_accepted(out[int(item["id"])])])
         except SessionLimitError as exc:
             raise RationalizeInterrupted(str(exc), out, stats) from exc
         for verdict in judged:
             verdicts[int(verdict["id"])] = verdict
-        history.append(flagged([verdicts[i] for i in todo if i in verdicts]) + [i for i in todo if i not in verdicts])
-    no_reasoning = [index for index, message in enumerate(out) if message.get("role") == "assistant" and message.get("tool_calls") and not (message.get("reasoning_content") or "").strip() and (only is None or index in only)]
+        history.append(flagged([verdicts[i] for i in todo if i in verdicts and not native_thought_accepted(out[i])]) + [i for i in todo if i not in verdicts and not native_thought_accepted(out[i])])
+    no_reasoning = [index for index, message in enumerate(out) if message.get("role") == "assistant" and message.get("tool_calls") and not native_thought_accepted(message) and not (message.get("reasoning_content") or "").strip() and (only is None or index in only)]
     previous_inconsistent = {int(index) for index in stats.get("inconsistent", [])}
     if only is None:
         previous_inconsistent = set()
@@ -248,6 +333,7 @@ def rationalize_messages(config: RationalizeConfig, messages: list[dict[str, Any
     for index in indices:
         out[index].pop("reasoning_content", None)
         out[index].pop("reasoning", None)
+        out[index].pop("gemma_rationale", None)
     stats: dict[str, Any] = {"turns": 0, "regenerated": 0, "failed": [], "seconds": 0.0, "writer_provider": config.writer, "writer_model": config.writer_model}
     started = time.time()
     for ordinal, index in enumerate(indices, start=1):

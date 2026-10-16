@@ -1,13 +1,20 @@
-"""LoRA SFT on rca-mcp agent episodes (student message format, native Muse tool channels).
+"""LoRA SFT on rca-mcp agent episodes (student message format).
 
 Dataset rows (JSONL, produced by scripts/mcp_export_sft.py):
   {"case_id", "run", "source", "messages": [...], "tools": [...]}
 `messages` is exactly what the student saw and emitted (system, user seed, assistant with
-reasoning_content + tool_calls, tool results, final submit_rca). The tokenizer chat template
-renders reasoning as `<|start|>assistant to=self<|message|>…<|eom|>` and every call as an ATEM
-block, i.e. the same wire format the guided rollout grammar enforces. Loss is taken only on
-assistant tokens; the closing end-of-message token of each assistant span is excluded because
-the template writes `<|eot|>` before a tool result while rollouts are forced to `<|eom|>`.
+reasoning_content + tool_calls, tool results, final submit_rca). Loss is taken only on assistant
+tokens of the current turn; earlier reasoning is stripped exactly as at rollout time.
+
+Gemma 4 (primary since 2026-10): the supervised turn is rendered in Gemma's generation format,
+`<|channel>thought\\n{text}<channel|><|tool_call>…<tool_call|>` — no newline before the thought
+close (checkpoint.gemma_native_thought_template) and an explicit empty thought block when a turn
+has no reasoning (_gemma_empty_thought). The template's synthetic `<|tool_response>` opener is
+environment output and is never supervised.
+
+Muse (legacy, no longer trained): its template renders reasoning as
+`<|start|>assistant to=self<|message|>…<|eom|>` with ATEM call blocks; the closing end-of-message
+token is excluded because the template writes `<|eot|>` while rollouts are forced to `<|eom|>`.
 """
 
 from __future__ import annotations
@@ -265,6 +272,28 @@ def _strip_prior_reasoning(messages: list[dict[str, Any]]) -> list[dict[str, Any
     return rolling_view(messages)
 
 
+GEMMA_EMPTY_THOUGHT = "<|channel>thought\n<channel|>"
+
+
+def _gemma_empty_thought(tokenizer: Any, full: list[int], start: int) -> list[int]:
+    """Supervise Gemma's empty thought block for a tool turn without reasoning.
+
+    With thinking ON, Gemma that skips thinking still generates `<|channel>thought\\n<channel|>`
+    before `<|tool_call>` (raw base generations, 2026-10-15); the chat template renders nothing
+    for empty reasoning, which would teach a no-channel action the server never sees. Non-Gemma
+    templates and turns that already render a channel are returned unchanged.
+    """
+    if GEMMA_EMPTY_THOUGHT.split("\n")[0] not in str(getattr(tokenizer, "chat_template", "") or ""):
+        return full
+    channel = tokenizer.convert_tokens_to_ids("<|channel>")
+    if channel in full[start:]:
+        return full
+    block = list(tokenizer.encode(GEMMA_EMPTY_THOUGHT, add_special_tokens=False))
+    if not block or block[0] != channel:
+        raise ValueError("Gemma empty thought block does not tokenize to a channel marker")
+    return full[:start] + block + full[start:]
+
+
 def _gemma_reasoning_body(tokenizer: Any, suffix: list[int], message: dict[str, Any]) -> tuple[int, int] | None:
     """Resolve Gemma's rendered thought body; never use Muse IDs on this template.
 
@@ -296,9 +325,10 @@ def _gemma_reasoning_body(tokenizer: Any, suffix: list[int], message: dict[str, 
             raise ValueError("Gemma thought body has invalid action boundaries")
         action = suffix[body_end + 1:]
     else:
-        if channel in suffix or channel_end in suffix:
+        empty = list(tokenizer.encode(GEMMA_EMPTY_THOUGHT, add_special_tokens=False))
+        action = suffix[len(empty):] if suffix[: len(empty)] == empty else suffix
+        if channel in action or channel_end in action:
             raise ValueError("Gemma rendered thought channel has no source reasoning")
-        action = suffix
     if calls:
         boundaries = [token for token in action if token in (call, call_end)]
         if not action or action[0] != call or boundaries != [call, call_end] * len(calls) or action[-1] != call_end:
@@ -351,6 +381,8 @@ def tokenize_turns(
             response_id = tokenizer.convert_tokens_to_ids("<|tool_response>")
             if response_id is not None and response_id != getattr(tokenizer, "unk_token_id", None) and full[-1:] == [response_id]:
                 full = full[:-1]
+        if message.get("tool_calls") and not (message.get("reasoning") or message.get("reasoning_content")):
+            full = _gemma_empty_thought(tokenizer, full, len(prompt))
         if full[: len(prompt)] != prompt or len(full) <= len(prompt):
             raise ValueError(f"generation prompt is not a prefix of the rendered assistant turn {index}")
         end = len(full) if supervise_end_token else len(full) - 1
@@ -656,6 +688,11 @@ def train(config_path: Path, *, resume_from_checkpoint: Path | None = None) -> N
         remove_unused_columns=False,
     )
     trainer = WeightedTrainer(model=model, args=arguments, train_dataset=EpisodeDataset(), data_collator=collate, optimizers=(optimizer, None))
+    if os.environ.get("THOUGHT_EXIT_PROBES"):
+        # Per-save thought-exit regression gate (see thought_exit_gate.py); step 0 measures the base.
+        from rca_lab.train.thought_exit_gate import make_callback
+
+        trainer.add_callback(make_callback(Path(os.environ["THOUGHT_EXIT_PROBES"]), Path(config.output_dir) / "thought-exit-gate.jsonl", int(os.environ.get("THOUGHT_EXIT_PER_SET", "30")), torch))
     trainer.train(resume_from_checkpoint=str(resume_from_checkpoint) if resume_from_checkpoint else None)
     adapter_dir = Path(config.output_dir) / "adapter"
     trainer.save_model(str(adapter_dir))

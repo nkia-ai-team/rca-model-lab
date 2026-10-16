@@ -37,7 +37,7 @@ class StudentConfig:
     endpoint: str
     model: str
     alias_targets: bool = True
-    guided: bool = True  # enforce Muse reasoning→ATEM grammar via xgrammar structural tag
+    guided: bool = False  # Muse only (legacy): enforce reasoning→ATEM grammar via xgrammar structural tag; Gemma runs unguided
     reasoning_guard: bool = True  # no ATEM markup inside the reasoning channel (muse_grammar.REASONING_EXCLUDES)
     max_turns: int = 40
     max_calls_per_turn: int = 4
