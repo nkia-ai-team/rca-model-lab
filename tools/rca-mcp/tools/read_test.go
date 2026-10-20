@@ -57,6 +57,34 @@ func TestDownsampleBuckets(t *testing.T) {
 	}
 }
 
+func TestDownsampleBucketsUsesActualSampleInterval(t *testing.T) {
+	start := time.Date(2026, 7, 27, 6, 0, 0, 0, time.UTC)
+	every := func(n int, d time.Duration) []time.Time {
+		out := make([]time.Time, n)
+		for i := range out {
+			out[i] = start.Add(time.Duration(i) * d)
+		}
+		return out
+	}
+	// 60s 수집 지표 — 30s step 조회에도 점 간격은 60s다.
+	if _, _, sec := downsampleBuckets(every(30, time.Minute), flat(30, 1), 40, false); sec != 60 {
+		t.Fatalf("60s 시계열 라벨 %ds, want 60", sec)
+	}
+	// 120점 → 40버킷 병합이면 3점 × 60s = 180s.
+	if _, _, sec := downsampleBuckets(every(120, time.Minute), flat(120, 1), 40, false); sec != 180 {
+		t.Fatalf("60s 시계열 병합 라벨 %ds, want 180", sec)
+	}
+	// 중간 결측이 있어도 최소 간격(수집 주기)을 쓴다.
+	gappy := append(every(5, time.Minute), start.Add(10*time.Minute), start.Add(11*time.Minute))
+	if got := sampleStep(gappy); got != time.Minute {
+		t.Fatalf("결측 시계열 간격 %v, want 1m", got)
+	}
+	// 점이 하나뿐이면 조회 step(30s)으로 둔다.
+	if got := sampleStep(every(1, time.Minute)); got != scanStep {
+		t.Fatalf("단일 점 간격 %v, want %v", got, scanStep)
+	}
+}
+
 func TestDetectOnset(t *testing.T) {
 	start := time.Date(2026, 7, 27, 6, 0, 0, 0, time.UTC)
 	base := flat(60, 10)

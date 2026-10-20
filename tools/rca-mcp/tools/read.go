@@ -371,11 +371,29 @@ func detectOnset(times []time.Time, values []float64, baseVals []float64, expect
 
 // ── 다운샘플 (§6.2) ──
 
+// sampleStep은 시계열의 실제 샘플 간격이다 — 연속 시각 차 중 가장 작은 양수.
+// 조회는 avg_over_time[30s]·step 30s 이지만 수집 주기가 그보다 긴 지표(예: 60s)는
+// 샘플 없는 칸이 빠져 반환 점 간격이 수집 주기가 된다. 버킷 폭 라벨을 30s로 고정하면
+// 그런 시계열을 실제의 절반 폭으로 보고해 시각 계산이 틀어진다.
+func sampleStep(times []time.Time) time.Duration {
+	var step time.Duration
+	for i := 1; i < len(times); i++ {
+		if d := times[i].Sub(times[i-1]); d > 0 && (step == 0 || d < step) {
+			step = d
+		}
+	}
+	if step == 0 {
+		return scanStep
+	}
+	return step
+}
+
 // downsampleBuckets는 cap 초과 버킷을 균등 병합한다 — gauge는 avg,
-// counter(increase)는 합. 반환 bucketSec = 병합 후 버킷 폭.
+// counter(increase)는 합. 반환 bucketSec = 병합 후 버킷 폭(실제 샘플 간격 기준).
 func downsampleBuckets(times []time.Time, values []float64, cap int, sum bool) ([]time.Time, []float64, int) {
+	step := int(sampleStep(times).Seconds())
 	if len(values) <= cap {
-		return times, values, int(scanStep.Seconds())
+		return times, values, step
 	}
 	g := (len(values) + cap - 1) / cap
 	var outT []time.Time
@@ -395,7 +413,7 @@ func downsampleBuckets(times []time.Time, values []float64, cap int, sum bool) (
 		outT = append(outT, times[i])
 		outV = append(outV, total)
 	}
-	return outT, outV, g * int(scanStep.Seconds())
+	return outT, outV, g * step
 }
 
 // ── 봉투 조립 ──
