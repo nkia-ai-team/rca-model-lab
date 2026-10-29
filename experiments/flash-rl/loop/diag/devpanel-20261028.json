@@ -1,0 +1,150 @@
+{
+ "created": "2026-10-28",
+ "rule": "public-train cases never in any SFT jsonl (data/processed) nor any RL rollout (outputs/**/rollouts, loop.log); openrca2: one case per scenario title whose every case is unexposed (stratified o2ts 9 / o2hs 6 / o2ot 1 like public_compare); RCAEval: no fully-unexposed titles exist, so 4 unexposed cases per family with distinct titles (case-unseen, scenario-seen). Frozen; excluded from RL sampling from now on. Development selection panel, not an independent generalization test.",
+ "cases": [
+  {
+   "case": "case-openrca2-o2ts-v3-6eca36f9",
+   "family": "openrca2",
+   "title": "ts-travel-plan-service HTTPResponseReplaceBody",
+   "scenario_unseen": true
+  },
+  {
+   "case": "case-openrca2-o2ts-v3-3463aca6",
+   "family": "openrca2",
+   "title": "ts-train-service JVMException",
+   "scenario_unseen": true
+  },
+  {
+   "case": "case-openrca2-o2ts-v3-10c030d6",
+   "family": "openrca2",
+   "title": "ts-travel-service NetworkDelay",
+   "scenario_unseen": true
+  },
+  {
+   "case": "case-openrca2-o2ts-v3-27bb1f93",
+   "family": "openrca2",
+   "title": "ts-travel2-service ContainerKill",
+   "scenario_unseen": true
+  },
+  {
+   "case": "case-openrca2-o2ts-v3-c753a009",
+   "family": "openrca2",
+   "title": "ts-train-service PodFailure",
+   "scenario_unseen": true
+  },
+  {
+   "case": "case-openrca2-o2ts-v3-6b41287d",
+   "family": "openrca2",
+   "title": "ts-admin-user-service JVMLatency",
+   "scenario_unseen": true
+  },
+  {
+   "case": "case-openrca2-o2ts-v3-6782a1f4",
+   "family": "openrca2",
+   "title": "ts-travel-service NetworkBandwidth",
+   "scenario_unseen": true
+  },
+  {
+   "case": "case-openrca2-o2ts-v3-5094a021",
+   "family": "openrca2",
+   "title": "ts-inside-payment-service JVMReturn",
+   "scenario_unseen": true
+  },
+  {
+   "case": "case-openrca2-o2ts-v3-e8961f63",
+   "family": "openrca2",
+   "title": "ts-admin-route-service JVMLatency + ts-route-service NetworkPartition",
+   "scenario_unseen": true
+  },
+  {
+   "case": "case-openrca2-o2hs-v3-e09a153b",
+   "family": "openrca2",
+   "title": "frontend NetworkDelay",
+   "scenario_unseen": true
+  },
+  {
+   "case": "case-openrca2-o2hs-v3-a2adb854",
+   "family": "openrca2",
+   "title": "frontend NetworkPartition",
+   "scenario_unseen": true
+  },
+  {
+   "case": "case-openrca2-o2hs-v3-1fb8bd0f",
+   "family": "openrca2",
+   "title": "rate PodFailure + reservation MemoryStress",
+   "scenario_unseen": true
+  },
+  {
+   "case": "case-openrca2-o2hs-v3-cfdf08c6",
+   "family": "openrca2",
+   "title": "search NetworkDelay + recommendation PodFailure",
+   "scenario_unseen": true
+  },
+  {
+   "case": "case-openrca2-o2hs-v3-9a9ca14f",
+   "family": "openrca2",
+   "title": "geo CPUStress",
+   "scenario_unseen": true
+  },
+  {
+   "case": "case-openrca2-o2hs-v3-db56ba61",
+   "family": "openrca2",
+   "title": "reservation MemoryStress",
+   "scenario_unseen": true
+  },
+  {
+   "case": "case-openrca2-o2ot-v3-033769dc",
+   "family": "openrca2",
+   "title": "checkout NetworkCorrupt",
+   "scenario_unseen": true
+  },
+  {
+   "case": "case-rcaeval-tt4-v3-7c0c3826",
+   "family": "tt4",
+   "title": "ts-travel-service packet loss",
+   "scenario_unseen": false
+  },
+  {
+   "case": "case-rcaeval-tt4-v3-e84d9651",
+   "family": "tt4",
+   "title": "ts-auth-service packet loss",
+   "scenario_unseen": false
+  },
+  {
+   "case": "case-rcaeval-tt4-v3-e5c36cf6",
+   "family": "tt4",
+   "title": "ts-travel-service network delay",
+   "scenario_unseen": false
+  },
+  {
+   "case": "case-rcaeval-tt4-v3-a328352b",
+   "family": "tt4",
+   "title": "ts-train-service socket stress",
+   "scenario_unseen": false
+  },
+  {
+   "case": "case-rcaeval-ob4-v3-419afedd",
+   "family": "ob4",
+   "title": "productcatalogservice packet loss",
+   "scenario_unseen": false
+  },
+  {
+   "case": "case-rcaeval-ob4-v3-8ce07b8a",
+   "family": "ob4",
+   "title": "currencyservice disk stress",
+   "scenario_unseen": false
+  },
+  {
+   "case": "case-rcaeval-ob4-v3-eb4e1778",
+   "family": "ob4",
+   "title": "emailservice CPU hog",
+   "scenario_unseen": false
+  },
+  {
+   "case": "case-rcaeval-ob4-v3-ee2a86bf",
+   "family": "ob4",
+   "title": "currencyservice socket stress",
+   "scenario_unseen": false
+  }
+ ]
+}

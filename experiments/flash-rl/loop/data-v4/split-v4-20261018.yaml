@@ -1,0 +1,101 @@
+name: validation-ten-split-20261018
+family_overlap_allowed_by: lucida-next-rca-rlm docs/rca-family-split.md — 학습 가족(26)·봉인(9) 표 그대로. 동형 기전을 가족 안에서 갈라 근거리 전이를 측정하는 설계(전이쌍 1~6). validation 4건(f01-r·f05-h·f06-p·f06-r)은 학습 26건에서 뗀 에폭 선택용 홀드아웃 — 전이쌍 출발 케이스 아님, 각 기전은 학습에 형제(f06-h DB잠금, f05-r 재시작루프, f01-h 외부429, f19-s 외부지연)가 남음.
+teacher: codex
+accepted_trajectories_per_case: 2
+max_attempts_per_case: 5
+max_turns: 60
+train:
+- case-f01-h-v3-48ec8e62
+- case-f01-p-v3-d691440c
+- case-f01-p-v3-20bfac59
+- case-f03-h-v3-d4192a3b
+- case-f04-r-v3-c508c52d
+- case-f05-p-v3-6fe331ef
+- case-f05-r-v3-527f3692
+- case-f06-h-v3-e43298a2
+- case-f07-h-v3-7de1a36f
+- case-f07-h-v3-4ab16f7a
+- case-f09-h-v3-0c795f2b
+- case-f09-p-v3-6dae1c0b
+- case-f10-h-v3-4fe69be0
+- case-f11-r-v3-85b9a489
+- case-f11-r-v3-6366db31
+- case-f14-p-v3-0bdb303b
+- case-f15-g-v3-ce2e64de
+- case-f15-g-v3-fbe95718
+- case-f16-h-v3-2f0555c7
+- case-f16-h-v3-f069f7c9
+- case-f17-r-v3-ab7228ad
+- case-f18-p-v3-d2c566ad
+- case-f19-p-v3-5a350c0a
+- case-f19-s-v3-5daa9c97
+- case-f20-r-v3-caf04820
+- case-f23-r-v3-04981a78
+- case-f25-h-v3-dc3d4fc8
+- case-f17-h-v3-632a04d1
+- case-f30-r-v3-0cd9193b
+- case-f32-h-v3-531094f2
+- case-f32-r-v3-63b10537
+- case-f33-p-v3-e79a2db0
+- case-f33-r-v3-73fed92a
+- case-f35-r-v3-bbbee443
+- case-f36-r-v3-776b522b
+- case-f37-r-v3-43c16731
+- case-f38-r-v3-54918c10
+- case-f39-r-v3-dc45499a
+- case-f41-r-v3-f37b1984
+- case-f42-r-v3-26143861
+- case-f43-r-v3-aecd7e38
+- case-f44-p-v3-4ee5c786
+- case-f44-r-v3-f7f70c65
+- case-f32-p-v3-58d43138
+- case-f40-h-v3-b472a2f0
+- case-f48-p-v3-3667031d
+- case-f49-h-v3-b873cb3e
+- case-f50-r-v3-75ae96d0
+- case-f51-r-v3-0c3126f0
+- case-f53-r-v3-d0f23131
+- case-f54-r-v3-31a93bbe
+- case-f49-p-v3-0a4fe786
+- case-f55-r-v3-ba950165
+- case-f56-r-v3-24b89933
+- case-f51-h-v3-c093a2ed
+- case-f57-r-v3-419736f6
+- case-f23-p-v3-339d153c
+- case-f58-r-v3-4568fd65
+- case-f59-r-v3-cdc14d3d
+sealed_eval:
+- case-f04-h-v3-af25dea6
+- case-f08-g-v3-0ac275b0
+- case-f08-h-v3-6bdc9531
+- case-f08-p-v3-78f4a1ba
+- case-f08-p-v3-ad967f62
+- case-f12-h-v3-8c1cf9f8
+- case-f15-h-v3-2ba8a6dc
+- case-f15-p-v3-3843c3fe
+- case-f15-t1-v3-9a5c5eae
+- case-f17-p-v3-bce52242
+- case-f17-p-v3-8adc39ba
+- case-f17-p-v3-e68c5992
+excluded:
+- case-f15-r-v3-82e0537f
+validation_pending_golden: []
+validation:
+- case-f01-r-v3-34274f3e
+- case-f05-h-v3-36a247f1
+- case-f06-p-v3-100785c9
+- case-f06-r-v3-6ace8a7d
+- case-f48-r-v3-574963e1
+- case-f49-r-v3-1af8dad9
+- case-f53-p-v3-b029727d
+- case-f33-h-v3-f19ed3f1
+- case-f35-h-v3-a1206bfd
+- case-f43-p-v3-e132f196
+training_quarantine:
+  case-f40-r-v3-50e3ecb9: 'User-approved exclusion 2026-10-13: source capture lacks required discount/zero-quote evidence. Original captures and golden retained.'
+  case-f52-r-v3-13501208: 'Orchestrator exclusion 2026-10-15 (f40-r precedent): metadata''s decisive node evidence (ctr images rm / containerd ImageDelete on tb-w2) is absent from the captured syslog (0 records; session gap suggests loss). Golden retained.'
+derived_from:
+  path: /home/swlee/projects/rca-model-lab-mcp/outputs/flash-rl-loop-20261015/data-v3/split-v3-20261015.yaml
+  sha256: dfb7c872dd1f1810eba04e9f8356a3ca2d7770c1ac03980ba52568bdbd60598a
+v3_note: '2026-10-15 user-approved (validation +4 / rest to train): 12 unassigned Polestar captures from 2026-10-12..15. f52-r quarantined (decisive node-side evidence absent from capture, f40-r precedent). f48-p and f49-h go to train so the existing validation cases f48-r/f49-r keep a train sibling. Validation +4 by seeded random 20261015: one of the new f53 pair + three of f32-p/f33-h/f35-h/f43-p (each keeps train siblings). Train +7. Sealed 12 unchanged.'
+v4_note: '2026-10-18 user-approved: nine Polestar captures of 2026-10-15..18 verified (fault applied in the injection phase, load continuous, decisive evidence present) and all added to train ("전부 학습에"). f59-r root = the notify-delivery-backfill Job (user). Validation 10 and sealed 12 unchanged.'

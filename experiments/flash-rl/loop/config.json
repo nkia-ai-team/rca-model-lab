@@ -1,0 +1,714 @@
+{
+  "kt": {
+    "key": "/home/swlee/projects/kt-key/id_container (3)",
+    "port": 10560,
+    "host": "work@proxy2.ainexus.ktcloud.com"
+  },
+  "remote_work": "/home/work/flash-rl-loop-20261015",
+  "runtime": "/home/work/flash-rl-quant-probe-20261014/general-update-fast4-20261015",
+  "train_python": "/home/work/models/qwen-flash-next-mtp4-runtime-20261014/venv/bin/python",
+  "checkpoint": "/home/work/models/qwen-flash-next-w4a16-autoround-4c67bf68",
+  "preparation": "/home/work/flash-rl-quant-probe-20261014/preparation.json",
+  "split_source": "/home/work/flash-rl-quant-probe-20261014/validation-six-split.yaml",
+  "adapter_root": "/home/work/models/rca-adapters/flash-rl-loop-20261015",
+  "lora_root": "/home/work/models/rca-adapters-vllm/flash-rl-loop-20261015",
+  "exporter": "/home/work/flash-rl-quant-probe-20261014/lora-export-20261015/export_vllm_lora.py",
+  "servers": [
+    {
+      "gpu": 0,
+      "port": 18241
+    },
+    {
+      "gpu": 1,
+      "port": 18242
+    }
+  ],
+  "serve_marker": "qwen-flash-next-int4 --host",
+  "serve_command": "CUDA_VISIBLE_DEVICES={gpu} HF_HUB_OFFLINE=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 exec /home/work/models/qwen-flash-next-mtp4-runtime-20261014/venv/bin/vllm serve /home/work/models/qwen-flash-next-w4a16-autoround-4c67bf68 --served-model-name qwen-flash-next-int4 --host 127.0.0.1 --port {port} --max-model-len 131072 --tensor-parallel-size 1 --gpu-memory-utilization 0.85 --max-num-seqs 6 --max-num-batched-tokens 8192 --enable-prefix-caching --language-model-only --enable-auto-tool-choice --tool-call-parser qwen3_coder --reasoning-parser qwen3 --speculative-config '{{\"method\":\"mtp\",\"num_speculative_tokens\":4}}' --moe-backend marlin --engram-config '{{\"cpu_offload\":true}}' --generation-config vllm --default-chat-template-kwargs '{{\"enable_thinking\":true}}' --gdn-prefill-backend triton --enable-lora --max-lora-rank 16 --max-loras 1 {lora} > {log} 2>&1",
+  "base_model_name": "qwen-flash-next-int4",
+  "lora_name": "policy",
+  "judge": {
+    "provider": "claude",
+    "model": "claude-opus-5-5",
+    "rubric": "v3",
+    "depth_rubric": "rca-causal-depth-v2",
+    "rubric_note": "2026-10-21 user: mechanism rubric v3 defines the trigger (load is a condition; an unobserved initiator is not required); depth rubric v2 drops load from the trigger link. Verdicts in mechanism_judge.v3.json / causal_depth...v2.json beside the old files."
+  },
+  "group_size": 4,
+  "groups_per_update": 3,
+  "avoid_recent_updates": 3,
+  "learning_rate": 0.0001,
+  "eval_every": 3,
+  "eval": {
+    "tracks": {
+      "validation10": {
+        "runs": 1,
+        "items": [
+          {
+            "case": "case-f01-r-v3-34274f3e",
+            "cases_root": "/data/eval-cases",
+            "contract": "configs/eval/train-family-v4-expanded-20261018.yaml",
+            "split": "/home/swlee/projects/rca-model-lab-mcp/outputs/flash-rl-loop-20261015/data-v3/split-v3-20261015.yaml"
+          },
+          {
+            "case": "case-f05-h-v3-36a247f1",
+            "cases_root": "/data/eval-cases",
+            "contract": "configs/eval/train-family-v4-expanded-20261018.yaml",
+            "split": "/home/swlee/projects/rca-model-lab-mcp/outputs/flash-rl-loop-20261015/data-v3/split-v3-20261015.yaml"
+          },
+          {
+            "case": "case-f06-p-v3-100785c9",
+            "cases_root": "/data/eval-cases",
+            "contract": "configs/eval/train-family-v4-expanded-20261018.yaml",
+            "split": "/home/swlee/projects/rca-model-lab-mcp/outputs/flash-rl-loop-20261015/data-v3/split-v3-20261015.yaml"
+          },
+          {
+            "case": "case-f06-r-v3-6ace8a7d",
+            "cases_root": "/data/eval-cases",
+            "contract": "configs/eval/train-family-v4-expanded-20261018.yaml",
+            "split": "/home/swlee/projects/rca-model-lab-mcp/outputs/flash-rl-loop-20261015/data-v3/split-v3-20261015.yaml"
+          },
+          {
+            "case": "case-f48-r-v3-574963e1",
+            "cases_root": "/data/eval-cases",
+            "contract": "configs/eval/train-family-v4-expanded-20261018.yaml",
+            "split": "/home/swlee/projects/rca-model-lab-mcp/outputs/flash-rl-loop-20261015/data-v3/split-v3-20261015.yaml"
+          },
+          {
+            "case": "case-f49-r-v3-1af8dad9",
+            "cases_root": "/data/eval-cases",
+            "contract": "configs/eval/train-family-v4-expanded-20261018.yaml",
+            "split": "/home/swlee/projects/rca-model-lab-mcp/outputs/flash-rl-loop-20261015/data-v3/split-v3-20261015.yaml"
+          },
+          {
+            "case": "case-f53-p-v3-b029727d",
+            "cases_root": "/data/eval-cases",
+            "contract": "configs/eval/train-family-v4-expanded-20261018.yaml",
+            "split": "/home/swlee/projects/rca-model-lab-mcp/outputs/flash-rl-loop-20261015/data-v3/split-v3-20261015.yaml"
+          },
+          {
+            "case": "case-f33-h-v3-f19ed3f1",
+            "cases_root": "/data/eval-cases",
+            "contract": "configs/eval/train-family-v4-expanded-20261018.yaml",
+            "split": "/home/swlee/projects/rca-model-lab-mcp/outputs/flash-rl-loop-20261015/data-v3/split-v3-20261015.yaml"
+          },
+          {
+            "case": "case-f35-h-v3-a1206bfd",
+            "cases_root": "/data/eval-cases",
+            "contract": "configs/eval/train-family-v4-expanded-20261018.yaml",
+            "split": "/home/swlee/projects/rca-model-lab-mcp/outputs/flash-rl-loop-20261015/data-v3/split-v3-20261015.yaml"
+          },
+          {
+            "case": "case-f43-p-v3-e132f196",
+            "cases_root": "/data/eval-cases",
+            "contract": "configs/eval/train-family-v4-expanded-20261018.yaml",
+            "split": "/home/swlee/projects/rca-model-lab-mcp/outputs/flash-rl-loop-20261015/data-v3/split-v3-20261015.yaml"
+          }
+        ]
+      },
+      "new13": {
+        "runs": 1,
+        "items": [
+          {
+            "case": "case-f60-h-v3-1aece1d2",
+            "cases_root": "/data/eval-cases",
+            "contract": "configs/eval/train-family-v5-expanded-20261023.yaml",
+            "split": "/home/swlee/projects/rca-model-lab-mcp/outputs/flash-rl-loop-20261015/data-v5/split-v5-20261023.yaml"
+          },
+          {
+            "case": "case-f60-p-v3-04d37516",
+            "cases_root": "/data/eval-cases",
+            "contract": "configs/eval/train-family-v5-expanded-20261023.yaml",
+            "split": "/home/swlee/projects/rca-model-lab-mcp/outputs/flash-rl-loop-20261015/data-v5/split-v5-20261023.yaml"
+          },
+          {
+            "case": "case-f60-r-v3-22036218",
+            "cases_root": "/data/eval-cases",
+            "contract": "configs/eval/train-family-v5-expanded-20261023.yaml",
+            "split": "/home/swlee/projects/rca-model-lab-mcp/outputs/flash-rl-loop-20261015/data-v5/split-v5-20261023.yaml"
+          },
+          {
+            "case": "case-f63-p-v3-ddf34faa",
+            "cases_root": "/data/eval-cases",
+            "contract": "configs/eval/train-family-v5-expanded-20261023.yaml",
+            "split": "/home/swlee/projects/rca-model-lab-mcp/outputs/flash-rl-loop-20261015/data-v5/split-v5-20261023.yaml"
+          },
+          {
+            "case": "case-f64-p-v3-7b180ead",
+            "cases_root": "/data/eval-cases",
+            "contract": "configs/eval/train-family-v5-expanded-20261023.yaml",
+            "split": "/home/swlee/projects/rca-model-lab-mcp/outputs/flash-rl-loop-20261015/data-v5/split-v5-20261023.yaml"
+          },
+          {
+            "case": "case-f64-r-v3-9014da8a",
+            "cases_root": "/data/eval-cases",
+            "contract": "configs/eval/train-family-v5-expanded-20261023.yaml",
+            "split": "/home/swlee/projects/rca-model-lab-mcp/outputs/flash-rl-loop-20261015/data-v5/split-v5-20261023.yaml"
+          },
+          {
+            "case": "case-f65-r-v3-b5383723",
+            "cases_root": "/data/eval-cases",
+            "contract": "configs/eval/train-family-v5-expanded-20261023.yaml",
+            "split": "/home/swlee/projects/rca-model-lab-mcp/outputs/flash-rl-loop-20261015/data-v5/split-v5-20261023.yaml"
+          },
+          {
+            "case": "case-f66-p-v3-a79bda26",
+            "cases_root": "/data/eval-cases",
+            "contract": "configs/eval/train-family-v5-expanded-20261023.yaml",
+            "split": "/home/swlee/projects/rca-model-lab-mcp/outputs/flash-rl-loop-20261015/data-v5/split-v5-20261023.yaml"
+          },
+          {
+            "case": "case-f66-r-v3-346c6170",
+            "cases_root": "/data/eval-cases",
+            "contract": "configs/eval/train-family-v5-expanded-20261023.yaml",
+            "split": "/home/swlee/projects/rca-model-lab-mcp/outputs/flash-rl-loop-20261015/data-v5/split-v5-20261023.yaml"
+          },
+          {
+            "case": "case-f67-h-v3-53919475",
+            "cases_root": "/data/eval-cases",
+            "contract": "configs/eval/train-family-v5-expanded-20261023.yaml",
+            "split": "/home/swlee/projects/rca-model-lab-mcp/outputs/flash-rl-loop-20261015/data-v5/split-v5-20261023.yaml"
+          },
+          {
+            "case": "case-f67-r-v3-654a133c",
+            "cases_root": "/data/eval-cases",
+            "contract": "configs/eval/train-family-v5-expanded-20261023.yaml",
+            "split": "/home/swlee/projects/rca-model-lab-mcp/outputs/flash-rl-loop-20261015/data-v5/split-v5-20261023.yaml"
+          },
+          {
+            "case": "case-f68-r-v3-3f6561ef",
+            "cases_root": "/data/eval-cases",
+            "contract": "configs/eval/train-family-v5-expanded-20261023.yaml",
+            "split": "/home/swlee/projects/rca-model-lab-mcp/outputs/flash-rl-loop-20261015/data-v5/split-v5-20261023.yaml"
+          },
+          {
+            "case": "case-f69-r-v3-ca74a36b",
+            "cases_root": "/data/eval-cases",
+            "contract": "configs/eval/train-family-v5-expanded-20261023.yaml",
+            "split": "/home/swlee/projects/rca-model-lab-mcp/outputs/flash-rl-loop-20261015/data-v5/split-v5-20261023.yaml"
+          }
+        ]
+      },
+      "dev24": {
+        "runs": 1,
+        "items": [
+          {
+            "case": "case-openrca2-o2ts-v3-6eca36f9",
+            "cases_root": "/home/swlee/projects/rca-model-lab-mcp/data/external/openrca2/captures",
+            "contract": "configs/eval/openrca2-o2ts.yaml",
+            "split": "/home/swlee/projects/rca-model-lab-mcp/configs/teacher/openrca2-all-split.yaml"
+          },
+          {
+            "case": "case-openrca2-o2ts-v3-3463aca6",
+            "cases_root": "/home/swlee/projects/rca-model-lab-mcp/data/external/openrca2/captures",
+            "contract": "configs/eval/openrca2-o2ts.yaml",
+            "split": "/home/swlee/projects/rca-model-lab-mcp/configs/teacher/openrca2-all-split.yaml"
+          },
+          {
+            "case": "case-openrca2-o2ts-v3-10c030d6",
+            "cases_root": "/home/swlee/projects/rca-model-lab-mcp/data/external/openrca2/captures",
+            "contract": "configs/eval/openrca2-o2ts.yaml",
+            "split": "/home/swlee/projects/rca-model-lab-mcp/configs/teacher/openrca2-all-split.yaml"
+          },
+          {
+            "case": "case-openrca2-o2ts-v3-27bb1f93",
+            "cases_root": "/home/swlee/projects/rca-model-lab-mcp/data/external/openrca2/captures",
+            "contract": "configs/eval/openrca2-o2ts.yaml",
+            "split": "/home/swlee/projects/rca-model-lab-mcp/configs/teacher/openrca2-all-split.yaml"
+          },
+          {
+            "case": "case-openrca2-o2ts-v3-c753a009",
+            "cases_root": "/home/swlee/projects/rca-model-lab-mcp/data/external/openrca2/captures",
+            "contract": "configs/eval/openrca2-o2ts.yaml",
+            "split": "/home/swlee/projects/rca-model-lab-mcp/configs/teacher/openrca2-all-split.yaml"
+          },
+          {
+            "case": "case-openrca2-o2ts-v3-6b41287d",
+            "cases_root": "/home/swlee/projects/rca-model-lab-mcp/data/external/openrca2/captures",
+            "contract": "configs/eval/openrca2-o2ts.yaml",
+            "split": "/home/swlee/projects/rca-model-lab-mcp/configs/teacher/openrca2-all-split.yaml"
+          },
+          {
+            "case": "case-openrca2-o2ts-v3-6782a1f4",
+            "cases_root": "/home/swlee/projects/rca-model-lab-mcp/data/external/openrca2/captures",
+            "contract": "configs/eval/openrca2-o2ts.yaml",
+            "split": "/home/swlee/projects/rca-model-lab-mcp/configs/teacher/openrca2-all-split.yaml"
+          },
+          {
+            "case": "case-openrca2-o2ts-v3-5094a021",
+            "cases_root": "/home/swlee/projects/rca-model-lab-mcp/data/external/openrca2/captures",
+            "contract": "configs/eval/openrca2-o2ts.yaml",
+            "split": "/home/swlee/projects/rca-model-lab-mcp/configs/teacher/openrca2-all-split.yaml"
+          },
+          {
+            "case": "case-openrca2-o2ts-v3-e8961f63",
+            "cases_root": "/home/swlee/projects/rca-model-lab-mcp/data/external/openrca2/captures",
+            "contract": "configs/eval/openrca2-o2ts.yaml",
+            "split": "/home/swlee/projects/rca-model-lab-mcp/configs/teacher/openrca2-all-split.yaml"
+          },
+          {
+            "case": "case-openrca2-o2hs-v3-e09a153b",
+            "cases_root": "/home/swlee/projects/rca-model-lab-mcp/data/external/openrca2/captures",
+            "contract": "configs/eval/openrca2-o2hs.yaml",
+            "split": "/home/swlee/projects/rca-model-lab-mcp/configs/teacher/openrca2-all-split.yaml"
+          },
+          {
+            "case": "case-openrca2-o2hs-v3-a2adb854",
+            "cases_root": "/home/swlee/projects/rca-model-lab-mcp/data/external/openrca2/captures",
+            "contract": "configs/eval/openrca2-o2hs.yaml",
+            "split": "/home/swlee/projects/rca-model-lab-mcp/configs/teacher/openrca2-all-split.yaml"
+          },
+          {
+            "case": "case-openrca2-o2hs-v3-1fb8bd0f",
+            "cases_root": "/home/swlee/projects/rca-model-lab-mcp/data/external/openrca2/captures",
+            "contract": "configs/eval/openrca2-o2hs.yaml",
+            "split": "/home/swlee/projects/rca-model-lab-mcp/configs/teacher/openrca2-all-split.yaml"
+          },
+          {
+            "case": "case-openrca2-o2hs-v3-cfdf08c6",
+            "cases_root": "/home/swlee/projects/rca-model-lab-mcp/data/external/openrca2/captures",
+            "contract": "configs/eval/openrca2-o2hs.yaml",
+            "split": "/home/swlee/projects/rca-model-lab-mcp/configs/teacher/openrca2-all-split.yaml"
+          },
+          {
+            "case": "case-openrca2-o2hs-v3-9a9ca14f",
+            "cases_root": "/home/swlee/projects/rca-model-lab-mcp/data/external/openrca2/captures",
+            "contract": "configs/eval/openrca2-o2hs.yaml",
+            "split": "/home/swlee/projects/rca-model-lab-mcp/configs/teacher/openrca2-all-split.yaml"
+          },
+          {
+            "case": "case-openrca2-o2hs-v3-db56ba61",
+            "cases_root": "/home/swlee/projects/rca-model-lab-mcp/data/external/openrca2/captures",
+            "contract": "configs/eval/openrca2-o2hs.yaml",
+            "split": "/home/swlee/projects/rca-model-lab-mcp/configs/teacher/openrca2-all-split.yaml"
+          },
+          {
+            "case": "case-openrca2-o2ot-v3-033769dc",
+            "cases_root": "/home/swlee/projects/rca-model-lab-mcp/data/external/openrca2/captures",
+            "contract": "configs/eval/openrca2-o2ot.yaml",
+            "split": "/home/swlee/projects/rca-model-lab-mcp/configs/teacher/openrca2-all-split.yaml"
+          },
+          {
+            "case": "case-rcaeval-tt4-v3-7c0c3826",
+            "cases_root": "/home/swlee/projects/rca-model-lab-mcp/data/external/rcaeval/captures",
+            "contract": "configs/eval/rcaeval-tt4.yaml",
+            "split": "/home/swlee/projects/rca-model-lab-mcp/configs/teacher/rcaeval-tt4-split.yaml"
+          },
+          {
+            "case": "case-rcaeval-tt4-v3-e84d9651",
+            "cases_root": "/home/swlee/projects/rca-model-lab-mcp/data/external/rcaeval/captures",
+            "contract": "configs/eval/rcaeval-tt4.yaml",
+            "split": "/home/swlee/projects/rca-model-lab-mcp/configs/teacher/rcaeval-tt4-split.yaml"
+          },
+          {
+            "case": "case-rcaeval-tt4-v3-e5c36cf6",
+            "cases_root": "/home/swlee/projects/rca-model-lab-mcp/data/external/rcaeval/captures",
+            "contract": "configs/eval/rcaeval-tt4.yaml",
+            "split": "/home/swlee/projects/rca-model-lab-mcp/configs/teacher/rcaeval-tt4-split.yaml"
+          },
+          {
+            "case": "case-rcaeval-tt4-v3-a328352b",
+            "cases_root": "/home/swlee/projects/rca-model-lab-mcp/data/external/rcaeval/captures",
+            "contract": "configs/eval/rcaeval-tt4.yaml",
+            "split": "/home/swlee/projects/rca-model-lab-mcp/configs/teacher/rcaeval-tt4-split.yaml"
+          },
+          {
+            "case": "case-rcaeval-ob4-v3-419afedd",
+            "cases_root": "/home/swlee/projects/rca-model-lab-mcp/data/external/rcaeval/captures",
+            "contract": "configs/eval/rcaeval-ob4.yaml",
+            "split": "/home/swlee/projects/rca-model-lab-mcp/configs/teacher/rcaeval-ob4-split.yaml"
+          },
+          {
+            "case": "case-rcaeval-ob4-v3-8ce07b8a",
+            "cases_root": "/home/swlee/projects/rca-model-lab-mcp/data/external/rcaeval/captures",
+            "contract": "configs/eval/rcaeval-ob4.yaml",
+            "split": "/home/swlee/projects/rca-model-lab-mcp/configs/teacher/rcaeval-ob4-split.yaml"
+          },
+          {
+            "case": "case-rcaeval-ob4-v3-eb4e1778",
+            "cases_root": "/home/swlee/projects/rca-model-lab-mcp/data/external/rcaeval/captures",
+            "contract": "configs/eval/rcaeval-ob4.yaml",
+            "split": "/home/swlee/projects/rca-model-lab-mcp/configs/teacher/rcaeval-ob4-split.yaml"
+          },
+          {
+            "case": "case-rcaeval-ob4-v3-ee2a86bf",
+            "cases_root": "/home/swlee/projects/rca-model-lab-mcp/data/external/rcaeval/captures",
+            "contract": "configs/eval/rcaeval-ob4.yaml",
+            "split": "/home/swlee/projects/rca-model-lab-mcp/configs/teacher/rcaeval-ob4-split.yaml"
+          }
+        ]
+      },
+      "dev6": {
+        "runs": 2,
+        "items": [
+          {
+            "case": "case-f19-s-v3-5daa9c97",
+            "cases_root": "/data/eval-cases",
+            "split": "/home/swlee/projects/rca-model-lab-mcp/outputs/flash-rl-loop-20261015/data-v5/split-v5-20261023.yaml",
+            "contract": "configs/eval/train-family-v5-expanded-20261023.yaml"
+          },
+          {
+            "case": "case-openrca2-o2ts-v3-83afcd5a",
+            "cases_root": "/home/swlee/projects/rca-model-lab-mcp/data/external/openrca2/captures",
+            "contract": "configs/eval/openrca2-o2ts.yaml",
+            "split": "/home/swlee/projects/rca-model-lab-mcp/configs/teacher/openrca2-all-split.yaml"
+          },
+          {
+            "case": "case-rcaeval-ob4-v3-38c197c6",
+            "cases_root": "/home/swlee/projects/rca-model-lab-mcp/data/external/rcaeval/captures",
+            "contract": "configs/eval/rcaeval-ob4.yaml",
+            "split": "/home/swlee/projects/rca-model-lab-mcp/configs/teacher/rcaeval-ob4-split.yaml"
+          },
+          {
+            "case": "case-rcaeval-ob4-v3-f9efedd9",
+            "cases_root": "/home/swlee/projects/rca-model-lab-mcp/data/external/rcaeval/captures",
+            "contract": "configs/eval/rcaeval-ob4.yaml",
+            "split": "/home/swlee/projects/rca-model-lab-mcp/configs/teacher/rcaeval-ob4-split.yaml"
+          },
+          {
+            "case": "case-rcaeval-tt4-v3-e707b26b",
+            "cases_root": "/home/swlee/projects/rca-model-lab-mcp/data/external/rcaeval/captures",
+            "contract": "configs/eval/rcaeval-tt4.yaml",
+            "split": "/home/swlee/projects/rca-model-lab-mcp/configs/teacher/rcaeval-tt4-split.yaml"
+          },
+          {
+            "case": "case-rcaeval-tt4-v3-f7cc5564",
+            "cases_root": "/home/swlee/projects/rca-model-lab-mcp/data/external/rcaeval/captures",
+            "contract": "configs/eval/rcaeval-tt4.yaml",
+            "split": "/home/swlee/projects/rca-model-lab-mcp/configs/teacher/rcaeval-tt4-split.yaml"
+          }
+        ]
+      }
+    },
+    "reference": {
+      "validation": {
+        "label": "Flash base (Humming+MTP4, gpt-6.1-sol judge, 2026-10-14)",
+        "total": 12,
+        "root_hit": 10,
+        "root_plus_mechanism": 10
+      }
+    },
+    "episode_slots": 12,
+    "milestones": [
+      10,
+      20,
+      39,
+      61
+    ],
+    "full_public": [
+      {
+        "split": "configs/teacher/openrca2-o2ts-split.yaml",
+        "partition": "public_compare",
+        "cases_root": "data/external/openrca2/captures"
+      },
+      {
+        "split": "configs/teacher/openrca2-o2hs-split.yaml",
+        "partition": "public_compare",
+        "cases_root": "data/external/openrca2/captures"
+      },
+      {
+        "split": "configs/teacher/openrca2-o2ot-split.yaml",
+        "partition": "public_compare",
+        "cases_root": "data/external/openrca2/captures"
+      },
+      {
+        "split": "configs/teacher/rcaeval-tt4-split.yaml",
+        "partition": "heldout_service",
+        "cases_root": "data/external/rcaeval/captures"
+      },
+      {
+        "split": "configs/teacher/rcaeval-ob4-split.yaml",
+        "partition": "heldout_service",
+        "cases_root": "data/external/rcaeval/captures"
+      }
+    ],
+    "retired_tracks": {
+      "validation": {
+        "items": [
+          {
+            "case": "case-f01-r-v3-34274f3e",
+            "cases_root": "/data/eval-cases",
+            "contract": "configs/eval/train-family-v2.yaml",
+            "split": "configs/teacher/v45-family-split-val.yaml"
+          },
+          {
+            "case": "case-f05-h-v3-36a247f1",
+            "cases_root": "/data/eval-cases",
+            "contract": "configs/eval/train-family-v2.yaml",
+            "split": "configs/teacher/v45-family-split-val.yaml"
+          },
+          {
+            "case": "case-f06-p-v3-100785c9",
+            "cases_root": "/data/eval-cases",
+            "contract": "configs/eval/train-family-v2.yaml",
+            "split": "configs/teacher/v45-family-split-val.yaml"
+          },
+          {
+            "case": "case-f06-p-v3-24f2e956",
+            "cases_root": "/data/eval-cases",
+            "contract": "configs/eval/train-family-v2.yaml",
+            "split": "configs/teacher/v45-family-split-val.yaml"
+          },
+          {
+            "case": "case-f06-p-v3-79c62cdb",
+            "cases_root": "/data/eval-cases",
+            "contract": "configs/eval/train-family-v2.yaml",
+            "split": "configs/teacher/v45-family-split-val.yaml"
+          },
+          {
+            "case": "case-f06-r-v3-6ace8a7d",
+            "cases_root": "/data/eval-cases",
+            "contract": "configs/eval/train-family-v2.yaml",
+            "split": "configs/teacher/v45-family-split-val.yaml"
+          }
+        ],
+        "runs": 2
+      },
+      "public12_20261028": {
+        "items": [
+          {
+            "case": "case-openrca2-o2ts-v3-a7d3c463",
+            "cases_root": "data/external/openrca2/captures",
+            "contract": "configs/eval/openrca2-o2ts.yaml",
+            "split": "configs/teacher/openrca2-o2ts-split.yaml"
+          },
+          {
+            "case": "case-openrca2-o2ts-v3-49625329",
+            "cases_root": "data/external/openrca2/captures",
+            "contract": "configs/eval/openrca2-o2ts.yaml",
+            "split": "configs/teacher/openrca2-o2ts-split.yaml"
+          },
+          {
+            "case": "case-openrca2-o2ts-v3-c18be37c",
+            "cases_root": "data/external/openrca2/captures",
+            "contract": "configs/eval/openrca2-o2ts.yaml",
+            "split": "configs/teacher/openrca2-o2ts-split.yaml"
+          },
+          {
+            "case": "case-openrca2-o2ts-v3-4fc975cb",
+            "cases_root": "data/external/openrca2/captures",
+            "contract": "configs/eval/openrca2-o2ts.yaml",
+            "split": "configs/teacher/openrca2-o2ts-split.yaml"
+          },
+          {
+            "case": "case-openrca2-o2hs-v3-c977f28b",
+            "cases_root": "data/external/openrca2/captures",
+            "contract": "configs/eval/openrca2-o2hs.yaml",
+            "split": "configs/teacher/openrca2-o2hs-split.yaml"
+          },
+          {
+            "case": "case-openrca2-o2hs-v3-3646623c",
+            "cases_root": "data/external/openrca2/captures",
+            "contract": "configs/eval/openrca2-o2hs.yaml",
+            "split": "configs/teacher/openrca2-o2hs-split.yaml"
+          },
+          {
+            "case": "case-openrca2-o2hs-v3-7b8a8085",
+            "cases_root": "data/external/openrca2/captures",
+            "contract": "configs/eval/openrca2-o2hs.yaml",
+            "split": "configs/teacher/openrca2-o2hs-split.yaml"
+          },
+          {
+            "case": "case-openrca2-o2ot-v3-bcd963d6",
+            "cases_root": "data/external/openrca2/captures",
+            "contract": "configs/eval/openrca2-o2ot.yaml",
+            "split": "configs/teacher/openrca2-o2ot-split.yaml"
+          },
+          {
+            "case": "case-rcaeval-tt4-v3-cb2d2bb9",
+            "cases_root": "data/external/rcaeval/captures",
+            "contract": "configs/eval/rcaeval-tt4.yaml",
+            "split": "configs/teacher/rcaeval-tt4-split.yaml"
+          },
+          {
+            "case": "case-rcaeval-tt4-v3-09fcbd90",
+            "cases_root": "data/external/rcaeval/captures",
+            "contract": "configs/eval/rcaeval-tt4.yaml",
+            "split": "configs/teacher/rcaeval-tt4-split.yaml"
+          },
+          {
+            "case": "case-rcaeval-ob4-v3-a6f67b17",
+            "cases_root": "data/external/rcaeval/captures",
+            "contract": "configs/eval/rcaeval-ob4.yaml",
+            "split": "configs/teacher/rcaeval-ob4-split.yaml"
+          },
+          {
+            "case": "case-rcaeval-ob4-v3-5a6de628",
+            "cases_root": "data/external/rcaeval/captures",
+            "contract": "configs/eval/rcaeval-ob4.yaml",
+            "split": "configs/teacher/rcaeval-ob4-split.yaml"
+          }
+        ],
+        "runs": 1
+      }
+    },
+    "milestone_extra": {
+      "sealed": {
+        "at": [
+          20,
+          39,
+          61
+        ],
+        "runs": 2,
+        "split": "/home/swlee/projects/rca-model-lab-mcp/outputs/flash-rl-loop-20261015/data-v3/split-v3-20261015.yaml",
+        "partition": "sealed_eval",
+        "cases_root": "/data/eval-cases",
+        "contract": "configs/eval/sealed-family-mcp.yaml",
+        "allow_sealed": true,
+        "note": "2026-10-18 user: sealed 12 x 2 once at milestone 20 (with a start-policy reference) besides the final 12 x 3; report only, never tune on it"
+      },
+      "original12": {
+        "at": [
+          20,
+          39,
+          61
+        ],
+        "runs": 2,
+        "cases": [
+          "case-f01-h-v3-48ec8e62",
+          "case-f01-r-v3-34274f3e",
+          "case-f03-h-v3-d4192a3b",
+          "case-f04-r-v3-c508c52d",
+          "case-f05-h-v3-36a247f1",
+          "case-f06-p-v3-100785c9",
+          "case-f06-p-v3-24f2e956",
+          "case-f06-p-v3-79c62cdb",
+          "case-f06-r-v3-6ace8a7d",
+          "case-f09-h-v3-0c795f2b",
+          "case-f11-r-v3-85b9a489",
+          "case-f20-r-v3-caf04820"
+        ],
+        "split": "/home/swlee/projects/rca-model-lab-mcp/outputs/flash-rl-loop-20261015/data-v3/split-v3-20261015.yaml",
+        "cases_root": "/data/eval-cases",
+        "contract": "configs/eval/train-family-v4-expanded-20261018.yaml",
+        "note": "2026-10-18 user goal: significant gains on the sealed and the original 12-scenario sets. Same 12 cases as report.html '기존 12 시나리오'."
+      }
+    },
+    "milestone_note_20261023": "user: big evaluation now (updated count 39) — public 113 + sealed 12x2 + original 12x2, start-policy references re-measured for epoch 3-mcp20261020-j3",
+    "tracks_note_20261028": "Codex topic 7: public12 x1 (SD ~1.7) replaced by the frozen dev panel dev24 (diag/devpanel-20261028.json) + dev6 (confirmation panel); validation10/new13 x1. Dev cases are excluded from RL sampling as eval items."
+  },
+  "max_updates": 67,
+  "first_update_index": 2,
+  "initial_policy": {
+    "version": "adapter-0f6f582d901317d0",
+    "adapter": "/home/work/models/rca-adapters/flash-rl-loop-20261015/u062/adapter.pt",
+    "lora_dir": "/home/work/models/rca-adapters-vllm/flash-rl-loop-20261015/u062",
+    "optimizer_steps": 73
+  },
+  "learning_rate_note": "2026-10-15: update 1 at lr 1e-6 had |B|~1e-6 (dW/W~2e-6, below bf16 resolution ~4e-3, no serving effect); 5e-5 reaches visible LoRA output (~0.2% of base) in ~10 updates",
+  "group_mix": "1 Polestar train + 1 public train (OpenRCA2 / RCAEval tt4 / ob4 rotation)",
+  "data": {
+    "version": "v5",
+    "local_preparation": "/home/swlee/projects/rca-model-lab-mcp/outputs/flash-rl-loop-20261015/data-v5/preparation-v5-20261023.json",
+    "remote_preparation": "/home/work/flash-rl-quant-probe-20261014/data-v5/preparation-v5-20261023.json",
+    "remote_split_source": "/home/work/flash-rl-quant-probe-20261014/data-v5/split-v5-20261023.yaml",
+    "runtime": "/home/work/flash-rl-quant-probe-20261014/general-update-fast18-20261026",
+    "tree": true,
+    "per_group_steps": true,
+    "groups_per_step": 2
+  },
+  "checkpoint_local": "/var/tmp/flash-ckpt-local/qwen-flash-next-w4a16-autoround-4c67bf68",
+  "dynamic_sampling": {
+    "min_reward_spread": 0.1,
+    "max_redraws": 2,
+    "flat_cooldown_updates": 10,
+    "note": "2026-10-16 user: roll candidates_per_slot cases per slot at once (oversampling); drop groups whose 4 episodes share the joint outcome and differ by < min_reward_spread; fill each slot with the first informative candidate, carry surplus informative groups to the next update; redraw empty slots up to max_redraws times; flat cases are skipped for flat_cooldown_updates updates",
+    "candidates_per_slot": 2,
+    "candidates_by_type": {
+      "polestar": 4,
+      "public": 6
+    },
+    "solved_extra": {
+      "min_spread": 0.05,
+      "max_per_update": 2,
+      "note": "2026-10-19 user: keep one all-solved group per update whose rewards differ by >= 0.05 as an extra training group (spread is mostly the evidence terms, partly length); +~20% training turns | 2026-10-19 user: up to 2 per update (efficiency + grounding signal)"
+    },
+    "min_joint_per_update": 1,
+    "min_joint_note": "2026-10-20 user: skip an update whose chosen groups hold no joint success"
+  },
+  "slots": [
+    "polestar",
+    "public",
+    "polestar",
+    "public",
+    "public",
+    "public"
+  ],
+  "slots_note": "2026-10-18 user: after milestone 10 (public 113: root 42->48, joint 32->30) raise the public share to 1 Polestar + 2 public per update and lr 5e-5 -> 1e-4; next 113-case check at 20 successful updates",
+  "train_exclude": {
+    "cases": [
+      "case-f01-h-v3-48ec8e62",
+      "case-f03-h-v3-d4192a3b",
+      "case-f04-r-v3-c508c52d",
+      "case-f09-h-v3-0c795f2b",
+      "case-f11-r-v3-85b9a489",
+      "case-f20-r-v3-caf04820"
+    ],
+    "note": "2026-10-18: the six original-12 cases that sit in split v3 train are kept out of RL sampling so the original-12 set measures the RL policy on unseen cases (f11-r-85b9a489 was already trained once in u14)."
+  },
+  "reward": {
+    "success_hallucination_weight": 0.3,
+    "note": "2026-10-19 user: rca-evidence-v3 — fabrication penalty on joint successes .1 -> .3 (partials keep .1; success >= .5 > partial <= .35 > no submission -.2). Needs runtime fast11 (validator accepts v3).",
+    "partial_root_weight": 0.1,
+    "partial_mechanism_weight": 0.2,
+    "partial_note": "2026-10-19 user: partial credit quality*(root .1 + mechanism .2*score) (v2/v3: .2 + .1) = rca-evidence-v4; runtime fast12 validates it",
+    "depth_weight": 0.1,
+    "depth_note": "2026-10-19 user: joint successes earn .1 * causal depth (rca_lab.mcp.causal_depth: grounded root-chain links failure_mode/proximate_cause/trigger, /3) = rca-evidence-v5; runtime fast13 validates it",
+    "fabricated_note": "2026-10-20: v6 hard cap NOT enabled — judge audit: major flags fire on 2/3 of root-correct runs, only ~5/13 are root-level fabrications (scratchpad judge-major-audit.md). Runtime fast14 kept (accepts v5).",
+    "major_claim_penalty": 0.1,
+    "major_note": "2026-10-20 user: rca-evidence-v7 = v5 + joint successes lose .1 per major fabricated claim (max .3); replaces the v6 cap idea. runtime fast15"
+  },
+  "evidence_mask": {
+    "rate": 0.3,
+    "table": "data-v4/evidence-mask-table-20261019.json",
+    "note": "2026-10-19 user: 30% of Polestar candidates roll a masked variant (some evidence sources hidden through rca-mcp not_collected manifest + student-side filter; capture untouched) so the policy learns with/without paths. Masked eval subset later; main evals stay unmasked.",
+    "mode": "solved_only",
+    "allowed_masks": [
+      "changes",
+      "traces"
+    ],
+    "note_20261020": "user: masks only on cases the policy already solves (flat all-solved); public fault-type curriculum off. changes mask kept (2026-10-20 recheck: masked f17-r was solved from indirect pod-lifecycle evidence, not by guessing)"
+  },
+  "prompt_revision": 3,
+  "prompt_revision_note": "2026-10-19 user: conditions that exposed a defect (load/traffic surge, uninstrumented client actions) go into the cause's mechanism, causes/external_causes hold origins only (rca_lab.mcp.prompts revision 2). Takes effect at the re-exec after milestone 20; scores compare within one revision (own start-policy references, measured on first use).",
+  "mcp_binary": "outputs/rca-mcp-runtime-20261020/rca-mcp",
+  "mcp_tag": "mcp20261020",
+  "mcp_note": "2026-10-20 user: rca-mcp rebuilt with the read_timeseries bucket_seconds fix (origin fix/rca-mcp-read-bucket-seconds 663c53d; provenance.json). New comparison epoch: start-policy references re-measured on first use.",
+  "prompt_revision_note_20261021": "user: revision 3 names the starting change (발단) and the exposing condition (load/traffic) apart; revision 2 called load a 계기 and trained policies wrote 'the trigger was normal traffic'",
+  "regression": {
+    "validation_drop": 4,
+    "validation_drop_repeat": 3,
+    "public_drop_repeat": 3,
+    "note": "2026-10-21 user: rollback vs this epoch's start-policy reference (not best-so-far): validation -4 once, or -3 in two consecutive evals; public -3 in two consecutive evals"
+  },
+  "variants": {
+    "table": "data-v4/coverage-variant-table-20261021.json",
+    "rate": 0.3,
+    "mode": "solved_only",
+    "kinds": [
+      "mask",
+      "budget"
+    ],
+    "note": "2026-10-21 user: on cases the policy already solves, 30% of Polestar candidates roll a variant: an absent collector (apm/dpm/kcm/sms/logs — only where decisive evidence remains on another path, build_coverage_table.py) or a turn budget (0.8 x median joint-success turns). Replaces evidence_mask (changes/traces)."
+  },
+  "data_v5_note": "2026-10-23 user: data v5 (train 59 -> 70, new validation track new13 = families f60, f63-f69 never trained; validation10 kept). Start-policy reference on new13 measured on first use.",
+  "speed_note_20261024": "user: A lr back to 1e-4 (both rollbacks of 10-20/10-21 were false alarms); B one optimizer step per active group (runtime fast17, --per-group-steps, no gradient prefixes); S1 eval every 6 updates, validation10 kept at 2 runs (1 run halves the sample and re-opens noise-driven rollbacks for ~3 min/update; the regression check now scales a smaller eval to the reference total anyway); S2 vLLM max-num-seqs 4->6, eval episode slots 12; max_updates 50->70. Diagnosis: diag/README-20261024.md",
+  "batch_note_20261026": "user: option 1 — 6 groups per update (2 Polestar + 4 public, ordered so each 2-group step mixes both), 2 groups per optimizer step (runtime fast18 --groups-per-step 2; a step whose batch has a gate failure is dropped), 3 steps per update; oversampling scaled 2x (polestar 4, public 6); eval every 3 updates (each update ~2x longer). Reason: diag §4 — weights moved but output shift stayed ~0.01 nat/token, single-case steps pull in scattered directions.",
+  "kt_note_20261027": "KT compute session recreated 2026-10-27 ~10:00 KST: new host proxy2:10560; /home/work ephemeral (runtime, remote_work, /var/tmp checkpoint copy lost); /home/work/models NFS kept (checkpoint, venv, kernels, adapters u063).",
+  "context_policy": "budget",
+  "context_policy_note_20261028": "rolling8 vs budget paired control on u062 (116 runs): joint 47/58 vs 47/58, bootstrap 90% [-4,+4] -> PROVISIONAL ADOPT budget (diag/ctxpair-20261028/verdict.txt). New epoch -cbudget.",
+  "case_sampling": {
+    "mode": "uncertainty",
+    "explore": 0.2,
+    "decay": 0.8,
+    "note": "2026-10-28 Codex topic 7: Beta(1,1)-posterior P(group informative) from logged group outcomes, decayed 0.8/update; 20% uniform exploration; no hard skips."
+  },
+  "original_initial_policy": {
+    "version": "adapter-15e40ca8f60b3295",
+    "adapter": "/home/work/models/rca-adapters/flash-grpo-fast3-g0002-20261015/adapter.pt",
+    "lora_dir": "/home/work/models/rca-adapters-vllm/flash-grpo-fast3-g0002-20261015",
+    "optimizer_steps": 1
+  },
+  "initial_policy_note_20261028": "Epoch -cbudget references (tracks + milestone) are measured on u062, the deployment reference kept by the confirmation run (diag/confirm-20261028/verdict.txt); the original start adapter is in original_initial_policy.",
+  "milestones_note_20261028": "milestone at +6 updates (61): public_full on the epoch reference u062 and the policy, under budget context. max_updates 67 so the milestone (run at the top of the next iteration) happens before the +6 gate stop. 2026-10-29 user: sealed 12x2 + original12 x2 also at 61 (report only), reference u062 under budget."
+}
