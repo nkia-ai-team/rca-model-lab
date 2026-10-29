@@ -32,6 +32,48 @@ SYSTEM_PROMPT = """당신은 운영 관측 데이터로 장애의 근본 원인�
 - 관측하지 않은 것을 원인으로 적지 않는다. 확신이 없으면 status 를 낮춘다.
 """
 
+# Revision 2 (2026-10-19, Flash RL loop; opt-in through StudentConfig.prompt_revision, revision 1 stays byte-identical).
+# Revision 1 never says what separates a cause from the condition that exposed it, so about 40% of the root misses
+# named the right target plus an extra external cause: the load source / client in captures, an unobserved
+# uninstrumented layer in public data. Category wording only (no case-specific text, no few-shot).
+_EXTERNAL_RULE_R1 = (
+    "- 계측 밖 원인(외부 API, 브로커, 네트워크)은 external_causes 로 적고 boundary_target 에 그 영향이 처음 관측된 내부 대상 UUID 를 넣는다. "
+    "그 경계 대상(외부 실패를 상위로 변환한 내부 서비스)은 causes 에도 넣는다. 외부 원인은 그 내부 상태를 직접 관측할 수 없으므로 status 는 provisional 까지만 준다.\n"
+)
+_EXTERNAL_RULE_R2 = (
+    "- causes·external_causes 에는 결함이나 한도가 시작된 발원지만 적는다. external_causes 는 발원지가 계측 밖(외부 API, 브로커, 네트워크)에 있고 "
+    "그 실패가 경계 호출의 오류·지연으로 관측될 때만 쓰고, boundary_target 에 그 영향이 처음 관측된 내부 대상 UUID 를 넣는다. "
+    "그 경계 대상(외부 실패를 상위로 변환한 내부 서비스)은 causes 에도 넣는다. 외부 원인은 그 내부 상태를 직접 관측할 수 없으므로 status 는 provisional 까지만 준다.\n"
+    "- 발원지의 결함을 드러나게 한 계기·조건(부하·트래픽 급증, 계측 밖 클라이언트의 요청·조작)은 원인 칸에 적지 않는다. "
+    "해당 cause 의 mechanism 에 쓰고 그 관측 ref 를 support_refs 로 인용한다.\n"
+    "- 관측으로 뒷받침되지 않는 계측 밖 구간의 가능성은 external_causes 로 적지 않는다. 내부 발원지가 관측으로 설명되면 그것만 적는다.\n"
+)
+# Revision 3 (2026-10-21): revision 2 called the exposing condition (load / traffic) a "계기" (trigger), so trained
+# policies wrote "the trigger was normal traffic" and left the starting change out, while the scenario references and
+# the mechanism judge mean the starting change (a removal, a rollout, a limit change, a held transaction, ...) by
+# trigger and treat load only as the condition that exposed it. Revision 3 names the two apart. Definitions only.
+_EXTERNAL_RULE_R3 = (
+    "- causes·external_causes 에는 결함이나 한도가 시작된 발원지만 적는다. external_causes 는 발원지가 계측 밖(외부 API, 브로커, 네트워크)에 있고 "
+    "그 실패가 경계 호출의 오류·지연으로 관측될 때만 쓰고, boundary_target 에 그 영향이 처음 관측된 내부 대상 UUID 를 넣는다. "
+    "그 경계 대상(외부 실패를 상위로 변환한 내부 서비스)은 causes 에도 넣는다. 외부 원인은 그 내부 상태를 직접 관측할 수 없으므로 status 는 provisional 까지만 준다.\n"
+    "- mechanism 에는 발단과 드러낸 조건을 구분해 쓴다. 발단은 결함을 만든 변경이나 사건이다(배포·롤아웃, 설정·한도 변경, 객체 삭제·스키마 변경, 규모 변경, "
+    "의존 대상 중단, 오래 잡힌 트랜잭션 같은 조작, 주입된 장애 등). 발단을 일으킨 주체나 실행 경로가 관측되지 않으면 발단은 관측된 그대로 쓰고 주체는 미관측이라고 쓴다. "
+    "발단이 계측 밖 주체의 조작이어도 원인 칸에는 그 영향이 시작된 내부 대상을 적는다. "
+    "부하·트래픽 증가처럼 결함을 드러나게 했을 뿐인 조건은 발단이 아니며 원인 칸에도 적지 않는다. 발단과 조건의 관측 ref 를 support_refs 로 인용한다.\n"
+    "- 관측으로 뒷받침되지 않는 계측 밖 구간의 가능성은 external_causes 로 적지 않는다. 내부 발원지가 관측으로 설명되면 그것만 적는다.\n"
+)
+assert SYSTEM_PROMPT.count(_EXTERNAL_RULE_R1) == 1
+SYSTEM_PROMPT_R2 = SYSTEM_PROMPT.replace(_EXTERNAL_RULE_R1, _EXTERNAL_RULE_R2)
+SYSTEM_PROMPT_R3 = SYSTEM_PROMPT.replace(_EXTERNAL_RULE_R1, _EXTERNAL_RULE_R3)
+PROMPT_REVISIONS = (1, 2, 3)
+
+
+def system_prompt(revision: int = 1) -> str:
+    if revision not in PROMPT_REVISIONS:
+        raise ValueError(f"unknown prompt revision {revision}; known {PROMPT_REVISIONS}")
+    return {1: SYSTEM_PROMPT, 2: SYSTEM_PROMPT_R2, 3: SYSTEM_PROMPT_R3}[revision]
+
+
 USER_PROMPT_TEMPLATE = """[관측 알람 seed]
 {seed}
 

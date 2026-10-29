@@ -103,7 +103,22 @@ elsewhere; ignore them.
 - 0   : a different root mechanism, or only symptoms without a mechanism
 Answer with JSON only: {"score": 0 | 0.5 | 1, "reason": "<one sentence>"}"""
 
-JUDGE_PROMPTS = {"v1": JUDGE_SYSTEM, "v2": JUDGE_SYSTEM_V2}
+# V3 (2026-10-21 audit): V2 graded "the triggering change" without saying what counts as one, so a candidate that named
+# the load as the trigger and a candidate that named the starting change while saying its initiator was unobserved
+# could both land on 0.5 or 1 (eval-u034 vs reference, same telemetry). The scenario references treat load as the
+# condition that exposes a defect and identify the trigger through its observable effect.
+JUDGE_SYSTEM_V3 = JUDGE_SYSTEM_V2.replace(
+    'Answer with JSON only:',
+    """What counts as the trigger: the change or fault that started the failure at the root - a deployment or rollout, a configuration
+or resource-limit change, a removal or schema change, a scale change, a stopped dependency, a long-held transaction or other operation,
+or an injected fault. A load or traffic condition that only exposed the defect is not the trigger: naming such a condition as the trigger
+while leaving out the starting change does not match the trigger. When the candidate identifies the starting change itself from telemetry
+(for instance through its observable effect) but says that its initiator, the machine or tool it came from, or the exact command was not
+observed, count the trigger as matched - the initiator is usually invisible in telemetry even when the reference narrates it.
+Answer with JSON only:""", 1)
+assert JUDGE_SYSTEM_V3 != JUDGE_SYSTEM_V2
+
+JUDGE_PROMPTS = {"v1": JUDGE_SYSTEM, "v2": JUDGE_SYSTEM_V2, "v3": JUDGE_SYSTEM_V3}
 
 EVIDENCE_RUBRIC_VERSION = "rca-trajectory-evidence-v1"
 EVIDENCE_JUDGE_SYSTEM = f"""You grade whether one completed RCA trajectory supports its submitted conclusion.
@@ -414,12 +429,15 @@ def reference_version(case_id: str) -> str:
     return str(override["version"]) if override else "meta"
 
 
-def judge_cache_path(run: Path, provider: str = "claude", *, model: str | None = None, failure: bool = False) -> Path:
+def judge_cache_path(run: Path, provider: str = "claude", *, model: str | None = None, failure: bool = False,
+                     rubric: str | None = None) -> Path:
     if provider not in {"claude", "codex"}:
         raise ValueError(f"unsupported mechanism judge provider: {provider}")
     suffix = ".codex" if provider == "codex" else ""
     if provider == "codex" and model:
         suffix += "." + quote(model, safe="")
+    if rubric not in (None, "v1", "v2"):   # v3+ verdicts live beside the v1/v2 file instead of overwriting it
+        suffix += f".{rubric}"
     return run / f"mechanism_judge{suffix}{'.failure' if failure else ''}.json"
 
 

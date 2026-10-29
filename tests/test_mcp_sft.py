@@ -348,8 +348,11 @@ def test_rl_build_judge_cache_requires_same_model_and_rubric(tmp_path):
 def test_judge_prompt_versions():
     from rca_lab.mcp.rl_reward import JUDGE_PROMPTS
 
-    assert set(JUDGE_PROMPTS) == {"v1", "v2"}
+    assert set(JUDGE_PROMPTS) == {"v1", "v2", "v3"}
     assert "NOT visible" in JUDGE_PROMPTS["v2"]
+    # v3 = v2 plus the trigger definition (load is a condition; an unobserved initiator is not required)
+    assert JUDGE_PROMPTS["v3"].startswith(JUDGE_PROMPTS["v2"].split("Answer with JSON only:")[0])
+    assert "not the trigger" in JUDGE_PROMPTS["v3"] and "initiator" in JUDGE_PROMPTS["v3"]
 
 
 def test_rl_build_skips_hinted_runs(tmp_path):

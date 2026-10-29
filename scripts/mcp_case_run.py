@@ -36,7 +36,9 @@ from replay_lifecycle import replay_lease
 
 from rca_lab.mcp.claude_cli import SessionLimitError
 from rca_lab.mcp.client import MCPClient
+from rca_lab.mcp.context import CONTEXT_POLICIES
 from rca_lab.mcp.golden import candidates_from_result, load_contract
+from rca_lab.mcp.masking import MaskedMCP, filter_seed, parse_masks, write_manifest
 from rca_lab.mcp.hint_ladder import (
     NO_PICK_TEXT,
     attempt_digest,
@@ -234,7 +236,7 @@ def student_mcp_command(args: argparse.Namespace, seed: dict[str, Any], mcp_bina
     return [str(mcp_binary), "-blind", "-first-event", seed["time_window"]["first_event"], "-last-event", seed["time_window"]["last_event"]]
 
 
-def validate_observation_cache(out_root: Path, policy: str, tool_surface: str = "harness") -> None:
+def validate_observation_cache(out_root: Path, policy: str, tool_surface: str = "harness", context_policy: str = "rolling8") -> None:
     """Do not relabel old scores as a new harness arm, even with --overwrite."""
     config_path = out_root / "config.json"
     if config_path.exists():
@@ -244,12 +246,16 @@ def validate_observation_cache(out_root: Path, policy: str, tool_surface: str = 
         old_surface = old.get("student_tools" if old.get("runner") == "student" else "teacher_tools", "harness")
         if old_surface != tool_surface:
             raise ValueError("tool surface differs from cached run; use a new --run-name")
+        if old.get("context_policy", "rolling8") != context_policy:
+            raise ValueError("context policy differs from cached run; use a new --run-name")
     for path in out_root.glob("case-*/run*/score.json"):
         old = json.loads(path.read_text(encoding="utf-8"))
         if old.get("observation_policy", "legacy") != policy:
             raise ValueError(f"observation policy differs from cached score {path}; use a new --run-name")
         if old.get("tool_surface", "harness") != tool_surface:
             raise ValueError(f"tool surface differs from cached score {path}; use a new --run-name")
+        if old.get("context_policy", "rolling8") != context_policy:
+            raise ValueError(f"context policy differs from cached score {path}; use a new --run-name")
         if policy != "legacy":
             runtime_path = path.parent / "observation-runtime.json"
             if not runtime_path.exists():
@@ -295,6 +301,15 @@ def run_case(args: argparse.Namespace, case_id: str, contract: dict[str, Any], o
             if getattr(args, "mcp_nav_hints", False):
                 connections["RCA_NAV_HINTS"] = "1"
             raw_seed = build_observed_seed(case_dir, max_alarms=args.max_alarms)
+            masks = parse_masks(getattr(args, "evidence_mask", ""))
+            if masks:
+                # Masked training variant (RL augmentation): the capture is untouched, rca-mcp reports the masked
+                # datasets as not collected and the student-side filter hides explicit rollout traces.
+                base = connections.get("RCA_CAPTURE_SOURCES")
+                manifest = write_manifest(case_out / "evidence-mask-sources.json", masks, Path(base) if base else None)
+                connections["RCA_CAPTURE_SOURCES"] = str(manifest.resolve())
+                raw_seed = filter_seed(raw_seed, masks)
+                (case_out / "evidence-mask.json").write_text(json.dumps({"masks": list(masks)}), encoding="utf-8")
             seed = blind_seed(mcp_binary, raw_seed)
             (case_out / "seed.json").write_text(json.dumps(seed, ensure_ascii=False, indent=1), encoding="utf-8")
             expected = contract.get(case_id)
@@ -376,6 +391,8 @@ def run_one(args: argparse.Namespace, case_id: str, run_dir: Path, run_index: in
             seed=args.seed + 1000 * run_index,
             hint=hint,
             tool_surface=getattr(args, "student_tools", "harness"),
+            prompt_revision=getattr(args, "prompt_revision", 1),
+            context_policy=getattr(args, "context_policy", "rolling8"),
         )
         command = student_mcp_command(args, seed, mcp_binary)
         if config.observation_policy != "legacy":
@@ -397,7 +414,8 @@ def run_one(args: argparse.Namespace, case_id: str, run_dir: Path, run_index: in
             (run_dir / "observation-runtime.json").write_text(json.dumps(runtime, ensure_ascii=False, indent=2), encoding="utf-8")
         env = raw_server_env(connections, seed, mcp_binary) if config.tool_surface == "raw" else {**os.environ, **connections}
         with MCPClient(command, env, log_path=run_dir / "mcp.stderr") as mcp:
-            episode = run_student(config, seed, mcp)
+            masks = parse_masks(getattr(args, "evidence_mask", ""))
+            episode = run_student(config, seed, MaskedMCP(mcp, masks) if masks else mcp)
         (run_dir / "trajectory.jsonl").write_text("".join(json.dumps(message, ensure_ascii=False) + "\n" for message in episode.messages), encoding="utf-8")
         if episode.alias_map:
             (run_dir / "alias.json").write_text(json.dumps(episode.alias_map, ensure_ascii=False, indent=1), encoding="utf-8")
@@ -407,6 +425,9 @@ def run_one(args: argparse.Namespace, case_id: str, run_dir: Path, run_index: in
                  "forced_submit_validation_retries": episode.forced_submit_validation_retries,
                  "forced_submit_validation_retry_budget": config.forced_submit_validation_retries,
                  "prompt_tokens_last": episode.prompt_tokens_last, "aliased": bool(episode.alias_map), "reasoning_guard": not args.no_reasoning_guard, "observation_policy": config.observation_policy,
+                 **({"evidence_mask": list(parse_masks(args.evidence_mask))} if getattr(args, "evidence_mask", "") else {}),
+                 **({"prompt_revision": config.prompt_revision} if config.prompt_revision != 1 else {}),
+                 **({"context_policy": config.context_policy} if config.context_policy != "rolling8" else {}),
                  **({"tool_surface": "raw"} if config.tool_surface == "raw" else {})}
         if config.thinking_token_budget is not None:
             extra["thinking_token_budget"] = config.thinking_token_budget
@@ -608,6 +629,9 @@ def main() -> None:
     parser.add_argument("--teacher-tools", choices=("harness", "raw"), default="harness", help="raw: harness ablation — the teacher gets generic SQL/PromQL access (rca_lab.mcp.raw_server) instead of the rca-mcp tools")
     parser.add_argument("--student-tools", choices=("harness", "raw"), default="harness", help="raw: harness ablation — the student gets generic SQL/PromQL access (rca_lab.mcp.raw_server) instead of the rca-mcp tools")
     parser.add_argument("--mcp-nav-hints", action="store_true", help="rca-mcp adds query-path navigation to no-data envelopes (RCA_NAV_HINTS=1); off keeps responses byte-identical")
+    parser.add_argument("--prompt-revision", type=int, default=1, choices=(1, 2, 3), help="student system prompt / submit_rca wording revision (rca_lab.mcp.prompts); 1 = original text")
+    parser.add_argument("--context-policy", choices=CONTEXT_POLICIES, default="rolling8", help="student history view (rca_lab.mcp.context); budget = append-only between compactions (2026-10-28)")
+    parser.add_argument("--evidence-mask", default="", help="comma list of evidence sources to hide (rca_lab.mcp.masking.MASKABLE) — RL augmentation variant; capture untouched")
     parser.add_argument("--runs", type=int, default=1)
     parser.add_argument("--parallel-runs", type=int, default=1, help="run this many episodes of a case concurrently on one restored DB set (2026-10-15)")
     parser.add_argument("--max-turns", type=int, default=40)
@@ -673,7 +697,7 @@ def main() -> None:
             raise SystemExit(f"--hint-ladder is limited to train captures (hints must never touch validation or sealed): {outside}")
     contract = load_contract(Path(args.contract))
     out_root = Path(args.out_root) / args.run_name
-    validate_observation_cache(out_root, args.observation_policy, selected_tool_surface(args))
+    validate_observation_cache(out_root, args.observation_policy, selected_tool_surface(args), args.context_policy)
     out_root.mkdir(parents=True, exist_ok=True)
     (out_root / "config.json").write_text(json.dumps({**vars(args), "mcp_binary": str(mcp_binary), "cases": cases}, ensure_ascii=False, indent=1), encoding="utf-8")
     rows: list[dict[str, Any]] = []

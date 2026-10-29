@@ -42,7 +42,7 @@ def case_dir(case_id: str) -> Path:
 def judge_run(run: Path, model: str, rubric: str, judge_all: bool, provider: str = "claude") -> str:
     # Streaming and final sweeps may reach the same episode concurrently.
     # Lock before checking the cache so only one process spends a judge call.
-    cache = judge_cache_path(run, provider, model=model)
+    cache = judge_cache_path(run, provider, model=model, rubric=rubric)
     with cache.with_suffix(".lock").open("a") as lock:
         fcntl.flock(lock, fcntl.LOCK_EX)
         return _judge_run_locked(run, model, rubric, judge_all, provider)
@@ -52,10 +52,10 @@ def _judge_run_locked(run: Path, model: str, rubric: str, judge_all: bool, provi
     score = json.loads((run / "score.json").read_text(encoding="utf-8"))
     if not judge_all and score.get("root_f1") != 1:
         return "skip"
-    cache = judge_cache_path(run, provider, model=model)
+    cache = judge_cache_path(run, provider, model=model, rubric=rubric)
     if cache.exists() and judge_cache_valid(json.loads(cache.read_text(encoding="utf-8")), score["case_id"], model=model, rubric=rubric, provider=provider):
         return "cached"
-    failure = judge_cache_path(run, provider, model=model, failure=True)
+    failure = judge_cache_path(run, provider, model=model, failure=True, rubric=rubric)
     try:
         if not (run / "result.json").exists():
             value, detail = None, "missing result.json"

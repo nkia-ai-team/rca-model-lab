@@ -17,14 +17,15 @@ from pathlib import Path
 from typing import Any
 
 from rca_lab.mcp.alias import UUIDAliaser
-from rca_lab.mcp.answer import SUBMIT_TOOL, SUBMIT_TOOL_NAME, validate_result
+from rca_lab.mcp.answer import SUBMIT_TOOL_NAME, submit_tool, validate_result
 from rca_lab.mcp.answer import UUID_RE as ANSWER_UUID_RE
 from rca_lab.mcp.client import MCPClient, openai_tools
 from rca_lab.mcp.context import rolling_view
 from rca_lab.mcp.completion_errors import ChatCompletionError
 from rca_lab.mcp.muse_grammar import guided_request_fields
 from rca_lab.mcp.observations import READ_OBSERVATION_TOOL, ObservationStore, compact_observation
-from rca_lab.mcp.prompts import HINT_TEMPLATE, SYSTEM_PROMPT, raw_system_prompt, user_prompt
+from rca_lab.mcp.prompts import HINT_TEMPLATE, raw_system_prompt, user_prompt
+from rca_lab.mcp.prompts import system_prompt as revision_system_prompt
 
 ALIAS_NOTE = "\n\n대상 식별자 표기: 이 조사에서 대상 UUID 는 T1, T2 … 같은 핸들로 표시된다. 도구 인자와 submit_rca 의 target 에도 그 핸들을 그대로 쓴다. 본 적 없는 핸들은 만들지 않는다."
 
@@ -60,6 +61,8 @@ class StudentConfig:
     transport_retry_delays: tuple[int, ...] = TRANSPORT_RETRY_DELAYS_DEFAULT
     hint: str | None = None  # ladder guidance: present in the live prompt only, never in the stored trajectory
     tool_surface: str = "harness"  # "raw": generic SQL/PromQL access (rca_lab.mcp.raw_server) instead of rca-mcp
+    prompt_revision: int = 1  # 2: cause vs exposing-condition wording (prompts._EXTERNAL_RULE_R2); 1 is the original text
+    context_policy: str = "rolling8"  # context.CONTEXT_POLICIES; "budget" keeps the history append-only between compactions
 
 
 @dataclass
@@ -185,11 +188,11 @@ def _strip_prior_reasoning_wire(messages: list[dict[str, Any]]) -> list[dict[str
     return _wire_messages(messages)
 
 
-def _wire_messages(messages: list[dict[str, Any]], *, live_system: str | None = None) -> list[dict[str, Any]]:
+def _wire_messages(messages: list[dict[str, Any]], *, live_system: str | None = None, context_policy: str = "rolling8") -> list[dict[str, Any]]:
     """The context the server sees: rolling observation view without stored reasoning;
     optionally the system prompt is swapped for its hinted live version so the hint never
     reaches the stored trajectory."""
-    wire = rolling_view(messages)
+    wire = rolling_view(messages, policy=context_policy)
     if live_system is not None:
         wire[0] = {**wire[0], "content": live_system}
     return wire
@@ -273,7 +276,7 @@ def run_forced_submit_repair(
         config.response_log.parent.mkdir(parents=True, exist_ok=True)
         config.response_log.write_text("", encoding="utf-8")
 
-    tools = openai_tools([SUBMIT_TOOL])
+    tools = openai_tools([submit_tool(config.prompt_revision)])
     repaired_messages.append({"role": "user", "content": "submit_rca 검증 오류가 있다. 새 조사는 금지된다. 위 오류만 고쳐 submit_rca 를 다시 호출하라."})
     start_turn = sum(1 for message in messages if message.get("role") == "assistant")
     prompt_tokens = 0
@@ -285,7 +288,7 @@ def run_forced_submit_repair(
     for attempts in range(1, retry_budget + 1):
         body: dict[str, Any] = {
             "model": config.model,
-            "messages": _wire_messages(repaired_messages),
+            "messages": _wire_messages(repaired_messages, context_policy=config.context_policy),
             "tools": tools,
             "tool_choice": {"type": "function", "function": {"name": SUBMIT_TOOL_NAME}},
             "max_tokens": config.max_tokens,
@@ -400,14 +403,14 @@ def run_student(config: StudentConfig, seed: dict[str, Any], mcp: MCPClient) -> 
         if any(tool["name"] == READ_OBSERVATION_TOOL["name"] for tool in catalog):
             raise ValueError("MCP catalog conflicts with local observation reader")
         catalog = [*catalog, READ_OBSERVATION_TOOL]
-    tools = openai_tools(catalog) + openai_tools([SUBMIT_TOOL])
+    tools = openai_tools(catalog) + openai_tools([submit_tool(config.prompt_revision)])
     request_log = config.observation_dir / "requests.jsonl" if store is not None and config.observation_dir is not None else None
     if request_log is not None:
         request_log.write_text("", encoding="utf-8")
     known = {tool["name"] for tool in catalog}
     aliaser = UUIDAliaser() if config.alias_targets else None
     shown_seed = aliaser.alias(seed) if aliaser else seed
-    system_prompt = (raw_system_prompt() if config.tool_surface == "raw" else SYSTEM_PROMPT) + (ALIAS_NOTE if aliaser else "")
+    system_prompt = (raw_system_prompt() if config.tool_surface == "raw" else revision_system_prompt(config.prompt_revision)) + (ALIAS_NOTE if aliaser else "")
     if structured:
         system_prompt += (
             f"\n관측 전달 정책 {config.observation_policy}: 응답은 원본 참조와 표시된 필드로 구성된다. "
@@ -479,7 +482,7 @@ def run_student(config: StudentConfig, seed: dict[str, Any], mcp: MCPClient) -> 
         turn += 1
         body: dict[str, Any] = {
             "model": config.model,
-            "messages": _wire_messages(messages, live_system=live_system),
+            "messages": _wire_messages(messages, live_system=live_system, context_policy=config.context_policy),
             "tools": tools,
             "tool_choice": {"type": "function", "function": {"name": SUBMIT_TOOL_NAME}} if force_answer else "auto",
             "max_tokens": config.max_tokens,
