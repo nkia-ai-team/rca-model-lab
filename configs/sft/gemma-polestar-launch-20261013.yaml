@@ -1,0 +1,13 @@
+template: configs/sft/gemma4-26b-a4b-polestar43-20261013.yaml
+dataset: outputs/gemma-polestar-20261013/datasets/polestar.jsonl
+marker: outputs/gemma-polestar-20261013/dataset.complete.json
+workspace: outputs/gemma-polestar-20261013
+remote:
+  host: proxy1.ainexus.ktcloud.com
+  port: 10569
+  user: work
+  key: /home/swlee/projects/kt-key/id_container (3)
+  root: /home/work/rca-model-lab-mcp
+  python: /home/work/gemma-training-20261013/venv/bin/python
+  runtime: /home/work/gemma-training-20261013
+  gpu: 1

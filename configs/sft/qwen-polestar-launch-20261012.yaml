@@ -1,0 +1,13 @@
+template: configs/sft/qwen38-27b-polestar44-20261012.yaml
+dataset: outputs/qwen-polestar-20261012/datasets/polestar.jsonl
+marker: outputs/qwen-polestar-20261012/dataset.complete.json
+workspace: outputs/qwen-polestar-20261012
+remote:
+  host: proxy1.ainexus.ktcloud.com
+  port: 10569
+  user: work
+  key: /home/swlee/projects/kt-key/id_container (3)
+  root: /home/work/rca-model-lab-mcp
+  python: /home/work/rca-training-20261012/venv/bin/python
+  runtime: /home/work/rca-training-20261012
+  gpu: 1
