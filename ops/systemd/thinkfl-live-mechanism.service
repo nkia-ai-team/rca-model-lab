@@ -1,0 +1,12 @@
+[Unit]
+Description=Incremental GPT-6.1-sol mechanism grading for active RCA evaluations
+[Service]
+Type=simple
+WorkingDirectory=/home/swlee/projects/rca-model-lab-mcp
+Environment=PATH=/home/swlee/.local/bin:/usr/local/bin:/usr/bin:/bin
+Environment=PYTHONUNBUFFERED=1
+ExecStart=/home/swlee/projects/rca-model-lab-mcp/.venv/bin/python /home/swlee/projects/rca-model-lab-mcp/outputs/live-mechanism-20261008/run.py
+StandardOutput=append:/home/swlee/projects/rca-model-lab-mcp/outputs/live-mechanism-20261008/controller.log
+StandardError=append:/home/swlee/projects/rca-model-lab-mcp/outputs/live-mechanism-20261008/controller.log
+KillMode=control-group
+TimeoutStopSec=30

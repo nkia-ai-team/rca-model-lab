@@ -1,0 +1,84 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "rca-mcp 도구 표면",
+    "locale": "ko",
+    "viewBox": [1068, 640],
+    "quality_profile": "showcase",
+    "legend": { "mode": "hidden" },
+    "views": [
+      {
+        "id": "discover",
+        "label": "발견과 지표",
+        "focus": ["describe_data_sources", "search_targets", "describe_target", "expand_topology", "get_data_coverage", "scan_metrics", "read_timeseries", "compare_peers"],
+        "note": "대상 검색·상세·토폴로지 확장은 PG 를, 지표 스캔·시계열·동류 비교는 VM 을 읽는다. 각 카드 두 번째 줄 끝이 읽는 원천이다."
+      },
+      {
+        "id": "evidence",
+        "label": "로그·트레이스·DB·호스트",
+        "focus": ["sample_logs", "list_events", "list_changes", "search_host_data", "get_trace_summaries", "get_trace_spans", "get_trace_activity", "breakdown_endpoints", "db_slow_queries", "db_blocking", "get_processes", "get_process_snapshot", "get_k8s_state", "get_cluster_projections", "get_snmp_traps"],
+        "note": "증거 도구는 대부분 ClickHouse(로그·트레이스·topsql·kcm) 를 읽고, 변경 이력만 PG 를 읽는다."
+      },
+      {
+        "id": "wiring",
+        "label": "호출 경로와 원천",
+        "focus": ["student", "teacher", "server", "pg", "ch", "vm"],
+        "note": "학생·교사 모두 같은 stdio 서버를 호출한다. -blind 가 응답의 실험 라벨을 지우고, 서버는 케이스별 복원 스택의 PG·CH·VM 만 읽는다."
+      }
+    ]
+  },
+  "components": [
+    { "id": "describe_data_sources", "type": "backend", "label": "describe_data_sources", "sublabel": "원천·시간창 요약 · 정적", "pos": [40, 60], "size": [185, 40] },
+    { "id": "search_targets", "type": "backend", "label": "search_targets", "sublabel": "이름·타입 검색 · PG", "pos": [238, 60], "size": [185, 40] },
+    { "id": "describe_target", "type": "backend", "label": "describe_target", "sublabel": "대상 상세·지표 키 · PG·VM", "pos": [436, 60], "size": [185, 40] },
+    { "id": "expand_topology", "type": "backend", "label": "expand_topology", "sublabel": "의존 홉 확장 · PG·CH", "pos": [634, 60], "size": [185, 40] },
+    { "id": "get_data_coverage", "type": "backend", "label": "get_data_coverage", "sublabel": "신호 유무 점검 · PG·CH·VM", "pos": [832, 60], "size": [185, 40] },
+
+    { "id": "sample_logs", "type": "backend", "label": "sample_logs", "sublabel": "로그 표본·패턴 · CH", "pos": [40, 140], "size": [185, 40] },
+    { "id": "list_events", "type": "backend", "label": "list_events", "sublabel": "알람·k8s 이벤트 · CH·PG", "pos": [238, 140], "size": [185, 40] },
+    { "id": "list_changes", "type": "backend", "label": "list_changes", "sublabel": "배포·설정 변경 · PG", "pos": [436, 140], "size": [185, 40] },
+    { "id": "search_host_data", "type": "backend", "label": "search_host_data", "sublabel": "호스트 관측 검색 · CH", "pos": [634, 140], "size": [185, 40] },
+    { "id": "get_snmp_traps", "type": "backend", "label": "get_snmp_traps", "sublabel": "SNMP 트랩 · CH", "pos": [832, 140], "size": [185, 40] },
+
+    { "id": "get_trace_summaries", "type": "backend", "label": "get_trace_summaries", "sublabel": "트레이스 집계 · CH", "pos": [40, 220], "size": [185, 40] },
+    { "id": "get_trace_spans", "type": "backend", "label": "get_trace_spans", "sublabel": "스팬 드릴다운 · CH", "pos": [238, 220], "size": [185, 40] },
+    { "id": "get_trace_activity", "type": "backend", "label": "get_trace_activity", "sublabel": "호출 활동 추이 · CH", "pos": [436, 220], "size": [185, 40] },
+    { "id": "breakdown_endpoints", "type": "backend", "label": "breakdown_endpoints", "sublabel": "엔드포인트 분해 · CH", "pos": [634, 220], "size": [185, 40] },
+    { "id": "db_slow_queries", "type": "backend", "label": "db_slow_queries", "sublabel": "느린 쿼리 topsql · CH·PG", "pos": [832, 220], "size": [185, 40] },
+
+    { "id": "get_processes", "type": "backend", "label": "get_processes", "sublabel": "프로세스 지표 · VM", "pos": [40, 300], "size": [185, 40] },
+    { "id": "get_process_snapshot", "type": "backend", "label": "get_process_snapshot", "sublabel": "프로세스 스냅샷 · CH", "pos": [238, 300], "size": [185, 40] },
+    { "id": "get_k8s_state", "type": "backend", "label": "get_k8s_state", "sublabel": "파드·노드 상태 · VM·PG", "pos": [436, 300], "size": [185, 40] },
+    { "id": "get_cluster_projections", "type": "backend", "label": "get_cluster_projections", "sublabel": "클러스터 투영 · CH", "pos": [634, 300], "size": [185, 40] },
+    { "id": "db_blocking", "type": "backend", "label": "db_blocking", "sublabel": "락·블로킹 체인 · CH", "pos": [832, 300], "size": [185, 40] },
+
+    { "id": "scan_metrics", "type": "backend", "label": "scan_metrics", "sublabel": "이상 지표 스캔 · VM·PG", "pos": [40, 380], "size": [185, 40] },
+    { "id": "read_timeseries", "type": "backend", "label": "read_timeseries", "sublabel": "시계열 읽기 · VM·PG", "pos": [238, 380], "size": [185, 40] },
+    { "id": "compare_peers", "type": "backend", "label": "compare_peers", "sublabel": "동류 대상 비교 · PG·VM", "pos": [436, 380], "size": [185, 40] },
+
+    { "id": "student", "type": "frontend", "label": "학생 루프 (Muse)", "sublabel": "T<n> 핸들 → UUID", "pos": [40, 470], "size": [170, 48] },
+    { "id": "teacher", "type": "external", "label": "교사 (Opus 5)", "sublabel": "claude -p + MCP", "pos": [40, 540], "size": [170, 48] },
+    { "id": "server", "type": "security", "label": "rca-mcp 서버", "sublabel": "Go · stdio · 읽기 전용", "tag": "-blind · -sanitize-stdin", "pos": [450, 470], "size": [180, 52] },
+    { "id": "pg", "type": "database", "label": "PostgreSQL", "sublabel": "targets · events · changes", "pos": [250, 570], "size": [170, 48] },
+    { "id": "ch", "type": "database", "label": "ClickHouse", "sublabel": "logs · traces · topsql · kcm", "pos": [455, 570], "size": [170, 48] },
+    { "id": "vm", "type": "database", "label": "VictoriaMetrics", "sublabel": "metrics", "pos": [660, 570], "size": [170, 48] }
+  ],
+  "boundaries": [
+    { "kind": "region", "label": "rca-mcp 도구 23종 · 응답 봉투 status/findings/refs/truncated", "wraps": ["describe_data_sources", "get_data_coverage", "scan_metrics", "db_blocking"], "pad": 22 },
+    { "kind": "security-group", "label": "발견", "wraps": ["describe_data_sources", "search_targets", "describe_target", "expand_topology", "get_data_coverage"], "pad": 8 },
+    { "kind": "security-group", "label": "로그·이벤트", "wraps": ["sample_logs", "list_events", "list_changes", "search_host_data"], "pad": 8 },
+    { "kind": "security-group", "label": "네트워크", "wraps": ["get_snmp_traps"], "pad": 8 },
+    { "kind": "security-group", "label": "트레이스", "wraps": ["get_trace_summaries", "get_trace_spans", "get_trace_activity", "breakdown_endpoints"], "pad": 8 },
+    { "kind": "security-group", "label": "호스트·K8s", "wraps": ["get_processes", "get_process_snapshot", "get_k8s_state", "get_cluster_projections"], "pad": 8 },
+    { "kind": "security-group", "label": "DB", "wraps": ["db_slow_queries", "db_blocking"], "pad": 8 },
+    { "kind": "security-group", "label": "지표", "wraps": ["scan_metrics", "read_timeseries", "compare_peers"], "pad": 8 }
+  ],
+  "connections": [
+    { "from": "student", "to": "server", "label": "stdio tools/call · 응답 ≤6000자", "variant": "emphasis" },
+    { "from": "teacher", "to": "server", "label": "MCP rca-tools · 빌트인 차단", "variant": "dashed" },
+    { "from": "server", "to": "pg", "label": "SQL", "variant": "default" },
+    { "from": "server", "to": "ch", "label": "SQL", "variant": "default", "labelDy": 24 },
+    { "from": "server", "to": "vm", "label": "query_range", "variant": "default" }
+  ]
+}

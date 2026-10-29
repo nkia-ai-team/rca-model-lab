@@ -1,0 +1,11 @@
+[Unit]
+Description=Reclaim completed RCA replay experiment resources
+
+[Service]
+Type=oneshot
+WorkingDirectory=%h/projects/rca-model-lab-mcp
+ExecStart=/usr/bin/python3 %h/projects/rca-model-lab-mcp/scripts/replay_lifecycle.py --apply
+TimeoutStartSec=10min
+Nice=10
+UMask=0077
+

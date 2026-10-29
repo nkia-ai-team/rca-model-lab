@@ -1,0 +1,21 @@
+[Unit]
+Description=ThinkFL completed baseline and student runs judged by Codex
+After=network-online.target
+Wants=network-online.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+WorkingDirectory=/home/swlee/projects/rca-model-lab-mcp
+Environment=PATH=/home/swlee/.local/bin:/usr/local/bin:/usr/bin:/bin
+ExecStart=/home/swlee/.local/bin/uv run python -u scripts/mcp_judge_runs.py outputs/mcp-eval/val36-base-kord-20261006 outputs/mcp-eval/val36f-mcp-v2bs-checkpoint-50-resume-20261007 outputs/mcp-eval/val36f-mcp-v2bs-checkpoint-94-resume-20261007 outputs/mcp-eval/aux-muse-glimmer-base-resume-20261007 --provider codex --model gpt-6.1-sol --rubric v2 --workers 2
+Restart=no
+RestartForceExitStatus=3
+RestartSec=1h
+KillMode=control-group
+TimeoutStopSec=30
+StandardOutput=append:/home/swlee/projects/rca-model-lab-mcp/outputs/data-recovery-codex-sol-20261007/baseline-judge-sol.log
+StandardError=inherit
+
+[Install]
+WantedBy=default.target

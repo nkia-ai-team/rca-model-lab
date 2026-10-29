@@ -1,0 +1,284 @@
+{
+  "schema_version": 1,
+  "diagram_type": "dataflow",
+  "meta": {
+    "title": "RCA 학생 증류 하네스",
+    "locale": "ko",
+    "viewBox": [
+      1068,
+      420
+    ],
+    "quality_profile": "showcase",
+    "views": [
+      {
+        "id": "collect",
+        "label": "궤적 수집",
+        "focus": [
+          "captures",
+          "restore",
+          "mcp",
+          "seed",
+          "student",
+          "teacher"
+        ],
+        "note": "캡처 1건을 격리 스택으로 복원하고, 같은 도구 표면 위에서 학생과 교사가 조사한다."
+      },
+      {
+        "id": "refine",
+        "label": "채점과 정제",
+        "focus": [
+          "student",
+          "teacher",
+          "score",
+          "refine"
+        ],
+        "note": "골든 UUID 매칭과 채점자 리뷰를 통과한 궤적만 추론 재작성·판정을 거쳐 학습 예제가 된다."
+      },
+      {
+        "id": "train",
+        "label": "학습과 검증",
+        "focus": [
+          "refine",
+          "sft",
+          "val",
+          "student"
+        ],
+        "note": "체크포인트를 런타임 LoRA 로 실어 검증 시나리오를 다시 학생 루프로 돌린다."
+      }
+    ],
+    "legend": {
+      "mode": "hidden"
+    }
+  },
+  "stages": [
+    {
+      "label": "캡처 · 복원"
+    },
+    {
+      "label": "도구 표면"
+    },
+    {
+      "label": "조사자"
+    },
+    {
+      "label": "채점 · 정제"
+    },
+    {
+      "label": "학습 · 검증"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "captures",
+      "type": "database",
+      "label": "/data/eval-cases",
+      "sublabel": "캡처 46건 · 읽기 전용",
+      "stage": 0,
+      "row": 0,
+      "tag": "PG dump · CH · VM"
+    },
+    {
+      "id": "restore",
+      "type": "cloud",
+      "label": "격리 복원 스택",
+      "sublabel": "PG · CH · VM, 케이스별",
+      "stage": 0,
+      "row": 1,
+      "tag": "~4분 · 폐기 후 재복원"
+    },
+    {
+      "id": "seed",
+      "type": "security",
+      "label": "seed 생성",
+      "sublabel": "t1/t2 · open 알람 ≤50",
+      "stage": 1,
+      "row": 0,
+      "tag": "-sanitize-stdin"
+    },
+    {
+      "id": "mcp",
+      "type": "backend",
+      "label": "rca-mcp 서버",
+      "sublabel": "stdio · 23 도구 읽기 전용",
+      "stage": 1,
+      "row": 1,
+      "tag": "-blind"
+    },
+    {
+      "id": "student",
+      "type": "frontend",
+      "label": "학생 루프 Muse",
+      "sublabel": "GPU0 vLLM · xgrammar",
+      "stage": 2,
+      "row": 0,
+      "tag": "T<n> 핸들 · 롤링 뷰"
+    },
+    {
+      "id": "teacher",
+      "type": "external",
+      "label": "교사 (Opus 5)",
+      "sublabel": "claude -p + MCP · 격리",
+      "stage": 2,
+      "row": 1,
+      "tag": "오답 → 힌트 사다리"
+    },
+    {
+      "id": "score",
+      "type": "security",
+      "label": "채점",
+      "sublabel": "골든 UUID · 채점자 리뷰",
+      "stage": 3,
+      "row": 0,
+      "tag": "f1 · status · grounding"
+    },
+    {
+      "id": "refine",
+      "type": "backend",
+      "label": "재작성 · export",
+      "sublabel": "Claude 작성기 + judge",
+      "stage": 3,
+      "row": 1,
+      "tag": "불일치 턴 손실 제외"
+    },
+    {
+      "id": "sft",
+      "type": "cloud",
+      "label": "SFT (KT GPU1)",
+      "sublabel": "LoRA-FA · 선택적 CE",
+      "stage": 4,
+      "row": 1,
+      "tag": "max_steps · 20스텝 저장"
+    },
+    {
+      "id": "val",
+      "type": "backend",
+      "label": "검증 루프 · LoRA",
+      "sublabel": "4 시나리오 × 6런",
+      "stage": 4,
+      "row": 0,
+      "tag": "런타임 로드 · 같은 학생 루프"
+    }
+  ],
+  "flows": [
+    {
+      "from": "captures",
+      "to": "restore",
+      "label": "케이스 복원",
+      "classification": "dump 적재",
+      "variant": "default",
+      "route": "vertical-channel"
+    },
+    {
+      "from": "captures",
+      "to": "seed",
+      "label": "t1/t2 · 알람",
+      "classification": "정답 비노출",
+      "variant": "emphasis",
+      "route": "straight"
+    },
+    {
+      "from": "restore",
+      "to": "mcp",
+      "label": "PG/CH/VM 접속",
+      "classification": "동적 포트",
+      "variant": "default",
+      "route": "straight"
+    },
+    {
+      "from": "seed",
+      "to": "student",
+      "label": "seed + 규율",
+      "classification": "교사도 동일",
+      "variant": "emphasis",
+      "route": "straight",
+      "labelDy": -30
+    },
+    {
+      "from": "mcp",
+      "to": "teacher",
+      "label": "MCP 도구",
+      "classification": "rca-answer 포함",
+      "variant": "default",
+      "route": "straight",
+      "labelDy": 28
+    },
+    {
+      "from": "mcp",
+      "to": "student",
+      "label": "도구 응답",
+      "classification": "≤6000자 · stdio",
+      "variant": "emphasis",
+      "route": "vertical-channel",
+      "labelSegment": 1
+    },
+    {
+      "from": "student",
+      "to": "score",
+      "label": "trajectory",
+      "classification": "핸들 → UUID",
+      "variant": "emphasis",
+      "route": "straight",
+      "labelDy": -24
+    },
+    {
+      "from": "teacher",
+      "to": "score",
+      "label": "stream · result",
+      "classification": "review.json",
+      "variant": "default",
+      "route": "vertical-channel"
+    },
+    {
+      "from": "score",
+      "to": "refine",
+      "label": "채택 궤적",
+      "classification": "f1=1 · 리뷰 통과",
+      "variant": "emphasis",
+      "route": "auto",
+      "labelDy": 24
+    },
+    {
+      "from": "refine",
+      "to": "sft",
+      "label": "mcp-sft-vN.jsonl",
+      "classification": "sha256 고정",
+      "variant": "emphasis",
+      "route": "straight"
+    },
+    {
+      "from": "sft",
+      "to": "val",
+      "label": "checkpoint-N",
+      "classification": "-lm 사본 · load_lora_adapter",
+      "variant": "emphasis",
+      "route": "auto",
+      "labelDy": -12
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "무결성 경계",
+      "items": [
+        "seed 는 시간창만 읽는다 — 시나리오 제목·기전 비노출",
+        "-blind 가 응답의 실험 라벨을 지운다"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "컨텍스트 계약",
+      "items": [
+        "롤링 뷰: 최근 8 전문 · 이전 1200자 · 이전 추론 제거",
+        "롤아웃·재작성·학습이 같은 뷰 함수를 쓴다"
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "채택 게이트",
+      "items": [
+        "root_f1 은 정식 UUID 매칭, 교사는 채점자 리뷰 통과",
+        "status 불일치면 마지막 제출 턴만 손실 제외"
+      ]
+    }
+  ]
+}

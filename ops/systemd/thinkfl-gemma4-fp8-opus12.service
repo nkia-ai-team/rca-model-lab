@@ -1,0 +1,16 @@
+[Unit]
+Description=Gemma4 26B A4B FP8 Opus-12 harness evaluation (24 runs)
+
+[Service]
+Type=simple
+WorkingDirectory=/home/swlee/projects/rca-model-lab-mcp
+Environment=PATH=/home/swlee/.local/bin:/usr/local/bin:/usr/bin:/bin
+Environment=PYTHONUNBUFFERED=1
+ExecStart=/home/swlee/projects/rca-model-lab-mcp/.venv/bin/python /home/swlee/projects/rca-model-lab-mcp/outputs/gemma4-fp8-opus12-20261008/run.py
+StandardOutput=append:/home/swlee/projects/rca-model-lab-mcp/outputs/gemma4-fp8-opus12-20261008/controller.log
+StandardError=append:/home/swlee/projects/rca-model-lab-mcp/outputs/gemma4-fp8-opus12-20261008/controller.log
+KillMode=control-group
+TimeoutStopSec=30
+
+[Install]
+WantedBy=default.target

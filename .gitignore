@@ -30,3 +30,4 @@ wandb/
 .DS_Store
 .omc/
 tools/rca-mcp/bin/
+docs/diagrams/*.visual-check.*

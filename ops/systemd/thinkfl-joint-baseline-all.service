@@ -1,0 +1,21 @@
+[Unit]
+Description=ThinkFL baseline all-turn joint SFT and validation
+After=network-online.target
+Wants=network-online.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+WorkingDirectory=/home/swlee/projects/rca-model-lab-mcp
+Environment=PATH=/home/swlee/.local/bin:/usr/local/bin:/usr/bin:/bin
+ExecStart=/home/swlee/.local/bin/uv run python -u scripts/mcp_continue_recovered.py --config configs/sft/joint-baseline-all-20261008.yaml --workspace /home/swlee/projects/rca-model-lab-mcp/outputs/joint-baseline-all-20261008 --execute
+Restart=no
+RestartForceExitStatus=3
+RestartSec=1h
+KillMode=control-group
+TimeoutStopSec=30
+StandardOutput=append:/home/swlee/projects/rca-model-lab-mcp/outputs/joint-baseline-all-20261008/service.log
+StandardError=inherit
+
+[Install]
+WantedBy=default.target

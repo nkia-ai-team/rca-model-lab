@@ -1,0 +1,15 @@
+[Unit]
+Description=Drain GPU0 evaluation and enable Muse assistant
+
+[Service]
+Type=simple
+WorkingDirectory=/home/swlee/projects/rca-model-lab-mcp
+Environment=PATH=/home/swlee/.local/bin:/usr/local/bin:/usr/bin:/bin
+Environment=PYTHONUNBUFFERED=1
+ExecStart=/home/swlee/projects/rca-model-lab-mcp/.venv/bin/python /home/swlee/projects/rca-model-lab-mcp/outputs/muse-assistant-harness-20261008/upgrade_gpu0.py
+StandardOutput=append:/home/swlee/projects/rca-model-lab-mcp/outputs/muse-assistant-harness-20261008/gpu0-upgrade.log
+StandardError=append:/home/swlee/projects/rca-model-lab-mcp/outputs/muse-assistant-harness-20261008/gpu0-upgrade.log
+TimeoutStopSec=30
+
+[Install]
+WantedBy=default.target

@@ -1,0 +1,16 @@
+[Unit]
+Description=Muse harness versus raw paired ablation (48 runs)
+
+[Service]
+Type=simple
+WorkingDirectory=/home/swlee/projects/rca-model-lab-mcp
+Environment=PATH=/home/swlee/.local/bin:/usr/local/bin:/usr/bin:/bin
+Environment=PYTHONUNBUFFERED=1
+ExecStart=/home/swlee/projects/rca-model-lab-mcp/.venv/bin/python /home/swlee/projects/rca-model-lab-mcp/outputs/muse-ablation-aliases-par3-20261008/run.py
+StandardOutput=append:/home/swlee/projects/rca-model-lab-mcp/outputs/muse-ablation-aliases-par3-20261008/controller.log
+StandardError=append:/home/swlee/projects/rca-model-lab-mcp/outputs/muse-ablation-aliases-par3-20261008/controller.log
+TimeoutStopSec=30
+KillMode=control-group
+
+[Install]
+WantedBy=default.target
