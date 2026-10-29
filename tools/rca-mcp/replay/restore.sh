@@ -14,14 +14,74 @@ PROJ=${2:-eval-$(basename "$CASE" | tr -cd 'a-z0-9-' | cut -c1-30)}
 DIR=$(cd "$(dirname "$0")" && pwd)
 LUCIDA_NEXT=${LUCIDA_NEXT:-$DIR/../../../../lucida-next}  # rca-model-lab 옆 디렉토리
 COMPOSE=(docker compose -f "$DIR/eval-dbs.compose.yml" -p "$PROJ")
+EXISTING_PROJECT_EXIT=75
+
+cleanup_armed=0
+restore_succeeded=0
+
+cleanup_failed_restore() {
+  [ "$cleanup_armed" = 1 ] || return 0
+  [ "$restore_succeeded" = 0 ] || return 0
+  echo "== 실패/중단 cleanup: docker compose down -v (project=$PROJ)" >&2
+  local attempt
+  for attempt in 1 2; do
+    if timeout --kill-after=5s 60s "${COMPOSE[@]}" down -v >&2; then
+      return 0
+    fi
+    echo "  ⚠ cleanup 실패 ${attempt}/2" >&2
+    sleep 2
+  done
+  echo "  ✗ cleanup 실패: docker compose -f $DIR/eval-dbs.compose.yml -p $PROJ down -v 를 확인하라" >&2
+}
+
+on_exit() {
+  local rc=$?
+  if [ "$rc" -ne 0 ]; then
+    cleanup_failed_restore
+  fi
+}
+
+on_signal() {
+  trap - INT TERM
+  exit 143
+}
+
+trap on_exit EXIT
+trap on_signal INT TERM
 
 CH=(clickhouse-client -u lucida --password lucida123)
+
+remove_clickhouse_ttl_if_present() {
+  local table=${1:?table}
+  local create_sql
+  create_sql=$("${COMPOSE[@]}" exec -T clickhouse "${CH[@]}" --query \
+    "SHOW CREATE TABLE lucida.${table}" | tr -d '\r')
+  if printf '%s\n' "$create_sql" | grep -Eq '(^|\\n)TTL[[:space:]]'; then
+    "${COMPOSE[@]}" exec -T clickhouse "${CH[@]}" \
+      --query "ALTER TABLE lucida.${table} REMOVE TTL"
+  fi
+}
 
 [ -d "$CASE/data" ] || { echo "케이스 데이터 없음: $CASE/data"; exit 1; }
 [ -d "$LUCIDA_NEXT/database/ddl/clickhouse" ] || {
   echo "lucida-next DDL 없음: $LUCIDA_NEXT (LUCIDA_NEXT env로 지정)"; exit 1; }
 
+# Serialize the preflight and restore; a competing invocation never owns this set.
+[[ "$PROJ" =~ ^[a-z0-9][a-z0-9_-]*$ ]] || { echo "Invalid replay project: $PROJ" >&2; exit 64; }
+lock_dir="${TMPDIR:-/tmp}/rca-replay-project-locks"
+mkdir -p "$lock_dir"
+exec 9>"$lock_dir/$PROJ.lock"
+flock -n 9 || { echo "Replay project restore already in progress: $PROJ" >&2; exit "$EXISTING_PROJECT_EXIT"; }
+
+existing_containers=$("${COMPOSE[@]}" ps --all -q 2>/dev/null)
+if [ -n "$existing_containers" ]; then
+  echo "이미 존재하는 replay DB project 거부: $PROJ"
+  echo "진행 중 평가일 수 있으니 먼저 소유자를 확인한 뒤 수동 폐기하라."
+  exit "$EXISTING_PROJECT_EXIT"
+fi
+
 echo "== [1/5] 격리 DB 기동 (project=$PROJ)"
+cleanup_armed=1
 "${COMPOSE[@]}" up -d
 # Docker assigns and reserves free ports atomically. Never probe a port and
 # later bind it, or infer endpoints from another compose project's containers.
@@ -114,8 +174,7 @@ for f in "$CASE"/data/clickhouse/*.parquet; do
   t=$(basename "$f" .parquet)
   # These are newly created isolated replay tables, never live services.
   # Old event-time partitions must survive merges throughout evaluation.
-  "${COMPOSE[@]}" exec -T clickhouse "${CH[@]}" \
-    --query "ALTER TABLE lucida.${t} REMOVE TTL"
+  remove_clickhouse_ttl_if_present "$t"
   "${COMPOSE[@]}" exec -T clickhouse "${CH[@]}" \
     --query "INSERT INTO lucida.${t} FORMAT Parquet" < "$f"
   echo "    ${t}"
@@ -171,3 +230,4 @@ export RCA_CH_URL='http://lucida:lucida123@$CH_BIND'
 export RCA_VM_URL='$VM'
 ENV
 echo "폐기: docker compose -f $DIR/eval-dbs.compose.yml -p $PROJ down -v"
+restore_succeeded=1

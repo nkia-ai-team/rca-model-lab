@@ -9,12 +9,16 @@
 # 이미지 버전은 운영과 동일(runbook 2026-07-14 기준 lucida-next 실값).
 services:
   victoriametrics:
+    labels:
+      io.rca.replay.lease-id: "${RCA_REPLAY_LEASE_ID:-manual}"
     image: victoriametrics/victoria-metrics:v1.97.1
     # ⚠ 필수 — 기본 보존기간(1개월)보다 오래된 타임스탬프는 import 시
     #   조용히 버려진다(무증상 유실). runbook §1 함정.
     command: ["-retentionPeriod=100y"]
     ports: ["127.0.0.1:${RCA_VM_PORT:-0}:8428"]
   clickhouse:
+    labels:
+      io.rca.replay.lease-id: "${RCA_REPLAY_LEASE_ID:-manual}"
     image: clickhouse/clickhouse-server:24.3
     environment:
       CLICKHOUSE_DB: lucida
@@ -22,9 +26,15 @@ services:
       CLICKHOUSE_PASSWORD: lucida123
     ports: ["127.0.0.1:${RCA_CH_PORT:-0}:8123"]
   postgres:
+    labels:
+      io.rca.replay.lease-id: "${RCA_REPLAY_LEASE_ID:-manual}"
     image: postgres:16-alpine
     environment:
       POSTGRES_DB: lucida
       POSTGRES_USER: lucida
       POSTGRES_PASSWORD: lucida123
     ports: ["127.0.0.1:${RCA_PG_PORT:-0}:5432"]
+networks:
+  default:
+    labels:
+      io.rca.replay.lease-id: "${RCA_REPLAY_LEASE_ID:-manual}"

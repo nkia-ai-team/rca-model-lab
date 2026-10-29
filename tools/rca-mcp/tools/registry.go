@@ -60,13 +60,21 @@ func withEnvelopeRef(t llm.Tool) llm.Tool {
 // 16회 실측)이 신 도구 실측을 무산시키는 것을 막기 위해서다.
 // scan_metrics ← discover_signals, read_timeseries ← get_metric_series
 // + get_metric_dimensions(차원 분해는 group_by 파라미터가 흡수, §3.3 Q7).
-// db_blocking ← get_db_sessions — 세션 볼륨·대기 분포는 승계하지 않는다
-// (옴니버스 금지, read_timeseries의 몫 — §13.13).
+// db_blocking ← get_db_sessions — DB 전체 세션 볼륨 시계열은 승계하지 않는다
+// (옴니버스 금지, read_timeseries의 몫 — §13.13). 단 2026-10-06부터 클라이언트별
+// 세션 상태·대기 분포와 경과 시간 상위 세션은 db_blocking의 세션 상태 구획이 싣는다
+// (절제 실측: 블로킹 없는 커넥션 점유·잠금 보유 세션의 SQL·클라이언트가 안 보였다).
 // db_slow_queries ← get_slow_queries — 플랜 전문·튜닝 권고는 승계하지
 // 않는다(플랜은 존재·안정성 요약 + 드릴다운만 — §14.7).
 // lastEvent는 인시던트 창 끝 — list_changes 기본 창 [firstEvent-24h,
 // lastEvent]의 재료다(§10.6). zero면 도구가 now로 폴백하고 밝힌다.
 func Toolset(s Stores, firstEvent, lastEvent time.Time) []llm.Tool {
+	return ToolsetWith(s, firstEvent, lastEvent, Availability{})
+}
+
+// ToolsetWith is Toolset for a capture with an availability manifest (availability.go); the tool list and
+// its order are identical, only tools whose data was not collected answer not_collected.
+func ToolsetWith(s Stores, firstEvent, lastEvent time.Time, avail Availability) []llm.Tool {
 	all := []llm.Tool{
 		NewDescribeDataSourcesTool(),
 		NewSearchTargetsTool(s.PG),
@@ -86,7 +94,7 @@ func Toolset(s Stores, firstEvent, lastEvent time.Time) []llm.Tool {
 		NewDescribeTargetTool(s.PG, s.VM, firstEvent),
 		// list_changes ← get_changes 자리 교체(§10 — 창 전역 반환·사건
 		// 단위 교차 접기. 대상은 필터가 아니라 정렬 힌트).
-		NewListChangesTool(s.PG, firstEvent, lastEvent, nil),
+		NewListChangesTool(s.PG, s.CH, s.VM, firstEvent, lastEvent, nil),
 		// compare_peers ← get_cohort 자리 교체(§11 — 또래 명단이 본체.
 		// 판정은 각자 자기 기준선 대비 이탈, 시계열·선후는 read_timeseries 몫).
 		NewComparePeersTool(s.PG, s.VM, firstEvent, nil),
@@ -97,8 +105,9 @@ func Toolset(s Stores, firstEvent, lastEvent time.Time) []llm.Tool {
 		NewExpandTopologyTool(s.PG, s.CH, firstEvent, lastEvent, nil),
 		// db_blocking ← get_db_sessions 자리 교체(§13 — 창 전역 스캔·사건
 		// 단위 접기. 교체된 도구는 마지막 스냅샷 10초만 봐서 희박 사건을
-		// 구조적으로 놓쳤다. 세션 볼륨은 read_timeseries 몫).
-		NewDBBlockingTool(s.CH, firstEvent, lastEvent, nil),
+		// 구조적으로 놓쳤다. 세션 볼륨은 read_timeseries 몫). db 생략 = database 대상 전체
+		// 개관(dbfleet.go, 2026-10-06 — 먼저 의심한 DB 하나만 보고 다른 DB의 동시 경합을 놓친 실측).
+		NewDBBlockingTool(s.CH, s.PG, firstEvent, lastEvent, nil),
 		// db_slow_queries ← get_slow_queries 자리 교체(§14 — 창 전역 2단
 		// 접기·단위 정규화·직전 24시간 자기 기준선 대비 3배 판정. 교체된
 		// 도구는 마지막 폴 10초만 보고 Oracle μs를 ms 필드에 담았다.
@@ -120,7 +129,7 @@ func Toolset(s Stores, firstEvent, lastEvent time.Time) []llm.Tool {
 		NewK8sStateTool(s.VM, s.PG),
 	}
 	for i := range all {
-		all[i] = withEnvelopeRef(withBackendGuard(all[i]))
+		all[i] = withEnvelopeRef(withBackendGuard(withAvailability(all[i], avail)))
 	}
 	return all
 }

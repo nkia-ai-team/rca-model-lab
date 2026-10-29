@@ -28,7 +28,8 @@ const (
 )
 
 // ToolBackendDeps — 표면 도구 전수의 원천 의존(registry.go 생성자 인자
-// 실측 2026-08-12와 1:1, 시험이 대조). 다중 원천 9종(4차 A-16)이 굵은 줄.
+// 실측 2026-08-12와 1:1, 시험이 대조). 다중 원천 11종(4차 A-16의 9종 +
+// 2026-10-06 list_changes의 CH·VM optional + db_blocking의 PG optional)이 굵은 줄.
 var ToolBackendDeps = map[string]map[string]SourceClass{
 	"get_trace_spans":         {"ch": SourceRequired},
 	"get_trace_activity":      {"ch": SourceRequired},
@@ -42,13 +43,13 @@ var ToolBackendDeps = map[string]map[string]SourceClass{
 	"scan_metrics":        {"vm": SourceRequired, "pg": SourceSemanticAuxiliary}, // PG=counter 판별·한도 짝
 	"read_timeseries":     {"vm": SourceRequired, "pg": SourceSemanticAuxiliary},
 	"sample_logs":         {"ch": SourceRequired},
-	"list_events":         {"ch": SourceRequired, "pg": SourceOptional}, // PG=K8s 정체 판별(kcm 합성 전제 — 실측 2b, 종전 주석 "표시명 해석"은 부정확)
-	"describe_target":     {"pg": SourceRequired, "vm": SourceOptional}, // VM=한도 카탈로그 실측치
-	"list_changes":        {"pg": SourceRequired},
-	"compare_peers":       {"pg": SourceRequired, "vm": SourceRequired}, // 명단=PG·판정=VM
-	"expand_topology":     {"pg": SourceRequired, "ch": SourceRequired}, // 위상=PG·호출 관측=CH
-	"db_blocking":         {"ch": SourceRequired},
-	"db_slow_queries":     {"ch": SourceRequired, "pg": SourceSemanticAuxiliary}, // PG=엔진·인벤토리
+	"list_events":         {"ch": SourceRequired, "pg": SourceOptional},                       // PG=K8s 정체 판별(kcm 합성 전제 — 실측 2b, 종전 주석 "표시명 해석"은 부정확)
+	"describe_target":     {"pg": SourceRequired, "vm": SourceOptional},                       // VM=한도 카탈로그 실측치
+	"list_changes":        {"pg": SourceRequired, "ch": SourceOptional, "vm": SourceOptional}, // CH=K8s 스케일 이벤트(롤아웃 시각·레플리카 변경), VM=한도 변경 롤아웃의 사용량 피크 — 실패해도 정책·감사·RS 스펙 관측 유지
+	"compare_peers":       {"pg": SourceRequired, "vm": SourceRequired},                       // 명단=PG·판정=VM
+	"expand_topology":     {"pg": SourceRequired, "ch": SourceRequired},                       // 위상=PG·호출 관측=CH
+	"db_blocking":         {"ch": SourceRequired, "pg": SourceOptional},                       // PG=세션 상태 구획의 클라이언트 해석(kcm pod·명부)·SQL 본문 사전 — 실패해도 블로킹·세션 관측 유지. db 생략(전체 개관)의 PG=대상 발견 명부 — 실패하면 세션 원천의 창 내 target_id로 대체 발견(source_errors.pg_inventory)
+	"db_slow_queries":     {"ch": SourceRequired, "pg": SourceSemanticAuxiliary},              // PG=엔진·인벤토리
 	"breakdown_endpoints": {"ch": SourceRequired},
 	// 메타. vm·ch는 required가 아니라 aux다(2b 정정): 6b의 A6 선구현이
 	// 이미 "실패 원천은 source_errors 명시 + 나머지 관측 유지"로 확정했고

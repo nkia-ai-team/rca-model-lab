@@ -8,6 +8,7 @@ import (
 	"flag"
 	"fmt"
 	"io"
+	"log"
 	"net/url"
 	"os"
 	"time"
@@ -35,7 +36,10 @@ func main() {
 	last := flag.String("last-event", "", "incident end (RFC3339; requires -first-event)")
 	blindMode := flag.Bool("blind", false, "filter explicit experiment labels from model-visible responses")
 	sanitizeStdin := flag.Bool("sanitize-stdin", false, "filter one JSON document from stdin without backend access")
+	captureStart := flag.String("capture-start", "", "earliest instant the capture holds data for (RFC3339); clips default baselines")
+	navHints := flag.Bool("nav-hints", false, "add query-path navigation to no-data envelopes (e.g. kcm metrics live under the cluster target)")
 	flag.Parse()
+	tools.NavHints = *navHints || os.Getenv("RCA_NAV_HINTS") == "1" // external captures pass it with the connection env
 	if *sanitizeStdin {
 		raw, err := io.ReadAll(io.LimitReader(os.Stdin, (16<<20)+1))
 		if err != nil {
@@ -56,13 +60,30 @@ func main() {
 	if err != nil {
 		fatal(err)
 	}
+	if *captureStart == "" {
+		*captureStart = os.Getenv("RCA_CAPTURE_START") // external captures pass it with the connection env
+	}
+	if *captureStart != "" {
+		cs, err := time.Parse(time.RFC3339, *captureStart)
+		if err != nil {
+			fatal(fmt.Errorf("invalid -capture-start: %w", err))
+		}
+		tools.CaptureStart = cs
+	}
+	avail, err := tools.LoadAvailability(os.Getenv("RCA_CAPTURE_SOURCES"))
+	if err != nil {
+		fatal(err)
+	}
 	s, err := storesFromEnv()
 	if err != nil {
 		fatal(err)
 	}
 	defer s.PG.Close()
+	// 등록 순서를 보존한다 — tools/list 가 map 순회로 나가면 프로세스마다 도구 순서가
+	// 달라져 학생 프롬프트(도구 카탈로그)가 런마다 흔들리고, 학습 프롬프트와도 어긋난다.
+	ordered := tools.ToolsetWith(s, firstEvent, lastEvent, avail)
 	by := map[string]llm.Tool{}
-	for _, t := range tools.Toolset(s, firstEvent, lastEvent) {
+	for _, t := range ordered {
 		by[t.Name] = t
 	}
 	in := bufio.NewScanner(os.Stdin)
@@ -78,13 +99,7 @@ func main() {
 		case "initialize":
 			res = map[string]any{"protocolVersion": "2024-11-05", "capabilities": map[string]any{"tools": map[string]any{}}, "serverInfo": map[string]string{"name": "rca-tools", "version": "1"}}
 		case "tools/list":
-			var ts []map[string]any
-			for _, t := range by {
-				var schema any
-				_ = json.Unmarshal(t.Parameters, &schema)
-				ts = append(ts, map[string]any{"name": t.Name, "description": t.Description, "inputSchema": schema})
-			}
-			res = map[string]any{"tools": ts}
+			res = map[string]any{"tools": toolList(ordered)}
 		case "tools/call":
 			var p struct {
 				Name      string          `json:"name"`
@@ -130,12 +145,10 @@ func modelJSON(value any, sanitize bool) ([]byte, error) {
 	}
 	clean, stats, err := blind.SanitizeJSON(raw)
 	if err == nil && (stats.RemovedFields > 0 || stats.RedactedStrings > 0 || stats.OpaqueIdentifiers > 0) {
-		var envelope map[string]any
-		if json.Unmarshal(clean, &envelope) == nil && envelope != nil && envelope["status"] != nil {
-			envelope["blind_filter"] = stats
-			envelope["blind_filter_note"] = "Explicit experiment annotations withheld; opaque references are display citations, not raw backend selectors. This does not establish full absence of leakage."
-			clean, err = json.Marshal(envelope)
-		}
+		// Diagnostics go to stderr only. Annotating the model-visible envelope ("blind_filter" +
+		// "experiment annotations withheld") told the model exactly which response touched the
+		// injected change (2026-10-06 leak review).
+		log.Printf("blind_filter removed_fields=%d redacted_strings=%d pseudonymized=%d", stats.RemovedFields, stats.RedactedStrings, stats.OpaqueIdentifiers)
 	}
 	return clean, err
 }
@@ -180,3 +193,15 @@ func storesFromEnv() (tools.Stores, error) {
 	return tools.Stores{PG: pg, CH: &tools.CH{BaseURL: u.Scheme + "://" + u.Host, User: u.User.Username(), Pass: pass, Database: "lucida"}, VM: &tools.VM{BaseURL: vmURL}}, nil
 }
 func fatal(e error) { fmt.Fprintln(os.Stderr, e); os.Exit(1) }
+
+// toolList renders the tools/list payload in the given (registry) order. The order is part of the
+// student's prompt, so it must be deterministic and identical to the exported training catalog.
+func toolList(ordered []llm.Tool) []map[string]any {
+	ts := make([]map[string]any, 0, len(ordered))
+	for _, t := range ordered {
+		var schema any
+		_ = json.Unmarshal(t.Parameters, &schema)
+		ts = append(ts, map[string]any{"name": t.Name, "description": t.Description, "inputSchema": schema})
+	}
+	return ts
+}

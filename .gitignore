@@ -29,3 +29,4 @@ wandb/
 # misc
 .DS_Store
 .omc/
+tools/rca-mcp/bin/

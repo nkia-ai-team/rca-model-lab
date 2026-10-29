@@ -114,15 +114,17 @@ func TestToolBackendDepsMatchSurface(t *testing.T) {
 			t.Errorf("사상표의 %s가 표면에 없음", name)
 		}
 	}
-	// 다중 원천 실측 9종(4차 A-16) — 표가 이를 유지해야 한다.
+	// 다중 원천 실측 11종(4차 A-16의 9종 + 2026-10-06 list_changes의 CH optional —
+	// K8s 스케일 이벤트 + 2026-10-06 db_blocking의 PG optional — 세션 상태 구획의
+	// 클라이언트 해석·SQL 본문) — 표가 이를 유지해야 한다.
 	multi := 0
 	for _, deps := range ToolBackendDeps {
 		if len(deps) > 1 {
 			multi++
 		}
 	}
-	if multi != 9 {
-		t.Errorf("다중 원천 %d종 — 실측 9종(A-16)이어야 함", multi)
+	if multi != 11 {
+		t.Errorf("다중 원천 %d종 — 실측 11종(A-16 9종 + list_changes + db_blocking)이어야 함", multi)
 	}
 	if got := len(ToolsOn("vm", "")); got == 0 {
 		t.Error("ToolsOn(vm) 0건 — 기계 생성 표면이 비었다")

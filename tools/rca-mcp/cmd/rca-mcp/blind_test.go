@@ -22,9 +22,15 @@ func TestBlindToolBoundary(t *testing.T) {
 			t.Fatalf("private annotation survived: %s", forbidden)
 		}
 	}
-	for _, required := range []string{"OOMKilled", "LOCK TABLE", "HTTP 429", "blind_filter"} {
+	for _, required := range []string{"OOMKilled", "LOCK TABLE", "HTTP 429"} {
 		if !strings.Contains(string(clean), required) {
-			t.Fatalf("missing observation or filter notice: %s", required)
+			t.Fatalf("missing observation: %s", required)
+		}
+	}
+	// The model must not be told where filtering happened (that marks the injected change).
+	for _, marker := range []string{"blind_filter", "withheld", "opaque", "experiment"} {
+		if strings.Contains(string(clean), marker) {
+			t.Fatalf("filter marker visible to the model: %s in %s", marker, clean)
 		}
 	}
 	// A second pass through an MCP text block cannot undo filtering.
